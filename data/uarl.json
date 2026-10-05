@@ -1,0 +1,3799 @@
+{
+  "events": [
+    {
+      "id": "d1-clash-2026-09-09",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-09-09",
+      "start": "2026-09-10T00:30:00.000Z",
+      "name": "L.L. Bean Clash",
+      "track": "Daytona International Speedway",
+      "round": null,
+      "laps": 30,
+      "exhibition": true,
+      "pointsEvent": false,
+      "crownJewel": false,
+      "chase": false,
+      "special": "Clash · Exhibition"
+    },
+    {
+      "id": "d1-r01-2026-09-20",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-09-20",
+      "start": "2026-09-21T00:30:00.000Z",
+      "name": "The 6th Annual Daytona 500",
+      "track": "Daytona International Speedway",
+      "round": 1,
+      "laps": 90,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": true,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-09-13",
+      "originalStart": "2026-09-14T00:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r02-2026-09-27",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-09-27",
+      "start": "2026-09-28T00:30:00.000Z",
+      "name": "Queen City 500",
+      "track": "Charlotte Motor Speedway",
+      "round": 2,
+      "laps": 120,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": true,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-09-20",
+      "originalStart": "2026-09-21T00:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r03-2026-10-04",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-10-04",
+      "start": "2026-10-05T00:30:00.000Z",
+      "name": "Aztec Grand Prix 400",
+      "track": "Mexico City",
+      "round": 3,
+      "laps": 50,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-09-27",
+      "originalStart": "2026-09-28T00:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r04-2026-10-11",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-10-11",
+      "start": "2026-10-12T00:30:00.000Z",
+      "name": "Echo Park Thunder 400",
+      "track": "Echo Park Speedway",
+      "round": 4,
+      "laps": 75,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-10-04",
+      "originalStart": "2026-10-05T00:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r05-2026-10-18",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-10-18",
+      "start": "2026-10-19T00:30:00.000Z",
+      "name": "Music City 300",
+      "track": "Nashville Fairgrounds",
+      "round": 5,
+      "laps": 120,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-10-11",
+      "originalStart": "2026-10-12T00:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r06-2026-10-25",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-10-25",
+      "start": "2026-10-26T00:30:00.000Z",
+      "name": "Jackpot 400",
+      "track": "Las Vegas Motor Speedway",
+      "round": 6,
+      "laps": 75,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-10-18",
+      "originalStart": "2026-10-19T00:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r07-2026-11-01",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-11-01",
+      "start": "2026-11-02T00:30:00.000Z",
+      "name": "British Crown 300",
+      "track": "Silverstone Circuit",
+      "round": 7,
+      "laps": 50,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-10-25",
+      "originalStart": "2026-10-26T00:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r08-2026-11-08",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-11-08",
+      "start": "2026-11-09T01:30:00.000Z",
+      "name": "Lone Star 500",
+      "track": "Texas Motor Speedway",
+      "round": 8,
+      "laps": 75,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-11-01",
+      "originalStart": "2026-11-02T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-allstar-2026-11-15",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-11-15",
+      "start": "2026-11-16T01:30:00.000Z",
+      "name": "The 6th Annual UARL All-Star Race",
+      "track": "USA International Speedway",
+      "round": null,
+      "laps": 200,
+      "exhibition": true,
+      "pointsEvent": false,
+      "crownJewel": false,
+      "chase": false,
+      "special": "All-Star Race · Exhibition",
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-11-08",
+      "originalStart": "2026-11-09T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r09-2026-11-22",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-11-22",
+      "start": "2026-11-23T01:30:00.000Z",
+      "name": "Monza Speed Festival 350",
+      "track": "Monza Oval",
+      "round": 9,
+      "laps": 60,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-11-15",
+      "originalStart": "2026-11-16T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r10-2026-11-29",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-11-29",
+      "start": "2026-11-30T01:30:00.000Z",
+      "name": "Olympian 300",
+      "track": "Greece Speedway",
+      "round": 10,
+      "laps": 150,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-11-22",
+      "originalStart": "2026-11-23T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r11-2026-12-06",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-12-06",
+      "start": "2026-12-07T01:30:00.000Z",
+      "name": "Mountain Peak 400",
+      "track": "Pocono Raceway",
+      "round": 11,
+      "laps": 60,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-11-29",
+      "originalStart": "2026-11-30T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r12-2026-12-13",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-12-13",
+      "start": "2026-12-14T01:30:00.000Z",
+      "name": "Brickyard 500",
+      "track": "Indianapolis Motor Speedway",
+      "round": 12,
+      "laps": 90,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": true,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-12-06",
+      "originalStart": "2026-12-07T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r13-2026-12-20",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-12-20",
+      "start": "2026-12-21T01:30:00.000Z",
+      "name": "Rising Sun 300",
+      "track": "Twin Ring Motegi",
+      "round": 13,
+      "laps": 75,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-12-13",
+      "originalStart": "2026-12-14T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r14-2026-12-27",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-12-27",
+      "start": "2026-12-28T01:30:00.000Z",
+      "name": "Windy City Grand Prix",
+      "track": "Chicago Street Course",
+      "round": 14,
+      "laps": 50,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": true,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-12-20",
+      "originalStart": "2026-12-21T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r15-2026-12-30",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2026-12-30",
+      "start": "2026-12-31T01:30:00.000Z",
+      "name": "Midwest 400",
+      "track": "Chicagoland Speedway",
+      "round": 15,
+      "laps": 75,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": true,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-12-23",
+      "originalStart": "2026-12-24T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r16-2027-01-03",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2027-01-03",
+      "start": "2027-01-04T01:30:00.000Z",
+      "name": "Gateway 400",
+      "track": "World Wide Technology Raceway",
+      "round": 16,
+      "laps": 75,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": true,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2026-12-27",
+      "originalStart": "2026-12-28T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r17-2027-01-10",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2027-01-10",
+      "start": "2027-01-11T01:30:00.000Z",
+      "name": "Southern 500",
+      "track": "Darlington Raceway",
+      "round": 17,
+      "laps": 120,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": true,
+      "chase": true,
+      "special": null,
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2027-01-03",
+      "originalStart": "2027-01-04T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d1-r18-2027-01-17",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "date": "2027-01-17",
+      "start": "2027-01-18T01:30:00.000Z",
+      "name": "L.L. Bean Championship Finale",
+      "track": "Homestead-Miami Speedway",
+      "round": 18,
+      "laps": 150,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": true,
+      "special": "Championship Finale",
+      "scheduleShift": "one-week postponement",
+      "originalDate": "2027-01-10",
+      "originalStart": "2027-01-11T01:30:00.000Z",
+      "scheduleNote": "D1 Season 6 was postponed one week; the full remaining Cup schedule shifted back seven days."
+    },
+    {
+      "id": "d2-r01-2026-09-12",
+      "division": "d2",
+      "series": "National Fallen Firefighters Foundation Grand National Series",
+      "date": "2026-09-12",
+      "start": "2026-09-12T23:00:00.000Z",
+      "name": "The Cracker Barrel 250 at Daytona",
+      "track": "Daytona International Speedway",
+      "round": 1,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": "Postponed · Rescheduled",
+      "scheduleStatus": "rescheduled",
+      "originalDate": "2026-09-11",
+      "originalStart": "2026-09-11T22:45:00.000Z",
+      "scheduleNote": "Postponed from Friday, September 11 at 6:45 PM ET to Saturday, September 12 at 7:00 PM ET.",
+      "status": "complete",
+      "completed": true,
+      "winner": "Rocky",
+      "pole": "Dale",
+      "resultNote": "Rocky won; Dale took the pole; Taylor swept both stages, earned most laps led, and scored the only D2 championship points (55).",
+      "seriesStatus": "discontinued",
+      "shutdownNote": "Grand National Series discontinued after Round 1. All rostered D2 drivers moved to D1 free agency."
+    },
+    {
+      "id": "open-r01-2026-09-13",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-09-13",
+      "start": "2026-09-13T15:30:00.000Z",
+      "name": "Sunshine State 150",
+      "track": "Daytona Backstretch",
+      "round": 1,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r02-2026-09-20",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-09-20",
+      "start": "2026-09-20T15:30:00.000Z",
+      "name": "Snowball Summer Classic",
+      "track": "Five Flags Speedway",
+      "round": 2,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r03-2026-09-27",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-09-27",
+      "start": "2026-09-27T15:30:00.000Z",
+      "name": "Southern Heritage 100",
+      "track": "Sunny South Raceway Park",
+      "round": 3,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r04-2026-10-04",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-10-04",
+      "start": "2026-10-04T15:30:00.000Z",
+      "name": "Queen City Dirt Nationals",
+      "track": "The Dirt Track at Charlotte",
+      "round": 4,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r05-2026-10-11",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-10-11",
+      "start": "2026-10-11T15:30:00.000Z",
+      "name": "Capital Cup",
+      "track": "Wake County Speedway",
+      "round": 5,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r06-2026-10-18",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-10-18",
+      "start": "2026-10-18T15:30:00.000Z",
+      "name": "Badger State 150",
+      "track": "Slinger Speedway",
+      "round": 6,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r07-2026-10-25",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-10-25",
+      "start": "2026-10-25T15:30:00.000Z",
+      "name": "Appalachian Challenge",
+      "track": "Tyler County Speedway",
+      "round": 7,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r08-2026-11-01",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-11-01",
+      "start": "2026-11-01T16:30:00.000Z",
+      "name": "Great Lakes Showdown",
+      "track": "Cedar Lake Speedway",
+      "round": 8,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r09-2026-11-08",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-11-08",
+      "start": "2026-11-08T16:30:00.000Z",
+      "name": "North Country Classic",
+      "track": "ABC Raceway",
+      "round": 9,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r10-2026-11-15",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-11-15",
+      "start": "2026-11-15T16:30:00.000Z",
+      "name": "Pine Tree State 150",
+      "track": "Baileyville Speedway",
+      "round": 10,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r11-2026-11-22",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-11-22",
+      "start": "2026-11-22T16:30:00.000Z",
+      "name": "Heartland Dirt Crown",
+      "track": "Eldora Speedway",
+      "round": 11,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    },
+    {
+      "id": "open-r12-2026-11-29",
+      "division": "open",
+      "series": "Bangor Savings Bank Super Late Model Open Series",
+      "date": "2026-11-29",
+      "start": "2026-11-29T16:30:00.000Z",
+      "name": "Madhouse 100",
+      "track": "Bowman Gray Stadium",
+      "round": 12,
+      "laps": null,
+      "exhibition": false,
+      "pointsEvent": true,
+      "crownJewel": false,
+      "chase": false,
+      "special": null
+    }
+  ],
+  "records": [
+    {
+      "id": "d1-clash-2026-09-09",
+      "division": "d1",
+      "series": "L.L. Bean Cup Series",
+      "event": "L.L. Bean Clash",
+      "date": "2026-09-09",
+      "start": "2026-09-10T00:30:00.000Z",
+      "track": "Daytona International Speedway",
+      "laps": 30,
+      "status": "complete",
+      "eventType": "Preseason exhibition",
+      "exhibition": true,
+      "pointsEvent": false,
+      "winner": "Gman",
+      "pole": "Payson",
+      "qualifying": [
+        {
+          "position": 1,
+          "name": "Payson"
+        },
+        {
+          "position": 2,
+          "name": "Hayden"
+        },
+        {
+          "position": 3,
+          "name": "Dale"
+        },
+        {
+          "position": 4,
+          "name": "Lance"
+        },
+        {
+          "position": 5,
+          "name": "Gman"
+        }
+      ],
+      "finishes": [
+        {
+          "position": 1,
+          "name": "Gman"
+        },
+        {
+          "position": 2,
+          "name": "Daniel"
+        },
+        {
+          "position": 3,
+          "name": "Hayden"
+        },
+        {
+          "position": 4,
+          "name": "Dale"
+        },
+        {
+          "position": 5,
+          "name": "Lance"
+        },
+        {
+          "position": 6,
+          "name": "Payson"
+        }
+      ],
+      "pointsNote": "No championship points awarded.",
+      "recordNote": "Recorded in UARL exhibition/special-event history; excluded from Season 6 championship standings."
+    },
+    {
+      "id": "d2-r01-2026-09-12",
+      "division": "d2",
+      "series": "National Fallen Firefighters Foundation Grand National Series",
+      "round": 1,
+      "event": "The Cracker Barrel 250 at Daytona",
+      "date": "2026-09-12",
+      "start": "2026-09-12T23:00:00.000Z",
+      "track": "Daytona International Speedway",
+      "status": "complete",
+      "eventType": "Points race",
+      "exhibition": false,
+      "pointsEvent": true,
+      "winner": "Rocky",
+      "pole": "Dale",
+      "scheduleStatus": "rescheduled",
+      "originalDate": "2026-09-11",
+      "originalStart": "2026-09-11T22:45:00.000Z",
+      "scheduleNote": "Postponed from Friday, September 11 at 6:45 PM ET to Saturday, September 12 at 7:00 PM ET.",
+      "entries": [
+        {
+          "number": "19",
+          "name": "Rocky",
+          "pointsEligible": false
+        },
+        {
+          "number": "24",
+          "name": "Taylor",
+          "pointsEligible": true
+        },
+        {
+          "number": "54",
+          "name": "Dale",
+          "pointsEligible": false
+        },
+        {
+          "number": "62",
+          "name": "Wispy",
+          "pointsEligible": false
+        }
+      ],
+      "qualifying": [
+        {
+          "position": 1,
+          "number": "54",
+          "name": "Dale"
+        },
+        {
+          "position": 2,
+          "number": "19",
+          "name": "Rocky"
+        },
+        {
+          "position": 3,
+          "number": "24",
+          "name": "Taylor"
+        },
+        {
+          "position": 4,
+          "number": "62",
+          "name": "Wispy"
+        }
+      ],
+      "stages": [
+        {
+          "name": "Stage 1",
+          "results": [
+            {
+              "position": 1,
+              "number": "24",
+              "name": "Taylor"
+            },
+            {
+              "position": 2,
+              "number": "19",
+              "name": "Rocky"
+            },
+            {
+              "position": 3,
+              "number": "54",
+              "name": "Dale"
+            },
+            {
+              "position": 4,
+              "number": "62",
+              "name": "Wispy"
+            }
+          ]
+        },
+        {
+          "name": "Stage 2",
+          "results": [
+            {
+              "position": 1,
+              "number": "24",
+              "name": "Taylor"
+            },
+            {
+              "position": 2,
+              "number": "19",
+              "name": "Rocky"
+            },
+            {
+              "position": 3,
+              "number": "54",
+              "name": "Dale"
+            },
+            {
+              "position": 4,
+              "number": "62",
+              "name": "Wispy"
+            }
+          ]
+        }
+      ],
+      "finishes": [
+        {
+          "position": 1,
+          "number": "19",
+          "name": "Rocky",
+          "pointsEligible": false
+        },
+        {
+          "position": 2,
+          "number": "54",
+          "name": "Dale",
+          "pointsEligible": false
+        },
+        {
+          "position": 3,
+          "number": "24",
+          "name": "Taylor",
+          "pointsEligible": true
+        },
+        {
+          "position": 4,
+          "number": "62",
+          "name": "Wispy",
+          "pointsEligible": false
+        }
+      ],
+      "knownPoints": 55,
+      "pointsPendingBonuses": false,
+      "pointsSummary": "Taylor only · 55 pts",
+      "pointsNote": "Taylor was the only full-time D2 driver in the field and the only driver eligible for championship points. Her official total is 55 points: 42 for P3, 10 from two stage wins, and 3 for most laps led. Taylor led 20 of 35 laps.",
+      "recordNote": "Official D2 Round 1 race record. Rocky won the race, Dale earned the pole, Taylor swept Stage 1 and Stage 2, led 20 of 35 laps, and earned the most-laps-led bonus (+3). Rocky, Dale, and Wispy earned no championship points from this event.",
+      "bonuses": [
+        {
+          "name": "Most laps led",
+          "points": 3,
+          "driver": "Taylor",
+          "number": "24",
+          "lapsLed": 20,
+          "totalLaps": 35
+        }
+      ],
+      "laps": 35,
+      "seriesStatus": "discontinued",
+      "shutdownNote": "D2 was discontinued after the Daytona opener. All rostered D2 drivers moved to D1 free agency."
+    }
+  ],
+  "drivers": {
+    "teams": [
+      {
+        "id": "dakota",
+        "name": "Dakota Sullivan Racing",
+        "owner": "Dale",
+        "make": "Chevrolet",
+        "note": "Dale-owned Chevrolet program with Max joining the #19 and Opt joining the #91.",
+        "entries": [
+          {
+            "number": "16",
+            "user": "58bbwapache",
+            "status": "Full-Time"
+          },
+          {
+            "number": "19",
+            "name": "Max",
+            "status": "Signed",
+            "signedAt": "2026-09-13",
+            "seatType": "Full-Time"
+          },
+          {
+            "number": "20",
+            "user": "UN88475544",
+            "status": "Full-Time"
+          },
+          {
+            "number": "61",
+            "user": "PlaneFan638",
+            "status": "Full-Time"
+          },
+          {
+            "number": "91",
+            "name": "Opt",
+            "status": "Signed",
+            "signedAt": "2026-09-13",
+            "seatType": "Part-Time"
+          }
+        ]
+      },
+      {
+        "id": "xdrive",
+        "name": "XDrive Motorsports",
+        "owner": "John",
+        "make": "Chevrolet",
+        "note": "John-owned Chevrolet program with four full-time seats currently available.",
+        "entries": [
+          {
+            "number": "21",
+            "name": "OPEN",
+            "status": "Open FT"
+          },
+          {
+            "number": "25",
+            "name": "OPEN",
+            "status": "Open FT"
+          },
+          {
+            "number": "44",
+            "name": "OPEN",
+            "status": "Open FT"
+          },
+          {
+            "number": "89",
+            "name": "OPEN",
+            "status": "Open FT"
+          }
+        ]
+      },
+      {
+        "id": "avery",
+        "name": "Avery Motorsports",
+        "owner": "Payson",
+        "ownerNote": "UARL League Owner",
+        "make": "Ford",
+        "note": "The league owner’s Ford stable. Frog joins the #73 after the D2 shutdown.",
+        "entries": [
+          {
+            "number": "05",
+            "user": "pa05",
+            "status": "Full-Time"
+          },
+          {
+            "number": "58",
+            "user": "bowlingsham1",
+            "status": "Full-Time"
+          },
+          {
+            "number": "60",
+            "user": "codydgoforth",
+            "status": "Full-Time"
+          },
+          {
+            "number": "72",
+            "user": "TBDAN1E",
+            "status": "Full-Time"
+          },
+          {
+            "number": "73",
+            "user": "Frogboy4783",
+            "status": "Signed",
+            "recent": true,
+            "signedAt": "2026-09-13"
+          }
+        ]
+      },
+      {
+        "id": "whitlock",
+        "name": "Goat Whitlock Motorsports",
+        "owner": "James",
+        "make": "Toyota",
+        "note": "James-owned Toyota team. Taylor moves up from the discontinued D2 series into the #48.",
+        "entries": [
+          {
+            "number": "9",
+            "name": "OPEN",
+            "status": "Open FT"
+          },
+          {
+            "number": "24",
+            "user": "John_Hunter38",
+            "status": "Full-Time"
+          },
+          {
+            "number": "48",
+            "user": "TaylorKenseth17",
+            "status": "Signed",
+            "recent": true,
+            "signedAt": "2026-09-13"
+          },
+          {
+            "number": "84",
+            "user": "JJElliott2004",
+            "status": "Full-Time"
+          }
+        ]
+      },
+      {
+        "id": "goforth",
+        "name": "Goforth Motorsports",
+        "owner": "Cody",
+        "make": "Ford",
+        "note": "Cody’s Ford operation, home to the league’s all-time wins leader.",
+        "entries": [
+          {
+            "number": "1",
+            "name": "OPEN",
+            "status": "Open FT"
+          },
+          {
+            "number": "77",
+            "user": "Kingofgamez",
+            "status": "Full-Time"
+          },
+          {
+            "number": "80",
+            "user": "GuillermoChase",
+            "status": "Full-Time"
+          },
+          {
+            "number": "88",
+            "user": "lancejuly",
+            "status": "Full-Time"
+          },
+          {
+            "number": "97",
+            "name": "Part-Time Charter",
+            "status": "Part-Time Charter"
+          }
+        ]
+      },
+      {
+        "id": "aetherwing",
+        "name": "Aetherwing eMotorsports",
+        "owner": "Wispy",
+        "make": "Toyota",
+        "note": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
+        "entries": [
+          {
+            "number": "28",
+            "user": "Aokikoto",
+            "status": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "32",
+            "user": "uhhbzb",
+            "status": "Signed",
+            "signedAt": "2026-09-13",
+            "charterType": "FT"
+          },
+          {
+            "number": "52",
+            "user": "sealsntags",
+            "status": "Signed",
+            "signedAt": "2026-09-14",
+            "charterType": "FT"
+          },
+          {
+            "number": "54",
+            "name": "OPEN",
+            "status": "Open FT",
+            "charterType": "FT"
+          },
+          {
+            "number": "92",
+            "user": "IIKyle5Larson",
+            "status": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "62",
+            "name": "Part-Time Entry",
+            "status": "Part-Time Entry",
+            "seatType": "Shared 6th Open Charter",
+            "charterType": "OPEN"
+          },
+          {
+            "number": "82",
+            "name": "Development Entry",
+            "status": "Development Entry",
+            "seatType": "Shared 6th Open Charter",
+            "charterType": "OPEN"
+          }
+        ],
+        "founded": "Season 3",
+        "logo": "/assets/aetherwing/logo.webp",
+        "brandColor": "#ef1e23",
+        "brandColor2": "#ffffff",
+        "pendingDrivers": [],
+        "charterCount": 6
+      }
+    ],
+    "profiles": {
+      "58bbwapache": {
+        "alias": "Dale",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "UN88475544": {
+        "alias": "Nurtec",
+        "wins": 5,
+        "championships": 0,
+        "rank": 13
+      },
+      "PlaneFan638": {
+        "alias": "Plane",
+        "wins": 1,
+        "championships": 0,
+        "rank": 44
+      },
+      "pa05": {
+        "alias": "Payson",
+        "wins": 18,
+        "championships": 1,
+        "rank": 2
+      },
+      "bowlingsham1": {
+        "alias": "Shane",
+        "wins": 3,
+        "championships": 0,
+        "rank": 23
+      },
+      "codydgoforth": {
+        "alias": "Cody",
+        "wins": 6,
+        "championships": 2,
+        "rank": 9
+      },
+      "TBDAN1E": {
+        "alias": "Daniel",
+        "wins": 1,
+        "championships": 0,
+        "rank": 37
+      },
+      "John_Hunter38": {
+        "alias": "John",
+        "wins": 3,
+        "championships": 0,
+        "rank": 19
+      },
+      "JJElliott2004": {
+        "alias": "James",
+        "wins": 3,
+        "championships": 1,
+        "rank": 18
+      },
+      "Kingofgamez": {
+        "alias": "King",
+        "wins": 3,
+        "championships": 0,
+        "rank": 20
+      },
+      "GuillermoChase": {
+        "alias": "Gman",
+        "wins": 5,
+        "championships": 0,
+        "rank": 12
+      },
+      "lancejuly": {
+        "alias": "Lance",
+        "wins": 25,
+        "championships": 0,
+        "rank": 1
+      },
+      "Aokikoto": {
+        "alias": "Wispy",
+        "wins": 1,
+        "championships": 0,
+        "rank": 47
+      },
+      "IIKyle5Larson": {
+        "alias": "Rocky",
+        "wins": 5,
+        "championships": 0,
+        "rank": 14
+      },
+      "Frogboy4783": {
+        "alias": "Frog",
+        "wins": 2,
+        "championships": 0,
+        "rank": 26
+      },
+      "uhhbzb": {
+        "alias": "BurgerTown2Good",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "TaylorKenseth17": {
+        "alias": "Taylor",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "FueledByMayonnaise": {
+        "alias": "FueledByMayo",
+        "wins": 1,
+        "championships": 0,
+        "rank": 40
+      },
+      "daleapache88": {
+        "alias": "Dale",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "Callsign_Hestia": {
+        "alias": "Nick",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "Comodw": {
+        "alias": "Jay",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "JeremyFrey12": {
+        "alias": "Jeremy",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "AnyGameAnyTime09": {
+        "alias": "Muffin",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "sealsntags": {
+        "alias": "Gk3r",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0
+      },
+      "pxssis": {
+        "alias": "Pxssis",
+        "wins": 2,
+        "championships": 0,
+        "rank": 30
+      }
+    },
+    "openEntries": [
+      {
+        "number": "05",
+        "user": "pa05",
+        "make": "Ford"
+      },
+      {
+        "number": "28",
+        "user": "Aokikoto",
+        "make": "Toyota",
+        "status": "Part-Time"
+      },
+      {
+        "number": "44",
+        "user": "bowlingsham1",
+        "make": "Ford"
+      },
+      {
+        "number": "48",
+        "user": "JJElliott2004",
+        "make": "Chevrolet"
+      },
+      {
+        "number": "49",
+        "user": "pxssis",
+        "make": "Ford"
+      },
+      {
+        "number": "57",
+        "user": "IIKyle5Larson",
+        "make": "Ford"
+      },
+      {
+        "number": "60",
+        "user": "codydgoforth",
+        "make": "Ford"
+      },
+      {
+        "number": "87",
+        "user": "FueledByMayonnaise",
+        "make": "Generic"
+      },
+      {
+        "number": "88",
+        "user": "daleapache88",
+        "make": "Generic"
+      }
+    ],
+    "freeAgents": [
+      {
+        "name": "FueledByMayo",
+        "user": "FueledByMayonnaise",
+        "former": "#20 · Dakota Sullivan Racing · Chevrolet"
+      },
+      {
+        "name": "Nick",
+        "user": "Callsign_Hestia",
+        "former": "#05 · Avery Motorsports · Ford"
+      },
+      {
+        "name": "Jay",
+        "user": "Comodw",
+        "former": "#9 · Goat Whitlock Motorsports · Toyota"
+      },
+      {
+        "name": "Jeremy",
+        "user": "JeremyFrey12",
+        "former": "#48 · Goat Whitlock Motorsports · Toyota"
+      },
+      {
+        "name": "Muffin",
+        "user": "AnyGameAnyTime09",
+        "former": "#84 · Goat Whitlock Motorsports · Toyota"
+      }
+    ],
+    "recentMoves": [
+      {
+        "driver": "Taylor",
+        "team": "Goat Whitlock Motorsports",
+        "number": "48",
+        "make": "Toyota",
+        "signedAt": "2026-09-13"
+      },
+      {
+        "driver": "BurgerTown2Good",
+        "team": "Aetherwing eMotorsports",
+        "number": "32",
+        "make": "Toyota",
+        "signedAt": "2026-09-13"
+      },
+      {
+        "driver": "Frog",
+        "team": "Avery Motorsports",
+        "number": "73",
+        "make": "Ford",
+        "signedAt": "2026-09-13"
+      },
+      {
+        "driver": "Gk3r",
+        "team": "Aetherwing eMotorsports",
+        "number": "52",
+        "make": "Toyota",
+        "signedAt": "2026-09-14"
+      },
+      {
+        "driver": "Max",
+        "team": "Dakota Sullivan Racing",
+        "number": "19",
+        "make": "Chevrolet",
+        "signedAt": "2026-09-13"
+      },
+      {
+        "driver": "Opt",
+        "team": "Dakota Sullivan Racing",
+        "number": "91",
+        "make": "Chevrolet",
+        "signedAt": "2026-09-13"
+      }
+    ]
+  },
+  "history": {
+    "updated": "2026-09-12",
+    "league": {
+      "name": "United Alliance Racing League",
+      "logo": "https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png",
+      "winners": [
+        [
+          "Lance",
+          25
+        ],
+        [
+          "Payson",
+          18
+        ],
+        [
+          "Jayden",
+          17
+        ],
+        [
+          "Brody",
+          10
+        ],
+        [
+          "Dune",
+          9
+        ],
+        [
+          "Nico",
+          9
+        ],
+        [
+          "Parker",
+          8
+        ],
+        [
+          "Trent",
+          7
+        ],
+        [
+          "Cody",
+          6
+        ],
+        [
+          "Dom",
+          6
+        ],
+        [
+          "Diamond",
+          5
+        ],
+        [
+          "Gman",
+          5
+        ],
+        [
+          "Nurtec",
+          5
+        ],
+        [
+          "Rocky",
+          5
+        ],
+        [
+          "Mils",
+          4
+        ],
+        [
+          "Clutch",
+          3
+        ],
+        [
+          "Hendrick",
+          3
+        ],
+        [
+          "James",
+          3
+        ],
+        [
+          "John",
+          3
+        ],
+        [
+          "King",
+          3
+        ],
+        [
+          "Kyle",
+          3
+        ],
+        [
+          "Phantom",
+          3
+        ],
+        [
+          "Shane",
+          3
+        ],
+        [
+          "Aiden",
+          2
+        ],
+        [
+          "DHB",
+          2
+        ],
+        [
+          "Frog",
+          2
+        ],
+        [
+          "Fysh",
+          2
+        ],
+        [
+          "Isaac",
+          2
+        ],
+        [
+          "Monkey",
+          2
+        ],
+        [
+          "Pxssis",
+          2
+        ],
+        [
+          "Stampy",
+          2
+        ],
+        [
+          "TimeLord",
+          2
+        ],
+        [
+          "Agent",
+          1
+        ],
+        [
+          "Ashton GK",
+          1
+        ],
+        [
+          "Astro",
+          1
+        ],
+        [
+          "Caze",
+          1
+        ],
+        [
+          "Daniel",
+          1
+        ],
+        [
+          "DJmonster",
+          1
+        ],
+        [
+          "Egg",
+          1
+        ],
+        [
+          "FueledByMayo",
+          1
+        ],
+        [
+          "Joey",
+          1
+        ],
+        [
+          "Luke",
+          1
+        ],
+        [
+          "Mr E",
+          1
+        ],
+        [
+          "Plane",
+          1
+        ],
+        [
+          "Smokey",
+          1
+        ],
+        [
+          "Twister",
+          1
+        ],
+        [
+          "Wispy",
+          1
+        ],
+        [
+          "Zol",
+          1
+        ]
+      ]
+    },
+    "divisions": [
+      {
+        "id": "d1",
+        "division": "D1",
+        "category": "Cup Series",
+        "name": "L.L. Bean Cup Series",
+        "logo": "https://i.ibb.co/gb079CL2/imageedit-1-6265648040.png",
+        "theme": "cup",
+        "seasons": [
+          {
+            "number": 1,
+            "champion": "Diamond",
+            "winners": [
+              [
+                "Diamond",
+                5
+              ],
+              [
+                "Trent",
+                5
+              ],
+              [
+                "Clutch",
+                3
+              ],
+              [
+                "Kyle",
+                3
+              ],
+              [
+                "DHB",
+                2
+              ],
+              [
+                "Nico",
+                2
+              ],
+              [
+                "Fysh",
+                1
+              ],
+              [
+                "Zol",
+                1
+              ]
+            ]
+          },
+          {
+            "number": 2,
+            "champion": "Mils",
+            "winners": [
+              [
+                "Lance",
+                7
+              ],
+              [
+                "Dom",
+                4
+              ],
+              [
+                "Dune",
+                3
+              ],
+              [
+                "Hendrick",
+                3
+              ],
+              [
+                "Mils",
+                3
+              ],
+              [
+                "Aiden",
+                2
+              ],
+              [
+                "Fysh",
+                1
+              ],
+              [
+                "Nico",
+                1
+              ],
+              [
+                "Trent",
+                1
+              ],
+              [
+                "Stampy",
+                1
+              ],
+              [
+                "Phantom",
+                1
+              ],
+              [
+                "Isaac",
+                1
+              ]
+            ]
+          },
+          {
+            "number": 3,
+            "champion": "Dune",
+            "winners": [
+              [
+                "Lance",
+                8
+              ],
+              [
+                "Payson",
+                4
+              ],
+              [
+                "Dune",
+                4
+              ],
+              [
+                "Jayden",
+                2
+              ],
+              [
+                "Brody",
+                1
+              ],
+              [
+                "Mils",
+                1
+              ],
+              [
+                "Dom",
+                1
+              ],
+              [
+                "Rocky",
+                1
+              ]
+            ]
+          },
+          {
+            "number": 4,
+            "champion": "Jayden",
+            "winners": [
+              [
+                "Jayden",
+                6
+              ],
+              [
+                "Lance",
+                4
+              ],
+              [
+                "Brody",
+                2
+              ],
+              [
+                "Nico",
+                2
+              ],
+              [
+                "Smokey",
+                1
+              ],
+              [
+                "Isaac",
+                1
+              ],
+              [
+                "Payson",
+                1
+              ],
+              [
+                "Wispy",
+                1
+              ],
+              [
+                "Cody",
+                1
+              ]
+            ]
+          },
+          {
+            "number": 5,
+            "champion": "Cody",
+            "winners": [
+              [
+                "Payson",
+                6
+              ],
+              [
+                "Lance",
+                3
+              ],
+              [
+                "Cody",
+                3
+              ],
+              [
+                "King",
+                3
+              ],
+              [
+                "Jayden",
+                2
+              ],
+              [
+                "Parker",
+                1
+              ],
+              [
+                "James",
+                1
+              ]
+            ]
+          }
+        ],
+        "winners": [
+          [
+            "Lance",
+            22
+          ],
+          [
+            "Payson",
+            11
+          ],
+          [
+            "Jayden",
+            10
+          ],
+          [
+            "Dune",
+            7
+          ],
+          [
+            "Trent",
+            6
+          ],
+          [
+            "Nico",
+            5
+          ],
+          [
+            "Diamond",
+            5
+          ],
+          [
+            "Dom",
+            5
+          ],
+          [
+            "Mils",
+            4
+          ],
+          [
+            "Cody",
+            4
+          ],
+          [
+            "Brody",
+            3
+          ],
+          [
+            "Clutch",
+            3
+          ],
+          [
+            "Kyle",
+            3
+          ],
+          [
+            "Hendrick",
+            3
+          ],
+          [
+            "King",
+            3
+          ],
+          [
+            "DHB",
+            2
+          ],
+          [
+            "Fysh",
+            2
+          ],
+          [
+            "Aiden",
+            2
+          ],
+          [
+            "Isaac",
+            2
+          ],
+          [
+            "Zol",
+            1
+          ],
+          [
+            "Stampy",
+            1
+          ],
+          [
+            "Phantom",
+            1
+          ],
+          [
+            "Rocky",
+            1
+          ],
+          [
+            "Smokey",
+            1
+          ],
+          [
+            "Wispy",
+            1
+          ],
+          [
+            "Parker",
+            1
+          ],
+          [
+            "James",
+            1
+          ]
+        ]
+      },
+      {
+        "id": "d2",
+        "division": "D2",
+        "category": "Grand National Series",
+        "name": "National Fallen Firefighters Foundation Grand National Series",
+        "logo": "https://i.ibb.co/LdWsC6mY/imageedit-2-7627989187.png",
+        "theme": "xfinity",
+        "seasons": [
+          {
+            "number": 3,
+            "champion": "Brody",
+            "winners": [
+              [
+                "Brody",
+                7
+              ],
+              [
+                "Phantom",
+                2
+              ],
+              [
+                "Frog",
+                2
+              ],
+              [
+                "Parker",
+                2
+              ],
+              [
+                "Nico",
+                2
+              ],
+              [
+                "Twister",
+                1
+              ],
+              [
+                "Dom",
+                1
+              ],
+              [
+                "Monkey",
+                1
+              ],
+              [
+                "Joey",
+                1
+              ],
+              [
+                "Dune",
+                1
+              ],
+              [
+                "Stampy",
+                1
+              ],
+              [
+                "Agent",
+                1
+              ]
+            ]
+          },
+          {
+            "number": 4,
+            "champion": "Parker",
+            "winners": [
+              [
+                "Parker",
+                4
+              ],
+              [
+                "Payson",
+                3
+              ],
+              [
+                "John",
+                2
+              ],
+              [
+                "Nico",
+                2
+              ],
+              [
+                "Monkey",
+                1
+              ],
+              [
+                "Mr E",
+                1
+              ],
+              [
+                "James",
+                1
+              ],
+              [
+                "Rocky",
+                1
+              ],
+              [
+                "Lance",
+                1
+              ],
+              [
+                "Ashton GK",
+                1
+              ],
+              [
+                "Trent",
+                1
+              ],
+              [
+                "Daniel",
+                1
+              ]
+            ]
+          }
+        ],
+        "winners": [
+          [
+            "Brody",
+            7
+          ],
+          [
+            "Parker",
+            6
+          ],
+          [
+            "Nico",
+            4
+          ],
+          [
+            "Payson",
+            3
+          ],
+          [
+            "Monkey",
+            2
+          ],
+          [
+            "Phantom",
+            2
+          ],
+          [
+            "Frog",
+            2
+          ],
+          [
+            "John",
+            2
+          ],
+          [
+            "Rocky",
+            2
+          ],
+          [
+            "Twister",
+            1
+          ],
+          [
+            "Dom",
+            1
+          ],
+          [
+            "Joey",
+            1
+          ],
+          [
+            "Dune",
+            1
+          ],
+          [
+            "Stampy",
+            1
+          ],
+          [
+            "Agent",
+            1
+          ],
+          [
+            "Mr E",
+            1
+          ],
+          [
+            "James",
+            1
+          ],
+          [
+            "Lance",
+            1
+          ],
+          [
+            "Ashton GK",
+            1
+          ],
+          [
+            "Trent",
+            1
+          ],
+          [
+            "Daniel",
+            1
+          ]
+        ]
+      },
+      {
+        "id": "d3",
+        "division": "D3",
+        "category": "Truck Series",
+        "name": "UARL Trader Joes Truck Series",
+        "logo": "",
+        "theme": "trucks",
+        "seasons": [
+          {
+            "number": 4,
+            "champion": "Cody",
+            "winners": [
+              [
+                "Jayden",
+                4
+              ],
+              [
+                "TimeLord",
+                2
+              ],
+              [
+                "Pxssis",
+                2
+              ],
+              [
+                "Gman",
+                2
+              ],
+              [
+                "Dune",
+                1
+              ],
+              [
+                "DJmonster",
+                1
+              ],
+              [
+                "Caze",
+                1
+              ],
+              [
+                "Luke",
+                1
+              ],
+              [
+                "Egg",
+                1
+              ],
+              [
+                "John",
+                1
+              ],
+              [
+                "Astro",
+                1
+              ],
+              [
+                "Parker",
+                1
+              ],
+              [
+                "Cody",
+                1
+              ]
+            ]
+          },
+          {
+            "number": 5,
+            "champion": "James",
+            "winners": [
+              [
+                "Nurtec",
+                5
+              ],
+              [
+                "Gman",
+                3
+              ],
+              [
+                "Lance",
+                2
+              ],
+              [
+                "Shane",
+                2
+              ],
+              [
+                "Rocky",
+                1
+              ],
+              [
+                "Payson",
+                1
+              ],
+              [
+                "Cody",
+                1
+              ],
+              [
+                "Plane",
+                1
+              ],
+              [
+                "Jayden",
+                1
+              ],
+              [
+                "James",
+                1
+              ]
+            ]
+          }
+        ],
+        "winners": [
+          [
+            "Jayden",
+            5
+          ],
+          [
+            "Gman",
+            5
+          ],
+          [
+            "Nurtec",
+            5
+          ],
+          [
+            "TimeLord",
+            2
+          ],
+          [
+            "Pxssis",
+            2
+          ],
+          [
+            "Cody",
+            2
+          ],
+          [
+            "Lance",
+            2
+          ],
+          [
+            "Shane",
+            2
+          ],
+          [
+            "Dune",
+            1
+          ],
+          [
+            "DJmonster",
+            1
+          ],
+          [
+            "Caze",
+            1
+          ],
+          [
+            "Luke",
+            1
+          ],
+          [
+            "Egg",
+            1
+          ],
+          [
+            "John",
+            1
+          ],
+          [
+            "Astro",
+            1
+          ],
+          [
+            "Parker",
+            1
+          ],
+          [
+            "Rocky",
+            1
+          ],
+          [
+            "Payson",
+            1
+          ],
+          [
+            "Plane",
+            1
+          ],
+          [
+            "James",
+            1
+          ]
+        ]
+      },
+      {
+        "id": "open",
+        "division": "Open",
+        "category": "Open Series",
+        "name": "Bangor Savings Bank Super Late Model Open Series",
+        "logo": "https://i.ibb.co/2zmZpdb/imageedit-1-6460712268.png",
+        "theme": "open",
+        "seasons": [
+          {
+            "number": 5,
+            "champion": "Payson",
+            "winners": [
+              [
+                "Payson",
+                3
+              ],
+              [
+                "Jayden",
+                2
+              ],
+              [
+                "Rocky",
+                1
+              ],
+              [
+                "Shane",
+                1
+              ],
+              [
+                "FueledByMayo",
+                1
+              ]
+            ]
+          }
+        ],
+        "winners": [
+          [
+            "Payson",
+            3
+          ],
+          [
+            "Jayden",
+            2
+          ],
+          [
+            "Rocky",
+            1
+          ],
+          [
+            "Shane",
+            1
+          ],
+          [
+            "FueledByMayo",
+            1
+          ]
+        ]
+      }
+    ]
+  },
+  "race": {
+    "drivers": [
+      {
+        "id": "58bbwapache",
+        "name": "Dale",
+        "number": "16",
+        "division": "d1",
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0
+      },
+      {
+        "id": "UN88475544",
+        "name": "Nurtec",
+        "number": "20",
+        "division": "d1",
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 5,
+        "careerTitles": 0,
+        "careerRank": 13
+      },
+      {
+        "id": "PlaneFan638",
+        "name": "Plane",
+        "number": "61",
+        "division": "d1",
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 44
+      },
+      {
+        "id": "pa05",
+        "name": "Payson",
+        "number": "05",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 18,
+        "careerTitles": 1,
+        "careerRank": 2
+      },
+      {
+        "id": "bowlingsham1",
+        "name": "Shane",
+        "number": "58",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 3,
+        "careerTitles": 0,
+        "careerRank": 23
+      },
+      {
+        "id": "codydgoforth",
+        "name": "Cody",
+        "number": "60",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 6,
+        "careerTitles": 2,
+        "careerRank": 9
+      },
+      {
+        "id": "TBDAN1E",
+        "name": "Daniel",
+        "number": "72",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 37
+      },
+      {
+        "id": "John_Hunter38",
+        "name": "John",
+        "number": "24",
+        "division": "d1",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 3,
+        "careerTitles": 0,
+        "careerRank": 19
+      },
+      {
+        "id": "JJElliott2004",
+        "name": "James",
+        "number": "84",
+        "division": "d1",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 3,
+        "careerTitles": 1,
+        "careerRank": 18
+      },
+      {
+        "id": "Kingofgamez",
+        "name": "King",
+        "number": "77",
+        "division": "d1",
+        "team": "Goforth Motorsports",
+        "make": "Ford",
+        "careerWins": 3,
+        "careerTitles": 0,
+        "careerRank": 20
+      },
+      {
+        "id": "GuillermoChase",
+        "name": "GuillermoChase",
+        "number": "81",
+        "division": "d1",
+        "team": "Goforth Motorsports",
+        "make": "Ford",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0
+      },
+      {
+        "id": "lancejuly",
+        "name": "Lance",
+        "number": "88",
+        "division": "d1",
+        "team": "Goforth Motorsports",
+        "make": "Ford",
+        "careerWins": 25,
+        "careerTitles": 0,
+        "careerRank": 1
+      },
+      {
+        "id": "Aokikoto",
+        "name": "Wispy",
+        "number": "28",
+        "division": "d1",
+        "team": "Aetherwing eMotorsports",
+        "make": "Toyota",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 47,
+        "status": "FT"
+      },
+      {
+        "id": "IIKyle5Larson",
+        "name": "Rocky",
+        "number": "92",
+        "division": "d1",
+        "team": "Aetherwing eMotorsports",
+        "make": "Toyota",
+        "careerWins": 5,
+        "careerTitles": 0,
+        "careerRank": 14,
+        "status": "FT"
+      },
+      {
+        "id": "pa05",
+        "name": "Payson",
+        "number": "05",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 18,
+        "careerTitles": 1,
+        "careerRank": 2
+      },
+      {
+        "id": "Aokikoto",
+        "name": "Wispy",
+        "number": "28",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Toyota",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 47,
+        "status": "PT"
+      },
+      {
+        "id": "bowlingsham1",
+        "name": "Shane",
+        "number": "44",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 3,
+        "careerTitles": 0,
+        "careerRank": 23
+      },
+      {
+        "id": "JJElliott2004",
+        "name": "James",
+        "number": "48",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Chevrolet",
+        "careerWins": 3,
+        "careerTitles": 1,
+        "careerRank": 18
+      },
+      {
+        "id": "pxssis",
+        "name": "Pxssis",
+        "number": "49",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 2,
+        "careerTitles": 0,
+        "careerRank": 30
+      },
+      {
+        "id": "IIKyle5Larson",
+        "name": "Rocky",
+        "number": "57",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 5,
+        "careerTitles": 0,
+        "careerRank": 14
+      },
+      {
+        "id": "codydgoforth",
+        "name": "Cody",
+        "number": "60",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 6,
+        "careerTitles": 2,
+        "careerRank": 9
+      },
+      {
+        "id": "FueledByMayonnaise",
+        "name": "FueledByMayo",
+        "number": "87",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Generic",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 40
+      },
+      {
+        "id": "daleapache88",
+        "name": "Dale",
+        "number": "88",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Generic",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0
+      },
+      {
+        "id": "FueledByMayonnaise",
+        "name": "FueledByMayo",
+        "number": "20",
+        "division": "d2",
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 40,
+        "status": "FT"
+      },
+      {
+        "id": "Callsign_Hestia",
+        "name": "Nick",
+        "number": "05",
+        "division": "d2",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
+      },
+      {
+        "id": "Frogboy4783",
+        "name": "Frog",
+        "number": "72",
+        "division": "d2",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 2,
+        "careerTitles": 0,
+        "careerRank": 26,
+        "status": "FT"
+      },
+      {
+        "id": "Comodw",
+        "name": "Jay",
+        "number": "9",
+        "division": "d2",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
+      },
+      {
+        "id": "TaylorKenseth17",
+        "name": "Taylor",
+        "number": "24",
+        "division": "d2",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
+      },
+      {
+        "id": "JeremyFrey12",
+        "name": "Jeremy",
+        "number": "48",
+        "division": "d2",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
+      },
+      {
+        "id": "AnyGameAnyTime09",
+        "name": "Muffin",
+        "number": "84",
+        "division": "d2",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
+      },
+      {
+        "id": "uhhbzb",
+        "name": "BurgerTown2Good",
+        "number": "11",
+        "division": "d2",
+        "team": "Aetherwing eMotorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
+      },
+      {
+        "id": "sealsntags",
+        "name": "Gk3r",
+        "number": "19",
+        "division": "d2",
+        "team": "Aetherwing eMotorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
+      },
+      {
+        "id": "TaylorKenseth17",
+        "name": "Taylor",
+        "number": "48",
+        "division": "d1",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "SIGNED"
+      },
+      {
+        "id": "uhhbzb",
+        "name": "BurgerTown2Good",
+        "number": "32",
+        "division": "d1",
+        "team": "Aetherwing eMotorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "SIGNED"
+      },
+      {
+        "id": "Frogboy4783",
+        "name": "Frog",
+        "number": "73",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 2,
+        "careerTitles": 0,
+        "careerRank": 26,
+        "status": "SIGNED"
+      },
+      {
+        "id": "sealsntags",
+        "name": "Gk3r",
+        "number": "52",
+        "division": "d1",
+        "team": "Aetherwing eMotorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "SIGNED"
+      }
+    ],
+    "schedule": [
+      {
+        "division": "d1",
+        "start": "2026-09-10T00:30:00.000Z",
+        "name": "L.L. Bean Clash",
+        "track": "Daytona International Speedway",
+        "exhibition": true,
+        "round": null
+      },
+      {
+        "division": "d1",
+        "start": "2026-09-21T00:30:00.000Z",
+        "name": "The 6th Annual Daytona 500",
+        "track": "Daytona International Speedway",
+        "exhibition": false,
+        "round": 1,
+        "originalStart": "2026-09-14T00:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-09-28T00:30:00.000Z",
+        "name": "Queen City 500",
+        "track": "Charlotte Motor Speedway",
+        "exhibition": false,
+        "round": 2,
+        "originalStart": "2026-09-21T00:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-10-05T00:30:00.000Z",
+        "name": "Aztec Grand Prix 400",
+        "track": "Mexico City",
+        "exhibition": false,
+        "round": 3,
+        "originalStart": "2026-09-28T00:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-10-12T00:30:00.000Z",
+        "name": "Echo Park Thunder 400",
+        "track": "Echo Park Speedway",
+        "exhibition": false,
+        "round": 4,
+        "originalStart": "2026-10-05T00:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-10-19T00:30:00.000Z",
+        "name": "Music City 300",
+        "track": "Nashville Fairgrounds",
+        "exhibition": false,
+        "round": 5,
+        "originalStart": "2026-10-12T00:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-10-26T00:30:00.000Z",
+        "name": "Jackpot 400",
+        "track": "Las Vegas Motor Speedway",
+        "exhibition": false,
+        "round": 6,
+        "originalStart": "2026-10-19T00:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-11-02T00:30:00.000Z",
+        "name": "British Crown 300",
+        "track": "Silverstone Circuit",
+        "exhibition": false,
+        "round": 7,
+        "originalStart": "2026-10-26T00:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-11-09T01:30:00.000Z",
+        "name": "Lone Star 500",
+        "track": "Texas Motor Speedway",
+        "exhibition": false,
+        "round": 8,
+        "originalStart": "2026-11-02T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-11-16T01:30:00.000Z",
+        "name": "The 6th Annual UARL All-Star Race",
+        "track": "USA International Speedway",
+        "exhibition": true,
+        "round": null,
+        "originalStart": "2026-11-09T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-11-23T01:30:00.000Z",
+        "name": "Monza Speed Festival 350",
+        "track": "Monza Oval",
+        "exhibition": false,
+        "round": 9,
+        "originalStart": "2026-11-16T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-11-30T01:30:00.000Z",
+        "name": "Olympian 300",
+        "track": "Greece Speedway",
+        "exhibition": false,
+        "round": 10,
+        "originalStart": "2026-11-23T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-12-07T01:30:00.000Z",
+        "name": "Mountain Peak 400",
+        "track": "Pocono Raceway",
+        "exhibition": false,
+        "round": 11,
+        "originalStart": "2026-11-30T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-12-14T01:30:00.000Z",
+        "name": "Brickyard 500",
+        "track": "Indianapolis Motor Speedway",
+        "exhibition": false,
+        "round": 12,
+        "originalStart": "2026-12-07T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-12-21T01:30:00.000Z",
+        "name": "Rising Sun 300",
+        "track": "Twin Ring Motegi",
+        "exhibition": false,
+        "round": 13,
+        "originalStart": "2026-12-14T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-12-28T01:30:00.000Z",
+        "name": "Windy City Grand Prix",
+        "track": "Chicago Street Course",
+        "exhibition": false,
+        "round": 14,
+        "originalStart": "2026-12-21T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2026-12-31T01:30:00.000Z",
+        "name": "Midwest 400",
+        "track": "Chicagoland Speedway",
+        "exhibition": false,
+        "round": 15,
+        "originalStart": "2026-12-24T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2027-01-04T01:30:00.000Z",
+        "name": "Gateway 400",
+        "track": "World Wide Technology Raceway",
+        "exhibition": false,
+        "round": 16,
+        "originalStart": "2026-12-28T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2027-01-11T01:30:00.000Z",
+        "name": "Southern 500",
+        "track": "Darlington Raceway",
+        "exhibition": false,
+        "round": 17,
+        "originalStart": "2027-01-04T01:30:00.000Z"
+      },
+      {
+        "division": "d1",
+        "start": "2027-01-18T01:30:00.000Z",
+        "name": "L.L. Bean Championship Finale",
+        "track": "Homestead-Miami Speedway",
+        "exhibition": false,
+        "round": 18,
+        "originalStart": "2027-01-11T01:30:00.000Z"
+      },
+      {
+        "division": "d2",
+        "start": "2026-09-12T23:00:00.000Z",
+        "name": "The Cracker Barrel 250 at Daytona",
+        "track": "Daytona International Speedway",
+        "exhibition": false,
+        "round": 1,
+        "scheduleStatus": "rescheduled",
+        "originalStart": "2026-09-11T22:45:00.000Z"
+      },
+      {
+        "division": "open",
+        "start": "2026-09-13T15:30:00.000Z",
+        "name": "Sunshine State 150",
+        "track": "Daytona Backstretch",
+        "exhibition": false,
+        "round": 1
+      },
+      {
+        "division": "open",
+        "start": "2026-09-20T15:30:00.000Z",
+        "name": "Snowball Summer Classic",
+        "track": "Five Flags Speedway",
+        "exhibition": false,
+        "round": 2
+      },
+      {
+        "division": "open",
+        "start": "2026-09-27T15:30:00.000Z",
+        "name": "Southern Heritage 100",
+        "track": "Sunny South Raceway Park",
+        "exhibition": false,
+        "round": 3
+      },
+      {
+        "division": "open",
+        "start": "2026-10-04T15:30:00.000Z",
+        "name": "Queen City Dirt Nationals",
+        "track": "The Dirt Track at Charlotte",
+        "exhibition": false,
+        "round": 4
+      },
+      {
+        "division": "open",
+        "start": "2026-10-11T15:30:00.000Z",
+        "name": "Capital Cup",
+        "track": "Wake County Speedway",
+        "exhibition": false,
+        "round": 5
+      },
+      {
+        "division": "open",
+        "start": "2026-10-18T15:30:00.000Z",
+        "name": "Badger State 150",
+        "track": "Slinger Speedway",
+        "exhibition": false,
+        "round": 6
+      },
+      {
+        "division": "open",
+        "start": "2026-10-25T15:30:00.000Z",
+        "name": "Appalachian Challenge",
+        "track": "Tyler County Speedway",
+        "exhibition": false,
+        "round": 7
+      },
+      {
+        "division": "open",
+        "start": "2026-11-01T16:30:00.000Z",
+        "name": "Great Lakes Showdown",
+        "track": "Cedar Lake Speedway",
+        "exhibition": false,
+        "round": 8
+      },
+      {
+        "division": "open",
+        "start": "2026-11-08T16:30:00.000Z",
+        "name": "North Country Classic",
+        "track": "ABC Raceway",
+        "exhibition": false,
+        "round": 9
+      },
+      {
+        "division": "open",
+        "start": "2026-11-15T16:30:00.000Z",
+        "name": "Pine Tree State 150",
+        "track": "Baileyville Speedway",
+        "exhibition": false,
+        "round": 10
+      },
+      {
+        "division": "open",
+        "start": "2026-11-22T16:30:00.000Z",
+        "name": "Heartland Dirt Crown",
+        "track": "Eldora Speedway",
+        "exhibition": false,
+        "round": 11
+      },
+      {
+        "division": "open",
+        "start": "2026-11-29T16:30:00.000Z",
+        "name": "Madhouse 100",
+        "track": "Bowman Gray Stadium",
+        "exhibition": false,
+        "round": 12
+      }
+    ],
+    "series": {
+      "d1": {
+        "short": "D1 · Cup",
+        "category": "Cup Series",
+        "name": "L.L. Bean Cup Series",
+        "logo": "https://i.ibb.co/gb079CL2/imageedit-1-6265648040.png",
+        "color": "#ff4d2e",
+        "rounds": 18,
+        "chaseStart": 14
+      },
+      "d2": {
+        "short": "D2 · Archive",
+        "category": "Grand National Archive",
+        "name": "National Fallen Firefighters Foundation Grand National Series · Archive",
+        "logo": "https://i.ibb.co/LdWsC6mY/imageedit-2-7627989187.png",
+        "color": "#169cff",
+        "rounds": 1,
+        "chaseStart": null
+      },
+      "open": {
+        "short": "Open Series",
+        "category": "Open Series",
+        "name": "Bangor Savings Bank Super Late Model Open Series",
+        "logo": "https://i.ibb.co/2zmZpdb/imageedit-1-6460712268.png",
+        "color": "#d8ff3e",
+        "rounds": 12,
+        "chaseStart": null
+      }
+    }
+  },
+  "paints": [
+    {
+      "id": "131847212088542",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "16",
+      "name": "Dale",
+      "handle": "@58bbwapache",
+      "team": "Dakota Sullivan Racing",
+      "title": "NAPA",
+      "subtitle": "",
+      "make": "Chevrolet",
+      "body": "BBR Chevrolet Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-131847212088542.webp",
+      "search": "dale 58bbwapache 16 dakota sullivan racing d1 chevrolet ll bean cup series napa chevrolet bbr chevrolet body 16 131847212088542 131847212088542"
+    },
+    {
+      "id": "135332567842534",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "05",
+      "name": "Payson",
+      "handle": "@pa05",
+      "team": "Avery Motorsports",
+      "title": "BuildSubmarines",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-135332567842534.webp",
+      "search": "payson pa05 05 avery motorsports d1 ford ll bean cup series buildsubmarines ford bbr ford body 05 135332567842534 135332567842534"
+    },
+    {
+      "id": "126570045215024",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "05",
+      "name": "Payson",
+      "handle": "@pa05",
+      "team": "Avery Motorsports",
+      "title": "Your Personal Helper",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-126570045215024.webp",
+      "search": "payson pa05 05 avery motorsports d1 ford ll bean cup series your personal helper ford bbr ford body 05 126570045215024 126570045215024"
+    },
+    {
+      "id": "93578561895714",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "05",
+      "name": "Payson",
+      "handle": "@pa05",
+      "team": "Avery Motorsports",
+      "title": "Appy Juice",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-93578561895714.webp",
+      "search": "payson pa05 05 avery motorsports d1 ford ll bean cup series appy juice ford bbr ford body 05 93578561895714 93578561895714"
+    },
+    {
+      "id": "121208581412727",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "58",
+      "name": "Shane",
+      "handle": "@bowlingsham1",
+      "team": "Avery Motorsports",
+      "title": "Fanta",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-121208581412727.webp",
+      "search": "shane bowlingsham1 58 avery motorsports d1 ford ll bean cup series fanta ford bbr ford body 58 121208581412727 121208581412727"
+    },
+    {
+      "id": "126665456332065",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "60",
+      "name": "Cody",
+      "handle": "@codydgoforth",
+      "team": "Avery Motorsports",
+      "title": "Gold Peak Tea",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-126665456332065.webp",
+      "search": "cody codydgoforth 60 avery motorsports d1 ford ll bean cup series gold peak tea ford bbr ford body 60 126665456332065 126665456332065"
+    },
+    {
+      "id": "97729703212415",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "72",
+      "name": "Daniel",
+      "handle": "@TBDAN1E",
+      "team": "Avery Motorsports",
+      "title": "Pennzoil",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-97729703212415.webp",
+      "search": "daniel tbdan1e 72 avery motorsports d1 ford ll bean cup series pennzoil ford bbr ford body 72 97729703212415 97729703212415"
+    },
+    {
+      "id": "131721910502261",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "24",
+      "name": "John",
+      "handle": "@John_Hunter38",
+      "team": "Goat Whitlock Motorsports",
+      "title": "Coca-Cola",
+      "subtitle": "",
+      "make": "Toyota",
+      "body": "BBR Toyota Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-131721910502261.webp",
+      "search": "john john_hunter38 24 goat whitlock motorsports d1 toyota ll bean cup series coca-cola toyota bbr toyota body 24 131721910502261 131721910502261"
+    },
+    {
+      "id": "97528842679120",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "84",
+      "name": "James",
+      "handle": "@JJElliott2004",
+      "team": "Goat Whitlock Motorsports",
+      "title": "Coca-Cola",
+      "subtitle": "",
+      "make": "Toyota",
+      "body": "BBR Toyota Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-97528842679120.webp",
+      "search": "james jjelliott2004 84 goat whitlock motorsports d1 toyota ll bean cup series coca-cola toyota bbr toyota body 84 97528842679120 97528842679120"
+    },
+    {
+      "id": "119614953102611",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "77",
+      "name": "King",
+      "handle": "@Kingofgamez",
+      "team": "Goforth Motorsports",
+      "title": "Gainbridge",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-119614953102611.webp",
+      "search": "king kingofgamez 77 goforth motorsports d1 ford ll bean cup series gainbridge ford bbr ford body 77 119614953102611 119614953102611"
+    },
+    {
+      "id": "125332998510926",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "77",
+      "name": "King",
+      "handle": "@Kingofgamez",
+      "team": "Goforth Motorsports",
+      "title": "Pepsi",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-125332998510926.webp",
+      "search": "king kingofgamez 77 goforth motorsports d1 ford ll bean cup series pepsi ford bbr ford body 77 125332998510926 125332998510926"
+    },
+    {
+      "id": "99342918970043",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "81",
+      "name": "Gman",
+      "handle": "@GuillermoChase",
+      "team": "Goforth Motorsports",
+      "title": "Lowe’s / Red Bull",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-99342918970043.webp",
+      "search": "gman guillermochase 81 goforth motorsports d1 ford ll bean cup series lowe’s / red bull ford bbr ford body 81 99342918970043 99342918970043"
+    },
+    {
+      "id": "95402130460251",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "88",
+      "name": "Lance",
+      "handle": "@lancejuly",
+      "team": "Goforth Motorsports",
+      "title": "Nationwide / Axalta",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "BBR Ford Body",
+      "extra": [],
+      "image": "/assets/paints/paint-scheme-95402130460251.webp",
+      "search": "lance lancejuly 88 goforth motorsports d1 ford ll bean cup series nationwide / axalta ford bbr ford body 88 95402130460251 95402130460251"
+    },
+    {
+      "id": "80388136200704",
+      "division": "d1",
+      "series": "D1 · LL Bean Cup Series",
+      "number": "32",
+      "name": "Wispy",
+      "handle": "@Aokikoto",
+      "team": "Aetherwing eMotorsports",
+      "title": "Mobil 1 Patriotic",
+      "subtitle": "Season 5 D1 Texas Raced",
+      "make": "Cadillac",
+      "body": "BBR Toyota Body",
+      "extra": [],
+      "image": "/assets/paints/paint-d1-mobil.webp",
+      "search": "wispy aokikoto 32 aetherwing emotorsports d1 cadillac ll bean cup series mobil 1 patriotic cadillac season 5 s5 d1 texas raced bbr toyota 80388136200704"
+    },
+    {
+      "id": "88501605793574",
+      "division": "d2",
+      "series": "D2 · NFFF Grand National Series",
+      "number": "15",
+      "name": "Wispy",
+      "handle": "@Aokikoto",
+      "team": "Aetherwing eMotorsports",
+      "title": "The Samantha & Kyle Busch Bundle of Joy Fund",
+      "subtitle": "",
+      "make": "Cadillac",
+      "body": "NXS20 Ford Body",
+      "extra": [
+        "Part-time"
+      ],
+      "image": "/assets/paints/paint-d2-bundle.webp",
+      "search": "wispy aokikoto 15 aetherwing emotorsports d2 cadillac national fallen firefighters foundation grand national series samantha kyle busch bundle of joy fund cadillac nxs20 ford part time 88501605793574"
+    },
+    {
+      "id": "100533789116613",
+      "division": "d2",
+      "series": "D2 · NFFF Grand National Series",
+      "number": "15",
+      "name": "Wispy",
+      "handle": "@Aokikoto",
+      "team": "Aetherwing eMotorsports",
+      "title": "Viva Tequila",
+      "subtitle": "",
+      "make": "Cadillac",
+      "body": "NXS20 Ford Body",
+      "extra": [
+        "Part-time"
+      ],
+      "image": "/assets/paints/paint-d2-viva.webp",
+      "search": "wispy aokikoto 15 aetherwing emotorsports d2 cadillac national fallen firefighters foundation grand national series viva tequila cadillac nxs20 ford part time 100533789116613"
+    },
+    {
+      "id": "74536319919893",
+      "division": "open",
+      "series": "Open · Bangor Savings Bank Super Late Model Series",
+      "number": "05",
+      "name": "Payson",
+      "handle": "@pa05",
+      "team": "Independent entry",
+      "title": "Castrol",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "Late Model Ford Body",
+      "extra": [],
+      "image": "https://i.ibb.co/HfLp6MjH/Codex-Image-31-Aug-2026-00-48-07.png",
+      "search": "payson pa05 05 late model open series open independent bangor savings bank super late model open series castrol ford late model ford body 05 74536319919893 74536319919893"
+    },
+    {
+      "id": "94005953133541",
+      "division": "open",
+      "series": "Open · Bangor Savings Bank Super Late Model Series",
+      "number": "44",
+      "name": "Shane",
+      "handle": "@bowlingsham1",
+      "team": "Independent entry",
+      "title": "Tanger",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "Late Model Ford Body",
+      "extra": [],
+      "image": "https://i.ibb.co/fVP2Sq3m/Codex-Image-31-Aug-2026-00-48-25.png",
+      "search": "shane bowlingsham1 44 late model open series open independent bangor savings bank super late model open series tanger ford late model ford body 44 94005953133541 94005953133541"
+    },
+    {
+      "id": "94490198407845",
+      "division": "open",
+      "series": "Open · Bangor Savings Bank Super Late Model Series",
+      "number": "57",
+      "name": "Rocky",
+      "handle": "@IIKyle5Larson",
+      "team": "Independent entry",
+      "title": "HendrickCars",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "Late Model Ford Body",
+      "extra": [],
+      "image": "https://i.ibb.co/DPh1vpX4/Codex-Image-31-Aug-2026-00-48-33.png",
+      "search": "rocky iikyle5larson 57 late model open series open independent bangor savings bank super late model open series hendrickcars ford late model ford body 57 94490198407845 94490198407845"
+    },
+    {
+      "id": "89299185440895",
+      "division": "open",
+      "series": "Open · Bangor Savings Bank Super Late Model Series",
+      "number": "60",
+      "name": "Cody",
+      "handle": "@codydgoforth",
+      "team": "Independent entry",
+      "title": "Wendy’s",
+      "subtitle": "",
+      "make": "Ford",
+      "body": "Late Model Ford Body",
+      "extra": [],
+      "image": "https://i.ibb.co/NgKXLvbW/Codex-Image-31-Aug-2026-00-48-17.png",
+      "search": "cody codydgoforth 60 late model open series open independent bangor savings bank super late model open series wendy’s ford late model ford body 60 89299185440895 89299185440895"
+    }
+  ],
+  "guide": [
+    {
+      "tag": "h2",
+      "text": "Pick your lane."
+    },
+    {
+      "tag": "p",
+      "text": "The L.L. Bean Cup Series remains UARL’s active national division, while the Open Series remains independent and available to every eligible driver. D2 is preserved only as a Season 6 archive after its Daytona opener."
+    },
+    {
+      "tag": "h3",
+      "text": "LL Bean Cup Series"
+    },
+    {
+      "tag": "p",
+      "text": "UARL’s top national division. D1 eligibility is earned by making The Chase or completing a successful tryout."
+    },
+    {
+      "tag": "p",
+      "text": "Series discontinued"
+    },
+    {
+      "tag": "h3",
+      "text": "National Fallen Firefighters Foundation Grand National Series"
+    },
+    {
+      "tag": "p",
+      "text": "The Grand National Series was discontinued after its Daytona opener. All rostered D2 drivers moved into the D1 free-agent pool."
+    },
+    {
+      "tag": "p",
+      "text": "Series discontinued"
+    },
+    {
+      "tag": "h3",
+      "text": "Bangor Savings Bank Super Late Model Open Series"
+    },
+    {
+      "tag": "p",
+      "text": "Independent entries, no teams, and a season-long championship decided by total points."
+    },
+    {
+      "tag": "p",
+      "text": "Open to all eligible drivers"
+    },
+    {
+      "tag": "h2",
+      "text": "Every spot matters."
+    },
+    {
+      "tag": "p",
+      "text": "The active Season 6 formats now center on Cup and the Open Series. Cup uses The Chase; the Open Series championship goes to the highest points total. D2 Daytona scoring remains preserved in the archive."
+    },
+    {
+      "tag": "h3",
+      "text": "Build your race total"
+    },
+    {
+      "tag": "p",
+      "text": "Choose a finishing position, stage results, and bonuses."
+    },
+    {
+      "tag": "h2",
+      "text": "Are you cleared?"
+    },
+    {
+      "tag": "p",
+      "text": "No previous racing experience is required. Every driver must still meet the league’s age, licensing, roster, and attendance requirements."
+    },
+    {
+      "tag": "h3",
+      "text": "Age & experience"
+    },
+    {
+      "tag": "li",
+      "text": "Drivers must be at least 16 years old."
+    },
+    {
+      "tag": "li",
+      "text": "No previous racing experience is required to join."
+    },
+    {
+      "tag": "li",
+      "text": "Voice chat is preferred but not required."
+    },
+    {
+      "tag": "li",
+      "text": "The Open Series is available to all eligible drivers."
+    },
+    {
+      "tag": "h3",
+      "text": "Licenses & starts"
+    },
+    {
+      "tag": "li",
+      "text": "D1 eligibility requires making The Chase or completing a successful tryout."
+    },
+    {
+      "tag": "li",
+      "text": "With D2 discontinued, former D2 rostered drivers have moved into D1 free agency."
+    },
+    {
+      "tag": "li",
+      "text": "D1 team assignments and eligibility remain subject to league approval and tryout rules."
+    },
+    {
+      "tag": "h3",
+      "text": "Attendance & substitutes"
+    },
+    {
+      "tag": "li",
+      "text": "Absences must be reported through DNF points or an approved substitute request."
+    },
+    {
+      "tag": "li",
+      "text": "Repeated no-call, no-show absences can trigger an inactivity warning."
+    },
+    {
+      "tag": "li",
+      "text": "Approximately 10–12 regular-season race attempts may be required for Chase eligibility, depending on signed-driver count and official requirements."
+    },
+    {
+      "tag": "li",
+      "text": "Part-time entries and substitutions must be announced at least one hour before the race."
+    },
+    {
+      "tag": "h2",
+      "text": "How race day works."
+    },
+    {
+      "tag": "p",
+      "text": "Special-event procedures are announced ahead of the relevant race. Always follow the host’s official briefing when event-specific instructions apply."
+    },
+    {
+      "tag": "h3",
+      "text": "Practice & qualifying"
+    },
+    {
+      "tag": "li",
+      "text": "Open practice begins when an official practice announcement is posted."
+    },
+    {
+      "tag": "li",
+      "text": "Practice closes one hour before the scheduled event."
+    },
+    {
+      "tag": "li",
+      "text": "Qualifying depends on track length and host preference."
+    },
+    {
+      "tag": "li",
+      "text": "Open Series fields are determined through a heat system, with car counts based on track size."
+    },
+    {
+      "tag": "h3",
+      "text": "Starts, stages & pits"
+    },
+    {
+      "tag": "li",
+      "text": "Races use three stages."
+    },
+    {
+      "tag": "li",
+      "text": "All starts and restarts take place in the restart zone."
+    },
+    {
+      "tag": "li",
+      "text": "The choose cone is used while lining up after pit stops."
+    },
+    {
+      "tag": "li",
+      "text": "Drivers must slow before entering pit road during green-flag runs; speeding may result in a drive-through penalty."
+    },
+    {
+      "tag": "li",
+      "text": "Under caution, drivers line up at pit entry in running order."
+    },
+    {
+      "tag": "li",
+      "text": "Overtime procedures apply after the first green-white-checkered attempt."
+    },
+    {
+      "tag": "h3",
+      "text": "Disconnects & special races"
+    },
+    {
+      "tag": "li",
+      "text": "Disconnected drivers may respawn and rejoin at the back of the field."
+    },
+    {
+      "tag": "li",
+      "text": "A returning driver may be scored one or more laps down depending on laps missed."
+    },
+    {
+      "tag": "li",
+      "text": "Rules for special races are announced before those events."
+    },
+    {
+      "tag": "li",
+      "text": "Crown Jewels, the Clash, the All-Star Race, and championship events may carry event-specific procedures."
+    },
+    {
+      "tag": "h2",
+      "text": "Official conduct rules."
+    },
+    {
+      "tag": "p",
+      "text": "Search by a rule, keyword, penalty, or staff responsibility. Section numbers follow the official UARL rulebook exactly."
+    },
+    {
+      "tag": "h4",
+      "text": "Tier 1 — Verbal warning"
+    },
+    {
+      "tag": "p",
+      "text": "Used for minor offenses or first-time mistakes."
+    },
+    {
+      "tag": "li",
+      "text": "Minor voice-chat disruptions or speaking while racing."
+    },
+    {
+      "tag": "li",
+      "text": "Brief inactivity during an event."
+    },
+    {
+      "tag": "li",
+      "text": "Minor unprofessional behavior or failure to follow a small instruction."
+    },
+    {
+      "tag": "p",
+      "text": "Outcome: Official verbal warning from administration and a reminder of proper conduct."
+    },
+    {
+      "tag": "h4",
+      "text": "Tier 2 — Written warning"
+    },
+    {
+      "tag": "p",
+      "text": "Used for repeated minor offenses or moderate rule violations."
+    },
+    {
+      "tag": "li",
+      "text": "Repeated voice-chat violations or ignoring host instructions."
+    },
+    {
+      "tag": "li",
+      "text": "Minor abuse of permissions."
+    },
+    {
+      "tag": "li",
+      "text": "Disrespect toward staff or racers."
+    },
+    {
+      "tag": "li",
+      "text": "Failure to perform assigned duties."
+    },
+    {
+      "tag": "p",
+      "text": "Outcome: Written warning logged by administration and possible temporary restriction from staff duties."
+    },
+    {
+      "tag": "h4",
+      "text": "Tier 3 — Suspension"
+    },
+    {
+      "tag": "p",
+      "text": "Used for serious misconduct or repeated violations after warnings."
+    },
+    {
+      "tag": "li",
+      "text": "Unmuting during races without permission or interfering with race operations."
+    },
+    {
+      "tag": "li",
+      "text": "Abusing moderation powers or showing major disrespect or toxicity."
+    },
+    {
+      "tag": "li",
+      "text": "Unauthorized use of ticker controls."
+    },
+    {
+      "tag": "li",
+      "text": "Excessive inactivity without notice."
+    },
+    {
+      "tag": "p",
+      "text": "Outcome: Temporary suspension from staff duties, removal from staff participation, and temporary loss of staff permissions. Administration determines the length, which may be one day, three days, one week, or another appropriate period."
+    },
+    {
+      "tag": "h4",
+      "text": "Tier 4 — Demotion"
+    },
+    {
+      "tag": "p",
+      "text": "Used when a staff member repeatedly fails responsibilities or commits major violations."
+    },
+    {
+      "tag": "li",
+      "text": "Continuous failure to perform assigned duties."
+    },
+    {
+      "tag": "li",
+      "text": "Repeatedly ignoring leadership."
+    },
+    {
+      "tag": "li",
+      "text": "Disrupting official events or abusing authority."
+    },
+    {
+      "tag": "li",
+      "text": "Failure to meet activity expectations."
+    },
+    {
+      "tag": "p",
+      "text": "Outcome: Rank reduction, loss of specific permissions, and a probationary period."
+    },
+    {
+      "tag": "h4",
+      "text": "Tier 5 — Termination"
+    },
+    {
+      "tag": "p",
+      "text": "Used for severe misconduct or actions harmful to UARL."
+    },
+    {
+      "tag": "li",
+      "text": "Corruption, administrative abuse, or leaking private staff information."
+    },
+    {
+      "tag": "li",
+      "text": "Severe harassment or discrimination."
+    },
+    {
+      "tag": "li",
+      "text": "Intentionally ruining races or events."
+    },
+    {
+      "tag": "li",
+      "text": "Bypassing ownership decisions, exploiting, cheating, or repeated major offenses."
+    },
+    {
+      "tag": "p",
+      "text": "Outcome: Immediate removal from the staff team, permanent loss of staff permissions, and a possible ban from league events."
+    },
+    {
+      "tag": "h2",
+      "text": "Need the quick answer?"
+    },
+    {
+      "tag": "p",
+      "text": "Still unsure about something? Ask league staff before race day instead of guessing once the field is ready to roll."
+    },
+    {
+      "tag": "p",
+      "text": "No. UARL does not require prior racing experience. Drivers must still meet the minimum age requirement and follow all league rules."
+    },
+    {
+      "tag": "p",
+      "text": "Drivers must be at least 16 years old because of current Roblox-related requirements. UARL also prefers a 16+ community."
+    },
+    {
+      "tag": "p",
+      "text": "D1 eligibility is earned by making The Chase or successfully completing an approved tryout. With D2 discontinued, former D2 rostered drivers now enter the D1 free-agent pool."
+    },
+    {
+      "tag": "p",
+      "text": "No. A driver may compete full time in only one national division and may make up to five part-time starts in the other. Drivers without a full-time national seat may make up to eight part-time starts."
+    },
+    {
+      "tag": "p",
+      "text": "Yes. Open Series entries are independent, there are no teams, and all eligible drivers may participate. Fields may be determined through heat races based on track size."
+    },
+    {
+      "tag": "p",
+      "text": "Yes. The Open Series champion is the driver with the most points at the end of the season. Cup uses The Chase; D2 has been discontinued and remains archived after its Daytona opener."
+    },
+    {
+      "tag": "p",
+      "text": "Substitutions and part-time starts must be announced at least one hour before the race. Some signup procedures may close one to two hours before the event depending on the host."
+    },
+    {
+      "tag": "p",
+      "text": "Respawn your car and rejoin at the back of the field. You may be scored laps down depending on how many laps you missed."
+    },
+    {
+      "tag": "p",
+      "text": "Submit the drivers involved, the lap number or video timestamp, a description of what happened, and video evidence. Race officials review the report before issuing a decision."
+    },
+    {
+      "tag": "p",
+      "text": "Yes. Race-official decisions remain final unless a formal appeal is filed. Official penalties are listed in the league spreadsheet."
+    },
+    {
+      "tag": "p",
+      "text": "They can. Rules and event-specific procedures for special races are announced ahead of those events."
+    },
+    {
+      "tag": "p",
+      "text": "No. Voice chat is preferred, but it is not required for drivers. Staff members must follow the additional voice-chat standards in the official staff rules."
+    }
+  ]
+}

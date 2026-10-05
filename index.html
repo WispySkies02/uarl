@@ -1,0 +1,1677 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>United Alliance Racing League | Season 6</title><meta name="description" content="United Alliance Racing League — Season 6 home, race control, series and league information.">
+<meta name="theme-color" content="#05060a"><link rel="stylesheet" href="/assets/site.css">
+<style>#uarl-home .uarl-series-card.is-archived{filter:saturate(.55);background:#243044!important}#uarl-home .uarl-series-card.is-archived::before{content:"ARCHIVED";position:absolute;top:14px;right:14px;z-index:4;padding:.4rem .55rem;border:1px solid currentColor;font:900 .58rem/1 Inter,sans-serif;letter-spacing:.12em}</style><link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/favicon-192.png">
+<link rel="apple-touch-icon" href="/assets/favicon/favicon-192.png">
+</head><body data-route="/">
+<header id="header" class="uarl-native-header"><a class="uarl-native-brand" href="/"><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="United Alliance Racing League"></a><nav class="uarl-native-nav" aria-label="Main navigation"><a href="/" class="is-active">Home</a><a href="/schedule/" class="">Schedule</a><a href="/race-center/" class="">Race Center</a><a href="/competition-guide/" class="">Rules + FAQ</a><a href="/drivers/" class="">Drivers</a><a href="/paint-schemes/" class="">Paint Booth</a><a href="/history/" class="">History</a></nav><button class="uarl-native-menu-btn" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></header>
+<aside class="uarl-native-drawer" aria-hidden="true"><div class="uarl-native-drawer-top"><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt=""><button type="button" aria-label="Close menu">×</button></div><div class="uarl-native-drawer-kicker">// RACE CONTROL · SEASON 6</div><nav><a href="/" class="is-active">Home</a><a href="/schedule/" class="">Schedule</a><a href="/race-center/" class="">Race Center</a><a href="/competition-guide/" class="">Rules + FAQ</a><a href="/drivers/" class="">Drivers</a><a href="/paint-schemes/" class="">Paint Booth</a><a href="/history/" class="">History</a></nav><a class="uarl-native-discord" href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener">GET INTO THE DISCORD ↗</a></aside><div class="uarl-native-scrim"></div>
+<main id="main-content"><!-- UARL HOME — COMPLETE STANDALONE SQUARESPACE CODE BLOCK -->
+<style id="uarl-home-complete-styles">
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+/*
+  UARL HOMEPAGE THEME SHIELD
+  The main reset is scoped to #uarl-home. The only external exception removes
+  the verified outer section gaps on the UARL homepage.
+*/
+
+/* EXACT UARL HOMEPAGE SECTION-GAP FIX — VERIFIED AGAINST THE LIVE DOM */
+body#collection-6a85cdc07310075dc3dbed33
+section.page-section
+> .content-wrapper {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* UARL RACING SCROLLBAR */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #d8ff3e #0a0b10;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 14px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: #0a0b10;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  min-height: 72px;
+  background: linear-gradient(180deg, #d8ff3e 0 42%, #169cff 42% 72%, #ff4d2e 72% 100%);
+  border: 3px solid #0a0b10;
+  border-radius: 0;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffffff 0 12%, #d8ff3e 12% 48%, #169cff 48% 76%, #ff4d2e 76% 100%);
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner {
+  background: #0a0b10;
+}
+
+/* SQUARESPACE HEADER CONTRAST SHIELD */
+#header,
+.header,
+.header-menu,
+.header-menu-bg,
+.header-nav-folder-content {
+  background-color: #05060a !important;
+  color: #ffffff !important;
+}
+
+#header .header-nav-item > a,
+#header .header-nav-folder-title,
+#header .header-nav-folder-item a,
+#header .header-title-text a,
+#header .header-actions a,
+#header .header-actions-action,
+.header-menu .header-menu-nav-item a,
+.header-menu .header-menu-nav-folder-content a {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+#header .header-nav-item > a:hover,
+#header .header-nav-item--active > a,
+#header .header-nav-folder-title:hover,
+.header-menu .header-menu-nav-item a:hover {
+  color: #d8ff3e !important;
+  -webkit-text-fill-color: #d8ff3e !important;
+}
+
+#header .header-burger-btn,
+#header .header-burger-btn .burger-inner,
+#header .header-burger-btn .burger-inner > div,
+#header .header-burger-btn .top-bun,
+#header .header-burger-btn .patty,
+#header .header-burger-btn .bottom-bun {
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+#header .header-burger-btn .burger-inner > div,
+#header .header-burger-btn .top-bun,
+#header .header-burger-btn .patty,
+#header .header-burger-btn .bottom-bun {
+  background-color: #ffffff !important;
+}
+
+#uarl-home,
+#uarl-home * {
+  box-sizing: border-box !important;
+}
+
+#uarl-home {
+  isolation: isolate !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color-scheme: dark !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+#uarl-home :where(h1, h2, h3, h4, h5, h6, p, a, span, small, strong, em) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+  font: inherit;
+  letter-spacing: normal;
+  line-height: inherit;
+  text-decoration: none;
+  text-transform: none;
+  opacity: 1;
+}
+
+#uarl-home :where(a, a:hover, a:visited, a:active) {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+#uarl-home :where(img, svg, video, canvas) {
+  display: block;
+  max-width: 100%;
+}
+
+#uarl-home .uarl-site-header {
+  display: none !important;
+}
+
+#uarl-home {
+  --ink: #0a0b10;
+  --paper: #f5f1e8;
+  --white: #ffffff;
+  --hot: #ff4d2e;
+  --blue: #169cff;
+  --lime: #d8ff3e;
+  --violet: #8e5cff;
+  --line: rgba(10, 11, 16, 0.18);
+}
+
+#uarl-home, #uarl-home * { box-sizing: border-box; }
+#uarl-home {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Inter", Arial, sans-serif;
+}
+#uarl-home a { color: inherit; text-decoration: none; }
+
+#uarl-home .uarl-site-shell { overflow: hidden; background: var(--paper); }
+#uarl-home .uarl-skip-link {
+  position: fixed; left: 1rem; top: -5rem; z-index: 1000;
+  background: var(--lime); color: var(--ink); padding: .75rem 1rem; font-weight: 800;
+}
+#uarl-home .uarl-skip-link:focus { top: 1rem; }
+
+#uarl-home .uarl-race-ticker {
+  --ticker-label-width: 212px;
+  position: relative; isolation: isolate; z-index: 19; top: auto; left: auto; right: auto; height: 42px;
+  display: block; color: #fff; background: rgba(10,11,16,.82);
+  border-bottom: 1px solid rgba(255,255,255,.15); backdrop-filter: blur(10px); overflow: hidden;
+}
+#uarl-home .uarl-ticker-label {
+  position: absolute; inset: 0 auto 0 0; z-index: 2; width: var(--ticker-label-width);
+  display: flex; align-items: center; gap: .55rem; padding: 0 1.35rem; white-space: nowrap;
+  background: var(--hot); font: 900 .72rem/1 "Inter"; letter-spacing: .1em; text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+}
+#uarl-home .uarl-ticker-label i { width: 7px; height: 7px; background: #fff; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255,255,255,.18); animation: pulse 1.4s infinite; }
+#uarl-home .uarl-ticker-window { position:absolute; inset:0; z-index:1; min-width:0; display:flex; align-items:center; padding-left:calc(var(--ticker-label-width) + .5rem); overflow:hidden; }
+#uarl-home .uarl-ticker-track { width:max-content; flex:0 0 auto; display: flex; align-items: center; gap: 1.4rem; padding: 0 1.4rem; white-space: nowrap; font: 800 .68rem/1 "Inter"; letter-spacing: .08em; text-transform: uppercase; }
+#uarl-home .uarl-ticker-track b { color: var(--lime); }
+
+#uarl-home .uarl-hero {
+  position: relative; min-height: 758px; height: calc(100svh - 42px); max-height: 938px;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 390px); align-items: center;
+  gap: clamp(2rem, 6vw, 7rem); padding: 80px clamp(1.2rem, 7vw, 8rem);
+  color: #fff; background:
+    radial-gradient(circle at 80% 30%, rgba(22,156,255,.3), transparent 28%),
+    linear-gradient(115deg, #11131c 0%, #0a0b10 58%, #101a28 100%);
+}
+#uarl-home .uarl-hero::before {
+  content: ""; position: absolute; inset: 0; opacity: .16; pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px);
+  background-size: 64px 64px; mask-image: linear-gradient(to right, #000, transparent 82%);
+}
+#uarl-home .uarl-hero-noise { position: absolute; inset: 0; opacity: .22; background: repeating-linear-gradient(116deg, transparent 0 48px, rgba(255,255,255,.035) 49px 50px); }
+#uarl-home .uarl-hero-number {
+  position: absolute; right: -1vw; bottom: -11vw; font: 900 min(46vw, 590px)/.7 "Barlow Condensed", sans-serif;
+  letter-spacing: -.08em; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.07); transform: skew(-7deg); user-select: none;
+}
+#uarl-home .uarl-hero-streak { position: absolute; height: 12px; width: 45%; right: -9%; background: var(--hot); transform: skew(-32deg) rotate(-16deg); opacity: .9; }
+#uarl-home .uarl-streak-one { top: 23%; }
+#uarl-home .uarl-streak-two { top: 26%; right: -16%; height: 4px; background: var(--lime); }
+#uarl-home .uarl-hero-content, #uarl-home .uarl-race-card { position: relative; z-index: 2; }
+#uarl-home .uarl-eyebrow { display: flex; align-items: center; gap: .8rem; margin: 0 0 1.1rem; font: 800 .78rem/1 "Inter"; letter-spacing: .14em; text-transform: uppercase; }
+#uarl-home .uarl-eyebrow span { display: inline-block; padding: .58rem .72rem; background: var(--blue); box-shadow: 4px 4px 0 var(--hot); }
+#uarl-home .uarl-hero-heading {
+  max-width: 900px; margin: 0; font: italic 900 clamp(4.3rem, 8.7vw, 9.6rem)/.77 "Barlow Condensed", sans-serif;
+  color: #fff !important; -webkit-text-fill-color: #fff !important; letter-spacing: -.045em; text-transform: uppercase; text-wrap: balance;
+}
+#uarl-home .uarl-hero-heading .uarl-hero-accent { color: var(--lime) !important; -webkit-text-fill-color: var(--lime) !important; font: inherit !important; text-shadow: 7px 7px 0 var(--hot); }
+#uarl-home .uarl-hero-copy { max-width: 620px; margin: 2rem 0 0; color: rgba(255,255,255,.72); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.7; }
+#uarl-home .uarl-hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.2rem; }
+#uarl-home .uarl-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem; min-height: 54px;
+  padding: 0 1.35rem; font: 900 .8rem/1 "Inter"; letter-spacing: .07em; text-transform: uppercase;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+#uarl-home .uarl-button-hot { background: var(--hot); color: #fff !important; -webkit-text-fill-color: #fff !important; box-shadow: 6px 6px 0 var(--blue); }
+#uarl-home .uarl-button-hot:hover { transform: translate(-3px,-3px); box-shadow: 10px 10px 0 var(--blue); }
+#uarl-home .uarl-button-ghost { border: 1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.04); color: #fff !important; -webkit-text-fill-color: #fff !important; }
+#uarl-home .uarl-button-ghost:hover { background: #fff; color: var(--ink) !important; -webkit-text-fill-color: var(--ink) !important; }
+#uarl-home .uarl-race-card { align-self: end; margin-bottom: 2rem; background: var(--paper); color: var(--ink); box-shadow: 13px 13px 0 var(--blue); transform: rotate(1.25deg); }
+#uarl-home .uarl-race-card-top { display: flex; justify-content: space-between; align-items: center; padding: .85rem 1rem; background: var(--lime); border-bottom: 2px solid var(--ink); font: 900 .72rem/1 "Inter"; text-transform: uppercase; letter-spacing: .1em; }
+#uarl-home .uarl-race-card-top span { display: flex; align-items: center; gap: .5rem; }
+#uarl-home .uarl-race-card-top i { width: 8px; height: 8px; background: var(--hot); border-radius: 50%; }
+#uarl-home .uarl-race-card-top b { font: italic 900 1.2rem/1 "Barlow Condensed"; }
+#uarl-home .uarl-race-card-body { padding: 1.4rem 1.35rem 1.1rem; }
+#uarl-home .uarl-race-card-body > p { margin: 0 0 .25rem; color: var(--hot); font: 900 .75rem/1 "Inter"; letter-spacing: .12em; text-transform: uppercase; }
+#uarl-home .uarl-race-card h2 { margin: 0; font: 900 2.75rem/.9 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-race-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+#uarl-home .uarl-race-meta span { font: 800 .78rem/1.2 "Inter"; text-transform: uppercase; }
+#uarl-home .uarl-race-meta small { display: block; margin-bottom: .38rem; color: rgba(10,11,16,.48); font-size: .6rem; letter-spacing: .12em; }
+#uarl-home .uarl-race-card > a { display: flex; justify-content: space-between; padding: 1rem 1.35rem; background: var(--ink); color: #fff !important; -webkit-text-fill-color: #fff !important; font: 900 .73rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; }
+#uarl-home .uarl-race-card > a:hover { color: var(--lime); }
+#uarl-home .uarl-scroll-cue { position: absolute; z-index: 3; left: clamp(1.2rem, 7vw, 8rem); bottom: 22px; display: flex; align-items: center; gap: .7rem; color: rgba(255,255,255,.55); font: 700 .62rem/1 "Inter"; text-transform: uppercase; letter-spacing: .12em; }
+#uarl-home .uarl-scroll-cue span { width: 38px; height: 1px; background: var(--hot); }
+
+#uarl-home .uarl-section-pad { padding: clamp(5rem, 9vw, 9rem) clamp(1.2rem, 7vw, 8rem); }
+#uarl-home .uarl-section-kicker { margin-bottom: 1.4rem; color: var(--hot); font: 900 .72rem/1 "Inter"; letter-spacing: .16em; text-transform: uppercase; }
+#uarl-home .uarl-section-kicker::before { content: "//"; margin-right: .65rem; color: var(--blue); }
+#uarl-home .uarl-section-kicker.uarl-light { color: var(--lime); }
+#uarl-home .uarl-intro-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: clamp(3rem, 9vw, 9rem); align-items: end; }
+#uarl-home .uarl-intro h2 { margin: 0; font: italic 900 clamp(3.6rem, 7.5vw, 8rem)/.84 "Barlow Condensed"; letter-spacing: -.035em; text-transform: uppercase; }
+#uarl-home .uarl-intro h2 span { position: relative; color: var(--violet); }
+#uarl-home .uarl-intro h2 span::after { content: ""; position: absolute; left: 0; right: 0; bottom: .08em; height: .08em; background: var(--lime); transform: rotate(-2deg); }
+#uarl-home .uarl-intro-copy p { margin: 0; font-size: 1.05rem; line-height: 1.8; }
+#uarl-home .uarl-pills { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.8rem; }
+#uarl-home .uarl-pills span { padding: .55rem .75rem; border: 1px solid var(--ink); font: 800 .68rem/1 "Inter"; text-transform: uppercase; letter-spacing: .07em; box-shadow: 3px 3px 0 var(--hot); }
+#uarl-home .uarl-series-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: clamp(3rem, 6vw, 6rem); }
+#uarl-home .uarl-series-card { position: relative; min-height: 460px; display: flex; flex-direction: column; justify-content: space-between; padding: 1.35rem; overflow: hidden; border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); }
+#uarl-home .uarl-series-card::after { content: attr(data-series); position: absolute; right: -.15em; bottom: -.28em; color: rgba(255,255,255,.16); font: italic 900 10rem/1 "Barlow Condensed", sans-serif; }
+#uarl-home .uarl-series-label { position: relative; z-index: 2; display: flex; align-items: center; gap: .7rem; font: 900 .68rem/1 "Inter", sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+#uarl-home .uarl-series-label span { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid currentColor; }
+#uarl-home .uarl-series-logo-wrap { position: relative; z-index: 2; display: grid; place-items: center; width: 100%; height: 156px; margin: 1.35rem 0 .8rem; padding: 0; background: transparent; border: 0; }
+#uarl-home .uarl-series-logo { display: block; width: min(100%, 320px); height: 150px; max-width: 320px; max-height: none; object-fit: contain; object-position: center; filter: drop-shadow(0 8px 14px rgba(10,11,16,.24)); }
+#uarl-home .uarl-series-card h3 { position: relative; z-index: 2; max-width: 95%; margin: auto 0 1rem; color: inherit !important; -webkit-text-fill-color: currentColor !important; font: italic 900 clamp(2.1rem, 3vw, 3.6rem)/.84 "Barlow Condensed", sans-serif !important; letter-spacing: -.02em !important; text-transform: uppercase !important; }
+#uarl-home .uarl-series-card p { position: relative; z-index: 2; font: 800 .66rem/1 "Inter", sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+#uarl-home .uarl-series-d1 { background: var(--hot); color: #fff; transform: rotate(-.55deg); }
+#uarl-home .uarl-series-d2 { background: var(--blue); color: #fff; }
+#uarl-home .uarl-series-open { background: var(--lime); color: var(--ink); transform: rotate(.55deg); }
+#uarl-home .uarl-series-d1::after { content: "D1"; }
+#uarl-home .uarl-series-d2::after { content: "D2"; }
+#uarl-home .uarl-series-open::after { content: "OPEN"; right: -.08em; font-size: 7rem; color: rgba(10,11,16,.1); }
+
+#uarl-home .uarl-race-center { background: var(--ink); color: #fff; }
+#uarl-home .uarl-section-heading { display: flex; justify-content: space-between; gap: 2rem; align-items: end; margin-bottom: 2.4rem; }
+#uarl-home .uarl-race-center-heading { max-width: 760px; margin: 0; color: #fff !important; -webkit-text-fill-color: #fff !important; font: italic 900 clamp(3rem, 5.2vw, 5.8rem)/.88 "Barlow Condensed", sans-serif !important; letter-spacing: -.02em !important; text-transform: uppercase; }
+#uarl-home .uarl-section-heading > a { flex: 0 0 auto; padding-bottom: .4rem; border-bottom: 2px solid var(--lime); font: 900 .76rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; }
+#uarl-home .uarl-center-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1rem; }
+#uarl-home .uarl-center-grid article { position: relative; min-height: 380px; padding: 1.3rem; overflow: hidden; }
+#uarl-home .uarl-card-index { position: relative; z-index: 2; font: 900 .65rem/1 "Inter"; text-transform: uppercase; letter-spacing: .12em; }
+#uarl-home .uarl-spotlight-card { display: flex; flex-direction: column; justify-content: space-between; background: var(--blue); }
+#uarl-home .uarl-spotlight-card::after { content: "06"; position: absolute; right: -1rem; bottom: -4.3rem; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.25); font: italic 900 15rem/1 "Barlow Condensed"; }
+#uarl-home .uarl-spotlight-copy { position: relative; z-index: 2; max-width: 410px; }
+#uarl-home .uarl-spotlight-copy p { margin: 0 0 .4rem; font: 900 .7rem/1 "Inter"; letter-spacing: .12em; text-transform: uppercase; }
+#uarl-home .uarl-spotlight-copy h3 { margin: 0; font: italic 900 clamp(2.7rem, 4.6vw, 5rem)/.86 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-spotlight-copy > span { display: block; max-width: 350px; margin-top: 1rem; font-size: .85rem; line-height: 1.6; }
+#uarl-home .uarl-spotlight-card > a { position: absolute; z-index: 3; top: 1.1rem; right: 1.1rem; display: grid; place-items: center; width: 45px; height: 45px; border: 1px solid #fff; font-size: 1.4rem; }
+#uarl-home .uarl-spotlight-card > a:hover { background: #fff; color: var(--ink); }
+#uarl-home .uarl-stat-card { display: flex; flex-direction: column; color: var(--ink); }
+#uarl-home .uarl-stat-card strong { margin-top: auto; font: italic 900 7rem/.7 "Barlow Condensed"; }
+#uarl-home .uarl-stat-card h3 { margin: 1rem 0 .4rem; font: 900 1.65rem/.95 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-stat-card p { margin: 0 0 1.2rem; font-size: .8rem; line-height: 1.5; }
+#uarl-home .uarl-stat-card a { align-self: flex-start; padding-bottom: .35rem; border-bottom: 2px solid currentColor; font: 900 .7rem/1 "Inter"; text-transform: uppercase; }
+#uarl-home .uarl-stat-card.uarl-lime { background: var(--lime); transform: rotate(-.7deg); }
+#uarl-home .uarl-stat-card.uarl-violet { background: var(--violet); color: #fff; transform: rotate(.7deg); }
+
+#uarl-home .uarl-explore { display: grid; grid-template-columns: minmax(250px, .7fr) minmax(0, 1.3fr); gap: clamp(3rem, 8vw, 8rem); }
+#uarl-home .uarl-explore-intro { position: sticky; top: 2rem; align-self: start; }
+#uarl-home .uarl-explore h2 { margin: 0; font: italic 900 clamp(3.4rem, 5vw, 5.8rem)/.86 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-explore-intro p { max-width: 390px; margin-top: 1.5rem; line-height: 1.7; }
+#uarl-home .uarl-link-stack { border-top: 2px solid var(--ink); }
+#uarl-home .uarl-season-link { display: grid; grid-template-columns: 60px 1fr auto 45px; gap: 1rem; align-items: center; min-height: 112px; border-bottom: 2px solid var(--ink); transition: color .2s ease, padding .2s ease, background .2s ease; }
+#uarl-home .uarl-season-link:hover { padding: 0 1rem; background: var(--hot); color: #fff; }
+#uarl-home .uarl-link-number { font: 900 .7rem/1 "Inter"; color: var(--hot); }
+#uarl-home .uarl-season-link:hover .uarl-link-number { color: var(--lime); }
+#uarl-home .uarl-link-title { font: italic 900 clamp(2.2rem, 3.5vw, 4.1rem)/1 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-link-note { font: 800 .68rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; opacity: .65; }
+#uarl-home .uarl-link-arrow { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid currentColor; font-size: 1.2rem; }
+
+#uarl-home .uarl-join-section { position: relative; min-height: 570px; display: flex; align-items: center; color: #fff; background: var(--hot); overflow: hidden; }
+#uarl-home .uarl-join-section::before { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 0 54%, rgba(10,11,16,.96) 54%); }
+#uarl-home .uarl-join-checker { position: absolute; inset: 0 auto 0 48%; width: 130px; opacity: .15; transform: skew(-12deg); background-color: #fff; background-image: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0); background-size: 36px 36px; }
+#uarl-home .uarl-join-copy { position: relative; z-index: 2; max-width: 660px; }
+#uarl-home .uarl-join-copy h2 { margin: 0; font: italic 900 clamp(4rem, 7vw, 8rem)/.78 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-join-copy p { max-width: 560px; margin: 1.5rem 0 2rem; font-size: 1rem; line-height: 1.7; }
+#uarl-home .uarl-button-white { background: #fff; color: var(--ink) !important; -webkit-text-fill-color: var(--ink) !important; box-shadow: 6px 6px 0 var(--lime); }
+#uarl-home .uarl-button-white .uarl-button-label { display: inline !important; color: #0a0b10 !important; -webkit-text-fill-color: #0a0b10 !important; opacity: 1 !important; visibility: visible !important; font: 900 .8rem/1 "Inter", Arial, sans-serif !important; letter-spacing: .07em !important; text-transform: uppercase !important; }
+#uarl-home .uarl-button-white:hover { transform: translate(-3px,-3px); box-shadow: 10px 10px 0 var(--lime); }
+#uarl-home .uarl-join-type { position: absolute; z-index: 2; right: 5vw; top: 50%; color: var(--lime); font: italic 900 clamp(7rem, 14vw, 15rem)/.62 "Barlow Condensed"; text-align: right; transform: translateY(-50%) rotate(-3deg); text-shadow: 9px 9px 0 var(--blue); }
+
+#uarl-home .uarl-site-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; padding: 3.5rem clamp(1.2rem, 7vw, 8rem); background: var(--ink); color: #fff; border-top: 1px solid rgba(255,255,255,.15); }
+#uarl-home .uarl-footer-logo-link { display: inline-flex; align-items: center; justify-content: flex-start; width: fit-content; }
+#uarl-home .uarl-footer-logo { display: block; width: min(220px, 58vw); max-height: 70px; object-fit: contain; object-position: left center; }
+#uarl-home .uarl-site-footer > p { text-align: right; color: rgba(255,255,255,.55); font-size: .8rem; }
+#uarl-home .uarl-footer-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 1.5rem 0; border-block: 1px solid rgba(255,255,255,.15); }
+#uarl-home .uarl-footer-links a { font: 800 .7rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; }
+#uarl-home .uarl-footer-links a:hover { color: var(--lime); }
+#uarl-home .uarl-site-footer > small { grid-column: 1 / -1; max-width: 850px; color: rgba(255,255,255,.38); font-size: .6rem; line-height: 1.6; }
+
+@keyframes pulse { 50% { opacity: .25; transform: scale(.72); } }
+
+@media (max-width: 1050px) {
+  #uarl-home .uarl-hero { grid-template-columns: 1fr 300px; gap: 2rem; }
+  #uarl-home .uarl-center-grid { grid-template-columns: 1.25fr 1fr; }
+  #uarl-home .uarl-stat-card.uarl-violet { grid-column: 1 / -1; min-height: 260px; }
+  #uarl-home .uarl-join-type { opacity: .22; }
+}
+
+@media (max-width: 760px) {
+  #uarl-home .uarl-race-ticker { --ticker-label-width: 168px; top: auto; height: 40px; }
+  #uarl-home .uarl-ticker-label { gap:.45rem; padding:0 .75rem; font-size:.55rem; letter-spacing:.075em; }
+  #uarl-home .uarl-ticker-label i { width:6px; height:6px; flex:0 0 6px; }
+  #uarl-home .uarl-ticker-window { padding-left:0; }
+  #uarl-home .uarl-ticker-track { gap:1.15rem; padding-inline:1rem; font-size:.58rem; animation:tickerMove 24s linear infinite; will-change:transform; }
+  #uarl-home .uarl-hero { height: auto; max-height: none; min-height: 780px; display: block; padding: 72px 1.15rem 4.5rem; }
+  #uarl-home .uarl-hero-heading { font-size: clamp(4rem, 20vw, 6.6rem); }
+  #uarl-home .uarl-hero-copy { font-size: .95rem; line-height: 1.65; }
+  #uarl-home .uarl-hero-actions { display: grid; }
+  #uarl-home .uarl-button { width: 100%; }
+  #uarl-home .uarl-race-card { max-width: 370px; margin: 3.5rem 8px 0 0; }
+  #uarl-home .uarl-scroll-cue { display: none; }
+  #uarl-home .uarl-section-pad { padding: 5rem 1.15rem; }
+  #uarl-home .uarl-intro-grid, #uarl-home .uarl-explore { grid-template-columns: 1fr; gap: 2.3rem; }
+  #uarl-home .uarl-series-grid { grid-template-columns: 1fr; }
+  #uarl-home .uarl-series-card { min-height: 430px; }
+  #uarl-home .uarl-series-logo-wrap { height: 138px; }
+  #uarl-home .uarl-series-logo { width: min(100%, 300px); height: 132px; max-width: 300px; max-height: none; }
+  #uarl-home .uarl-intro h2 { font-size: clamp(3.6rem, 18vw, 6rem); }
+  #uarl-home .uarl-intro-copy p { font-size: .95rem; }
+  #uarl-home .uarl-section-heading { display: block; }
+  #uarl-home .uarl-section-heading > a { display: inline-block; margin-top: 1.4rem; }
+  #uarl-home .uarl-center-grid { grid-template-columns: 1fr; }
+  #uarl-home .uarl-center-grid article { min-height: 330px; }
+  #uarl-home .uarl-stat-card.uarl-violet { grid-column: auto; }
+  #uarl-home .uarl-explore-intro { position: static; }
+  #uarl-home .uarl-season-link { grid-template-columns: 34px 1fr 40px; min-height: 92px; }
+  #uarl-home .uarl-link-note { display: none; }
+  #uarl-home .uarl-join-section { min-height: 650px; align-items: flex-start; padding-top: 6rem; }
+  #uarl-home .uarl-join-section::before { background: linear-gradient(165deg, transparent 0 60%, rgba(10,11,16,.95) 60%); }
+  #uarl-home .uarl-join-type { right: 1rem; top: auto; bottom: 3.5rem; font-size: 7.2rem; transform: rotate(-3deg); }
+  #uarl-home .uarl-join-copy h2 { font-size: clamp(4rem, 18vw, 6.5rem); }
+  #uarl-home .uarl-site-footer { grid-template-columns: 1fr; }
+  #uarl-home .uarl-site-footer > p { text-align: left; }
+  #uarl-home .uarl-footer-links, #uarl-home .uarl-site-footer > small { grid-column: auto; }
+  @keyframes tickerMove {
+    from { transform:translateX(100vw); }
+    to { transform:translateX(-100%); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #uarl-home *, #uarl-home *::before, #uarl-home *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+
+/* UARL SEASON 6 SCHEDULE PAGE */
+body#collection-6a867014da6abc424c61daa0 section.page-section > .content-wrapper {
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+}
+
+body#collection-6a867014da6abc424c61daa0 .fluid-engine {
+  display:block !important;
+  height:auto !important;
+}
+
+body#collection-6a867014da6abc424c61daa0 .fe-block,
+body#collection-6a867014da6abc424c61daa0 .sqs-block,
+body#collection-6a867014da6abc424c61daa0 .sqs-block-content,
+body#collection-6a867014da6abc424c61daa0 .sqs-code-container {
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  grid-area:auto !important;
+}
+
+body#collection-6a867014da6abc424c61daa0 section.page-section {
+  min-height:0 !important;
+}
+
+#uarl-schedule,
+#uarl-schedule * { box-sizing: border-box !important; }
+
+#uarl-schedule {
+  --ink:#0a0b10;
+  --paper:#f5f1e8;
+  --hot:#ff4d2e;
+  --blue:#169cff;
+  --lime:#d8ff3e;
+  --violet:#8e5cff;
+  isolation:isolate;
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:var(--ink);
+  color:#fff;
+  font:400 1rem/1.5 "Inter",sans-serif;
+}
+
+#uarl-schedule :where(h1,h2,h3,p,a,span,strong,small) {
+  margin:0;
+  padding:0;
+  color:inherit;
+  -webkit-text-fill-color:currentColor;
+  font:inherit;
+  text-decoration:none;
+}
+
+#uarl-schedule img { display:block; max-width:100%; }
+#uarl-schedule a { color:inherit !important; text-decoration:none !important; }
+#uarl-schedule [hidden] { display:none !important; }
+#uarl-schedule .uarl-schedule-skip { position:absolute; left:-9999px; }
+#uarl-schedule .uarl-schedule-skip:focus { left:1rem; top:1rem; z-index:99; padding:.8rem 1rem; background:#fff; color:#000 !important; }
+
+#uarl-schedule .uarl-schedule-hero {
+  position:relative;
+  min-height:520px;
+  display:grid;
+  align-items:end;
+  padding:clamp(6rem,10vw,10rem) clamp(1.25rem,7vw,8rem) clamp(4rem,7vw,7rem);
+  overflow:hidden;
+  background:
+    linear-gradient(120deg,rgba(10,11,16,.98) 0 46%,rgba(10,11,16,.62) 70%,rgba(22,156,255,.22)),
+    repeating-linear-gradient(120deg,transparent 0 62px,rgba(255,255,255,.025) 63px 64px);
+  border-bottom:1px solid rgba(255,255,255,.14);
+}
+
+#uarl-schedule .uarl-schedule-hero::after {
+  content:"S6";
+  position:absolute;
+  right:-.04em;
+  bottom:-.28em;
+  color:rgba(255,255,255,.035);
+  font:italic 900 clamp(18rem,35vw,38rem)/1 "Barlow Condensed",sans-serif;
+}
+
+#uarl-schedule .uarl-schedule-kicker { position:relative; z-index:2; margin-bottom:1.1rem; color:var(--lime); font:900 .72rem/1 "Inter",sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+#uarl-schedule .uarl-schedule-kicker::before { content:"//"; margin-right:.75rem; color:var(--blue); }
+#uarl-schedule .uarl-schedule-title { position:relative; z-index:2; max-width:1000px; color:#fff !important; font:italic 900 clamp(4.6rem,10vw,10rem)/.78 "Barlow Condensed",sans-serif !important; letter-spacing:-.045em !important; text-transform:uppercase !important; }
+#uarl-schedule .uarl-schedule-title span { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; text-shadow:7px 7px 0 var(--hot); }
+#uarl-schedule .uarl-schedule-lede { position:relative; z-index:2; max-width:700px; margin-top:2rem; color:rgba(255,255,255,.8); font-size:1.05rem; line-height:1.75; }
+
+#uarl-schedule .uarl-countdown-panel { display:grid; grid-template-columns:1fr; align-items:stretch; scroll-margin-top:72px; background:var(--lime); color:var(--ink); border-bottom:2px solid var(--ink); }
+#uarl-schedule .uarl-countdown-copy { padding:clamp(2rem,4vw,4rem) clamp(1.25rem,7vw,8rem); }
+#uarl-schedule .uarl-countdown-status { display:flex; align-items:center; gap:.65rem; margin-bottom:1.1rem; font:900 .68rem/1 "Inter",sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+#uarl-schedule .uarl-countdown-status i { width:10px; height:10px; background:var(--hot); border-radius:50%; box-shadow:0 0 0 5px rgba(255,77,46,.18); animation:uarlPulse 1.4s ease-in-out infinite; }
+#uarl-schedule .uarl-countdown-copy h2 { max-width:850px; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; font:italic 900 clamp(2.8rem,5vw,5.4rem)/.84 "Barlow Condensed",sans-serif !important; letter-spacing:-.03em !important; text-transform:uppercase !important; }
+#uarl-schedule .uarl-countdown-copy p { display:flex; flex-wrap:wrap; gap:.7rem 1.3rem; margin-top:1.5rem; font-size:.78rem; text-transform:uppercase; }
+#uarl-schedule .uarl-countdown-copy p strong { font-weight:900; }
+#uarl-schedule .uarl-countdown-copy p span { opacity:.72; }
+#uarl-schedule .uarl-countdown-clock { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:center; gap:0; padding:clamp(1.1rem,2.5vw,2rem) clamp(1.25rem,7vw,8rem); background:var(--ink); color:#fff; }
+#uarl-schedule .uarl-countdown-clock > span { position:relative; display:grid; place-items:center; align-content:center; min-width:0; border:0; }
+#uarl-schedule .uarl-countdown-clock > span:not(:last-child)::after { content:":"; position:absolute; right:-.08em; top:42%; color:var(--hot); font:italic 900 clamp(2rem,5vw,5rem)/1 "Barlow Condensed",sans-serif; transform:translate(50%,-50%); }
+#uarl-schedule .uarl-countdown-clock b { color:#fff !important; -webkit-text-fill-color:#fff !important; font:italic 900 clamp(3.1rem,7vw,7.5rem)/.82 "Barlow Condensed",sans-serif; letter-spacing:-.03em; }
+#uarl-schedule .uarl-countdown-clock small { margin-top:.55rem; color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 clamp(.48rem,.8vw,.68rem)/1 "Inter",sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+
+#uarl-schedule .uarl-filter-bar { position:sticky; top:54px; z-index:20; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:1.5rem; padding:.85rem clamp(1.25rem,7vw,8rem); background:rgba(10,11,16,.96); color:#fff; border-bottom:1px solid rgba(255,255,255,.18); backdrop-filter:blur(12px); }
+#uarl-schedule .uarl-filter-label { color:var(--lime); font:900 .62rem/1 "Inter",sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+#uarl-schedule .uarl-filter-tabs { display:flex; gap:.45rem; }
+#uarl-schedule .uarl-filter-tabs button { min-width:74px; padding:.75rem 1rem; appearance:none; border:1px solid rgba(255,255,255,.28); border-radius:0; background:transparent; color:#fff; font:900 .7rem/1 "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:background .18s ease,color .18s ease,border-color .18s ease; }
+#uarl-schedule .uarl-filter-tabs button:hover { border-color:var(--lime); color:var(--lime); }
+#uarl-schedule .uarl-filter-tabs button.is-active { border-color:var(--lime); background:var(--lime); color:var(--ink); }
+#uarl-schedule .uarl-filter-result { color:rgba(255,255,255,.62); font-size:.72rem; text-align:right; }
+
+#uarl-schedule .uarl-series-switcher { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:rgba(255,255,255,.18); }
+#uarl-schedule .uarl-series-jump { min-height:176px; display:flex; align-items:center; gap:1.35rem; padding:1.5rem clamp(1rem,3vw,2.5rem); background:#11131b; transition:background .2s ease,color .2s ease; }
+#uarl-schedule .uarl-series-jump:nth-child(1):hover { background:var(--hot); }
+#uarl-schedule .uarl-series-jump:nth-child(2):hover { background:var(--blue); }
+#uarl-schedule .uarl-series-jump:nth-child(3):hover { background:var(--lime); color:var(--ink) !important; }
+#uarl-schedule .uarl-series-jump img { width:130px; height:100px; object-fit:contain; flex:0 0 130px; }
+#uarl-schedule .uarl-series-jump small { display:block; margin-bottom:.5rem; color:var(--lime); font:900 .62rem/1 "Inter",sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+#uarl-schedule .uarl-series-jump strong { display:block; font:italic 900 clamp(1.6rem,2.4vw,2.5rem)/.9 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+
+#uarl-schedule .uarl-schedule-section { padding:clamp(5rem,8vw,8rem) clamp(1.25rem,7vw,8rem); scroll-margin-top:120px; }
+#uarl-schedule .uarl-schedule-section:nth-of-type(even) { background:#0e1017; }
+#uarl-schedule .uarl-series-head { display:grid; grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr); gap:clamp(2rem,6vw,7rem); align-items:center; margin-bottom:3rem; }
+#uarl-schedule .uarl-series-head img { width:min(100%,360px); height:170px; object-fit:contain; object-position:left center; }
+#uarl-schedule .uarl-series-head h2 { color:#fff !important; font:italic 900 clamp(3.4rem,6vw,6.5rem)/.82 "Barlow Condensed",sans-serif !important; letter-spacing:-.035em !important; text-transform:uppercase !important; }
+#uarl-schedule .uarl-series-head p { max-width:700px; margin-top:1rem; color:rgba(255,255,255,.7); line-height:1.7; }
+#uarl-schedule .uarl-series-meta { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1.25rem; }
+#uarl-schedule .uarl-series-meta span { padding:.55rem .7rem; border:1px solid rgba(255,255,255,.3); font:800 .65rem/1 "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+
+#uarl-schedule .uarl-race-list { list-style:none; margin:0; padding:0; border-top:1px solid rgba(255,255,255,.2); }
+#uarl-schedule .uarl-race-row { position:relative; display:grid; grid-template-columns:110px minmax(220px,.9fr) minmax(240px,1.1fr) 180px; align-items:center; gap:1.5rem; min-height:106px; padding:1.25rem 1rem; border-bottom:1px solid rgba(255,255,255,.15); transition:transform .18s ease,background .18s ease; }
+#uarl-schedule .uarl-race-row:hover { z-index:2; background:#fff; color:var(--ink); transform:translateX(8px); }
+#uarl-schedule .uarl-round { font:italic 900 2rem/1 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+#uarl-schedule .uarl-round small { display:block; margin-bottom:.3rem; color:var(--lime); font:900 .58rem/1 "Inter",sans-serif; letter-spacing:.1em; text-transform:uppercase; }
+#uarl-schedule .uarl-race-row:hover .uarl-round small { color:var(--hot); }
+#uarl-schedule .uarl-race-name { font:italic 900 clamp(1.55rem,2.25vw,2.35rem)/.95 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+#uarl-schedule .uarl-track { color:rgba(255,255,255,.65); font-size:.92rem; }
+#uarl-schedule .uarl-race-row:hover .uarl-track { color:rgba(10,11,16,.7); }
+#uarl-schedule .uarl-race-date { justify-self:end; color:#fff !important; -webkit-text-fill-color:#fff !important; font:900 .8rem/1.15 "Inter",sans-serif; text-align:right; text-transform:uppercase; }
+#uarl-schedule .uarl-race-date small { display:block; margin-bottom:.4rem; color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 .55rem/1 "Inter",sans-serif; letter-spacing:.11em; }
+#uarl-schedule .uarl-race-date span { display:block; margin-top:.4rem; color:rgba(255,255,255,.65) !important; -webkit-text-fill-color:rgba(255,255,255,.65) !important; font-size:.66rem; }
+#uarl-schedule .uarl-date-pending { color:rgba(255,255,255,.72) !important; -webkit-text-fill-color:rgba(255,255,255,.72) !important; }
+#uarl-schedule .uarl-race-row:hover .uarl-race-date { color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; }
+#uarl-schedule .uarl-race-row:hover .uarl-race-date small { color:var(--hot) !important; -webkit-text-fill-color:var(--hot) !important; }
+#uarl-schedule .uarl-race-row:hover .uarl-race-date span { color:rgba(10,11,16,.65) !important; -webkit-text-fill-color:rgba(10,11,16,.65) !important; }
+#uarl-schedule .uarl-race-row.is-next-race { background:linear-gradient(90deg,rgba(216,255,62,.15),transparent 72%); box-shadow:inset 5px 0 0 var(--lime); }
+#uarl-schedule .uarl-race-row.uarl-chase { background:linear-gradient(90deg,rgba(142,92,255,.2),rgba(255,77,46,.07) 65%,transparent); box-shadow:inset 5px 0 0 var(--violet); }
+#uarl-schedule .uarl-race-row.uarl-chase .uarl-round small { color:#c9afff !important; -webkit-text-fill-color:#c9afff !important; }
+#uarl-schedule .uarl-race-row.uarl-chase::after { content:"THE CHASE"; position:absolute; right:1rem; top:.75rem; color:#c9afff; font:900 .52rem/1 "Inter",sans-serif; letter-spacing:.12em; }
+#uarl-schedule .uarl-race-row.uarl-chase:hover { background:#fff; box-shadow:inset 5px 0 0 var(--violet); }
+#uarl-schedule .uarl-race-row.uarl-chase:hover .uarl-round small,
+#uarl-schedule .uarl-race-row.uarl-chase:hover::after { color:var(--violet) !important; -webkit-text-fill-color:var(--violet) !important; }
+#uarl-schedule .uarl-exhibition { background:rgba(216,255,62,.06); }
+#uarl-schedule .uarl-exhibition::after { content:"NON-POINTS"; position:absolute; right:1rem; top:1rem; color:var(--lime); font:900 .55rem/1 "Inter",sans-serif; letter-spacing:.1em; }
+#uarl-schedule .uarl-race-row:hover.uarl-exhibition::after { color:var(--hot); }
+
+#uarl-schedule .uarl-schedule-footnote { padding:2.5rem clamp(1.25rem,7vw,8rem) 5rem; background:var(--hot); color:#fff; }
+#uarl-schedule .uarl-schedule-footnote strong { display:block; font:italic 900 clamp(2.2rem,4vw,4rem)/.9 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+#uarl-schedule .uarl-schedule-footnote p { max-width:760px; margin-top:.8rem; line-height:1.65; }
+
+#uarl-schedule .uarl-back-to-top { position:fixed; right:22px; bottom:22px; z-index:60; width:62px; height:62px; display:grid; place-items:center; appearance:none; border:0; border-radius:0; background:var(--lime); color:var(--ink); box-shadow:6px 6px 0 var(--hot); font:900 1.35rem/1 "Inter",sans-serif; cursor:pointer; opacity:0; visibility:hidden; transform:translateY(16px); transition:opacity .2s ease,transform .2s ease,visibility .2s ease; }
+#uarl-schedule .uarl-back-to-top span { display:block; margin-top:-13px; font-size:.48rem; letter-spacing:.1em; text-transform:uppercase; }
+#uarl-schedule .uarl-back-to-top.is-visible { opacity:1; visibility:visible; transform:translateY(0); }
+#uarl-schedule .uarl-back-to-top:hover { background:#fff; }
+
+@keyframes uarlPulse { 0%,100%{transform:scale(.82);opacity:.65} 50%{transform:scale(1);opacity:1} }
+
+@media (max-width:900px) {
+  #uarl-schedule .uarl-filter-bar { top:0; grid-template-columns:1fr; gap:.7rem; }
+  #uarl-schedule .uarl-filter-label { display:none; }
+  #uarl-schedule .uarl-filter-tabs { width:100%; }
+  #uarl-schedule .uarl-filter-tabs button { min-width:0; flex:1; }
+  #uarl-schedule .uarl-filter-result { text-align:left; }
+  #uarl-schedule .uarl-series-switcher { grid-template-columns:1fr; }
+  #uarl-schedule .uarl-series-jump { min-height:130px; }
+  #uarl-schedule .uarl-series-jump img { width:100px; height:82px; flex-basis:100px; }
+  #uarl-schedule .uarl-series-head { grid-template-columns:1fr; gap:1rem; }
+  #uarl-schedule .uarl-series-head img { width:min(100%,300px); height:130px; }
+  #uarl-schedule .uarl-race-row { grid-template-columns:82px 1fr; gap:.7rem 1rem; }
+  #uarl-schedule .uarl-track,
+  #uarl-schedule .uarl-race-date { grid-column:2; }
+  #uarl-schedule .uarl-race-date { justify-self:start; margin-top:.45rem; text-align:left; }
+}
+
+@media (max-width:560px) {
+  #uarl-schedule .uarl-schedule-hero { min-height:500px; }
+  #uarl-schedule .uarl-schedule-title { font-size:clamp(4rem,21vw,6.5rem) !important; }
+  #uarl-schedule .uarl-series-jump { padding:1.15rem; }
+  #uarl-schedule .uarl-series-jump img { width:82px; height:70px; flex-basis:82px; }
+  #uarl-schedule .uarl-race-row { grid-template-columns:62px 1fr; min-height:112px; padding:1rem .25rem; }
+  #uarl-schedule .uarl-round { font-size:1.55rem; }
+  #uarl-schedule .uarl-exhibition::after { display:none; }
+  #uarl-schedule .uarl-race-row.uarl-chase::after { display:none; }
+  #uarl-schedule .uarl-countdown-copy { padding-bottom:2rem; }
+  #uarl-schedule .uarl-countdown-clock { padding:1.15rem .8rem; }
+  #uarl-schedule .uarl-countdown-clock b { font-size:clamp(2.35rem,13vw,4.2rem); }
+  #uarl-schedule .uarl-countdown-clock > span:not(:last-child)::after { font-size:clamp(1.6rem,8vw,2.8rem); }
+  #uarl-schedule .uarl-countdown-clock small { margin-top:.35rem; font-size:.43rem; letter-spacing:.08em; }
+  #uarl-schedule .uarl-back-to-top { right:14px; bottom:14px; width:54px; height:54px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  #uarl-schedule .uarl-series-jump,
+  #uarl-schedule .uarl-race-row,
+  #uarl-schedule .uarl-back-to-top { transition:none; }
+  #uarl-schedule .uarl-countdown-status i { animation:none; }
+}
+
+
+/* UARL HISTORY PAGE V2 — AUTHORITATIVE LEAGUE AND SEASON RECORD BOOK */
+body:has(#uarl-history) section.page-section:has(#uarl-history),
+body:has(#uarl-history) section.page-section:has(#uarl-history) > .content-wrapper {
+  min-height:0 !important;
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+}
+
+body:has(#uarl-history) section.page-section:has(#uarl-history) > .content-wrapper {
+  max-width:none !important;
+  width:100% !important;
+  margin:0 !important;
+}
+
+body:has(#uarl-history) .fluid-engine:has(#uarl-history) {
+  display:block !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+}
+
+body:has(#uarl-history) .fe-block:has(#uarl-history),
+body:has(#uarl-history) .sqs-block:has(#uarl-history),
+body:has(#uarl-history) .sqs-block-content:has(#uarl-history),
+body:has(#uarl-history) .sqs-code-container:has(#uarl-history) {
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  grid-area:auto !important;
+}
+
+#uarl-history,
+#uarl-history * { box-sizing:border-box !important; }
+
+#uarl-history {
+  --ink:#0a0b10;
+  --paper:#f5f1e8;
+  --hot:#ff4d2e;
+  --blue:#169cff;
+  --lime:#d8ff3e;
+  --violet:#8e5cff;
+  --series:var(--lime);
+  isolation:isolate !important;
+  width:100vw !important;
+  max-width:none !important;
+  margin:0 0 0 calc(50% - 50vw) !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:var(--ink) !important;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff;
+  font:400 1rem/1.5 "Inter",Arial,sans-serif !important;
+  color-scheme:dark;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+#uarl-history :where(h1,h2,h3,h4,h5,h6,p,a,span,strong,b,small,button,ol,li,img) {
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  color:inherit;
+  -webkit-text-fill-color:currentColor;
+  font:inherit;
+  letter-spacing:normal;
+  line-height:inherit;
+  text-decoration:none;
+  text-transform:none;
+  opacity:1;
+}
+
+#uarl-history [hidden] { display:none !important; }
+#uarl-history .uarl-history-skip { position:absolute; left:-9999px; }
+#uarl-history .uarl-history-skip:focus { left:1rem; top:1rem; z-index:100; padding:.8rem 1rem; background:#fff; color:#000 !important; -webkit-text-fill-color:#000 !important; }
+
+#uarl-history .uarl-history-hero {
+  position:relative;
+  min-height:690px;
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr);
+  align-items:end;
+  gap:clamp(3rem,7vw,8rem);
+  padding:clamp(6rem,10vw,10rem) clamp(1.25rem,7vw,8rem) clamp(4rem,7vw,7rem);
+  overflow:hidden;
+  background:
+    linear-gradient(118deg,rgba(10,11,16,.99) 0 49%,rgba(10,11,16,.76) 73%,rgba(22,156,255,.2)),
+    repeating-linear-gradient(120deg,transparent 0 62px,rgba(255,255,255,.025) 63px 64px);
+  border-bottom:1px solid rgba(255,255,255,.16);
+}
+
+#uarl-history .uarl-history-hero::before {
+  content:"HISTORY";
+  position:absolute;
+  right:-.07em;
+  top:-.18em;
+  color:rgba(255,255,255,.028);
+  -webkit-text-fill-color:rgba(255,255,255,.028);
+  font:italic 900 clamp(12rem,25vw,26rem)/1 "Barlow Condensed",sans-serif;
+  letter-spacing:-.07em;
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+}
+
+#uarl-history .uarl-history-hero::after {
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:12%;
+  width:43%;
+  height:16px;
+  background:linear-gradient(180deg,var(--hot) 0 42%,transparent 42% 61%,var(--lime) 61% 79%,transparent 79%);
+  transform:skewY(-12deg);
+  transform-origin:right;
+}
+
+#uarl-history .uarl-history-hero-copy,
+#uarl-history .uarl-history-totals { position:relative; z-index:2; }
+#uarl-history .uarl-history-kicker { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 .72rem/1 "Inter",sans-serif !important; letter-spacing:.14em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-kicker::before { content:"//"; margin-right:.75rem; color:var(--blue); -webkit-text-fill-color:var(--blue); }
+#uarl-history .uarl-history-title { max-width:1000px; margin-top:1.3rem; color:#fff !important; -webkit-text-fill-color:#fff !important; font:italic 900 clamp(5.2rem,10.5vw,10.7rem)/.76 "Barlow Condensed",sans-serif !important; letter-spacing:-.05em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-title span { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; text-shadow:8px 8px 0 var(--hot); }
+#uarl-history .uarl-history-hero-copy > p { max-width:720px; margin-top:2rem; color:rgba(255,255,255,.8) !important; -webkit-text-fill-color:rgba(255,255,255,.8) !important; font-size:1.03rem !important; line-height:1.75 !important; }
+
+#uarl-history .uarl-history-totals { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(255,255,255,.18); box-shadow:9px 9px 0 var(--hot); }
+#uarl-history .uarl-history-totals > div { min-height:142px; display:flex; flex-direction:column; justify-content:flex-end; padding:1.25rem; background:#11131b; }
+#uarl-history .uarl-history-totals > div:nth-child(2) { background:var(--blue); color:var(--ink); }
+#uarl-history .uarl-history-totals > div:nth-child(3) { background:var(--lime); color:var(--ink); }
+#uarl-history .uarl-history-totals b { font:italic 900 clamp(3.2rem,5vw,5.6rem)/.74 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-history-totals span { margin-top:.8rem; font:900 .57rem/1 "Inter",sans-serif !important; letter-spacing:.1em !important; text-transform:uppercase !important; }
+
+#uarl-history .uarl-history-filter {
+  position:sticky;
+  top:54px;
+  z-index:30;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:1.3rem;
+  padding:.85rem clamp(1.25rem,7vw,8rem);
+  scroll-margin-top:20px;
+  background:rgba(10,11,16,.97) !important;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(14px);
+}
+
+#uarl-history .uarl-history-filter-label { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 .59rem/1 "Inter",sans-serif !important; letter-spacing:.12em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-tabs { display:flex; flex-wrap:wrap; gap:.42rem; }
+#uarl-history .uarl-history-tabs button,
+#uarl-history .uarl-history-season-tabs button { min-height:43px; padding:.7rem .82rem !important; appearance:none; border:1px solid rgba(255,255,255,.3) !important; background:transparent !important; color:#fff !important; -webkit-text-fill-color:#fff !important; font:900 .63rem/1 "Inter",sans-serif !important; letter-spacing:.065em !important; text-transform:uppercase !important; cursor:pointer; transition:background .18s ease,color .18s ease,border-color .18s ease; }
+#uarl-history .uarl-history-tabs button:hover,
+#uarl-history .uarl-history-season-tabs button:hover { border-color:var(--lime) !important; color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; }
+#uarl-history .uarl-history-tabs button.is-active,
+#uarl-history .uarl-history-season-tabs button.is-active { border-color:var(--lime) !important; background:var(--lime) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; }
+#uarl-history .uarl-history-filter-result { color:rgba(255,255,255,.64) !important; -webkit-text-fill-color:rgba(255,255,255,.64) !important; font-size:.7rem !important; text-align:right; }
+
+#uarl-history .uarl-history-season-bar { display:flex; align-items:center; flex-wrap:wrap; gap:1.1rem; padding:1rem clamp(1.25rem,7vw,8rem); background:#11131b !important; border-bottom:1px solid rgba(255,255,255,.15); }
+#uarl-history .uarl-history-season-bar > span { color:rgba(255,255,255,.72) !important; -webkit-text-fill-color:rgba(255,255,255,.72) !important; font:900 .62rem/1 "Inter",sans-serif !important; letter-spacing:.11em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-season-tabs { display:flex; flex-wrap:wrap; gap:.45rem; }
+#uarl-history .uarl-history-season-tabs button { min-height:36px; padding:.58rem .76rem !important; font-size:.59rem !important; }
+
+#uarl-history .uarl-history-stage { --series:var(--lime); background:var(--ink) !important; }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="cup"] { --series:var(--hot); }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="xfinity"] { --series:var(--blue); }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="trucks"] { --series:var(--violet); }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="open"] { --series:var(--lime); }
+
+#uarl-history .uarl-history-series-card { position:relative; min-height:350px; display:grid; grid-template-columns:minmax(220px,.65fr) minmax(0,1.35fr); align-items:center; gap:clamp(2.5rem,7vw,8rem); padding:clamp(4rem,7vw,7rem) clamp(1.25rem,7vw,8rem); overflow:hidden; background:radial-gradient(circle at 15% 35%,color-mix(in srgb,var(--series) 14%,transparent),transparent 35%),#0e1017 !important; border-bottom:1px solid rgba(255,255,255,.15); }
+#uarl-history .uarl-history-series-card::after { content:""; position:absolute; inset:auto 0 0 auto; width:42%; height:8px; background:var(--series); transform:skewX(-20deg); }
+#uarl-history .uarl-history-logo-wrap { width:min(100%,340px); height:175px; display:grid; place-items:center; background:transparent !important; border:0 !important; box-shadow:none !important; }
+#uarl-history .uarl-history-series-logo { display:block !important; width:100% !important; max-width:340px !important; height:165px !important; max-height:165px !important; margin:0 !important; padding:0 !important; object-fit:contain !important; object-position:center center !important; background:transparent !important; border:0 !important; box-shadow:none !important; }
+#uarl-history .uarl-history-logo-placeholder { width:100%; display:grid; grid-template-columns:auto 1fr; grid-template-rows:1fr auto; align-items:center; gap:.3rem .8rem; background:transparent !important; }
+#uarl-history .uarl-history-logo-placeholder > span { grid-row:1/3; color:var(--series) !important; -webkit-text-fill-color:var(--series) !important; font:italic 900 6.5rem/.75 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-history-logo-placeholder > strong { font:italic 900 2.8rem/.85 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-logo-placeholder > small { color:rgba(255,255,255,.55) !important; -webkit-text-fill-color:rgba(255,255,255,.55) !important; font:800 .55rem/1 "Inter",sans-serif !important; letter-spacing:.08em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-series-copy .uarl-history-kicker { color:var(--series) !important; -webkit-text-fill-color:var(--series) !important; }
+#uarl-history .uarl-history-series-copy h2 { max-width:950px; margin-top:1rem; color:#fff !important; -webkit-text-fill-color:#fff !important; font:italic 900 clamp(3.4rem,6vw,6.6rem)/.82 "Barlow Condensed",sans-serif !important; letter-spacing:-.04em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-series-copy > p { max-width:720px; margin-top:1rem; color:rgba(255,255,255,.7) !important; -webkit-text-fill-color:rgba(255,255,255,.7) !important; line-height:1.7 !important; }
+#uarl-history .uarl-history-series-meta { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1.4rem; }
+#uarl-history .uarl-history-series-meta span { padding:.56rem .75rem; border:1px solid rgba(255,255,255,.28); font:800 .58rem/1 "Inter",sans-serif !important; letter-spacing:.085em !important; text-transform:uppercase !important; }
+
+#uarl-history .uarl-history-champions,
+#uarl-history .uarl-history-podium,
+#uarl-history .uarl-history-leaderboard,
+#uarl-history .uarl-history-empty { padding:clamp(4.6rem,7vw,7rem) clamp(1.25rem,7vw,8rem); }
+#uarl-history .uarl-history-champions { background:#11131b !important; }
+#uarl-history .uarl-history-podium { background:var(--paper) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink); }
+#uarl-history .uarl-history-leaderboard { background:var(--ink) !important; }
+#uarl-history .uarl-history-section-head { display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.48fr); align-items:end; gap:2rem; margin-bottom:2.8rem; }
+#uarl-history .uarl-history-section-head h2 { margin-top:1rem; font:italic 900 clamp(3.6rem,7vw,7rem)/.78 "Barlow Condensed",sans-serif !important; letter-spacing:-.04em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-section-head > p { max-width:560px; color:rgba(255,255,255,.68) !important; -webkit-text-fill-color:rgba(255,255,255,.68) !important; line-height:1.7 !important; }
+#uarl-history .uarl-history-podium .uarl-history-section-head > p { color:rgba(10,11,16,.67) !important; -webkit-text-fill-color:rgba(10,11,16,.67) !important; }
+
+#uarl-history .uarl-history-champion-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:rgba(255,255,255,.18); }
+#uarl-history .uarl-history-champion-cards article { --card-accent:var(--lime); min-height:195px; display:flex; flex-direction:column; justify-content:flex-end; padding:1.25rem; background:#181a24 !important; border-top:7px solid var(--card-accent); }
+#uarl-history .uarl-history-champion-cards article[data-uarl-card-theme="cup"] { --card-accent:var(--hot); }
+#uarl-history .uarl-history-champion-cards article[data-uarl-card-theme="xfinity"] { --card-accent:var(--blue); }
+#uarl-history .uarl-history-champion-cards article[data-uarl-card-theme="trucks"] { --card-accent:var(--violet); }
+#uarl-history .uarl-history-champion-cards article > span { margin-bottom:auto; color:var(--card-accent) !important; -webkit-text-fill-color:var(--card-accent) !important; font:900 .62rem/1 "Inter",sans-serif !important; letter-spacing:.11em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-champion-cards h3 { margin-top:2rem; font:italic 900 clamp(2.5rem,4vw,4.5rem)/.8 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-champion-cards p { margin-top:.7rem; color:rgba(255,255,255,.7) !important; -webkit-text-fill-color:rgba(255,255,255,.7) !important; font-size:.76rem !important; }
+
+#uarl-history .uarl-history-podium-grid { list-style:none !important; display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:rgba(10,11,16,.18); }
+#uarl-history .uarl-history-podium-grid li { position:relative; min-height:245px; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto 1fr auto; gap:.5rem; padding:1.4rem; background:#fff !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink); }
+#uarl-history .uarl-history-podium-grid li:first-child { background:var(--lime) !important; box-shadow:inset 0 -8px 0 var(--hot) !important; }
+#uarl-history .uarl-history-podium-grid li:nth-child(2) { background:var(--blue) !important; }
+#uarl-history .uarl-history-podium-grid li:nth-child(3) { background:var(--violet) !important; color:#fff !important; -webkit-text-fill-color:#fff; }
+#uarl-history .uarl-podium-rank { grid-column:1; font:900 .65rem/1 "Inter",sans-serif !important; letter-spacing:.1em !important; }
+#uarl-history .uarl-history-podium-grid strong { grid-column:1/-1; align-self:end; font:italic 900 clamp(2.2rem,4vw,4.8rem)/.82 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-podium-grid b { grid-column:2; grid-row:1/3; align-self:center; font:italic 900 clamp(4rem,7vw,8rem)/.75 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-history-podium-grid small { grid-column:1/-1; font:900 .56rem/1 "Inter",sans-serif !important; letter-spacing:.1em !important; text-transform:uppercase !important; opacity:.66; }
+
+#uarl-history .uarl-record-table { border-top:1px solid rgba(255,255,255,.22); }
+#uarl-history .uarl-record-header,
+#uarl-history .uarl-record-table li { display:grid; grid-template-columns:90px minmax(180px,1fr) 130px minmax(200px,.55fr); align-items:center; gap:1.2rem; }
+#uarl-history .uarl-record-header { min-height:54px; padding:0 1rem; color:rgba(255,255,255,.5) !important; -webkit-text-fill-color:rgba(255,255,255,.5) !important; font:900 .58rem/1 "Inter",sans-serif !important; letter-spacing:.12em !important; text-transform:uppercase !important; border-bottom:1px solid rgba(255,255,255,.14); }
+#uarl-history .uarl-record-table ol { list-style:none !important; }
+#uarl-history .uarl-record-table li { position:relative; min-height:88px; padding:1rem; border-bottom:1px solid rgba(255,255,255,.14); transition:background .16s ease,color .16s ease,transform .16s ease; }
+#uarl-history .uarl-record-table li:hover { z-index:2; background:#fff !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; transform:translateX(7px); }
+#uarl-history .uarl-record-table li.is-champion { background:linear-gradient(90deg,color-mix(in srgb,var(--series) 21%,transparent),transparent 72%) !important; box-shadow:inset 5px 0 0 var(--series) !important; }
+#uarl-history .uarl-record-table li.is-champion:hover { background:#fff !important; }
+#uarl-history .uarl-rank { color:var(--series) !important; -webkit-text-fill-color:var(--series) !important; font:italic 900 2rem/1 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-record-table strong { font:italic 900 clamp(1.65rem,2.4vw,2.7rem)/.9 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-record-table b { font:italic 900 clamp(2.6rem,4vw,4rem)/.8 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-title-badge { justify-self:start; display:grid; gap:.34rem; padding:.58rem .72rem !important; background:var(--lime) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; font:900 .59rem/1 "Inter",sans-serif !important; letter-spacing:.07em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-title-badge small { color:rgba(10,11,16,.72) !important; -webkit-text-fill-color:rgba(10,11,16,.72) !important; font:800 .52rem/1 "Inter",sans-serif !important; letter-spacing:.05em !important; }
+#uarl-history .uarl-no-title { color:rgba(255,255,255,.25) !important; -webkit-text-fill-color:rgba(255,255,255,.25) !important; }
+#uarl-history .uarl-record-table li:hover .uarl-no-title { color:rgba(10,11,16,.28) !important; -webkit-text-fill-color:rgba(10,11,16,.28) !important; }
+
+#uarl-history .uarl-history-empty { min-height:440px; display:grid; align-content:center; justify-items:start; background:linear-gradient(120deg,#11131b 0 62%,rgba(216,255,62,.12)) !important; }
+#uarl-history .uarl-history-empty h2 { margin-top:1rem; font:italic 900 clamp(5rem,12vw,11rem)/.77 "Barlow Condensed",sans-serif !important; letter-spacing:-.04em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-empty h2 span { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; text-shadow:6px 6px 0 var(--hot); }
+#uarl-history .uarl-history-empty p { max-width:680px; margin-top:1.6rem; color:rgba(255,255,255,.75) !important; -webkit-text-fill-color:rgba(255,255,255,.75) !important; line-height:1.7 !important; }
+
+#uarl-history .uarl-history-footnote { padding:clamp(4rem,7vw,7rem) clamp(1.25rem,7vw,8rem); background:var(--hot) !important; color:#fff !important; -webkit-text-fill-color:#fff; }
+#uarl-history .uarl-history-footnote strong { display:block; max-width:1100px; margin-top:1rem; font:italic 900 clamp(3.4rem,7vw,7rem)/.8 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-footnote p { max-width:760px; margin-top:1.4rem; line-height:1.7 !important; }
+
+#uarl-history .uarl-history-back { position:fixed; right:22px; bottom:22px; z-index:60; width:64px; height:64px; display:grid; place-items:center; appearance:none; border:0 !important; background:var(--lime) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; box-shadow:6px 6px 0 var(--hot) !important; font:900 1.35rem/1 "Inter",sans-serif !important; cursor:pointer; opacity:0; visibility:hidden; transform:translateY(16px); transition:opacity .2s ease,transform .2s ease,visibility .2s ease; }
+#uarl-history .uarl-history-back span { display:block; margin-top:-13px; font-size:.44rem !important; letter-spacing:.09em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-back.is-visible { opacity:1; visibility:visible; transform:translateY(0); }
+#uarl-history .uarl-history-back:hover { background:#fff !important; }
+
+@media (max-width:1100px) {
+  #uarl-history .uarl-history-hero { grid-template-columns:1fr; min-height:760px; }
+  #uarl-history .uarl-history-totals { max-width:650px; }
+  #uarl-history .uarl-history-filter { grid-template-columns:1fr; gap:.65rem; }
+  #uarl-history .uarl-history-filter-label { display:none; }
+  #uarl-history .uarl-history-filter-result { text-align:left; }
+  #uarl-history .uarl-history-series-card { grid-template-columns:minmax(180px,.55fr) minmax(0,1.45fr); gap:2rem; }
+  #uarl-history .uarl-history-logo-wrap { height:150px; }
+  #uarl-history .uarl-history-series-logo { height:140px !important; max-height:140px !important; }
+}
+
+@media (max-width:820px) {
+  #uarl-history .uarl-history-filter { top:0; }
+  #uarl-history .uarl-history-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
+  #uarl-history .uarl-history-tabs button:first-child { grid-column:1/-1; }
+  #uarl-history .uarl-history-season-bar { align-items:flex-start; }
+  #uarl-history .uarl-history-series-card { grid-template-columns:1fr; gap:1.4rem; }
+  #uarl-history .uarl-history-logo-wrap { width:min(100%,320px); height:150px; }
+  #uarl-history .uarl-history-section-head { grid-template-columns:1fr; align-items:start; gap:1.2rem; }
+  #uarl-history .uarl-history-champion-cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #uarl-history .uarl-history-podium-grid { grid-template-columns:1fr; }
+  #uarl-history .uarl-history-podium-grid li { min-height:190px; }
+  #uarl-history .uarl-record-header { display:none; }
+  #uarl-history .uarl-record-table li { grid-template-columns:56px minmax(0,1fr) auto; gap:.8rem; min-height:94px; }
+  #uarl-history .uarl-record-table li > :last-child { grid-column:2/-1; justify-self:start; }
+  #uarl-history .uarl-no-title { display:none; }
+}
+
+@media (max-width:560px) {
+  #uarl-history .uarl-history-hero { min-height:700px; padding-top:5rem; }
+  #uarl-history .uarl-history-title { font-size:clamp(4.4rem,21vw,7rem) !important; }
+  #uarl-history .uarl-history-title span { text-shadow:5px 5px 0 var(--hot); }
+  #uarl-history .uarl-history-totals { grid-template-columns:1fr 1fr; box-shadow:6px 6px 0 var(--hot); }
+  #uarl-history .uarl-history-totals > div { min-height:112px; padding:1rem; }
+  #uarl-history .uarl-history-totals b { font-size:3.1rem !important; }
+  #uarl-history .uarl-history-tabs button { min-height:44px; padding:.62rem .34rem !important; font-size:.54rem !important; }
+  #uarl-history .uarl-history-season-tabs { width:100%; }
+  #uarl-history .uarl-history-season-tabs button { min-height:38px; font-size:.52rem !important; }
+  #uarl-history .uarl-history-logo-wrap { width:min(100%,290px); height:135px; }
+  #uarl-history .uarl-history-series-logo { max-width:290px !important; height:130px !important; max-height:130px !important; }
+  #uarl-history .uarl-history-series-copy h2 { font-size:clamp(3rem,13vw,5rem) !important; }
+  #uarl-history .uarl-history-logo-placeholder > span { font-size:5rem !important; }
+  #uarl-history .uarl-history-logo-placeholder > strong { font-size:2.2rem !important; }
+  #uarl-history .uarl-history-champion-cards { grid-template-columns:1fr; }
+  #uarl-history .uarl-history-champion-cards article { min-height:165px; }
+  #uarl-history .uarl-record-table li { grid-template-columns:44px minmax(0,1fr) 48px; padding:.9rem .38rem; }
+  #uarl-history .uarl-rank { font-size:1.55rem !important; }
+  #uarl-history .uarl-record-table strong { font-size:1.55rem !important; }
+  #uarl-history .uarl-record-table b { justify-self:end; font-size:2.5rem !important; }
+  #uarl-history .uarl-title-badge { font-size:.52rem !important; }
+  #uarl-history .uarl-history-back { right:14px; bottom:14px; width:56px; height:56px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  #uarl-history .uarl-history-tabs button,
+  #uarl-history .uarl-history-season-tabs button,
+  #uarl-history .uarl-record-table li,
+  #uarl-history .uarl-history-back { transition:none; }
+}
+
+
+/* UARL HOMEPAGE — Season 6 Cup presentation and Crown Jewel spotlight. */
+/* Remove only the homepage's Squarespace Fluid Engine tail and native footer. */
+body#collection-6a85cdc07310075dc3dbed33 section.page-section:has(#uarl-home),
+body:has(#uarl-home) section.page-section:has(#uarl-home) {
+  height:auto !important;
+  min-height:0 !important;
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+
+body#collection-6a85cdc07310075dc3dbed33 section.page-section:has(#uarl-home)>.content-wrapper,
+body:has(#uarl-home) section.page-section:has(#uarl-home)>.content-wrapper {
+  width:100% !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+
+body#collection-6a85cdc07310075dc3dbed33 .fluid-engine:has(#uarl-home),
+body:has(#uarl-home) .fluid-engine:has(#uarl-home) {
+  display:block !important;
+  height:auto !important;
+  min-height:0 !important;
+  grid-template-rows:none !important;
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+}
+
+body:has(#uarl-home) .fe-block:has(#uarl-home),
+body:has(#uarl-home) .sqs-block:has(#uarl-home),
+body:has(#uarl-home) .sqs-block-content:has(#uarl-home),
+body:has(#uarl-home) .sqs-code-container:has(#uarl-home) {
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  grid-area:auto !important;
+  margin-bottom:0 !important;
+  padding-bottom:0 !important;
+  overflow:visible !important;
+}
+
+body#collection-6a85cdc07310075dc3dbed33 #footer-sections,
+body#collection-6a85cdc07310075dc3dbed33 footer#footer,
+body#collection-6a85cdc07310075dc3dbed33 footer.Footer,
+body#collection-6a85cdc07310075dc3dbed33 .footer-sections,
+body:has(#uarl-home) #footer-sections,
+body:has(#uarl-home) footer#footer,
+body:has(#uarl-home) footer.Footer,
+body:has(#uarl-home) .footer-sections {
+  display:none !important;
+  height:0 !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* Decorative artwork must never intercept the real homepage navigation. */
+#uarl-home a[href],
+#uarl-home button {
+  pointer-events:auto !important;
+  touch-action:manipulation;
+  cursor:pointer;
+}
+
+#uarl-home [aria-hidden="true"],
+#uarl-home .uarl-hero-noise,
+#uarl-home .uarl-hero-number,
+#uarl-home .uarl-hero-streak,
+#uarl-home .uarl-join-checker,
+#uarl-home .uarl-join-type {
+  pointer-events:none !important;
+}
+
+/* Mobile taps belong to the homepage, never a closed Squarespace menu overlay. */
+@media screen and (max-width:900px) {
+  body:has(#uarl-home):not(.header--menu-open):not(:has(.header--menu-open)):not(:has(.header-burger-btn[aria-expanded="true"])) .header-menu,
+  body:has(#uarl-home):not(.header--menu-open):not(:has(.header--menu-open)):not(:has(.header-burger-btn[aria-expanded="true"])) .header-menu-bg {
+    pointer-events:none !important;
+    visibility:hidden !important;
+  }
+
+  body:has(#uarl-home) section.page-section:has(#uarl-home),
+  body:has(#uarl-home) .content-wrapper:has(#uarl-home),
+  body:has(#uarl-home) .fluid-engine:has(#uarl-home),
+  body:has(#uarl-home) .fe-block:has(#uarl-home),
+  body:has(#uarl-home) .sqs-block:has(#uarl-home),
+  body:has(#uarl-home) .sqs-block-content:has(#uarl-home),
+  body:has(#uarl-home) .sqs-code-container:has(#uarl-home),
+  #uarl-home,
+  #uarl-home a[href],
+  #uarl-home a[href] *,
+  #uarl-home button,
+  #uarl-home button * {
+    pointer-events:auto !important;
+    touch-action:manipulation !important;
+  }
+
+  #uarl-home .uarl-hero-content,
+  #uarl-home .uarl-hero-actions,
+  #uarl-home .uarl-race-card,
+  #uarl-home .uarl-section-heading,
+  #uarl-home .uarl-center-grid,
+  #uarl-home .uarl-link-stack,
+  #uarl-home .uarl-home-crown-grid,
+  #uarl-home .uarl-join-copy,
+  #uarl-home .uarl-site-footer {
+    position:relative !important;
+    z-index:4 !important;
+    pointer-events:auto !important;
+  }
+
+  #uarl-home .uarl-hero::before,
+  #uarl-home .uarl-hero::after,
+  #uarl-home .uarl-intro::before,
+  #uarl-home .uarl-intro::after,
+  #uarl-home .uarl-series-card::before,
+  #uarl-home .uarl-series-card::after,
+  #uarl-home .uarl-spotlight-card::before,
+  #uarl-home .uarl-spotlight-card::after,
+  #uarl-home .uarl-explore::before,
+  #uarl-home .uarl-explore::after,
+  #uarl-home .uarl-join-section::before,
+  #uarl-home .uarl-join-section::after {
+    pointer-events:none !important;
+  }
+}
+
+#uarl-home .uarl-season-six-showcase {
+  position:relative;
+  overflow:hidden;
+  background:radial-gradient(ellipse at 84% 12%,rgba(255,216,63,.14),transparent 36%),repeating-linear-gradient(116deg,transparent 0 53px,rgba(255,255,255,.024) 54px 55px),#0c0e14 !important;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+}
+
+#uarl-home .uarl-season-six-heading {
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(260px,.65fr);
+  align-items:end;
+  gap:clamp(1.5rem,5vw,5rem);
+}
+
+#uarl-home .uarl-season-six-heading h2 {
+  margin:0;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+  font:italic 900 clamp(3.2rem,7vw,7rem)/.85 "Barlow Condensed",sans-serif !important;
+  letter-spacing:-.028em !important;
+  text-transform:uppercase !important;
+}
+
+#uarl-home .uarl-season-six-heading h2 span {
+  color:#d8ff3e !important;
+  -webkit-text-fill-color:#d8ff3e !important;
+  font:inherit !important;
+  text-shadow:5px 5px 0 #ff4d2e;
+}
+
+#uarl-home .uarl-season-six-heading>p {
+  max-width:450px;
+  color:rgba(255,255,255,.76) !important;
+  -webkit-text-fill-color:rgba(255,255,255,.76) !important;
+  font:500 .9rem/1.75 "Inter",Arial,sans-serif !important;
+}
+
+#uarl-home .uarl-season-six-metrics {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:1px;
+  margin-top:clamp(2rem,4vw,3.3rem);
+  background:rgba(255,255,255,.16) !important;
+}
+
+#uarl-home .uarl-season-six-metrics>article {
+  min-height:122px;
+  padding:1rem 1.1rem;
+  background:#161923 !important;
+}
+
+#uarl-home .uarl-season-six-metrics>article:first-child {
+  background:#d8ff3e !important;
+  color:#0b0c11 !important;
+  -webkit-text-fill-color:#0b0c11 !important;
+}
+
+#uarl-home .uarl-season-six-metrics strong {
+  display:block;
+  font:850 clamp(2.4rem,5vw,4.2rem)/.86 "Barlow Condensed",sans-serif !important;
+}
+
+#uarl-home .uarl-season-six-metrics small {
+  display:block;
+  margin-top:.7rem;
+  font:800 .57rem/1.35 "Inter",Arial,sans-serif !important;
+  letter-spacing:.07em !important;
+  text-transform:uppercase !important;
+}
+
+#uarl-home .uarl-home-crown-heading {
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:1rem;
+  margin-top:clamp(2.6rem,5vw,4rem);
+}
+
+#uarl-home .uarl-home-crown-heading h3 {
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+  font:750 clamp(2rem,4vw,3.5rem)/.95 "Barlow Condensed",sans-serif !important;
+  text-transform:uppercase !important;
+}
+
+#uarl-home .uarl-home-crown-heading>a,
+#uarl-home .uarl-home-crown-card {
+  color:inherit !important;
+  -webkit-text-fill-color:currentColor !important;
+  text-decoration:none !important;
+}
+
+#uarl-home .uarl-home-crown-heading>a {
+  color:#ffd83f !important;
+  -webkit-text-fill-color:#ffd83f !important;
+  font:800 .63rem/1.2 "Inter",Arial,sans-serif !important;
+  letter-spacing:.065em !important;
+  text-transform:uppercase !important;
+}
+
+#uarl-home .uarl-home-crown-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.72rem;
+  margin-top:1rem;
+}
+
+#uarl-home .uarl-home-crown-card {
+  display:grid;
+  align-content:start;
+  gap:.52rem;
+  min-height:175px;
+  padding:1rem;
+  border-top:3px solid #ffd83f !important;
+  background:linear-gradient(130deg,rgba(255,216,63,.09),transparent 70%),#181a23 !important;
+  transition:transform .18s ease,background .18s ease;
+}
+
+#uarl-home .uarl-home-crown-card:hover {
+  transform:translateY(-4px);
+  background:linear-gradient(130deg,rgba(255,216,63,.19),transparent 74%),#1d202a !important;
+}
+
+#uarl-home .uarl-home-crown-card>small {
+  color:#ffd83f !important;
+  -webkit-text-fill-color:#ffd83f !important;
+  font:850 .53rem/1.2 "Inter",Arial,sans-serif !important;
+  letter-spacing:.1em !important;
+  text-transform:uppercase !important;
+}
+
+#uarl-home .uarl-home-crown-card>strong {
+  color:#fff !important;
+  -webkit-text-fill-color:#fff !important;
+  font:750 clamp(1.55rem,2.3vw,2.05rem)/.95 "Barlow Condensed",sans-serif !important;
+  text-transform:uppercase !important;
+}
+
+#uarl-home .uarl-home-crown-card>span {
+  color:rgba(255,255,255,.72) !important;
+  -webkit-text-fill-color:rgba(255,255,255,.72) !important;
+  font:600 .65rem/1.4 "Inter",Arial,sans-serif !important;
+}
+
+#uarl-home .uarl-home-crown-card>b {
+  margin-top:auto;
+  color:#d8ff3e !important;
+  -webkit-text-fill-color:#d8ff3e !important;
+  font:750 .6rem/1 "Inter",Arial,sans-serif !important;
+  text-transform:uppercase !important;
+}
+
+#uarl-home .uarl-race-meta.uarl-race-meta-expanded {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1rem .75rem;
+}
+
+#uarl-home .uarl-race-meta .uarl-home-race-designation {
+  color:#ad7900 !important;
+  -webkit-text-fill-color:#ad7900 !important;
+}
+
+@media (max-width:900px) {
+  #uarl-home .uarl-season-six-heading { grid-template-columns:1fr; }
+  #uarl-home .uarl-home-crown-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
+
+@media (max-width:540px) {
+  #uarl-home .uarl-season-six-metrics>article { min-height:100px; padding:.78rem .65rem; }
+  #uarl-home .uarl-season-six-metrics small { font-size:.49rem !important; }
+  #uarl-home .uarl-home-crown-heading { display:block; }
+  #uarl-home .uarl-home-crown-heading>a { display:inline-flex; margin-top:.65rem; }
+  #uarl-home .uarl-home-crown-card { min-height:170px; padding:.8rem; }
+}
+
+
+/* UARL — remove the floating lower-right return buttons on every page. */
+#uarl-schedule .uarl-back-to-top,
+#uarl-history .uarl-history-back,
+#uarl-drivers .uarl-back-to-grid,
+#uarl-race-center .rc-back-to-top,
+#uarl-race-center .rc-back,
+#uarl-paints .uarl-back-to-top,
+button[aria-label="Back to the next race countdown"],
+button[aria-label="Return to the history filters"],
+button[aria-label="Return to the roster filters"],
+button[aria-label="Return to the Race Center filters"] {
+  display:none !important;
+  visibility:hidden !important;
+  opacity:0 !important;
+  pointer-events:none !important;
+}
+
+/* UARL — repair Squarespace 7.1's actual mobile root-navigation folder. */
+@media screen and (max-width:900px) {
+  .header--menu-open #header,
+  #header.header--menu-open,
+  body:has(.header-burger-btn[aria-expanded="true"]) #header {
+    z-index:2147483000 !important;
+  }
+
+  .header--menu-open .header-menu,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu {
+    display:block !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+    transform:none !important;
+    clip:auto !important;
+    clip-path:none !important;
+    background:#05060a !important;
+  }
+
+  .header--menu-open .header-menu-bg,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu-bg {
+    z-index:0 !important;
+    background:#05060a !important;
+    opacity:1 !important;
+    pointer-events:none !important;
+  }
+
+  .header--menu-open .header-menu .header-menu-nav,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu .header-menu-nav {
+    position:absolute !important;
+    top:110px !important;
+    right:20px !important;
+    bottom:28px !important;
+    left:20px !important;
+    z-index:5 !important;
+    display:flex !important;
+    align-items:flex-start !important;
+    justify-content:center !important;
+    width:auto !important;
+    height:auto !important;
+    min-height:0 !important;
+    padding:20px 0 36px !important;
+    overflow-y:auto !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+    transform:none !important;
+  }
+
+  .header--menu-open .header-menu .header-menu-nav-wrapper,
+  .header--menu-open .header-menu .header-menu-nav-list,
+  .header--menu-open .header-menu .header-menu-nav-folder[data-folder="root"],
+  .header--menu-open .header-menu .header-menu-nav-folder[data-folder="root"] .header-menu-nav-folder-content,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu .header-menu-nav-wrapper,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu .header-menu-nav-list,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu .header-menu-nav-folder[data-folder="root"],
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu .header-menu-nav-folder[data-folder="root"] .header-menu-nav-folder-content {
+    position:relative !important;
+    inset:auto !important;
+    z-index:6 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    align-items:center !important;
+    justify-content:flex-start !important;
+    width:100% !important;
+    height:auto !important;
+    min-height:0 !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+    transform:none !important;
+    clip:auto !important;
+    clip-path:none !important;
+  }
+
+  .header--menu-open .header-menu .header-menu-nav-folder[data-folder="root"] .header-menu-nav-folder-content > div,
+  .header--menu-open .header-menu .header-menu-nav-folder[data-folder="root"] .header-menu-nav-folder-content > div:first-child,
+  .header--menu-open .header-menu .header-menu-nav-item,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu .header-menu-nav-item {
+    display:block !important;
+    width:100% !important;
+    margin:0 !important;
+    padding:0 !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    transform:none !important;
+  }
+
+  .header--menu-open .header-menu a,
+  .header--menu-open .header-menu a *,
+  .header--menu-open .header-menu .header-menu-nav-item-content,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu a,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu a * {
+    color:#ffffff !important;
+    -webkit-text-fill-color:#ffffff !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+
+  .header--menu-open .header-menu .header-menu-nav-item a,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-menu .header-menu-nav-item a {
+    position:relative !important;
+    z-index:7 !important;
+    display:block !important;
+    padding:15px 12px !important;
+    font:750 1.12rem/1.3 "Inter",Arial,sans-serif !important;
+    text-align:center !important;
+  }
+
+  .header--menu-open .header-menu a[aria-current="page"],
+  .header--menu-open .header-menu .header-menu-nav-item--active a {
+    color:#d8ff3e !important;
+    -webkit-text-fill-color:#d8ff3e !important;
+  }
+
+  .header--menu-open .header-display-mobile,
+  .header--menu-open .header-burger,
+  .header--menu-open .header-title,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-display-mobile,
+  body:has(.header-burger-btn[aria-expanded="true"]) .header-burger {
+    position:relative !important;
+    z-index:8 !important;
+    opacity:1 !important;
+    visibility:visible !important;
+    pointer-events:auto !important;
+  }
+}
+
+</style>
+
+<!--
+  UARL SEASON 6 HOMEPAGE — OFFICIAL LOGOS UPDATE V3 — 2026-08-19
+  Paste this entire file into one Squarespace Code Block.
+  The layout is self-contained and its class names are prefixed to avoid theme conflicts.
+  Update the page paths if your Squarespace slugs differ.
+-->
+<div id="uarl-home" class="uarl-site-shell" data-uarl-version="season-6-series-v2">
+  <a class="uarl-skip-link" href="#uarl-main-content">Skip to content</a>
+
+  <div class="uarl-race-ticker" aria-label="Season status">
+    <span class="uarl-ticker-label"><i></i> Preseason live wire</span>
+    <div class="uarl-ticker-window">
+      <div class="uarl-ticker-track">
+        <span>Season 6 is loading</span><b>•</b>
+        <span>Two active series + D2 archive</span><b>•</b>
+        <span>Four Cup Crown Jewels</span><b>•</b>
+        <span>20 Cup events on camera</span><b>•</b>
+        <span>Discord is the paddock</span>
+      </div>
+    </div>
+  </div>
+
+  <section class="uarl-hero" id="uarl-top">
+    <div class="uarl-hero-noise" aria-hidden="true"></div>
+    <div class="uarl-hero-number" aria-hidden="true">06</div>
+    <div class="uarl-hero-streak uarl-streak-one" aria-hidden="true"></div>
+    <div class="uarl-hero-streak uarl-streak-two" aria-hidden="true"></div>
+
+    <div class="uarl-hero-content" id="uarl-main-content">
+      <p class="uarl-eyebrow"><span>Season 6</span> Roblox racing starts here</p>
+      <div class="uarl-hero-heading" role="heading" aria-level="1" style="color:#ffffff!important;-webkit-text-fill-color:#ffffff!important">This grid is<br>about to get <span class="uarl-hero-accent" style="color:#d8ff3e!important;-webkit-text-fill-color:#d8ff3e!important">LOUD!</span></div>
+      <p class="uarl-hero-copy">Big moves, bigger personalities, and racing that never feels scripted. Welcome to the United Alliance Racing League.</p>
+      <div class="uarl-hero-actions">
+        <a class="uarl-button uarl-button-hot" href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener noreferrer">Join the UARL Discord <span>→</span></a>
+        <a class="uarl-button uarl-button-ghost" href="/schedule">Explore Season 6</a>
+      </div>
+    </div>
+
+    <aside class="uarl-race-card" aria-label="Next race preview">
+      <div class="uarl-race-card-top"><span><i></i> Next up</span><b>S6</b></div>
+      <div class="uarl-race-card-body">
+        <p data-uarl-field="nextRaceLabel">Season opener</p>
+        <h2 data-uarl-field="nextRaceTitle">Track reveal coming soon</h2>
+        <div class="uarl-race-meta uarl-race-meta-expanded">
+          <span><small>Date</small><span data-uarl-field="nextRaceDate">Schedule drop</span></span>
+          <span><small>Series</small><span data-uarl-field="nextRaceDivision">LL Bean Cup Series</span></span>
+          <span><small>Round</small><span data-uarl-field="nextRaceLaps">Round 01</span></span>
+          <span><small>Designation</small><span class="uarl-home-race-designation" data-uarl-field="nextRaceDesignation">Crown Jewel</span></span>
+        </div>
+      </div>
+      <a href="/schedule">Open full schedule <span>↗</span></a>
+    </aside>
+
+    <div class="uarl-scroll-cue" aria-hidden="true"><span></span> Scroll to send it</div>
+  </section>
+
+  <section class="uarl-intro uarl-section-pad" id="uarl-season">
+    <div class="uarl-section-kicker">Not your average league</div>
+    <div class="uarl-intro-grid">
+      <h2>Two divisions.<br>One <span>open series.</span><br>All gas.</h2>
+      <div class="uarl-intro-copy">
+        <p>Two active Season 6 programs, one preserved D2 archive, and one shared UARL community. Cup continues after a one-week postponement; the Open Series remains active.</p>
+        <div class="uarl-pills" aria-label="League highlights"><span>Roblox</span><span>D1 + D2 + Open</span><span>Season 6</span><span>Community-run</span></div>
+      </div>
+    </div>
+    <div class="uarl-series-grid" aria-label="UARL Season 6 series">
+      <article class="uarl-series-card uarl-series-d1"><div class="uarl-series-label"><span>01</span> Division 1</div><div class="uarl-series-logo-wrap"><img class="uarl-series-logo" src="https://i.ibb.co/gb079CL2/imageedit-1-6265648040.png" alt="LL Bean Cup Series logo" loading="lazy" decoding="async"></div><h3>LL Bean<br>Cup Series</h3><p>UARL Season 6</p></article>
+      <article class="uarl-series-card uarl-series-d2 is-archived"><div class="uarl-series-label"><span>02</span> D2 Archive</div><div class="uarl-series-logo-wrap"><img class="uarl-series-logo" src="https://i.ibb.co/LdWsC6mY/imageedit-2-7627989187.png" alt="National Fallen Firefighters Foundation Grand National Series logo" loading="lazy" decoding="async"></div><h3>National Fallen Firefighters Foundation Grand National Series</h3><p>Discontinued after Round 1 · Daytona record preserved</p></article>
+      <article class="uarl-series-card uarl-series-open"><div class="uarl-series-label"><span>03</span> Open Series</div><div class="uarl-series-logo-wrap"><img class="uarl-series-logo" src="https://i.ibb.co/2zmZpdb/imageedit-1-6460712268.png" alt="Bangor Savings Bank Super Late Model Open Series logo" loading="lazy" decoding="async"></div><h3>Bangor Savings Bank Super Late Model Open Series</h3><p>UARL Season 6</p></article>
+    </div>
+  </section>
+
+
+  <section class="uarl-season-six-showcase uarl-section-pad" aria-labelledby="uarl-season-six-showcase-title">
+    <div class="uarl-section-kicker uarl-light">This season has main-character energy</div>
+    <div class="uarl-season-six-heading">
+      <h2 id="uarl-season-six-showcase-title">20 Cup events.<br>Four Crown Jewels.<br><span>One massive season.</span></h2>
+      <p>Every L.L. Bean Cup Series points race, the Clash, and the All-Star Race are planned for recording. Add custom broadcast graphics, rotating guest commentators, and four marquee races that deserve their own spotlight.</p>
+    </div>
+    <div class="uarl-season-six-metrics" aria-label="Season 6 highlights">
+      <article><strong>20</strong><small>Recorded Cup events planned</small></article>
+      <article><strong>04</strong><small>Official Cup Crown Jewels</small></article>
+      <article><strong>02</strong><small>Active UARL series</small></article>
+    </div>
+    <div class="uarl-home-crown-heading"><h3>The Crown Jewel lineup.</h3><a href="/schedule">Full season schedule ↗</a></div>
+    <div class="uarl-home-crown-grid" aria-label="Division 1 Crown Jewel races">
+      <a class="uarl-home-crown-card" href="/schedule"><small>Round 01 · Sep 20</small><strong>Daytona 500</strong><span>Daytona · 90 laps</span></a>
+      <a class="uarl-home-crown-card" href="/schedule"><small>Round 02 · Sep 27</small><strong>Queen City 500</strong><span>Charlotte · 120 laps</span></a>
+      <a class="uarl-home-crown-card" href="/schedule"><small>Round 12 · Dec 13</small><strong>Brickyard 500</strong><span>Indianapolis · 90 laps</span></a>
+      <a class="uarl-home-crown-card" href="/schedule"><small>Round 17 · Jan 10</small><strong>Southern 500</strong><span>Darlington · 120 laps</span><b>The Chase</b></a>
+    </div>
+  </section>
+
+  <section class="uarl-race-center uarl-section-pad">
+    <div class="uarl-section-heading">
+      <div><div class="uarl-section-kicker uarl-light">Race control</div><div class="uarl-race-center-heading" role="heading" aria-level="2" style="color:#ffffff!important;-webkit-text-fill-color:#ffffff!important">Your Season 6 command center.</div></div>
+      <a href="/race-center">Open Race Center <span>→</span></a>
+    </div>
+    <div class="uarl-center-grid">
+      <article class="uarl-spotlight-card">
+        <span class="uarl-card-index">01 / Next race</span>
+        <div class="uarl-spotlight-copy">
+          <p data-uarl-field="nextRaceLabel">Season 6 opener</p>
+          <h3 data-uarl-field="nextRaceHeadline">The first green flag is waiting.</h3>
+          <span data-uarl-field="nextRaceNote">Official track and date will appear here when the schedule drops.</span>
+        </div>
+        <a href="/schedule" aria-label="View schedule">↗</a>
+      </article>
+      <article class="uarl-stat-card uarl-lime">
+        <span class="uarl-card-index">02 / Standings</span>
+        <strong data-uarl-field="pointsGap">0</strong>
+        <h3 data-uarl-field="pointsHeadline">Points between everyone</h3>
+        <p data-uarl-field="pointsNote">A clean slate. Enjoy it while it lasts.</p>
+        <a href="/race-center">Open points standings →</a>
+      </article>
+      <article class="uarl-stat-card uarl-violet">
+        <span class="uarl-card-index">03 / Last result</span>
+        <strong data-uarl-field="lastResultBig">Gman</strong>
+        <h3 data-uarl-field="lastResultHeadline">Gman wins the L.L. Bean Clash</h3>
+        <p data-uarl-field="lastResultNote">Payson took the pole; Gman won the non-points preseason Clash.</p>
+        <a href="/race-center/?event=d1-clash-2026-09-09#results">Results + replays →</a>
+      </article>
+    </div>
+  </section>
+
+  <section class="uarl-explore uarl-section-pad">
+    <div class="uarl-explore-intro">
+      <div class="uarl-section-kicker">Pick your lane</div>
+      <h2>Everything around the racing.</h2>
+      <p>No maze of bland menus. Just the good stuff, one loud stop at a time.</p>
+    </div>
+    <div class="uarl-link-stack">
+      <a class="uarl-season-link" href="/drivers"><span class="uarl-link-number">01</span><span class="uarl-link-title">Drivers</span><span class="uarl-link-note">Meet the grid</span><span class="uarl-link-arrow">↗</span></a>
+      <a class="uarl-season-link" href="/schedule"><span class="uarl-link-number">02</span><span class="uarl-link-title">Schedule</span><span class="uarl-link-note">Circle race night</span><span class="uarl-link-arrow">↗</span></a>
+      <a class="uarl-season-link" href="/race-center"><span class="uarl-link-number">03</span><span class="uarl-link-title">Race Center</span><span class="uarl-link-note">Points + results + replays</span><span class="uarl-link-arrow">↗</span></a>
+      <a class="uarl-season-link" href="/history"><span class="uarl-link-number">04</span><span class="uarl-link-title">History</span><span class="uarl-link-note">Relive the chaos</span><span class="uarl-link-arrow">↗</span></a>
+      <a class="uarl-season-link" href="/paint-schemes"><span class="uarl-link-number">05</span><span class="uarl-link-title">Paint Schemes</span><span class="uarl-link-note">See every look</span><span class="uarl-link-arrow">↗</span></a>
+    </div>
+  </section>
+
+  <section class="uarl-join-section uarl-section-pad">
+    <div class="uarl-join-checker" aria-hidden="true"></div>
+    <div class="uarl-join-copy">
+      <div class="uarl-section-kicker uarl-light">The paddock is open</div>
+      <h2>Don't just watch<br>Season 6 happen.</h2>
+      <p>Join the UARL Discord to meet the community, get league information, and find out how to line up on the grid.</p>
+      <a class="uarl-button uarl-button-white" href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener noreferrer" style="color:#0a0b10!important;-webkit-text-fill-color:#0a0b10!important"><span class="uarl-button-label" style="color:#0a0b10!important;-webkit-text-fill-color:#0a0b10!important;opacity:1!important;visibility:visible!important">Get into the Discord</span> <span style="color:#0a0b10!important;-webkit-text-fill-color:#0a0b10!important">↗</span></a>
+    </div>
+    <div class="uarl-join-type" aria-hidden="true">LET'S<br>RACE!</div>
+  </section>
+
+  <footer class="uarl-site-footer">
+    <a class="uarl-footer-logo-link" href="#uarl-top" aria-label="UARL — back to top"><img class="uarl-footer-logo" src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="United Alliance Racing League" loading="lazy" decoding="async"></a>
+    <p>Roblox racing with the personality left in.</p>
+    <div class="uarl-footer-links"><a href="/schedule">Schedule</a><a href="/race-center">Race Center</a><a href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener noreferrer">Discord</a><a href="#uarl-top">Back to top ↑</a></div>
+    <small>© 2026 United Alliance Racing League. Roblox is a trademark of Roblox Corporation. UARL is not affiliated with Roblox Corporation.</small>
+  </footer>
+</div>
+
+<script>
+/*
+  EDIT THIS ONE OBJECT when Season 6 data is ready.
+  It is also the handoff point for a future Google Sheets connection.
+*/
+window.UARL_HOME_DATA = Object.assign({
+  nextRaceLabel: "D1 SCHEDULE UPDATE",
+  nextRaceTitle: "The 6th Annual Daytona 500",
+  nextRaceDate: "Sun, Sep 20 • 8:30 PM ET",
+  nextRaceDivision: "L.L. Bean Cup Series",
+  nextRaceLaps: "Round 01",
+  nextRaceDesignation: "POSTPONED +1 WEEK",
+  nextRaceHeadline: "Cup opener moves back one week.",
+  nextRaceNote: "Daytona International Speedway · D1 Round 1 · Sunday, September 20 at 8:30 PM ET. The entire remaining Cup calendar shifted back seven days.",
+  pointsGap: "0",
+  pointsHeadline: "Points between everyone",
+  pointsNote: "A clean slate. Enjoy it while it lasts.",
+  lastResultBig: "Rocky",
+  lastResultHeadline: "Rocky wins D2 Daytona finale",
+  lastResultNote: "Rocky won the Cracker Barrel 250; Taylor scored 55 points before the Grand National Series was discontinued after Round 1."
+}, window.UARL_HOME_DATA || {});
+
+document.querySelectorAll("#uarl-home [data-uarl-field]").forEach(function (node) {
+  var key = node.getAttribute("data-uarl-field");
+  if (Object.prototype.hasOwnProperty.call(window.UARL_HOME_DATA, key)) {
+    node.textContent = window.UARL_HOME_DATA[key];
+  }
+});
+</script>
+
+<script>
+/* Collapse Squarespace-only space below this homepage without touching other pages. */
+(function () {
+  var home = document.getElementById('uarl-home');
+  if (!home) return;
+
+  function collapseHomepageTail() {
+    var element = home.parentElement;
+    while (element && element !== document.body) {
+      if (element.matches && element.matches('.fluid-engine, .fe-block, .sqs-block, .sqs-block-content, .sqs-code-container, .content-wrapper, section.page-section')) {
+        element.style.setProperty('pointer-events', 'auto', 'important');
+        element.style.setProperty('height', 'auto', 'important');
+        element.style.setProperty('min-height', '0', 'important');
+        element.style.setProperty('margin-bottom', '0', 'important');
+        element.style.setProperty('padding-bottom', '0', 'important');
+        if (element.matches('.fluid-engine')) {
+          element.style.setProperty('display', 'block', 'important');
+          element.style.setProperty('grid-template-rows', 'none', 'important');
+        }
+        if (element.matches('.fe-block, .sqs-block, .sqs-block-content, .sqs-code-container')) {
+          element.style.setProperty('position', 'relative', 'important');
+          element.style.setProperty('inset', 'auto', 'important');
+          element.style.setProperty('grid-area', 'auto', 'important');
+        }
+      }
+      element = element.parentElement;
+    }
+
+    var nativeFooters = document.querySelectorAll('#footer-sections, footer#footer, footer.Footer, .Footer, .footer-sections, #siteWrapper > footer, #site-wrapper > footer');
+    Array.prototype.forEach.call(nativeFooters, function (footer) {
+      if (!home.contains(footer)) footer.style.setProperty('display', 'none', 'important');
+    });
+  }
+
+  collapseHomepageTail();
+  if (typeof window.addEventListener === 'function') window.addEventListener('load', collapseHomepageTail);
+  if (typeof window.setTimeout === 'function') {
+    window.setTimeout(collapseHomepageTail, 150);
+    window.setTimeout(collapseHomepageTail, 900);
+  }
+})();
+</script>
+<script>
+/* Recover homepage taps before Squarespace or decorative layers can swallow them. */
+(function () {
+  var home = document.getElementById('uarl-home');
+  if (!home || typeof home.addEventListener !== 'function') return;
+
+  var touch = null;
+  var lastTouchNavigation = 0;
+
+  function findLink(target) {
+    var link = target && typeof target.closest === 'function' ? target.closest('a[href]') : null;
+    return link && home.contains(link) ? link : null;
+  }
+
+  function navigate(link, event) {
+    var address = link && link.getAttribute('href');
+    if (!address) return;
+
+    if (event && event.type === 'click' && (event.button > 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey)) return;
+    if (event && event.cancelable && typeof event.preventDefault === 'function') event.preventDefault();
+
+    if (address.charAt(0) === '#') {
+      var destination = typeof document.querySelector === 'function' ? document.querySelector(address) : null;
+      if (destination && typeof destination.scrollIntoView === 'function') destination.scrollIntoView({ behavior:'smooth', block:'start' });
+      return;
+    }
+
+    if (link.target === '_blank' && event && event.type === 'click' && typeof window.open === 'function') {
+      var opened = window.open(address, '_blank', 'noopener,noreferrer');
+      if (opened) return;
+    }
+
+    if (window.location && typeof window.location.assign === 'function') window.location.assign(address);
+    else if (window.location) window.location.href = address;
+  }
+
+  home.addEventListener('click', function (event) {
+    var link = findLink(event.target);
+    if (!link) return;
+    if (Date.now() - lastTouchNavigation < 650) {
+      if (event.cancelable && typeof event.preventDefault === 'function') event.preventDefault();
+      return;
+    }
+    navigate(link, event);
+  }, true);
+
+  home.addEventListener('touchstart', function (event) {
+    var link = findLink(event.target);
+    var finger = event.touches && event.touches[0];
+    touch = link && finger ? { link:link, x:finger.clientX, y:finger.clientY } : null;
+  }, { capture:true, passive:true });
+
+  home.addEventListener('touchend', function (event) {
+    var started = touch;
+    touch = null;
+    var finger = event.changedTouches && event.changedTouches[0];
+    if (!started || !finger || Math.abs(finger.clientX - started.x) > 12 || Math.abs(finger.clientY - started.y) > 12) return;
+    lastTouchNavigation = Date.now();
+    navigate(started.link, event);
+  }, { capture:true, passive:false });
+
+  home.addEventListener('touchcancel', function () { touch = null; }, { capture:true, passive:true });
+})();
+</script></main>
+<footer class="uarl-native-footer"><div><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="United Alliance Racing League"><p>Roblox racing with the personality left in.</p></div><nav><a href="/schedule/">Schedule</a><a href="/race-center/">Race Center</a><a href="/paint-schemes/">Paint Booth</a><a href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener">Discord</a></nav><small>© 2026 United Alliance Racing League. Roblox is a trademark of Roblox Corporation. UARL is not affiliated with Roblox Corporation.</small></footer>
+<script src="/assets/runtime-data.js"></script><script src="/assets/site-loader.js" defer></script></body></html>

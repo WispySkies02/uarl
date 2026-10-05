@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>UARL Race Control</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/assets/admin.css">
+</head>
+<body>
+  <section class="login-gate" data-login-gate>
+    <form class="login-card" data-login-form>
+      <img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="UARL">
+      <span class="eyebrow">Protected control center</span>
+      <h1 data-login-title>Race Control</h1>
+      <p data-login-copy>Sign in with your personal staff account.</p>
+      <div class="setup-fields" data-setup-fields hidden>
+        <label>Display name<input type="text" autocomplete="name" data-setup-name placeholder="Your name"></label>
+        <label>One-time setup key<input type="password" autocomplete="off" data-setup-key placeholder="UARL_ADMIN_KEY from Netlify"></label>
+      </div>
+      <label>Username<input type="text" autocomplete="username" data-login-username required autofocus placeholder="Your username"></label>
+      <label><span data-password-label>Password</span><input type="password" autocomplete="current-password" data-login-password required placeholder="Enter your password"></label>
+      <button class="button publish" type="submit" data-login-button>Sign in</button>
+      <div class="login-message" data-login-message aria-live="polite"></div>
+    </form>
+  </section>
+  <div class="admin-app" data-admin-app hidden>
+  <header class="admin-topbar">
+    <a class="admin-brand" href="/" target="_blank" rel="noopener">
+      <img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="UARL">
+      <span><small>Website operations</small>Race Control</span>
+    </a>
+    <div class="admin-status"><span class="status-dot" data-status-dot></span><span data-save-status>Loading website data…</span></div>
+    <div class="admin-top-actions">
+      <span class="signed-in-user"><b data-current-user>Staff</b><small data-current-role>Account</small></span>
+      <button class="button ghost" type="button" data-action="preview">Preview</button>
+      <button class="button publish" type="button" data-action="publish">Publish website</button>
+      <button class="button ghost logout-button" type="button" data-action="logout">Sign out</button>
+    </div>
+  </header>
+
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <nav aria-label="Admin sections">
+        <small>Overview</small>
+        <button class="is-active" data-section="dashboard"><span>⌂</span> Dashboard</button>
+        <small>Race operations</small>
+        <button data-section="schedule"><span>▦</span> Schedule</button>
+        <button data-section="results"><span>⚑</span> Results + points</button>
+        <small data-full-admin>Paddock</small>
+        <button data-section="teams" data-full-admin><span>▰</span> Teams + charters</button>
+        <button data-section="profiles" data-full-admin><span>●</span> Driver profiles</button>
+        <button data-section="open" data-full-admin><span>↗</span> Open Series</button>
+        <button data-section="freeAgents" data-full-admin><span>+</span> Free agents</button>
+        <button data-section="moves" data-full-admin><span>⇄</span> Recent moves</button>
+        <small data-full-admin>Site content</small>
+        <button data-section="paints" data-full-admin><span>◆</span> Paint Booth</button>
+        <button data-section="history" data-full-admin><span>★</span> History</button>
+        <button data-section="guide" data-full-admin><span>?</span> Rules + FAQ</button>
+        <button data-section="conduct" data-full-admin><span>§</span> Conduct rulebook</button>
+        <button data-section="advanced" data-full-admin><span>{ }</span> Advanced JSON</button>
+        <small data-owner-only>Administration</small>
+        <button data-section="accounts" data-owner-only><span>♙</span> Staff accounts</button>
+      </nav>
+      <div class="sidebar-foot">
+        <button type="button" data-action="export">Download backup</button>
+        <label data-full-admin>Import backup<input type="file" accept="application/json,.json" data-import hidden></label>
+      </div>
+    </aside>
+
+    <main class="admin-main">
+      <div class="mobile-section-picker">
+        <label for="mobile-section">Control center</label>
+        <select id="mobile-section" data-mobile-section></select>
+      </div>
+      <div data-admin-view></div>
+    </main>
+  </div>
+
+  <dialog class="publish-dialog" data-publish-dialog>
+    <form method="dialog" data-publish-form>
+      <button class="dialog-close" type="button" data-close-publish aria-label="Close">×</button>
+      <span class="eyebrow">Live website update</span>
+      <h2>Publish your changes</h2>
+      <p>This saves the central UARL data directly to the live website. The schedule, Race Center, Drivers, Paint Booth, History, and rules content update immediately.</p>
+      <label>Publish note<input type="text" data-publish-note maxlength="120" value="Publish UARL website updates"></label>
+      <div class="publish-summary" data-publish-summary></div>
+      <div class="dialog-actions"><button class="button ghost" type="button" data-close-publish>Cancel</button><button class="button publish" type="submit" data-confirm-publish>Publish now</button></div>
+    </form>
+  </dialog>
+  </div>
+
+  <div class="toast" role="status" aria-live="polite" data-toast></div>
+  <script src="/assets/runtime-data.js"></script>
+  <script src="/assets/admin.js"></script>
+</body>
+</html>

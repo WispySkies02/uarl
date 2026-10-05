@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Drivers | UARL</title><meta name="description" content="Browse the United Alliance Racing League Season 6 driver roster.">
+<meta name="theme-color" content="#05060a"><link rel="stylesheet" href="/assets/site.css">
+<style>#uarl-drivers .uarl-free-agent-board{background:#0d1017;color:#fff;border-top:5px solid #169cff}#uarl-drivers .uarl-free-agent-board .uarl-roster-section-title,#uarl-drivers .uarl-free-agent-board .uarl-roster-section-copy{color:#fff!important;-webkit-text-fill-color:#fff!important}.uarl-fa-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:1.4rem}.uarl-fa-card{min-width:0;padding:1rem;background:#171b25;border-left:3px solid #169cff}.uarl-fa-card span{display:block;color:#70c5ff;font:900 .58rem/1 Inter,sans-serif;letter-spacing:.12em}.uarl-fa-card h3{margin:.65rem 0 .2rem;color:#fff!important;font:900 1.7rem/1 "Barlow Condensed",sans-serif!important;text-transform:uppercase}.uarl-fa-card p,.uarl-fa-card small{display:block;color:rgba(255,255,255,.72)!important;overflow-wrap:anywhere}.uarl-fa-card small{margin-top:.5rem;line-height:1.45}@media(max-width:800px){.uarl-fa-grid{grid-template-columns:1fr 1fr}}@media(max-width:520px){.uarl-fa-grid{grid-template-columns:1fr}.uarl-fa-card{padding:1rem 1.05rem}}</style>
+<style id="uarl-drivers-ed21-branding">
+#uarl-paddock-v2 .pp-team-aetherwing{--make:#ef1e23;background:linear-gradient(145deg,#fff 0 62%,#fff4f4 100%);border-color:rgba(239,30,35,.28)}
+#uarl-paddock-v2 .pp-team-aetherwing:before{width:8px;background:linear-gradient(#ef1e23 0 70%,#fff 70% 100%)}
+#uarl-paddock-v2 .pp-team-aetherwing .pp-team-note{color:#3f434b}
+#uarl-paddock-v2 .pp-team-logo{display:block;width:min(250px,72%);height:70px;object-fit:contain;object-position:left center;margin-top:.8rem;filter:drop-shadow(0 5px 6px rgba(0,0,0,.16))}
+#uarl-paddock-v2 .pp-founded{display:block;margin-top:.25rem;color:#777d87;font:800 .58rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+#uarl-paddock-v2 .pp-number:has(.pp-aem-num){width:62px;height:62px;padding:0;background:transparent!important;color:inherit}
+#uarl-paddock-v2 .pp-number.open:has(.pp-aem-num),#uarl-paddock-v2 .pp-number.special:has(.pp-aem-num){background:transparent!important}
+#uarl-paddock-v2 .pp-team-aetherwing .pp-number{border:0;box-shadow:none}
+#uarl-paddock-v2 .pp-driver.no-number{padding-left:1rem}
+#uarl-paddock-v2 .pp-driver-number.pending{position:static;width:auto;margin-bottom:.55rem;font-size:.68rem;letter-spacing:.09em;text-align:left;color:#6d737e;text-transform:uppercase}
+#uarl-paddock-v2 .pp-aem-num{display:grid;place-items:center;min-width:0}
+#uarl-paddock-v2 .pp-aem-num img{display:block;width:100%;height:100%;object-fit:contain}
+#uarl-paddock-v2 .pp-aem-num-chip{width:62px;height:62px}
+#uarl-paddock-v2 .pp-driver-aetherwing{border-color:rgba(239,30,35,.28);background:linear-gradient(155deg,#fff 0 74%,#fff0f0 100%)}
+#uarl-paddock-v2 .pp-aem-num-driver{position:absolute;left:.4rem;top:.45rem;width:4.2rem;height:4.3rem}
+#uarl-paddock-v2 .pp-dialog-head-aetherwing{position:relative;background:linear-gradient(112deg,#ef1e23 0 48%,#b10005 48% 61%,#101218 61% 100%);color:#fff;padding-right:min(38vw,420px)}
+#uarl-paddock-v2 .pp-dialog-head-aetherwing .pp-kicker{color:#fff}
+#uarl-paddock-v2 .pp-dialog-team-logo{position:absolute;right:1.3rem;top:50%;transform:translateY(-50%);width:min(330px,36vw);max-height:105px;object-fit:contain;filter:drop-shadow(0 8px 8px rgba(0,0,0,.28))}
+#uarl-paddock-v2 .pp-dialog-entry-aetherwing{border-top:3px solid #ef1e23}#uarl-paddock-v2 .pp-dialog-entry-pending{grid-column:1/-1;border:1px dashed rgba(239,30,35,.45);background:#fff7f7}
+#uarl-paddock-v2 .pp-aem-num-dialog{width:78px;height:78px;flex:0 0 78px}
+#uarl-paddock-v2 .pp-aem-num-profile{width:clamp(110px,18vw,190px);aspect-ratio:1/1;height:auto;flex:0 0 auto}
+#uarl-paddock-v2 .pp-team-description{margin:0 0 1rem;color:#555c66;line-height:1.6}
+#uarl-paddock-v2 .tag.recent{background:#169cff!important;color:#fff!important;border-color:#169cff!important}
+@media(max-width:720px){#uarl-paddock-v2 .pp-dialog-head-aetherwing{min-height:150px;padding:1rem 4.4rem 1rem 1rem;display:flex;flex-direction:column;justify-content:center}#uarl-paddock-v2 .pp-dialog-head-aetherwing h2{display:none}#uarl-paddock-v2 .pp-dialog-head-aetherwing .pp-kicker{margin-bottom:.4rem}#uarl-paddock-v2 .pp-dialog-team-logo{position:static;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:min(340px,100%);max-height:112px;object-position:left center;margin:.3rem 0 0}#uarl-paddock-v2 .pp-team-logo{width:min(280px,82%);height:64px}#uarl-paddock-v2 .pp-aem-num-dialog{width:66px;height:54px;flex-basis:66px}}
+</style>
+
+<style id="uarl-drivers-ed24-mobile-fixes">
+
+/* Team share / deep-link controls */
+#uarl-paddock-v2 .pp-team-foot{flex-wrap:wrap}
+#uarl-paddock-v2 .pp-share{min-height:44px;padding:.72rem .85rem;border:1px solid rgba(8,10,15,.18);background:#fff;color:#080a0f;font:900 .62rem/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase}
+#uarl-paddock-v2 .pp-share:hover{border-color:var(--blue);color:#075f9f}
+@media(max-width:720px){#uarl-paddock-v2 .pp-team-foot .pp-action,#uarl-paddock-v2 .pp-team-foot .pp-share{flex:1 1 100%}}
+
+/* Equal Aetherwing number-art footprints. */
+#uarl-paddock-v2 .pp-number:has(.pp-aem-num){width:62px!important;height:62px!important;min-width:62px!important;padding:0!important}
+#uarl-paddock-v2 .pp-aem-num-chip{width:62px!important;height:62px!important}
+#uarl-paddock-v2 .pp-aem-num-chip img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center!important}
+#uarl-paddock-v2 .pp-aem-num-dialog{width:78px!important;height:78px!important;flex:0 0 78px!important}
+#uarl-paddock-v2 .pp-aem-num-dialog img{width:100%!important;height:100%!important;object-fit:contain!important}
+#uarl-paddock-v2 .pp-aem-num-driver{width:4.25rem!important;height:4.25rem!important;top:.35rem!important}
+#uarl-paddock-v2 .pp-aem-num-driver img{width:100%!important;height:100%!important;object-fit:contain!important}
+#uarl-paddock-v2 .pp-dialog-close-inline{display:block;width:100%;min-height:52px;margin:1.25rem 0 0;border:0;background:#0a0c11;color:#fff;font:900 .75rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+#uarl-paddock-v2 .pp-dialog-close-inline:hover,#uarl-paddock-v2 .pp-dialog-close-inline:focus-visible{background:#ef1e23}
+@media(max-width:680px){
+  #uarl-paddock-v2 .pp-dialog{position:relative!important;overflow:auto!important}
+  #uarl-paddock-v2 .pp-dialog-close{position:sticky!important;top:8px!important;right:auto!important;float:right!important;display:flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:92px!important;height:48px!important;margin:8px 8px -56px auto!important;padding:0 14px!important;background:#090c12!important;border:2px solid #fff!important;color:#fff!important;font:900 .72rem/1 Inter,sans-serif!important;letter-spacing:.08em!important;text-transform:uppercase!important;box-shadow:0 6px 18px rgba(0,0,0,.35)!important;z-index:2147483647!important}
+  #uarl-paddock-v2 .pp-dialog-close::before{content:"CLOSE ";}
+  #uarl-paddock-v2 .pp-number:has(.pp-aem-num){width:58px!important;height:58px!important;min-width:58px!important}
+  #uarl-paddock-v2 .pp-aem-num-chip{width:58px!important;height:58px!important}
+  #uarl-paddock-v2 .pp-aem-num-dialog{width:72px!important;height:72px!important;flex-basis:72px!important}
+}
+</style>
+
+<style id="uarl-ed27-charter-share-fixes">
+#uarl-paddock-v2 .pp-aem-charter-group{grid-column:1/-1;border:2px solid rgba(239,30,35,.38);background:linear-gradient(145deg,#fff5f5,#fff);padding:1rem}
+#uarl-paddock-v2 .pp-aem-charter-group-head{display:flex;align-items:center;justify-content:space-between;gap:.7rem;flex-wrap:wrap;margin-bottom:.8rem}
+#uarl-paddock-v2 .pp-aem-charter-group-head strong{font:900 1.35rem/1 'Barlow Condensed',sans-serif;text-transform:uppercase}
+#uarl-paddock-v2 .pp-aem-charter-group-head span{font:800 .56rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#a91418}
+#uarl-paddock-v2 .pp-aem-charter-options{display:grid;grid-template-columns:1fr auto 1fr;gap:.7rem;align-items:stretch}
+#uarl-paddock-v2 .pp-aem-charter-option{display:flex;align-items:center;gap:.7rem;min-width:0;padding:.7rem;border:1px solid rgba(8,10,15,.1);background:#fff}
+#uarl-paddock-v2 .pp-aem-charter-option .pp-aem-num{flex:0 0 66px;width:66px!important;height:54px!important}
+#uarl-paddock-v2 .pp-aem-charter-option b{display:block;font:900 1.1rem/1 'Barlow Condensed',sans-serif;text-transform:uppercase}
+#uarl-paddock-v2 .pp-aem-charter-option small{display:block;margin-top:.25rem;color:#686d78;font-size:.68rem}
+#uarl-paddock-v2 .pp-aem-charter-or{display:grid;place-items:center;color:#8a909d;font:900 .64rem/1 Inter,sans-serif;letter-spacing:.09em}
+#uarl-paddock-v2 .pp-number-row-aetherwing{align-items:center}
+#uarl-paddock-v2 .pp-number-row-aetherwing .pp-aem-shared-charter-mini{display:flex;align-items:center;gap:.35rem;padding:.28rem .42rem;border:1px solid rgba(239,30,35,.28);background:#fff4f4}
+#uarl-paddock-v2 .pp-number-row-aetherwing .pp-aem-shared-charter-mini>span:first-child{font:900 .48rem/1 Inter,sans-serif;letter-spacing:.08em;color:#b1171b;text-transform:uppercase;white-space:nowrap}
+#uarl-paddock-v2 .pp-number-row-aetherwing .pp-aem-num-chip{width:48px!important;height:48px!important}
+@media(max-width:720px){#uarl-paddock-v2 .pp-aem-charter-options{grid-template-columns:1fr}#uarl-paddock-v2 .pp-aem-charter-or{min-height:24px}#uarl-paddock-v2 .pp-aem-charter-group{padding:.8rem}}
+</style>
+
+<style id="uarl-team-refresh">
+@font-face{font-family:"Smile Moon";src:url("/assets/fonts/Smile%20Moon.otf") format("opentype");font-display:swap;font-style:normal;font-weight:400}
+
+/* Team presentation refresh ONLY. Everything around this remains Edition 28. */
+#uarl-paddock-v2 .pp-team-grid{display:flex;flex-direction:column;gap:18px}
+#uarl-paddock-v2 .pp-team{
+ --teamglow:var(--make);
+ padding:1.55rem 1.7rem;
+ border:1px solid rgba(255,255,255,.13);
+ background:
+   radial-gradient(circle at 14% 15%,color-mix(in srgb,var(--teamglow) 26%,transparent),transparent 27%),
+   linear-gradient(120deg,#14191f 0%,#0b0f13 68%,#080b0e 100%);
+ color:#f7f8fa;box-shadow:0 18px 42px rgba(0,0,0,.22)
+}
+#uarl-paddock-v2 .pp-team:before{width:4px;box-shadow:0 0 24px var(--make)}
+#uarl-paddock-v2 .pp-team:hover{transform:none;border-color:color-mix(in srgb,var(--make) 55%,#ffffff22)}
+#uarl-paddock-v2 .pp-team-top{align-items:center}
+#uarl-paddock-v2 .pp-team h3{
+ max-width:none;color:#fff;
+ font:400 clamp(2rem,4vw,3.5rem)/1 "Smile Moon","Barlow Condensed",sans-serif;
+ text-transform:none;letter-spacing:.01em
+}
+#uarl-paddock-v2 .pp-team-logo{height:86px;filter:drop-shadow(0 8px 15px rgba(0,0,0,.35))}
+#uarl-paddock-v2 .pp-owner,#uarl-paddock-v2 .pp-team-note,#uarl-paddock-v2 .pp-founded{color:#aeb7be}
+#uarl-paddock-v2 .pp-owner b{color:#fff}
+#uarl-paddock-v2 .pp-make{background:#080b0ebd}
+#uarl-paddock-v2 .pp-number-row{border-color:#ffffff18}
+#uarl-paddock-v2 .pp-team-foot{border-color:#ffffff18;color:#b7c0c6}
+
+/* Driver names use Smile Moon, but roster structure stays original Edition 28. */
+#uarl-paddock-v2 .pp-driver-profile strong,
+#uarl-paddock-v2 .pp-driver strong{
+ font-family:"Smile Moon","Barlow Condensed",sans-serif!important;
+ font-weight:400!important;text-transform:none!important;letter-spacing:.01em!important
+}
+
+/* Make open full-time charters noticeable INSIDE the existing team roster,
+   without adding a separate Open Charter Market section. */
+#uarl-paddock-v2 .pp-number.open,
+#uarl-paddock-v2 .pp-driver:has(.pp-driver-status.open),
+#uarl-paddock-v2 .pp-driver:has(.pp-driver-status[data-status="open"]){
+ border-color:#e4b63f!important;
+ box-shadow:inset 0 0 0 1px rgba(228,182,63,.16),0 0 22px rgba(228,182,63,.08)
+}
+#uarl-paddock-v2 .pp-number.open{color:#111;background:#e4b63f!important}
+
+/* Aetherwing keeps its own official red/white identity. */
+#uarl-paddock-v2 .pp-team-aetherwing{
+ --teamglow:#ef1e23;
+ background:
+ radial-gradient(circle at 14% 15%,rgba(239,30,35,.24),transparent 28%),
+ linear-gradient(120deg,#17191d,#0b0d10 70%,#08090b)
+}
+
+@media(max-width:720px){
+ #uarl-paddock-v2 .pp-team{padding:1.2rem}
+ #uarl-paddock-v2 .pp-team h3{font-size:clamp(1.9rem,9vw,3rem)}
+}
+</style>
+
+<style id="uarl-large-team-stage-fix">
+#uarl-paddock-v2 .pp-team-grid{display:flex!important;flex-direction:column!important;gap:28px!important}
+#uarl-paddock-v2 .pp-team-stage{padding:0!important;overflow:hidden;border:1px solid #ffffff18!important;background:
+ radial-gradient(circle at 12% 15%,color-mix(in srgb,var(--make) 24%,transparent),transparent 30%),
+ linear-gradient(120deg,#151b21,#0a0e12 72%)!important;color:#fff}
+#uarl-paddock-v2 .pp-team-stage:before{width:5px!important;box-shadow:0 0 30px var(--make)}
+.pp-stage-head{min-height:230px;display:grid;grid-template-columns:280px 1fr;gap:35px;align-items:center;padding:32px 38px;border-bottom:1px solid #ffffff17}
+.pp-stage-brand{display:flex;align-items:center;justify-content:center;min-height:150px}
+#uarl-paddock-v2 .pp-stage-logo{width:100%;height:145px;margin:0;object-fit:contain;object-position:center;filter:drop-shadow(0 10px 20px rgba(0,0,0,.45))}
+.pp-stage-wordmark{font:900 2.3rem/1 "Barlow Condensed",sans-serif;text-align:center;text-transform:uppercase;color:#fff}
+.pp-stage-copy h3{font:400 clamp(2.8rem,6vw,5.7rem)/.95 "Smile Moon","Barlow Condensed",sans-serif!important;text-transform:none!important;letter-spacing:.01em!important;margin:.25rem 0 .7rem!important;color:#fff}
+.pp-stage-copy p{max-width:760px;color:#b7c0c7;line-height:1.5;margin:0}
+.pp-stage-meta,.pp-stage-status{display:flex;gap:9px;flex-wrap:wrap}
+.pp-stage-meta span,.pp-stage-status b{font:800 .58rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--make);padding:5px 0;color:#cbd3d8}
+.pp-stage-status{margin-top:18px}.pp-stage-status b.has-open{color:#f2c84b;border-color:#f2c84b}
+.pp-stage-roster{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border-bottom:1px solid #ffffff17}
+.pp-stage-entry{position:relative;min-height:165px;padding:22px;border-right:1px solid #ffffff12;background:linear-gradient(180deg,#ffffff04,transparent)}
+.pp-stage-entry.is-open{background:linear-gradient(180deg,rgba(242,200,75,.13),transparent);box-shadow:inset 0 3px #f2c84b}
+.pp-stage-number{height:72px;display:flex;align-items:center;margin-bottom:12px}
+.pp-stage-number .pp-aem-num{max-height:68px;max-width:100px;object-fit:contain}
+.pp-stage-num{font:italic 900 3.7rem/.8 "Barlow Condensed",sans-serif;letter-spacing:-.05em}
+.pp-stage-person strong{display:block;font:400 1.65rem/1.05 "Smile Moon","Barlow Condensed",sans-serif;color:#fff}
+.pp-stage-person small{display:block;color:#87929a;margin-top:4px}.pp-stage-person span{display:block;margin-top:8px;font-size:.6rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:#aeb7bd}
+.pp-open-callout{position:absolute;right:10px;top:10px;background:#f2c84b;color:#111;padding:5px 7px;font-size:.48rem;letter-spacing:.08em}
+.pp-shared-stage{display:flex;align-items:stretch;border-bottom:1px solid #ffffff17;background:#ffffff03}
+.pp-shared-label{width:230px;padding:22px;display:flex;flex-direction:column;justify-content:center}.pp-shared-label b{font:400 1.6rem "Smile Moon",sans-serif}.pp-shared-label span{font-size:.65rem;color:#89949b}
+.pp-shared-stage>.pp-stage-entry{flex:1}.pp-shared-stage>em{align-self:center;font:900 .7rem Inter,sans-serif;color:#f2c84b;padding:0 14px}
+.pp-stage-actions{display:flex;justify-content:flex-end;gap:8px;padding:15px 22px}
+@media(max-width:760px){
+ .pp-stage-head{grid-template-columns:1fr;gap:12px;padding:25px 20px}.pp-stage-brand{min-height:90px;justify-content:flex-start}
+ #uarl-paddock-v2 .pp-stage-logo{height:90px;object-position:left center}
+ .pp-stage-roster{grid-template-columns:1fr 1fr}.pp-shared-stage{display:block}.pp-shared-label{width:auto}.pp-shared-stage>em{display:block;text-align:center;padding:8px}
+}
+@media(max-width:470px){.pp-stage-roster{grid-template-columns:1fr}}
+</style>
+
+<style id="uarl-team-share-circle">
+#uarl-paddock-v2 .pp-team-stage{position:relative}
+#uarl-paddock-v2 .pp-stage-actions{display:none!important}
+#uarl-paddock-v2 .pp-stage-share{
+ position:absolute;right:14px;top:14px;z-index:8;
+ width:32px;height:32px;padding:0;border-radius:50%;
+ display:grid;place-items:center;
+ border:1px solid rgba(255,255,255,.24);
+ background:rgba(8,11,14,.72);color:#fff;
+ font:900 .85rem/1 Inter,sans-serif;
+ cursor:pointer;backdrop-filter:blur(8px);
+ transition:transform .16s ease,border-color .16s ease,background .16s ease
+}
+#uarl-paddock-v2 .pp-stage-share:hover{
+ transform:translateY(-1px);border-color:var(--make);background:#11171d
+}
+</style>
+
+<style id="uarl-manufacturer-marks">
+#uarl-paddock-v2 .pp-mfg-logo{
+ display:inline-grid;place-items:center;width:58px;height:30px;
+ color:#dfe5e9;opacity:.82;transition:opacity .16s ease,transform .16s ease;
+ vertical-align:middle
+}
+#uarl-paddock-v2 .pp-mfg-logo:hover{opacity:1;transform:translateY(-1px)}
+#uarl-paddock-v2 .pp-mfg-logo svg{width:100%;height:100%;overflow:visible}
+#uarl-paddock-v2 .pp-mfg-logo ellipse,
+#uarl-paddock-v2 .pp-mfg-logo path{fill:none;stroke:currentColor;stroke-width:4}
+#uarl-paddock-v2 .pp-mfg-ford svg ellipse{stroke-width:4}
+#uarl-paddock-v2 .pp-mfg-ford svg text{
+ fill:currentColor;stroke:none;font:italic 700 25px Georgia,serif
+}
+#uarl-paddock-v2 .pp-mfg-chevy svg path{fill:currentColor;stroke:none}
+#uarl-paddock-v2 .pp-mfg-generic{
+ display:inline-flex;align-items:center;height:30px;color:#8f999f;
+ font:800 .52rem/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase
+}
+#uarl-paddock-v2 .pp-stage-meta .pp-mfg-logo{margin-right:4px}
+</style>
+
+<style id="uarl-share-and-open28-fix">
+#uarl-paddock-v2 .pp-stage-share{
+ width:34px!important;height:34px!important;border:0!important;border-radius:7px!important;
+ background:transparent!important;opacity:.66;box-shadow:none!important
+}
+#uarl-paddock-v2 .pp-stage-share:hover{opacity:1;background:rgba(255,255,255,.08)!important;transform:none!important}
+.pp-share-glyph{position:relative;display:block;width:18px;height:18px}
+.pp-share-glyph i{position:absolute;width:5px;height:5px;border:1.7px solid currentColor;border-radius:50%;box-sizing:border-box}
+.pp-share-glyph i:nth-child(1){right:0;top:0}.pp-share-glyph i:nth-child(2){left:0;top:6.5px}.pp-share-glyph i:nth-child(3){right:0;bottom:0}
+.pp-share-glyph b{position:absolute;left:4px;width:9px;height:1.5px;background:currentColor;transform-origin:left center}
+.pp-share-glyph b:nth-of-type(1){top:7px;transform:rotate(-28deg)}.pp-share-glyph b:nth-of-type(2){top:10px;transform:rotate(28deg)}
+#uarl-paddock-v2 .pp-open-aem28{display:flex!important;align-items:center!important;justify-content:center!important}
+#uarl-paddock-v2 .pp-open-aem28 img{display:block;max-width:64px;max-height:62px;object-fit:contain}
+</style>
+
+<style id="uarl-real-manufacturer-logos">
+#uarl-paddock-v2 .pp-mfg-logo{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:62px!important;height:34px!important;opacity:.94!important}
+#uarl-paddock-v2 .pp-mfg-logo img{display:block!important;max-width:100%!important;max-height:100%!important;width:auto!important;height:auto!important;object-fit:contain!important}
+#uarl-paddock-v2 .pp-mfg-ford{width:70px!important}
+#uarl-paddock-v2 .pp-mfg-chevy{width:66px!important;height:38px!important}
+</style>
+<style id="uarl-avery-official-v7">
+#uarl-paddock-v2 .pp-team-stage:has(.pp-stage-logo[src*="/assets/teams/avery/"]){--make:#00c56b;background:radial-gradient(circle at 12% 16%,rgba(0,197,107,.30),transparent 29%),radial-gradient(circle at 86% 15%,rgba(75,101,116,.24),transparent 28%),linear-gradient(118deg,#12251a 0%,#0c1516 48%,#101820 100%)!important;border-color:rgba(0,197,107,.28)!important}
+#uarl-paddock-v2 .pp-team-stage:has(.pp-stage-logo[src*="/assets/teams/avery/"])::before{background:linear-gradient(#00c56b,#327b43,#536f7e)!important;box-shadow:0 0 32px rgba(0,197,107,.62)!important}
+#uarl-paddock-v2 .pp-team-stage:has(.pp-stage-logo[src*="/assets/teams/avery/"]) .pp-stage-meta span,#uarl-paddock-v2 .pp-team-stage:has(.pp-stage-logo[src*="/assets/teams/avery/"]) .pp-stage-status b{border-color:#00c56b}
+#uarl-paddock-v2 .pp-team-num-art{display:block;max-width:105px;max-height:76px;object-fit:contain}
+#uarl-paddock-v2 .pp-avery-num{filter:drop-shadow(0 5px 8px rgba(0,0,0,.28))}
+</style><link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/favicon-192.png">
+<link rel="apple-touch-icon" href="/assets/favicon/favicon-192.png">
+</head><body data-route="/drivers/">
+<header id="header" class="uarl-native-header"><a class="uarl-native-brand" href="/"><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="United Alliance Racing League"></a><nav class="uarl-native-nav" aria-label="Main navigation"><a href="/" class="">Home</a><a href="/schedule/" class="">Schedule</a><a href="/race-center/" class="">Race Center</a><a href="/competition-guide/" class="">Rules + FAQ</a><a href="/drivers/" class="is-active">Drivers</a><a href="/paint-schemes/" class="">Paint Booth</a><a href="/history/" class="">History</a></nav><button class="uarl-native-menu-btn" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></header>
+<aside class="uarl-native-drawer" aria-hidden="true"><div class="uarl-native-drawer-top"><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt=""><button type="button" aria-label="Close menu">×</button></div><div class="uarl-native-drawer-kicker">// RACE CONTROL · SEASON 6</div><nav><a href="/" class="">Home</a><a href="/schedule/" class="">Schedule</a><a href="/race-center/" class="">Race Center</a><a href="/competition-guide/" class="">Rules + FAQ</a><a href="/drivers/" class="is-active">Drivers</a><a href="/paint-schemes/" class="">Paint Booth</a><a href="/history/" class="">History</a></nav><a class="uarl-native-discord" href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener">GET INTO THE DISCORD ↗</a></aside><div class="uarl-native-scrim"></div>
+<main id="main-content">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800;900&display=swap');
+#uarl-paddock-v2,#uarl-paddock-v2 *{box-sizing:border-box}#uarl-paddock-v2{--ink:#080a0f;--paper:#f3efe5;--card:#fff;--line:rgba(8,10,15,.15);--orange:#ff4d2e;--blue:#169cff;--lime:#d8ff3e;--muted:#686d78;background:var(--paper);color:var(--ink);font-family:Inter,Arial,sans-serif;overflow:hidden}#uarl-paddock-v2 button,#uarl-paddock-v2 input{font:inherit}#uarl-paddock-v2 button{cursor:pointer}#uarl-paddock-v2 .pp-hero{position:relative;min-height:560px;padding:clamp(5rem,9vw,8.5rem) clamp(1rem,5vw,5rem) 4rem;background:radial-gradient(circle at 82% 18%,rgba(22,156,255,.25),transparent 25%),linear-gradient(128deg,#05060a 0 54%,#121724 54% 100%);color:#fff;overflow:hidden}#uarl-paddock-v2 .pp-hero:after{content:"PADDOCK // SEASON 6";position:absolute;right:-.03em;bottom:-.2em;color:rgba(255,255,255,.035);font:900 clamp(6rem,18vw,16rem)/.75 'Barlow Condensed',sans-serif;white-space:nowrap;transform:skewX(-8deg);pointer-events:none}#uarl-paddock-v2 .pp-kicker{display:flex;align-items:center;gap:.65rem;color:var(--lime);font:900 .68rem/1 Inter,sans-serif;letter-spacing:.14em;text-transform:uppercase}#uarl-paddock-v2 .pp-kicker:before{content:"";width:34px;height:4px;background:currentColor}#uarl-paddock-v2 h1{position:relative;z-index:1;max-width:950px;margin:1.2rem 0 0;font:italic 900 clamp(4.2rem,10vw,9rem)/.76 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:-.035em}#uarl-paddock-v2 h1 em{display:block;color:var(--lime);font-style:italic}#uarl-paddock-v2 .pp-hero-copy{position:relative;z-index:2;max-width:760px;margin-top:1.4rem;color:rgba(255,255,255,.76);font-size:clamp(.95rem,2vw,1.1rem);line-height:1.7}#uarl-paddock-v2 .pp-stats{position:relative;z-index:2;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));max-width:980px;margin-top:2.4rem;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.25);backdrop-filter:blur(12px)}#uarl-paddock-v2 .pp-stat{padding:1rem 1.1rem;min-width:0;border-right:1px solid rgba(255,255,255,.14)}#uarl-paddock-v2 .pp-stat:last-child{border-right:0}#uarl-paddock-v2 .pp-stat b{display:block;color:#fff;font:900 clamp(2rem,4vw,3.8rem)/.85 'Barlow Condensed',sans-serif}#uarl-paddock-v2 .pp-stat span{display:block;margin-top:.5rem;color:rgba(255,255,255,.58);font:800 .58rem/1.3 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}#uarl-paddock-v2 .pp-control{position:sticky;top:72px;z-index:30;padding:.8rem clamp(1rem,5vw,5rem);background:rgba(5,6,10,.96);border-bottom:1px solid rgba(255,255,255,.13);backdrop-filter:blur(14px)}#uarl-paddock-v2 .pp-tabs{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none}#uarl-paddock-v2 .pp-tabs::-webkit-scrollbar{display:none}#uarl-paddock-v2 .pp-tab{flex:0 0 auto;min-height:44px;padding:.7rem .95rem;border:1px solid rgba(255,255,255,.17);background:#0e1118;color:#fff;font:900 .64rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}#uarl-paddock-v2 .pp-tab.is-active{background:var(--lime);border-color:var(--lime);color:#080a0f}#uarl-paddock-v2 .pp-search-row{display:flex;align-items:center;gap:.5rem;margin-top:.55rem}#uarl-paddock-v2 .pp-search{min-width:0;flex:1;height:44px;padding:0 .9rem;border:1px solid rgba(255,255,255,.18);background:#151924;color:#fff;font-size:16px;outline:none}#uarl-paddock-v2 .pp-search:focus{border-color:var(--lime);box-shadow:0 0 0 2px rgba(216,255,62,.18)}#uarl-paddock-v2 .pp-filter{min-height:44px;padding:.65rem .85rem;border:1px solid rgba(255,255,255,.15);background:#11151e;color:rgba(255,255,255,.78);font:800 .6rem/1 Inter,sans-serif;text-transform:uppercase;letter-spacing:.07em}#uarl-paddock-v2 .pp-filter.is-active{color:#080a0f;background:#fff}#uarl-paddock-v2 .pp-shell{max-width:1500px;margin:0 auto;padding:clamp(2.2rem,5vw,5rem) clamp(1rem,4vw,4rem) 5rem}#uarl-paddock-v2 .pp-section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;margin-bottom:1.4rem}#uarl-paddock-v2 .pp-section-head h2{margin:.5rem 0 0;font:italic 900 clamp(2.8rem,6vw,5rem)/.83 'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:-.025em}#uarl-paddock-v2 .pp-section-head p{max-width:620px;margin:0;color:#555b66;line-height:1.55}#uarl-paddock-v2 .pp-livewire{margin-bottom:3.2rem;padding:1.2rem;border:1px solid rgba(8,10,15,.13);background:#fff}#uarl-paddock-v2 .pp-moves{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:1rem}#uarl-paddock-v2 .pp-move{position:relative;min-width:0;padding:1rem;background:#0b0e14;color:#fff;border-top:4px solid var(--blue);overflow:hidden}#uarl-paddock-v2 .pp-move b{display:block;color:var(--lime);font:900 .6rem/1 Inter,sans-serif;letter-spacing:.09em;text-transform:uppercase}#uarl-paddock-v2 .pp-move strong{display:block;margin-top:.65rem;font:900 1.65rem/.95 'Barlow Condensed',sans-serif;text-transform:uppercase}#uarl-paddock-v2 .pp-move span{display:block;margin-top:.45rem;color:rgba(255,255,255,.67);font-size:.78rem;line-height:1.35}#uarl-paddock-v2 .pp-team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}#uarl-paddock-v2 .pp-team{--make:#888;position:relative;min-width:0;padding:1.25rem;border:1px solid var(--line);background:#fff;overflow:hidden;transition:transform .2s ease,border-color .2s ease}#uarl-paddock-v2 .pp-team:before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--make)}#uarl-paddock-v2 .pp-team:hover{transform:translateY(-3px);border-color:rgba(8,10,15,.35)}#uarl-paddock-v2 .pp-team[data-make="Toyota"]{--make:#ef3340}#uarl-paddock-v2 .pp-team[data-make="Ford"]{--make:#1683ff}#uarl-paddock-v2 .pp-team[data-make="Chevrolet"]{--make:#e4b63f}#uarl-paddock-v2 .pp-team-top{display:flex;align-items:flex-start;justify-content:space-between;gap:.8rem}#uarl-paddock-v2 .pp-team h3{margin:0;max-width:75%;font:900 clamp(1.8rem,3.2vw,2.7rem)/.9 'Barlow Condensed',sans-serif;text-transform:uppercase}#uarl-paddock-v2 .pp-make{flex:0 0 auto;padding:.42rem .52rem;border:1px solid var(--make);color:var(--make);font:900 .53rem/1 Inter,sans-serif;letter-spacing:.08em;text-transform:uppercase}#uarl-paddock-v2 .pp-owner{margin-top:.8rem;color:#6a707c;font-size:.76rem}#uarl-paddock-v2 .pp-owner b{color:#11151c}#uarl-paddock-v2 .pp-team-note{min-height:3.2em;margin:.9rem 0 0;color:#4f5560;font-size:.8rem;line-height:1.5}#uarl-paddock-v2 .pp-number-row{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:1rem}#uarl-paddock-v2 .pp-number{display:inline-flex;align-items:center;justify-content:center;min-width:42px;height:32px;padding:0 .42rem;background:#0a0c11;color:#fff;font:900 1.05rem/1 'Barlow Condensed',sans-serif}#uarl-paddock-v2 .pp-number.open{background:#ece8df;color:#6e737d}#uarl-paddock-v2 .pp-number.special{background:#1b212c;color:#9ee0ff}#uarl-paddock-v2 .pp-team-foot{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-top:1.1rem;padding-top:.9rem;border-top:1px solid #e2ddd3}#uarl-paddock-v2 .pp-team-foot small{color:#747985;font:800 .58rem/1.3 Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em}#uarl-paddock-v2 .pp-action{min-height:40px;padding:.65rem .85rem;border:0;background:#0a0c11;color:#fff;font:900 .6rem/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase}#uarl-paddock-v2 .pp-action:hover,#uarl-paddock-v2 .pp-action:focus-visible{background:var(--blue)}#uarl-paddock-v2 .pp-driver-grid,#uarl-paddock-v2 .pp-fa-grid,#uarl-paddock-v2 .pp-open-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}#uarl-paddock-v2 .pp-driver,#uarl-paddock-v2 .pp-fa{position:relative;min-width:0;min-height:150px;padding:1rem 1rem 1rem 5.2rem;border:1px solid var(--line);background:#fff;overflow:hidden}#uarl-paddock-v2 .pp-driver-number{position:absolute;left:.8rem;top:.8rem;width:3.55rem;color:#0b0e14;font:italic 900 3rem/.9 'Barlow Condensed',sans-serif;text-align:center;letter-spacing:-.06em}#uarl-paddock-v2 .pp-driver-number.tbd{font-size:1.5rem;letter-spacing:0;top:1.15rem}#uarl-paddock-v2 .pp-driver-status{display:inline-block;padding:.3rem .42rem;background:#0d1118;color:#fff;font:900 .51rem/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase}#uarl-paddock-v2 .pp-driver-status.recent{background:var(--blue)}#uarl-paddock-v2 .pp-driver h3,#uarl-paddock-v2 .pp-fa h3{margin:.65rem 0 .15rem;font:900 1.55rem/.95 'Barlow Condensed',sans-serif;text-transform:uppercase;overflow-wrap:anywhere}#uarl-paddock-v2 .pp-driver .user,#uarl-paddock-v2 .pp-fa .user{color:#777c86;font-size:.68rem;overflow-wrap:anywhere}#uarl-paddock-v2 .pp-driver .meta,#uarl-paddock-v2 .pp-fa .meta{margin-top:.65rem;color:#444a54;font-size:.73rem;line-height:1.45}#uarl-paddock-v2 .pp-card-button{position:absolute;inset:0;border:0;background:transparent;color:transparent}#uarl-paddock-v2 .pp-card-button:focus-visible{outline:3px solid var(--blue);outline-offset:-3px}#uarl-paddock-v2 .pp-fa{padding-left:1rem;background:#10141d;color:#fff;border-color:#252c39;border-top:4px solid var(--blue)}#uarl-paddock-v2 .pp-fa h3{color:#fff}#uarl-paddock-v2 .pp-fa .user,#uarl-paddock-v2 .pp-fa .meta{color:rgba(255,255,255,.62)}#uarl-paddock-v2 .pp-empty{padding:3rem 1rem;text-align:center;background:#fff;border:1px solid var(--line)}#uarl-paddock-v2 .pp-empty h3{font:900 2rem/1 'Barlow Condensed',sans-serif;text-transform:uppercase}#uarl-paddock-v2 .pp-empty p{margin:.6rem 0 0;color:#666c76}#uarl-paddock-v2 .pp-archive{margin-top:3rem;padding:1.25rem;border-left:5px solid var(--blue);background:#111621;color:#fff}#uarl-paddock-v2 .pp-archive h3{margin:0;font:900 1.7rem/1 'Barlow Condensed',sans-serif;text-transform:uppercase}#uarl-paddock-v2 .pp-archive p{margin:.5rem 0 0;color:rgba(255,255,255,.68);line-height:1.5}#uarl-paddock-v2 .pp-archive a{display:inline-block;margin-top:.8rem;color:var(--lime);font-weight:900;text-transform:uppercase;font-size:.68rem;letter-spacing:.07em}#uarl-paddock-v2 .pp-modal{position:fixed;inset:0;z-index:2147483640;display:grid;place-items:center;padding:1rem;background:rgba(0,0,0,.82);backdrop-filter:blur(8px)}#uarl-paddock-v2 .pp-modal[hidden]{display:none}#uarl-paddock-v2 .pp-dialog{position:relative;width:min(900px,100%);max-height:min(82vh,760px);overflow:auto;background:#f7f3e9;color:#0a0c11;border-top:8px solid var(--blue)}#uarl-paddock-v2 .pp-dialog-head{padding:1.4rem 1.4rem 1rem;background:#0a0c11;color:#fff}#uarl-paddock-v2 .pp-dialog-head .pp-kicker{color:var(--lime)}#uarl-paddock-v2 .pp-dialog-head h2{margin:.7rem 0 0;font:italic 900 clamp(2.7rem,7vw,5.5rem)/.8 'Barlow Condensed',sans-serif;text-transform:uppercase}#uarl-paddock-v2 .pp-dialog-close{position:absolute;right:.8rem;top:.8rem;z-index:2147483646;width:44px;height:44px;border:1px solid rgba(255,255,255,.25);background:#161b25;color:#fff;font-size:1.5rem}#uarl-paddock-v2 .pp-dialog-body{padding:1.4rem}#uarl-paddock-v2 .pp-team-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:1rem}#uarl-paddock-v2 .pp-team-meta div{padding:.8rem;background:#e8e3d8}#uarl-paddock-v2 .pp-team-meta small{display:block;color:#6f747e;font:800 .52rem/1 Inter,sans-serif;text-transform:uppercase;letter-spacing:.07em}#uarl-paddock-v2 .pp-team-meta b{display:block;margin-top:.4rem;font:900 1.25rem/1 'Barlow Condensed',sans-serif;text-transform:uppercase;overflow-wrap:anywhere}#uarl-paddock-v2 .pp-dialog-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}#uarl-paddock-v2 .pp-dialog-entry{min-width:0;padding:1rem;background:#fff;border:1px solid #ddd7cc}#uarl-paddock-v2 .pp-dialog-entry-top{display:flex;align-items:flex-start;gap:.75rem}#uarl-paddock-v2 .pp-dialog-entry .num{flex:0 0 56px;font:italic 900 2.8rem/.8 'Barlow Condensed',sans-serif}#uarl-paddock-v2 .pp-dialog-entry h4{margin:0;font:900 1.45rem/.95 'Barlow Condensed',sans-serif;text-transform:uppercase;overflow-wrap:anywhere}#uarl-paddock-v2 .pp-dialog-entry p{margin:.25rem 0 0;color:#777c85;font-size:.69rem;overflow-wrap:anywhere}#uarl-paddock-v2 .pp-dialog-entry .tag{display:inline-block;margin-top:.6rem;padding:.28rem .4rem;background:#10131a;color:#fff;font:800 .5rem/1 Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em}#uarl-paddock-v2 .pp-driver-profile{display:grid;grid-template-columns:130px 1fr;gap:1.2rem;align-items:start}#uarl-paddock-v2 .pp-driver-profile.no-number{grid-template-columns:1fr}#uarl-paddock-v2 .pp-profile-number{font:italic 900 6rem/.75 'Barlow Condensed',sans-serif;color:var(--blue);text-align:center}#uarl-paddock-v2 .pp-profile-name{margin:0;font:900 clamp(2.4rem,6vw,4.7rem)/.8 'Barlow Condensed',sans-serif;text-transform:uppercase;overflow-wrap:anywhere}#uarl-paddock-v2 .pp-profile-user{margin:.55rem 0 0;color:#6a7079;overflow-wrap:anywhere}#uarl-paddock-v2 .pp-profile-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:1.2rem}#uarl-paddock-v2 .pp-profile-stats div{padding:.8rem;background:#ece7dc}#uarl-paddock-v2 .pp-profile-stats b{display:block;font:900 1.8rem/1 'Barlow Condensed',sans-serif}#uarl-paddock-v2 .pp-profile-stats small{display:block;margin-top:.3rem;color:#777b84;font:800 .48rem/1 Inter,sans-serif;text-transform:uppercase;letter-spacing:.06em}#uarl-paddock-v2 [hidden]{display:none!important}@media(max-width:1000px){#uarl-paddock-v2 .pp-team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#uarl-paddock-v2 .pp-driver-grid,#uarl-paddock-v2 .pp-fa-grid,#uarl-paddock-v2 .pp-open-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#uarl-paddock-v2 .pp-moves{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:680px){#uarl-paddock-v2 .pp-hero{min-height:auto;padding-top:5.3rem}#uarl-paddock-v2 .pp-stats{grid-template-columns:1fr 1fr}#uarl-paddock-v2 .pp-stat:nth-child(2){border-right:0}#uarl-paddock-v2 .pp-stat:nth-child(-n+2){border-bottom:1px solid rgba(255,255,255,.14)}#uarl-paddock-v2 .pp-control{top:64px;padding:.65rem .75rem}#uarl-paddock-v2 .pp-search-row{flex-wrap:wrap}#uarl-paddock-v2 .pp-search{flex-basis:100%}#uarl-paddock-v2 .pp-filter{flex:1 1 auto}#uarl-paddock-v2 .pp-section-head{display:block}#uarl-paddock-v2 .pp-section-head p{margin-top:.7rem}#uarl-paddock-v2 .pp-team-grid,#uarl-paddock-v2 .pp-driver-grid,#uarl-paddock-v2 .pp-fa-grid,#uarl-paddock-v2 .pp-open-grid{grid-template-columns:1fr}#uarl-paddock-v2 .pp-moves{grid-template-columns:1fr 1fr}#uarl-paddock-v2 .pp-team{padding:1.05rem 1rem 1rem 1.2rem}#uarl-paddock-v2 .pp-team-note{min-height:0}#uarl-paddock-v2 .pp-driver,#uarl-paddock-v2 .pp-fa{min-height:130px;padding-left:4.7rem}#uarl-paddock-v2 .pp-driver-number{width:3.1rem;font-size:2.55rem}#uarl-paddock-v2 .pp-dialog{max-height:88vh}#uarl-paddock-v2 .pp-dialog-grid{grid-template-columns:1fr}#uarl-paddock-v2 .pp-team-meta{grid-template-columns:1fr}#uarl-paddock-v2 .pp-driver-profile{grid-template-columns:1fr}#uarl-paddock-v2 .pp-profile-number{text-align:left;font-size:4.5rem}#uarl-paddock-v2 .pp-profile-stats{grid-template-columns:1fr 1fr 1fr}}@media(max-width:430px){#uarl-paddock-v2 .pp-moves{grid-template-columns:1fr}#uarl-paddock-v2 .pp-tab{padding:.7rem .75rem}#uarl-paddock-v2 .pp-shell{padding-left:.8rem;padding-right:.8rem}#uarl-paddock-v2 .pp-stat{padding:.85rem}#uarl-paddock-v2 .pp-stat b{font-size:2.35rem}}@media(max-width:680px){#uarl-paddock-v2 .pp-modal{padding:0;place-items:stretch}#uarl-paddock-v2 .pp-dialog{width:100%;height:100dvh;max-height:100dvh;border-top:0;padding-top:0}#uarl-paddock-v2 .pp-dialog-close{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:10px;width:48px;height:48px;background:#090c12;border:2px solid rgba(255,255,255,.7);box-shadow:0 5px 20px rgba(0,0,0,.45)}#uarl-paddock-v2 .pp-dialog-body{padding-bottom:calc(1.4rem + env(safe-area-inset-bottom,0px))}}@media(prefers-reduced-motion:reduce){#uarl-paddock-v2 *{scroll-behavior:auto!important;transition:none!important}}
+</style>
+<div id="uarl-paddock-v2">
+  <section class="pp-hero">
+    <div class="pp-kicker">Season 6 team + driver command center</div>
+    <h1>The UARL <em>Paddock.</em></h1>
+    <p class="pp-hero-copy">Explore every active D1 team, meet the owners, inspect the current driver lineups, track the post-D2 free-agent market, and jump into the independent Open Series field. This is the roster page as a living paddock — not a spreadsheet in disguise.</p>
+    <div class="pp-stats" aria-label="Roster summary"><div class="pp-stat"><b>6</b><span>D1 teams</span></div><div class="pp-stat"><b>18</b><span>Signed D1 drivers</span></div><div class="pp-stat"><b>8</b><span>Open FT seats</span></div><div class="pp-stat"><b>5</b><span>D1 free agents</span></div></div>
+  </section>
+  <nav class="pp-control" aria-label="Paddock views">
+    <div class="pp-tabs"><button class="pp-tab is-active" type="button" data-view="teams">Team HQ</button><button class="pp-tab" type="button" data-view="drivers">D1 Drivers</button><button class="pp-tab" type="button" data-view="freeagents">Free Agents</button><button class="pp-tab" type="button" data-view="open">Open Series</button></div>
+    <div class="pp-search-row"><input class="pp-search" type="search" inputmode="search" placeholder="Search team, owner, driver, number…" aria-label="Search the paddock"><button class="pp-filter is-active" type="button" data-make="all">All makes</button><button class="pp-filter" type="button" data-make="Chevrolet">Chevy</button><button class="pp-filter" type="button" data-make="Ford">Ford</button><button class="pp-filter" type="button" data-make="Toyota">Toyota</button></div>
+  </nav>
+  <div class="pp-shell">
+    <section class="pp-livewire" data-livewire><div class="pp-kicker" style="color:#0878c8">Driver market // confirmed</div><div class="pp-moves" data-moves></div></section>
+    <section data-panel="teams"><div class="pp-section-head"><div><div class="pp-kicker" style="color:#d23f24">D1 team directory</div><h2>Team HQ.</h2></div><p>Tap any organization to open its garage: owner, manufacturer, current cars, special entries, open seats, and recently signed drivers.</p></div><div class="pp-team-grid" data-team-grid></div><div class="pp-empty" data-empty-teams hidden><h3>No teams match.</h3><p>Try another search or manufacturer filter.</p></div></section>
+    <section data-panel="drivers" hidden><div class="pp-section-head"><div><div class="pp-kicker" style="color:#d23f24">Active D1 roster</div><h2>Drivers.</h2></div><p>Current signed drivers across the Cup paddock. Driver profiles include career wins, championships, team, number, and current signing status.</p></div><div class="pp-driver-grid" data-driver-grid></div><div class="pp-empty" data-empty-drivers hidden><h3>No drivers match.</h3><p>Try another search or manufacturer filter.</p></div></section>
+    <section data-panel="freeagents" hidden><div class="pp-section-head"><div><div class="pp-kicker" style="color:#169cff">Post-D2 driver market</div><h2>Free Agents.</h2></div><p>D2 is discontinued. These former Grand National drivers remain unsigned in D1. Their former D2 numbers are reference only.</p></div><div class="pp-fa-grid" data-fa-grid></div><div class="pp-empty" data-empty-fa hidden><h3>No free agents match.</h3></div></section>
+    <section data-panel="open" hidden><div class="pp-section-head"><div><div class="pp-kicker" style="color:#8aaa00">Bangor Savings Bank</div><h2>Open Series.</h2></div><p>The independent Super Late Model field. These entries are not D1 team charters; manufacturer and entry status are shown per car.</p></div><div class="pp-open-grid" data-open-grid></div><div class="pp-empty" data-empty-open hidden><h3>No Open entries match.</h3></div></section>
+    <aside class="pp-archive"><h3>D2 remains in the record book.</h3><p>The Grand National Series was discontinued after its Daytona opener. The race result, Taylor’s 55-point archive total, and the full D2 event record remain preserved in Race Center.</p><a href="/race-center/?series=d2">Open the D2 archive →</a></aside>
+  </div>
+  <div class="pp-modal" data-modal hidden><section class="pp-dialog" role="dialog" aria-modal="true" aria-labelledby="pp-dialog-title"><button class="pp-dialog-close" type="button" aria-label="Close">×</button><div data-dialog-content></div></section></div>
+</div>
+<script src="/assets/runtime-data.js"></script>
+<script>
+(async function(){
+  var root=document.getElementById('uarl-paddock-v2');if(!root)return;
+  var data={"teams":[{"id":"dakota","name":"Dakota Sullivan Racing","owner":"Dale","make":"Chevrolet","note":"Dale-owned Chevrolet program with Max joining the #19 and Opt joining the #91.","entries":[{"number":"16","user":"58bbwapache","status":"Full-Time"},{"number":"19","name":"Max","status":"Signed","signedAt":"2026-09-13","seatType":"Full-Time"},{"number":"20","user":"UN88475544","status":"Full-Time"},{"number":"61","user":"PlaneFan638","status":"Full-Time"},{"number":"91","name":"Opt","status":"Signed","signedAt":"2026-09-13","seatType":"Part-Time"}]},{"id":"xdrive","name":"XDrive Motorsports","owner":"John","make":"Chevrolet","note":"John-owned Chevrolet program with four full-time seats currently available.","entries":[{"number":"21","name":"OPEN","status":"Open FT"},{"number":"25","name":"OPEN","status":"Open FT"},{"number":"44","name":"OPEN","status":"Open FT"},{"number":"89","name":"OPEN","status":"Open FT"}]},{"id":"avery","name":"Avery Motorsports","owner":"Payson","ownerNote":"UARL League Owner","make":"Ford","logo":"/assets/teams/avery/logo.png","note":"The league owner\u2019s Ford stable. Frog joins the #73 after the D2 shutdown.","entries":[{"number":"05","user":"pa05","status":"Full-Time"},{"number":"5","name":"Part-Time / Development Charter","status":"PT / Development Charter"},{"number":"58","user":"bowlingsham1","status":"Full-Time"},{"number":"60","user":"codydgoforth","status":"Full-Time"},{"number":"72","user":"TBDAN1E","status":"Full-Time"},{"number":"73","user":"Frogboy4783","status":"Signed","recent":true,"signedAt":"2026-09-13"}]},{"id":"whitlock","name":"Goat Whitlock Motorsports","owner":"James","make":"Toyota","note":"James-owned Toyota team. Taylor moves up from the discontinued D2 series into the #48.","entries":[{"number":"9","name":"OPEN","status":"Open FT"},{"number":"24","user":"John_Hunter38","status":"Full-Time"},{"number":"48","user":"TaylorKenseth17","status":"Signed","recent":true,"signedAt":"2026-09-13"},{"number":"84","user":"JJElliott2004","status":"Full-Time"}]},{"id":"goforth","name":"Goforth Motorsports","owner":"Cody","make":"Ford","note":"Cody\u2019s Ford operation, home to the league\u2019s all-time wins leader.","entries":[{"number":"1","name":"OPEN","status":"Open FT"},{"number":"77","user":"Kingofgamez","status":"Full-Time"},{"number":"80","user":"GuillermoChase","status":"Full-Time"},{"number":"88","user":"lancejuly","status":"Full-Time"},{"number":"97","name":"Part-Time Charter","status":"Part-Time Charter"}]},{"id":"aetherwing","name":"Aetherwing eMotorsports","owner":"Wispy","make":"Toyota","note":"A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.","entries":[{"number":"28","user":"Aokikoto","status":"Full-Time","charterType":"FT"},{"number":"32","user":"uhhbzb","status":"Signed","signedAt":"2026-09-13","charterType":"FT"},{"number":"52","user":"sealsntags","status":"Signed","signedAt":"2026-09-14","charterType":"FT"},{"number":"54","name":"OPEN","status":"Open FT","charterType":"FT"},{"number":"92","user":"IIKyle5Larson","status":"Full-Time","charterType":"FT"},{"number":"82","name":"Part-Time / Development Charter","status":"PT / Development Charter","seatType":"PT / Development Charter","charterType":"OPEN"}],"founded":"Season 3","logo":"/assets/aetherwing/logo.webp","brandColor":"#ef1e23","brandColor2":"#ffffff","pendingDrivers":[],"charterCount":6}],"profiles":{"58bbwapache":{"alias":"Dale","wins":0,"championships":0,"rank":0},"UN88475544":{"alias":"Nurtec","wins":5,"championships":0,"rank":13},"PlaneFan638":{"alias":"Plane","wins":1,"championships":0,"rank":44},"pa05":{"alias":"Payson","wins":18,"championships":1,"rank":2},"bowlingsham1":{"alias":"Shane","wins":3,"championships":0,"rank":23},"codydgoforth":{"alias":"Cody","wins":6,"championships":2,"rank":9},"TBDAN1E":{"alias":"Daniel","wins":1,"championships":0,"rank":37},"John_Hunter38":{"alias":"John","wins":3,"championships":0,"rank":19},"JJElliott2004":{"alias":"James","wins":3,"championships":1,"rank":18},"Kingofgamez":{"alias":"King","wins":3,"championships":0,"rank":20},"GuillermoChase":{"alias":"Gman","wins":5,"championships":0,"rank":12},"lancejuly":{"alias":"Lance","wins":25,"championships":0,"rank":1},"Aokikoto":{"alias":"Wispy","wins":1,"championships":0,"rank":47},"IIKyle5Larson":{"alias":"Rocky","wins":5,"championships":0,"rank":14},"Frogboy4783":{"alias":"Frog","wins":2,"championships":0,"rank":26},"uhhbzb":{"alias":"BurgerTown2Good","wins":0,"championships":0,"rank":0},"TaylorKenseth17":{"alias":"Taylor","wins":0,"championships":0,"rank":0},"FueledByMayonnaise":{"alias":"FueledByMayo","wins":1,"championships":0,"rank":40},"daleapache88":{"alias":"Dale","wins":0,"championships":0,"rank":0},"Callsign_Hestia":{"alias":"Nick","wins":0,"championships":0,"rank":0},"Comodw":{"alias":"Jay","wins":0,"championships":0,"rank":0},"JeremyFrey12":{"alias":"Jeremy","wins":0,"championships":0,"rank":0},"AnyGameAnyTime09":{"alias":"Muffin","wins":0,"championships":0,"rank":0},"sealsntags":{"alias":"Gk3r","wins":0,"championships":0,"rank":0},"pxssis":{"alias":"Pxssis","wins":2,"championships":0,"rank":30}},"openEntries":[{"number":"05","user":"pa05","make":"Ford"},{"number":"28","user":"Aokikoto","make":"Toyota","status":"Part-Time"},{"number":"44","user":"bowlingsham1","make":"Ford"},{"number":"48","user":"JJElliott2004","make":"Chevrolet"},{"number":"49","user":"pxssis","make":"Ford"},{"number":"57","user":"IIKyle5Larson","make":"Ford"},{"number":"60","user":"codydgoforth","make":"Ford"},{"number":"87","user":"FueledByMayonnaise","make":"Generic"},{"number":"88","user":"daleapache88","make":"Generic"}],"freeAgents":[{"name":"FueledByMayo","user":"FueledByMayonnaise","former":"#20 \u00b7 Dakota Sullivan Racing \u00b7 Chevrolet"},{"name":"Nick","user":"Callsign_Hestia","former":"#05 \u00b7 Avery Motorsports \u00b7 Ford"},{"name":"Jay","user":"Comodw","former":"#9 \u00b7 Goat Whitlock Motorsports \u00b7 Toyota"},{"name":"Jeremy","user":"JeremyFrey12","former":"#48 \u00b7 Goat Whitlock Motorsports \u00b7 Toyota"},{"name":"Muffin","user":"AnyGameAnyTime09","former":"#84 \u00b7 Goat Whitlock Motorsports \u00b7 Toyota"}],"recentMoves":[{"driver":"Taylor","team":"Goat Whitlock Motorsports","number":"48","make":"Toyota","signedAt":"2026-09-13"},{"driver":"BurgerTown2Good","team":"Aetherwing eMotorsports","number":"32","make":"Toyota","signedAt":"2026-09-13"},{"driver":"Frog","team":"Avery Motorsports","number":"73","make":"Ford","signedAt":"2026-09-13"},{"driver":"Gk3r","team":"Aetherwing eMotorsports","number":"52","make":"Toyota","signedAt":"2026-09-14"},{"driver":"Max","team":"Dakota Sullivan Racing","number":"19","make":"Chevrolet","signedAt":"2026-09-13"},{"driver":"Opt","team":"Dakota Sullivan Racing","number":"91","make":"Chevrolet","signedAt":"2026-09-13"}]};
+  try { var liveData=await window.UARLData.load(); data=liveData.drivers||data; } catch(error) { console.warn('Using built-in Drivers fallback',error); }
+  var RECENT_SIGNING_DAYS=3;
+  var AEM_NUMBERS={"28":"/assets/aetherwing/numbers/28.png","32":"/assets/aetherwing/numbers/32.png","52":"/assets/aetherwing/numbers/52.png","54":"/assets/aetherwing/numbers/54.png","62":"/assets/aetherwing/numbers/62.png","82":"/assets/aetherwing/numbers/82.png","92":"/assets/aetherwing/numbers/92.png"};
+  var state={view:'teams',make:'all',query:''};
+  var modal=root.querySelector('[data-modal]'),dialog=root.querySelector('[data-dialog-content]'),lastFocus=null;
+  function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c];});}
+  function profile(user){return user?(data.profiles[user]||{alias:user,wins:0,championships:0,rank:0}):{alias:'',wins:0,championships:0,rank:0};}
+  function displayEntry(e){if(e.user)return profile(e.user).alias;return e.name||'—';}
+  function handleEntry(e){return e.user?'@'+e.user:(e.name&&e.name!=='OPEN'?'Username not listed':e.status);}
+  function isSignedEntry(e){return !!(e.user || (e.name && e.name!=='OPEN' && !/Entry|Charter/.test(e.name)));}
+  function isRecent(e){if(!e.signedAt)return false;var then=new Date(e.signedAt+'T00:00:00-04:00').getTime();var diff=Date.now()-then;return diff>=0 && diff < RECENT_SIGNING_DAYS*86400000;}
+  function statusLabel(e){
+    if(e.signedAt&&isRecent(e))return e.numberPending?'Recent Signing · Number pending':'Recent Signing';
+    if(e.signedAt)return e.numberPending?'Signed · Number pending':'Signed';
+    return e.status||'Signed';
+  }
+  function moveLabel(m){if(!m.signedAt)return 'Confirmed move';var then=new Date(m.signedAt+'T00:00:00-04:00').getTime();return (Date.now()-then)<RECENT_SIGNING_DAYS*86400000?'Recent signing':'Confirmed move';}
+  function textTeam(t){return [t.name,t.owner,t.ownerNote||'',t.make,t.note,t.founded||''].concat(t.entries.map(function(e){return [e.number,displayEntry(e),e.user||'',e.status,e.seatType||''].join(' ');})).join(' ').toLowerCase();}
+  function currentMatches(text,make){var q=state.query.toLowerCase();return (!q||text.indexOf(q)>-1)&&(state.make==='all'||make===state.make);}
+  function entryClass(e){if(/^Open/.test(e.status))return 'open';if(/Part-Time|Development/.test(e.status)||/Part-Time|Development/.test(e.name||''))return 'special';return '';}
+  function numberArt(team,e,where){var n=String(e.number);if(team&&team.id==='aetherwing'&&AEM_NUMBERS[n])return '<span class="pp-aem-num pp-aem-num-'+esc(where||'card')+'"><img src="'+AEM_NUMBERS[n]+'" alt="#'+esc(n)+'"></span>';return e&&e.numberPending?'<span class="pp-driver-number pending">Number pending</span>':'<span class="pp-number-text">#'+esc(n)+'</span>';}
+  function teamSignedCount(t){return t.entries.filter(isSignedEntry).length+(t.pendingDrivers||[]).length;}
+  function teamNumberArt(t,e){
+    if(t.id==='avery'){
+      var n=String(e.number||'');
+      if(['05','5','58','60','72','73'].indexOf(n)!==-1) return '<img class="pp-team-num-art pp-avery-num" src="/assets/teams/avery/'+encodeURIComponent(n)+'.png" alt="#'+esc(n)+'">';
+    }
+    if(t.id==='aetherwing') return numberArt(t,e,'chip');
+    return '<span class="pp-stage-num">#'+esc(e.number)+'</span>';
+  }
+  function manufacturerMark(make){
+    var m=String(make||'').toLowerCase();
+    if(m==='toyota') return '<span class="pp-mfg-logo pp-mfg-toyota" role="img" aria-label="Toyota" title="Toyota"><img src="/assets/manufacturers/toyota.png" alt="Toyota"></span>';
+    if(m==='ford') return '<span class="pp-mfg-logo pp-mfg-ford" role="img" aria-label="Ford" title="Ford"><img src="/assets/manufacturers/ford.png" alt="Ford"></span>';
+    if(m==='chevrolet') return '<span class="pp-mfg-logo pp-mfg-chevy" role="img" aria-label="Chevrolet" title="Chevrolet"><img src="/assets/manufacturers/chevrolet.png" alt="Chevrolet"></span>';
+    return '<span class="pp-mfg-generic" title="'+esc(make||'Generic')+'">'+esc(make||'Generic')+'</span>';
+  }
+    function teamCard(t){
+    var open=t.entries.filter(function(e){return /^Open/.test(e.status);}).length;
+    var signed=teamSignedCount(t);
+    var brand=t.id==='aetherwing'?' pp-team-aetherwing':'';
+    var logo=t.logo?'<img class="pp-team-logo pp-stage-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'<div class="pp-stage-wordmark">'+esc(t.name)+'</div>';
+    var regular=t.entries;
+    var shared=[];
+
+    function stageEntry(e){
+      var isOpen=/^Open/.test(e.status);
+      var art=teamNumberArt(t,e);
+      return '<div class="pp-stage-entry'+(isOpen?' is-open':'')+'">'+
+        '<div class="pp-stage-number">'+art+'</div>'+
+        '<div class="pp-stage-person"><strong>'+esc(displayEntry(e))+'</strong>'+
+        (e.user?'<small>'+esc(e.user)+'</small>':'')+
+        '<span>'+esc(statusLabel(e))+'</span></div>'+
+        (isOpen?'<b class="pp-open-callout">OPEN FT CHARTER</b>':'')+
+      '</div>';
+    }
+
+    var sharedBlock=shared.length?'<div class="pp-shared-stage"><div class="pp-shared-label"><b>6th Charter</b><span></span></div>'+
+      shared.map(function(e,i){return stageEntry(e)+(i===0?'<em>OR</em>':'');}).join('')+'</div>':'';
+
+    return '<article class="pp-team pp-team-stage'+brand+'" data-make="'+esc(t.make)+'">'+
+      '<div class="pp-stage-head"><div class="pp-stage-brand">'+logo+'</div><div class="pp-stage-copy">'+
+      '<div class="pp-stage-meta">'+manufacturerMark(t.make)+(t.founded?'<span>Founded '+esc(t.founded)+'</span>':'')+'<span>Owner '+esc(t.owner)+'</span></div>'+
+      '<h3>'+esc(t.name)+'</h3><p>'+esc(t.note)+'</p>'+
+      '<div class="pp-stage-status"><b>'+signed+' signed</b><b class="'+(open?'has-open':'')+'">'+open+' open FT</b>'+(t.charterCount?'<b>'+t.charterCount+' charters</b>':'')+'</div></div></div>'+
+      '<div class="pp-stage-roster">'+regular.map(stageEntry).join('')+'</div>'+sharedBlock+
+      '<button class="pp-stage-share pp-share" type="button" data-share-team="'+esc(t.id)+'" aria-label="Share '+esc(t.name)+'" title="Share team"><span class="pp-share-glyph" aria-hidden="true"><i></i><i></i><i></i><b></b><b></b></span></button>'+
+    '</article>';
+  }
+  function driverRecord(t,e){var p=e.user?profile(e.user):{alias:e.name,wins:0,championships:0,rank:0};return {team:t,entry:e,name:p.alias||e.name,user:e.user||'',profile:p,make:t.make};}
+  function driverCard(r){
+    var recent=isRecent(r.entry)?' recent':'';
+    var noNumber=!!r.entry.numberPending;
+    var num=noNumber?'<span class="pp-driver-number pending">Number pending</span>':(r.team.id==='aetherwing'?numberArt(r.team,r.entry,'driver'):'<span class="pp-driver-number">#'+esc(r.entry.number)+'</span>');
+    var userLine=r.user?'@'+esc(r.user):'Username not listed';
+    return '<article class="pp-driver'+(r.team.id==='aetherwing'?' pp-driver-aetherwing':'')+(noNumber?' no-number':'')+'">'+num+'<span class="pp-driver-status'+recent+'">'+esc(statusLabel(r.entry))+'</span><h3>'+esc(r.name)+'</h3><div class="user">'+userLine+'</div><div class="meta">'+esc(r.team.name)+' · '+esc(r.make)+(r.entry.seatType?' · '+esc(r.entry.seatType):'')+'</div><button class="pp-card-button" type="button" aria-label="Open '+esc(r.name)+' profile" data-driver="'+esc(r.user||'')+'" data-driver-name="'+esc(r.name)+'" data-team-id="'+esc(r.team.id)+'" data-number="'+esc(r.entry.number||'')+'" data-number-pending="'+(noNumber?'true':'false')+'"></button></article>';
+  }
+  function freeAgentCard(f){return '<article class="pp-fa"><span class="pp-driver-status">D1 Free Agent</span><h3>'+esc(f.name)+'</h3><div class="user">@'+esc(f.user)+'</div><div class="meta">Former D2 '+esc(f.former)+'</div></article>';}
+  function openEntryCard(e){
+    var p=profile(e.user);
+    var r={team:{name:'Independent Open Series',id:'open',make:e.make},entry:{number:e.number,status:e.status||'Open Series'},name:p.alias,user:e.user,profile:p,make:e.make};
+    var card=driverCard(r);
+    if(String(e.number)==='28' && String(e.user).toLowerCase()==='aokikoto'){
+      card=card.replace(/<span class="pp-driver-number[^"]*">.*?<\/span>/,
+        '<span class="pp-driver-number pp-open-aem28"><img src="/assets/aetherwing/numbers/28.png" alt="#28"></span>');
+    }
+    return card;
+  }
+  function renderMoves(){root.querySelector('[data-moves]').innerHTML=data.recentMoves.map(function(m){var assignment=m.numberPending?'Number assignment pending':'#'+esc(m.number);return '<article class="pp-move"><b>'+esc(moveLabel(m))+'</b><strong>'+esc(m.driver)+' → '+assignment+'</strong><span>'+esc(m.team)+' · '+esc(m.make)+(m.numberPending?' · signed, number awaiting confirmation':'')+'</span></article>';}).join('');}
+  function render(){
+    root.querySelectorAll('[data-panel]').forEach(function(p){p.hidden=p.getAttribute('data-panel')!==state.view;});
+    var livewire=root.querySelector('[data-livewire]');if(livewire)livewire.hidden=state.view==='open';
+
+    var teams=data.teams.filter(function(t){return currentMatches(textTeam(t),t.make);});
+    var teamGrid=root.querySelector('[data-team-grid]');if(teamGrid)teamGrid.innerHTML=teams.map(teamCard).join('');
+    var emptyTeams=root.querySelector('[data-empty-teams]');if(emptyTeams)emptyTeams.hidden=teams.length>0;
+
+    var drivers=[];
+    data.teams.forEach(function(t){
+      t.entries.forEach(function(e){if(isSignedEntry(e))drivers.push(driverRecord(t,e));});
+      (t.pendingDrivers||[]).forEach(function(e){var p=profile(e.user);drivers.push({team:t,entry:e,name:p.alias||e.user,user:e.user||'',profile:p,make:t.make});});
+    });
+    drivers=drivers.filter(function(r){var s=[r.name,r.user,r.entry.number||'',r.team.name,r.make,r.entry.status||'',r.entry.seatType||'',r.entry.numberPending?'number pending':''].join(' ').toLowerCase();return currentMatches(s,r.make);}).sort(function(a,b){var an=parseInt(a.entry.number,10),bn=parseInt(b.entry.number,10);return (Number.isFinite(an)?an:9999)-(Number.isFinite(bn)?bn:9999)||a.name.localeCompare(b.name);});
+    var driverGrid=root.querySelector('[data-driver-grid]');if(driverGrid)driverGrid.innerHTML=drivers.map(driverCard).join('');
+    var emptyDrivers=root.querySelector('[data-empty-drivers]');if(emptyDrivers)emptyDrivers.hidden=drivers.length>0;
+
+    var fas=data.freeAgents.filter(function(f){var s=[f.name,f.user,f.former].join(' ').toLowerCase();return (!state.query||s.indexOf(state.query.toLowerCase())>-1)&&(state.make==='all'||f.former.indexOf(state.make)>-1);});
+    var faGrid=root.querySelector('[data-fa-grid]');if(faGrid)faGrid.innerHTML=fas.map(freeAgentCard).join('');
+    var emptyFa=root.querySelector('[data-empty-fa]');if(emptyFa)emptyFa.hidden=fas.length>0;
+
+    var opens=data.openEntries.filter(function(e){var p=profile(e.user);var s=[e.number,e.user,p.alias,e.make,e.status||''].join(' ').toLowerCase();return currentMatches(s,e.make);}).sort(function(a,b){var an=parseInt(a.number,10),bn=parseInt(b.number,10);return (Number.isFinite(an)?an:9999)-(Number.isFinite(bn)?bn:9999)||String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true});});
+    var openGrid=root.querySelector('[data-open-grid]');if(openGrid)openGrid.innerHTML=opens.map(openEntryCard).join('');
+    var emptyOpen=root.querySelector('[data-empty-open]');if(emptyOpen)emptyOpen.hidden=opens.length>0;
+
+    bindCards();
+  }
+  
+  function teamDialog(t){
+    var logo=t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'';
+    var founded=t.founded?'<div><small>Founded</small><b>'+esc(t.founded)+'</b></div>':'';
+    var charterMeta=t.charterCount?'<div><small>Charter structure</small><b>'+t.charterCount+' charter slots</b></div>':'';
+    var pending=(t.pendingDrivers||[]).map(function(e){var p=profile(e.user);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing pp-dialog-entry-pending"><div class="pp-dialog-entry-top"><div><h4>'+esc(p.alias)+'</h4><p>@'+esc(e.user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
+    var entriesHtml;
+    if(t.id==='aetherwing'){
+      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing"><div class="pp-dialog-entry-top">'+numberArt(t,e,'dialog')+'<div><h4>'+esc(name)+'</h4><p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
+    }else{
+      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry"><div class="pp-dialog-entry-top"><span class="num">#'+esc(e.number)+'</span><div><h4>'+esc(name)+'</h4><p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
+    }
+    return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Team HQ // D1</div><h2 id="pp-dialog-title">'+esc(t.name)+'</h2>'+logo+'</div><div class="pp-dialog-body"><div class="pp-team-meta"><div><small>Owner</small><b>'+esc(t.owner)+(t.ownerNote?' · '+esc(t.ownerNote):'')+'</b></div><div><small>Manufacturer</small><b>'+esc(t.make)+'</b></div>'+founded+'<div><small>Current roster</small><b>'+teamSignedCount(t)+' signed</b></div>'+charterMeta+'</div><p class="pp-team-description">'+esc(t.note)+'</p><div class="pp-dialog-grid">'+entriesHtml+pending+'</div><button class="pp-dialog-close-inline" type="button" data-close-modal>Close Team HQ ×</button></div>';
+  }
+  function driverDialog(user,teamId,number,nameOverride,numberPending){
+    var t=data.teams.find(function(x){return x.id===teamId;});var e=null;
+    if(t){if(numberPending){e=(t.pendingDrivers||[]).find(function(x){return x.user===user;});}else{e=t.entries.find(function(x){return String(x.number)===String(number)&&(user?x.user===user:displayEntry(x)===nameOverride);});}}
+    if(!t||!e){var oe=data.openEntries.find(function(x){return x.user===user&&String(x.number)===String(number);});if(oe){t={name:'Independent Open Series',make:oe.make,id:'open'};e={number:oe.number,status:oe.status||'Open Series',user:user};}else return '';}
+    var p=e.user?profile(e.user):{alias:e.name,wins:0,championships:0,rank:0};var handle=e.user?'@'+e.user:'Username not listed';var numberBlock=e.numberPending?'':(t.id==='aetherwing'?numberArt(t,e,'profile'):'<div class="pp-profile-number">#'+esc(number)+'</div>');
+    return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Driver profile</div><h2 id="pp-dialog-title">'+esc(p.alias||e.name)+'</h2>'+(t.id==='aetherwing'&&t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'')+'</div><div class="pp-dialog-body"><div class="pp-driver-profile'+(e.numberPending?' no-number':'')+'">'+numberBlock+'<div><h3 class="pp-profile-name">'+esc(p.alias||e.name)+'</h3><p class="pp-profile-user">'+esc(handle)+'</p><p style="margin:.7rem 0 0;color:#505762;line-height:1.6">'+esc(t.name)+' · '+esc(t.make)+' · '+esc(statusLabel(e))+'</p><div class="pp-profile-stats"><div><b>'+p.wins+'</b><small>Career wins</small></div><div><b>'+p.championships+'</b><small>Championships</small></div><div><b>'+(p.rank?'#'+p.rank:'—')+'</b><small>Win-list rank</small></div></div></div></div></div>';
+  }
+  function openModal(markup){if(!markup)return;dialog.innerHTML=markup;bindShareButtons(dialog);lastFocus=document.activeElement;modal.hidden=false;document.body.style.overflow='hidden';root.querySelector('.pp-dialog-close').focus();}
+  function closeModal(){modal.hidden=true;document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus();}
+  function teamUrl(id){return window.location.origin+'/team/'+encodeURIComponent(id)+'/?share=18';}
+  function copyText(text,button){
+    function done(){if(button){var old=button.textContent;button.textContent='Copied ✓';setTimeout(function(){button.textContent=old;},1400);}}
+    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done();});}else{fallbackCopy(text);done();}
+  }
+  function fallbackCopy(text){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
+  function bindShareButtons(scope){(scope||root).querySelectorAll('[data-share-team]').forEach(function(b){if(b.dataset.shareBound)return;b.dataset.shareBound='1';b.addEventListener('click',function(e){e.stopPropagation();copyText(teamUrl(b.getAttribute('data-share-team')),b);});});}
+  function bindCards(){bindShareButtons(root);root.querySelectorAll('[data-team]').forEach(function(b){b.addEventListener('click',function(){var t=data.teams.find(function(x){return x.id===b.getAttribute('data-team');});if(t)openModal(teamDialog(t));});});root.querySelectorAll('[data-driver]').forEach(function(b){b.addEventListener('click',function(){openModal(driverDialog(b.getAttribute('data-driver'),b.getAttribute('data-team-id'),b.getAttribute('data-number'),b.getAttribute('data-driver-name'),b.getAttribute('data-number-pending')==='true'));});});}
+  root.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){state.view=b.getAttribute('data-view');root.querySelectorAll('[data-view]').forEach(function(x){x.classList.toggle('is-active',x===b);});render();});});
+  root.querySelector('.pp-search').addEventListener('input',function(e){state.query=e.target.value.trim();render();});
+  root.querySelectorAll('[data-make]').forEach(function(b){b.addEventListener('click',function(){state.make=b.getAttribute('data-make');root.querySelectorAll('[data-make]').forEach(function(x){x.classList.toggle('is-active',x===b);});render();});});
+  root.querySelector('.pp-dialog-close').addEventListener('click',closeModal);modal.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('[data-close-modal]')){closeModal();return;}if(e.target===modal)closeModal();});document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!modal.hidden)closeModal();});
+  renderMoves();render();
+  var deepTeam=new URLSearchParams(window.location.search).get('team');
+  if(deepTeam){var target=data.teams.find(function(x){return x.id===deepTeam;});if(target){setTimeout(function(){openModal(teamDialog(target));},0);}}
+})();
+</script>
+</main><footer class="uarl-native-footer"><div><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="United Alliance Racing League"><p>Roblox racing with the personality left in.</p></div><nav><a href="/schedule/">Schedule</a><a href="/race-center/">Race Center</a><a href="/paint-schemes/">Paint Booth</a><a href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener">Discord</a></nav><small>© 2026 United Alliance Racing League. Roblox is a trademark of Roblox Corporation. UARL is not affiliated with Roblox Corporation.</small></footer>
+<script src="/assets/site-loader.js" defer></script></body></html>

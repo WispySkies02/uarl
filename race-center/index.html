@@ -1,0 +1,1177 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Race Center | UARL</title><meta name="description" content="UARL Race Center with series information, points, results, stats, penalties and race data.">
+<meta name="theme-color" content="#05060a"><link rel="stylesheet" href="/assets/site.css">
+<style>#uarl-race-center .rc-league-update{padding:1rem clamp(1rem,4vw,3rem);background:#d8ff3e;color:#090a0f;border-block:3px solid #090a0f}#uarl-race-center .rc-league-update b{display:block;font:900 .58rem/1 Inter,sans-serif;letter-spacing:.14em}#uarl-race-center .rc-league-update strong{display:block;margin:.4rem 0;font:italic 900 clamp(1.8rem,3vw,3rem)/.9 "Barlow Condensed",sans-serif}#uarl-race-center .rc-league-update p{max-width:1000px;font-weight:700;line-height:1.5}</style><link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/favicon/favicon-192.png">
+<link rel="apple-touch-icon" href="/assets/favicon/favicon-192.png">
+</head><body data-route="/race-center/">
+<header id="header" class="uarl-native-header"><a class="uarl-native-brand" href="/"><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="United Alliance Racing League"></a><nav class="uarl-native-nav" aria-label="Main navigation"><a href="/" class="">Home</a><a href="/schedule/" class="">Schedule</a><a href="/race-center/" class="is-active">Race Center</a><a href="/competition-guide/" class="">Rules + FAQ</a><a href="/drivers/" class="">Drivers</a><a href="/paint-schemes/" class="">Paint Booth</a><a href="/history/" class="">History</a></nav><button class="uarl-native-menu-btn" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button></header>
+<aside class="uarl-native-drawer" aria-hidden="true"><div class="uarl-native-drawer-top"><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt=""><button type="button" aria-label="Close menu">×</button></div><div class="uarl-native-drawer-kicker">// RACE CONTROL · SEASON 6</div><nav><a href="/" class="">Home</a><a href="/schedule/" class="">Schedule</a><a href="/race-center/" class="is-active">Race Center</a><a href="/competition-guide/" class="">Rules + FAQ</a><a href="/drivers/" class="">Drivers</a><a href="/paint-schemes/" class="">Paint Booth</a><a href="/history/" class="">History</a></nav><a class="uarl-native-discord" href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener">GET INTO THE DISCORD ↗</a></aside><div class="uarl-native-scrim"></div>
+<main id="main-content"><!-- UARL SEASON 6 RACE CENTER — paste this entire file into one Squarespace HTML Code Block. -->
+<style id="uarl-race-center-complete-styles">
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:ital,wght@0,500;0,600;0,700;0,800;0,900;1,800;1,900&family=Inter:wght@400;500;600;700;800&display=swap');
+
+/*
+  UARL HOMEPAGE THEME SHIELD
+  The main reset is scoped to #uarl-home. The only external exception removes
+  the verified outer section gaps on the UARL homepage.
+*/
+
+/* EXACT UARL HOMEPAGE SECTION-GAP FIX — VERIFIED AGAINST THE LIVE DOM */
+body#collection-6a85cdc07310075dc3dbed33
+section.page-section
+> .content-wrapper {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* UARL RACING SCROLLBAR */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #d8ff3e #0a0b10;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  width: 14px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track {
+  background: #0a0b10;
+  border-left: 1px solid rgba(255,255,255,.12);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb {
+  min-height: 72px;
+  background: linear-gradient(180deg, #d8ff3e 0 42%, #169cff 42% 72%, #ff4d2e 72% 100%);
+  border: 3px solid #0a0b10;
+  border-radius: 0;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #ffffff 0 12%, #d8ff3e 12% 48%, #169cff 48% 76%, #ff4d2e 76% 100%);
+}
+
+html::-webkit-scrollbar-corner,
+body::-webkit-scrollbar-corner {
+  background: #0a0b10;
+}
+
+/* SQUARESPACE HEADER CONTRAST SHIELD */
+#header,
+.header,
+.header-menu,
+.header-menu-bg,
+.header-nav-folder-content {
+  background-color: #05060a !important;
+  color: #ffffff !important;
+}
+
+#header .header-nav-item > a,
+#header .header-nav-folder-title,
+#header .header-nav-folder-item a,
+#header .header-title-text a,
+#header .header-actions a,
+#header .header-actions-action,
+.header-menu .header-menu-nav-item a,
+.header-menu .header-menu-nav-folder-content a {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+#header .header-nav-item > a:hover,
+#header .header-nav-item--active > a,
+#header .header-nav-folder-title:hover,
+.header-menu .header-menu-nav-item a:hover {
+  color: #d8ff3e !important;
+  -webkit-text-fill-color: #d8ff3e !important;
+}
+
+#header .header-burger-btn,
+#header .header-burger-btn .burger-inner,
+#header .header-burger-btn .burger-inner > div,
+#header .header-burger-btn .top-bun,
+#header .header-burger-btn .patty,
+#header .header-burger-btn .bottom-bun {
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+#header .header-burger-btn .burger-inner > div,
+#header .header-burger-btn .top-bun,
+#header .header-burger-btn .patty,
+#header .header-burger-btn .bottom-bun {
+  background-color: #ffffff !important;
+}
+
+#uarl-home,
+#uarl-home * {
+  box-sizing: border-box !important;
+}
+
+#uarl-home {
+  isolation: isolate !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  color-scheme: dark !important;
+  -webkit-font-smoothing: antialiased !important;
+  text-rendering: optimizeLegibility !important;
+}
+
+#uarl-home :where(h1, h2, h3, h4, h5, h6, p, a, span, small, strong, em) {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+  color: inherit;
+  -webkit-text-fill-color: currentColor;
+  font: inherit;
+  letter-spacing: normal;
+  line-height: inherit;
+  text-decoration: none;
+  text-transform: none;
+  opacity: 1;
+}
+
+#uarl-home :where(a, a:hover, a:visited, a:active) {
+  color: inherit !important;
+  text-decoration: none !important;
+}
+
+#uarl-home :where(img, svg, video, canvas) {
+  display: block;
+  max-width: 100%;
+}
+
+#uarl-home .uarl-site-header {
+  display: none !important;
+}
+
+#uarl-home {
+  --ink: #0a0b10;
+  --paper: #f5f1e8;
+  --white: #ffffff;
+  --hot: #ff4d2e;
+  --blue: #169cff;
+  --lime: #d8ff3e;
+  --violet: #8e5cff;
+  --line: rgba(10, 11, 16, 0.18);
+}
+
+#uarl-home, #uarl-home * { box-sizing: border-box; }
+#uarl-home {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Inter", Arial, sans-serif;
+}
+#uarl-home a { color: inherit; text-decoration: none; }
+
+#uarl-home .uarl-site-shell { overflow: hidden; background: var(--paper); }
+#uarl-home .uarl-skip-link {
+  position: fixed; left: 1rem; top: -5rem; z-index: 1000;
+  background: var(--lime); color: var(--ink); padding: .75rem 1rem; font-weight: 800;
+}
+#uarl-home .uarl-skip-link:focus { top: 1rem; }
+
+#uarl-home .uarl-race-ticker {
+  --ticker-label-width: 212px;
+  position: relative; isolation: isolate; z-index: 19; top: auto; left: auto; right: auto; height: 42px;
+  display: block; color: #fff; background: rgba(10,11,16,.82);
+  border-bottom: 1px solid rgba(255,255,255,.15); backdrop-filter: blur(10px); overflow: hidden;
+}
+#uarl-home .uarl-ticker-label {
+  position: absolute; inset: 0 auto 0 0; z-index: 2; width: var(--ticker-label-width);
+  display: flex; align-items: center; gap: .55rem; padding: 0 1.35rem; white-space: nowrap;
+  background: var(--hot); font: 900 .72rem/1 "Inter"; letter-spacing: .1em; text-transform: uppercase;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 15px) 100%, 0 100%);
+}
+#uarl-home .uarl-ticker-label i { width: 7px; height: 7px; background: #fff; border-radius: 50%; box-shadow: 0 0 0 4px rgba(255,255,255,.18); animation: pulse 1.4s infinite; }
+#uarl-home .uarl-ticker-window { position:absolute; inset:0; z-index:1; min-width:0; display:flex; align-items:center; padding-left:calc(var(--ticker-label-width) + .5rem); overflow:hidden; }
+#uarl-home .uarl-ticker-track { width:max-content; flex:0 0 auto; display: flex; align-items: center; gap: 1.4rem; padding: 0 1.4rem; white-space: nowrap; font: 800 .68rem/1 "Inter"; letter-spacing: .08em; text-transform: uppercase; }
+#uarl-home .uarl-ticker-track b { color: var(--lime); }
+
+#uarl-home .uarl-hero {
+  position: relative; min-height: 758px; height: calc(100svh - 42px); max-height: 938px;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 390px); align-items: center;
+  gap: clamp(2rem, 6vw, 7rem); padding: 80px clamp(1.2rem, 7vw, 8rem);
+  color: #fff; background:
+    radial-gradient(circle at 80% 30%, rgba(22,156,255,.3), transparent 28%),
+    linear-gradient(115deg, #11131c 0%, #0a0b10 58%, #101a28 100%);
+}
+#uarl-home .uarl-hero::before {
+  content: ""; position: absolute; inset: 0; opacity: .16; pointer-events: none;
+  background-image: linear-gradient(rgba(255,255,255,.2) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.2) 1px, transparent 1px);
+  background-size: 64px 64px; mask-image: linear-gradient(to right, #000, transparent 82%);
+}
+#uarl-home .uarl-hero-noise { position: absolute; inset: 0; opacity: .22; background: repeating-linear-gradient(116deg, transparent 0 48px, rgba(255,255,255,.035) 49px 50px); }
+#uarl-home .uarl-hero-number {
+  position: absolute; right: -1vw; bottom: -11vw; font: 900 min(46vw, 590px)/.7 "Barlow Condensed", sans-serif;
+  letter-spacing: -.08em; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.07); transform: skew(-7deg); user-select: none;
+}
+#uarl-home .uarl-hero-streak { position: absolute; height: 12px; width: 45%; right: -9%; background: var(--hot); transform: skew(-32deg) rotate(-16deg); opacity: .9; }
+#uarl-home .uarl-streak-one { top: 23%; }
+#uarl-home .uarl-streak-two { top: 26%; right: -16%; height: 4px; background: var(--lime); }
+#uarl-home .uarl-hero-content, #uarl-home .uarl-race-card { position: relative; z-index: 2; }
+#uarl-home .uarl-eyebrow { display: flex; align-items: center; gap: .8rem; margin: 0 0 1.1rem; font: 800 .78rem/1 "Inter"; letter-spacing: .14em; text-transform: uppercase; }
+#uarl-home .uarl-eyebrow span { display: inline-block; padding: .58rem .72rem; background: var(--blue); box-shadow: 4px 4px 0 var(--hot); }
+#uarl-home .uarl-hero-heading {
+  max-width: 900px; margin: 0; font: italic 900 clamp(4.3rem, 8.7vw, 9.6rem)/.77 "Barlow Condensed", sans-serif;
+  color: #fff !important; -webkit-text-fill-color: #fff !important; letter-spacing: -.045em; text-transform: uppercase; text-wrap: balance;
+}
+#uarl-home .uarl-hero-heading .uarl-hero-accent { color: var(--lime) !important; -webkit-text-fill-color: var(--lime) !important; font: inherit !important; text-shadow: 7px 7px 0 var(--hot); }
+#uarl-home .uarl-hero-copy { max-width: 620px; margin: 2rem 0 0; color: rgba(255,255,255,.72); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.7; }
+#uarl-home .uarl-hero-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.2rem; }
+#uarl-home .uarl-button {
+  display: inline-flex; align-items: center; justify-content: center; gap: 1.2rem; min-height: 54px;
+  padding: 0 1.35rem; font: 900 .8rem/1 "Inter"; letter-spacing: .07em; text-transform: uppercase;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+}
+#uarl-home .uarl-button-hot { background: var(--hot); color: #fff !important; -webkit-text-fill-color: #fff !important; box-shadow: 6px 6px 0 var(--blue); }
+#uarl-home .uarl-button-hot:hover { transform: translate(-3px,-3px); box-shadow: 10px 10px 0 var(--blue); }
+#uarl-home .uarl-button-ghost { border: 1px solid rgba(255,255,255,.45); background: rgba(255,255,255,.04); color: #fff !important; -webkit-text-fill-color: #fff !important; }
+#uarl-home .uarl-button-ghost:hover { background: #fff; color: var(--ink) !important; -webkit-text-fill-color: var(--ink) !important; }
+#uarl-home .uarl-race-card { align-self: end; margin-bottom: 2rem; background: var(--paper); color: var(--ink); box-shadow: 13px 13px 0 var(--blue); transform: rotate(1.25deg); }
+#uarl-home .uarl-race-card-top { display: flex; justify-content: space-between; align-items: center; padding: .85rem 1rem; background: var(--lime); border-bottom: 2px solid var(--ink); font: 900 .72rem/1 "Inter"; text-transform: uppercase; letter-spacing: .1em; }
+#uarl-home .uarl-race-card-top span { display: flex; align-items: center; gap: .5rem; }
+#uarl-home .uarl-race-card-top i { width: 8px; height: 8px; background: var(--hot); border-radius: 50%; }
+#uarl-home .uarl-race-card-top b { font: italic 900 1.2rem/1 "Barlow Condensed"; }
+#uarl-home .uarl-race-card-body { padding: 1.4rem 1.35rem 1.1rem; }
+#uarl-home .uarl-race-card-body > p { margin: 0 0 .25rem; color: var(--hot); font: 900 .75rem/1 "Inter"; letter-spacing: .12em; text-transform: uppercase; }
+#uarl-home .uarl-race-card h2 { margin: 0; font: 900 2.75rem/.9 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-race-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid var(--line); }
+#uarl-home .uarl-race-meta span { font: 800 .78rem/1.2 "Inter"; text-transform: uppercase; }
+#uarl-home .uarl-race-meta small { display: block; margin-bottom: .38rem; color: rgba(10,11,16,.48); font-size: .6rem; letter-spacing: .12em; }
+#uarl-home .uarl-race-card > a { display: flex; justify-content: space-between; padding: 1rem 1.35rem; background: var(--ink); color: #fff !important; -webkit-text-fill-color: #fff !important; font: 900 .73rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; }
+#uarl-home .uarl-race-card > a:hover { color: var(--lime); }
+#uarl-home .uarl-scroll-cue { position: absolute; z-index: 3; left: clamp(1.2rem, 7vw, 8rem); bottom: 22px; display: flex; align-items: center; gap: .7rem; color: rgba(255,255,255,.55); font: 700 .62rem/1 "Inter"; text-transform: uppercase; letter-spacing: .12em; }
+#uarl-home .uarl-scroll-cue span { width: 38px; height: 1px; background: var(--hot); }
+
+#uarl-home .uarl-section-pad { padding: clamp(5rem, 9vw, 9rem) clamp(1.2rem, 7vw, 8rem); }
+#uarl-home .uarl-section-kicker { margin-bottom: 1.4rem; color: var(--hot); font: 900 .72rem/1 "Inter"; letter-spacing: .16em; text-transform: uppercase; }
+#uarl-home .uarl-section-kicker::before { content: "//"; margin-right: .65rem; color: var(--blue); }
+#uarl-home .uarl-section-kicker.uarl-light { color: var(--lime); }
+#uarl-home .uarl-intro-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: clamp(3rem, 9vw, 9rem); align-items: end; }
+#uarl-home .uarl-intro h2 { margin: 0; font: italic 900 clamp(3.6rem, 7.5vw, 8rem)/.84 "Barlow Condensed"; letter-spacing: -.035em; text-transform: uppercase; }
+#uarl-home .uarl-intro h2 span { position: relative; color: var(--violet); }
+#uarl-home .uarl-intro h2 span::after { content: ""; position: absolute; left: 0; right: 0; bottom: .08em; height: .08em; background: var(--lime); transform: rotate(-2deg); }
+#uarl-home .uarl-intro-copy p { margin: 0; font-size: 1.05rem; line-height: 1.8; }
+#uarl-home .uarl-pills { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1.8rem; }
+#uarl-home .uarl-pills span { padding: .55rem .75rem; border: 1px solid var(--ink); font: 800 .68rem/1 "Inter"; text-transform: uppercase; letter-spacing: .07em; box-shadow: 3px 3px 0 var(--hot); }
+#uarl-home .uarl-series-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: clamp(3rem, 6vw, 6rem); }
+#uarl-home .uarl-series-card { position: relative; min-height: 460px; display: flex; flex-direction: column; justify-content: space-between; padding: 1.35rem; overflow: hidden; border: 2px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); }
+#uarl-home .uarl-series-card::after { content: attr(data-series); position: absolute; right: -.15em; bottom: -.28em; color: rgba(255,255,255,.16); font: italic 900 10rem/1 "Barlow Condensed", sans-serif; }
+#uarl-home .uarl-series-label { position: relative; z-index: 2; display: flex; align-items: center; gap: .7rem; font: 900 .68rem/1 "Inter", sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+#uarl-home .uarl-series-label span { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid currentColor; }
+#uarl-home .uarl-series-logo-wrap { position: relative; z-index: 2; display: grid; place-items: center; width: 100%; height: 156px; margin: 1.35rem 0 .8rem; padding: 0; background: transparent; border: 0; }
+#uarl-home .uarl-series-logo { display: block; width: min(100%, 320px); height: 150px; max-width: 320px; max-height: none; object-fit: contain; object-position: center; filter: drop-shadow(0 8px 14px rgba(10,11,16,.24)); }
+#uarl-home .uarl-series-card h3 { position: relative; z-index: 2; max-width: 95%; margin: auto 0 1rem; color: inherit !important; -webkit-text-fill-color: currentColor !important; font: italic 900 clamp(2.1rem, 3vw, 3.6rem)/.84 "Barlow Condensed", sans-serif !important; letter-spacing: -.02em !important; text-transform: uppercase !important; }
+#uarl-home .uarl-series-card p { position: relative; z-index: 2; font: 800 .66rem/1 "Inter", sans-serif; letter-spacing: .12em; text-transform: uppercase; }
+#uarl-home .uarl-series-d1 { background: var(--hot); color: #fff; transform: rotate(-.55deg); }
+#uarl-home .uarl-series-d2 { background: var(--blue); color: #fff; }
+#uarl-home .uarl-series-open { background: var(--lime); color: var(--ink); transform: rotate(.55deg); }
+#uarl-home .uarl-series-d1::after { content: "D1"; }
+#uarl-home .uarl-series-d2::after { content: "D2"; }
+#uarl-home .uarl-series-open::after { content: "OPEN"; right: -.08em; font-size: 7rem; color: rgba(10,11,16,.1); }
+
+#uarl-home .uarl-race-center { background: var(--ink); color: #fff; }
+#uarl-home .uarl-section-heading { display: flex; justify-content: space-between; gap: 2rem; align-items: end; margin-bottom: 2.4rem; }
+#uarl-home .uarl-race-center-heading { max-width: 760px; margin: 0; color: #fff !important; -webkit-text-fill-color: #fff !important; font: italic 900 clamp(3rem, 5.2vw, 5.8rem)/.88 "Barlow Condensed", sans-serif !important; letter-spacing: -.02em !important; text-transform: uppercase; }
+#uarl-home .uarl-section-heading > a { flex: 0 0 auto; padding-bottom: .4rem; border-bottom: 2px solid var(--lime); font: 900 .76rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; }
+#uarl-home .uarl-center-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 1rem; }
+#uarl-home .uarl-center-grid article { position: relative; min-height: 380px; padding: 1.3rem; overflow: hidden; }
+#uarl-home .uarl-card-index { position: relative; z-index: 2; font: 900 .65rem/1 "Inter"; text-transform: uppercase; letter-spacing: .12em; }
+#uarl-home .uarl-spotlight-card { display: flex; flex-direction: column; justify-content: space-between; background: var(--blue); }
+#uarl-home .uarl-spotlight-card::after { content: "06"; position: absolute; right: -1rem; bottom: -4.3rem; color: transparent; -webkit-text-stroke: 2px rgba(255,255,255,.25); font: italic 900 15rem/1 "Barlow Condensed"; }
+#uarl-home .uarl-spotlight-copy { position: relative; z-index: 2; max-width: 410px; }
+#uarl-home .uarl-spotlight-copy p { margin: 0 0 .4rem; font: 900 .7rem/1 "Inter"; letter-spacing: .12em; text-transform: uppercase; }
+#uarl-home .uarl-spotlight-copy h3 { margin: 0; font: italic 900 clamp(2.7rem, 4.6vw, 5rem)/.86 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-spotlight-copy > span { display: block; max-width: 350px; margin-top: 1rem; font-size: .85rem; line-height: 1.6; }
+#uarl-home .uarl-spotlight-card > a { position: absolute; z-index: 3; top: 1.1rem; right: 1.1rem; display: grid; place-items: center; width: 45px; height: 45px; border: 1px solid #fff; font-size: 1.4rem; }
+#uarl-home .uarl-spotlight-card > a:hover { background: #fff; color: var(--ink); }
+#uarl-home .uarl-stat-card { display: flex; flex-direction: column; color: var(--ink); }
+#uarl-home .uarl-stat-card strong { margin-top: auto; font: italic 900 7rem/.7 "Barlow Condensed"; }
+#uarl-home .uarl-stat-card h3 { margin: 1rem 0 .4rem; font: 900 1.65rem/.95 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-stat-card p { margin: 0 0 1.2rem; font-size: .8rem; line-height: 1.5; }
+#uarl-home .uarl-stat-card a { align-self: flex-start; padding-bottom: .35rem; border-bottom: 2px solid currentColor; font: 900 .7rem/1 "Inter"; text-transform: uppercase; }
+#uarl-home .uarl-stat-card.uarl-lime { background: var(--lime); transform: rotate(-.7deg); }
+#uarl-home .uarl-stat-card.uarl-violet { background: var(--violet); color: #fff; transform: rotate(.7deg); }
+
+#uarl-home .uarl-explore { display: grid; grid-template-columns: minmax(250px, .7fr) minmax(0, 1.3fr); gap: clamp(3rem, 8vw, 8rem); }
+#uarl-home .uarl-explore-intro { position: sticky; top: 2rem; align-self: start; }
+#uarl-home .uarl-explore h2 { margin: 0; font: italic 900 clamp(3.4rem, 5vw, 5.8rem)/.86 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-explore-intro p { max-width: 390px; margin-top: 1.5rem; line-height: 1.7; }
+#uarl-home .uarl-link-stack { border-top: 2px solid var(--ink); }
+#uarl-home .uarl-season-link { display: grid; grid-template-columns: 60px 1fr auto 45px; gap: 1rem; align-items: center; min-height: 112px; border-bottom: 2px solid var(--ink); transition: color .2s ease, padding .2s ease, background .2s ease; }
+#uarl-home .uarl-season-link:hover { padding: 0 1rem; background: var(--hot); color: #fff; }
+#uarl-home .uarl-link-number { font: 900 .7rem/1 "Inter"; color: var(--hot); }
+#uarl-home .uarl-season-link:hover .uarl-link-number { color: var(--lime); }
+#uarl-home .uarl-link-title { font: italic 900 clamp(2.2rem, 3.5vw, 4.1rem)/1 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-link-note { font: 800 .68rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; opacity: .65; }
+#uarl-home .uarl-link-arrow { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid currentColor; font-size: 1.2rem; }
+
+#uarl-home .uarl-join-section { position: relative; min-height: 570px; display: flex; align-items: center; color: #fff; background: var(--hot); overflow: hidden; }
+#uarl-home .uarl-join-section::before { content: ""; position: absolute; inset: 0; background: linear-gradient(120deg, transparent 0 54%, rgba(10,11,16,.96) 54%); }
+#uarl-home .uarl-join-checker { position: absolute; inset: 0 auto 0 48%; width: 130px; opacity: .15; transform: skew(-12deg); background-color: #fff; background-image: conic-gradient(#000 25%, transparent 0 50%, #000 0 75%, transparent 0); background-size: 36px 36px; }
+#uarl-home .uarl-join-copy { position: relative; z-index: 2; max-width: 660px; }
+#uarl-home .uarl-join-copy h2 { margin: 0; font: italic 900 clamp(4rem, 7vw, 8rem)/.78 "Barlow Condensed"; text-transform: uppercase; }
+#uarl-home .uarl-join-copy p { max-width: 560px; margin: 1.5rem 0 2rem; font-size: 1rem; line-height: 1.7; }
+#uarl-home .uarl-button-white { background: #fff; color: var(--ink) !important; -webkit-text-fill-color: var(--ink) !important; box-shadow: 6px 6px 0 var(--lime); }
+#uarl-home .uarl-button-white .uarl-button-label { display: inline !important; color: #0a0b10 !important; -webkit-text-fill-color: #0a0b10 !important; opacity: 1 !important; visibility: visible !important; font: 900 .8rem/1 "Inter", Arial, sans-serif !important; letter-spacing: .07em !important; text-transform: uppercase !important; }
+#uarl-home .uarl-button-white:hover { transform: translate(-3px,-3px); box-shadow: 10px 10px 0 var(--lime); }
+#uarl-home .uarl-join-type { position: absolute; z-index: 2; right: 5vw; top: 50%; color: var(--lime); font: italic 900 clamp(7rem, 14vw, 15rem)/.62 "Barlow Condensed"; text-align: right; transform: translateY(-50%) rotate(-3deg); text-shadow: 9px 9px 0 var(--blue); }
+
+#uarl-home .uarl-site-footer { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center; padding: 3.5rem clamp(1.2rem, 7vw, 8rem); background: var(--ink); color: #fff; border-top: 1px solid rgba(255,255,255,.15); }
+#uarl-home .uarl-footer-logo-link { display: inline-flex; align-items: center; justify-content: flex-start; width: fit-content; }
+#uarl-home .uarl-footer-logo { display: block; width: min(220px, 58vw); max-height: 70px; object-fit: contain; object-position: left center; }
+#uarl-home .uarl-site-footer > p { text-align: right; color: rgba(255,255,255,.55); font-size: .8rem; }
+#uarl-home .uarl-footer-links { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 1.5rem 0; border-block: 1px solid rgba(255,255,255,.15); }
+#uarl-home .uarl-footer-links a { font: 800 .7rem/1 "Inter"; text-transform: uppercase; letter-spacing: .08em; }
+#uarl-home .uarl-footer-links a:hover { color: var(--lime); }
+#uarl-home .uarl-site-footer > small { grid-column: 1 / -1; max-width: 850px; color: rgba(255,255,255,.38); font-size: .6rem; line-height: 1.6; }
+
+@keyframes pulse { 50% { opacity: .25; transform: scale(.72); } }
+
+@media (max-width: 1050px) {
+  #uarl-home .uarl-hero { grid-template-columns: 1fr 300px; gap: 2rem; }
+  #uarl-home .uarl-center-grid { grid-template-columns: 1.25fr 1fr; }
+  #uarl-home .uarl-stat-card.uarl-violet { grid-column: 1 / -1; min-height: 260px; }
+  #uarl-home .uarl-join-type { opacity: .22; }
+}
+
+@media (max-width: 760px) {
+  #uarl-home .uarl-race-ticker { --ticker-label-width: 168px; top: auto; height: 40px; }
+  #uarl-home .uarl-ticker-label { gap:.45rem; padding:0 .75rem; font-size:.55rem; letter-spacing:.075em; }
+  #uarl-home .uarl-ticker-label i { width:6px; height:6px; flex:0 0 6px; }
+  #uarl-home .uarl-ticker-window { padding-left:0; }
+  #uarl-home .uarl-ticker-track { gap:1.15rem; padding-inline:1rem; font-size:.58rem; animation:tickerMove 24s linear infinite; will-change:transform; }
+  #uarl-home .uarl-hero { height: auto; max-height: none; min-height: 780px; display: block; padding: 72px 1.15rem 4.5rem; }
+  #uarl-home .uarl-hero-heading { font-size: clamp(4rem, 20vw, 6.6rem); }
+  #uarl-home .uarl-hero-copy { font-size: .95rem; line-height: 1.65; }
+  #uarl-home .uarl-hero-actions { display: grid; }
+  #uarl-home .uarl-button { width: 100%; }
+  #uarl-home .uarl-race-card { max-width: 370px; margin: 3.5rem 8px 0 0; }
+  #uarl-home .uarl-scroll-cue { display: none; }
+  #uarl-home .uarl-section-pad { padding: 5rem 1.15rem; }
+  #uarl-home .uarl-intro-grid, #uarl-home .uarl-explore { grid-template-columns: 1fr; gap: 2.3rem; }
+  #uarl-home .uarl-series-grid { grid-template-columns: 1fr; }
+  #uarl-home .uarl-series-card { min-height: 430px; }
+  #uarl-home .uarl-series-logo-wrap { height: 138px; }
+  #uarl-home .uarl-series-logo { width: min(100%, 300px); height: 132px; max-width: 300px; max-height: none; }
+  #uarl-home .uarl-intro h2 { font-size: clamp(3.6rem, 18vw, 6rem); }
+  #uarl-home .uarl-intro-copy p { font-size: .95rem; }
+  #uarl-home .uarl-section-heading { display: block; }
+  #uarl-home .uarl-section-heading > a { display: inline-block; margin-top: 1.4rem; }
+  #uarl-home .uarl-center-grid { grid-template-columns: 1fr; }
+  #uarl-home .uarl-center-grid article { min-height: 330px; }
+  #uarl-home .uarl-stat-card.uarl-violet { grid-column: auto; }
+  #uarl-home .uarl-explore-intro { position: static; }
+  #uarl-home .uarl-season-link { grid-template-columns: 34px 1fr 40px; min-height: 92px; }
+  #uarl-home .uarl-link-note { display: none; }
+  #uarl-home .uarl-join-section { min-height: 650px; align-items: flex-start; padding-top: 6rem; }
+  #uarl-home .uarl-join-section::before { background: linear-gradient(165deg, transparent 0 60%, rgba(10,11,16,.95) 60%); }
+  #uarl-home .uarl-join-type { right: 1rem; top: auto; bottom: 3.5rem; font-size: 7.2rem; transform: rotate(-3deg); }
+  #uarl-home .uarl-join-copy h2 { font-size: clamp(4rem, 18vw, 6.5rem); }
+  #uarl-home .uarl-site-footer { grid-template-columns: 1fr; }
+  #uarl-home .uarl-site-footer > p { text-align: left; }
+  #uarl-home .uarl-footer-links, #uarl-home .uarl-site-footer > small { grid-column: auto; }
+  @keyframes tickerMove {
+    from { transform:translateX(100vw); }
+    to { transform:translateX(-100%); }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #uarl-home *, #uarl-home *::before, #uarl-home *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+
+/* UARL SEASON 6 SCHEDULE PAGE */
+body#collection-6a867014da6abc424c61daa0 section.page-section > .content-wrapper {
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+}
+
+body#collection-6a867014da6abc424c61daa0 .fluid-engine {
+  display:block !important;
+  height:auto !important;
+}
+
+body#collection-6a867014da6abc424c61daa0 .fe-block,
+body#collection-6a867014da6abc424c61daa0 .sqs-block,
+body#collection-6a867014da6abc424c61daa0 .sqs-block-content,
+body#collection-6a867014da6abc424c61daa0 .sqs-code-container {
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  height:auto !important;
+  min-height:0 !important;
+  grid-area:auto !important;
+}
+
+body#collection-6a867014da6abc424c61daa0 section.page-section {
+  min-height:0 !important;
+}
+
+#uarl-schedule,
+#uarl-schedule * { box-sizing: border-box !important; }
+
+#uarl-schedule {
+  --ink:#0a0b10;
+  --paper:#f5f1e8;
+  --hot:#ff4d2e;
+  --blue:#169cff;
+  --lime:#d8ff3e;
+  --violet:#8e5cff;
+  isolation:isolate;
+  width:100%;
+  max-width:none;
+  margin:0;
+  padding:0;
+  overflow:hidden;
+  background:var(--ink);
+  color:#fff;
+  font:400 1rem/1.5 "Inter",sans-serif;
+}
+
+#uarl-schedule :where(h1,h2,h3,p,a,span,strong,small) {
+  margin:0;
+  padding:0;
+  color:inherit;
+  -webkit-text-fill-color:currentColor;
+  font:inherit;
+  text-decoration:none;
+}
+
+#uarl-schedule img { display:block; max-width:100%; }
+#uarl-schedule a { color:inherit !important; text-decoration:none !important; }
+#uarl-schedule [hidden] { display:none !important; }
+#uarl-schedule .uarl-schedule-skip { position:absolute; left:-9999px; }
+#uarl-schedule .uarl-schedule-skip:focus { left:1rem; top:1rem; z-index:99; padding:.8rem 1rem; background:#fff; color:#000 !important; }
+
+#uarl-schedule .uarl-schedule-hero {
+  position:relative;
+  min-height:520px;
+  display:grid;
+  align-items:end;
+  padding:clamp(6rem,10vw,10rem) clamp(1.25rem,7vw,8rem) clamp(4rem,7vw,7rem);
+  overflow:hidden;
+  background:
+    linear-gradient(120deg,rgba(10,11,16,.98) 0 46%,rgba(10,11,16,.62) 70%,rgba(22,156,255,.22)),
+    repeating-linear-gradient(120deg,transparent 0 62px,rgba(255,255,255,.025) 63px 64px);
+  border-bottom:1px solid rgba(255,255,255,.14);
+}
+
+#uarl-schedule .uarl-schedule-hero::after {
+  content:"S6";
+  position:absolute;
+  right:-.04em;
+  bottom:-.28em;
+  color:rgba(255,255,255,.035);
+  font:italic 900 clamp(18rem,35vw,38rem)/1 "Barlow Condensed",sans-serif;
+}
+
+#uarl-schedule .uarl-schedule-kicker { position:relative; z-index:2; margin-bottom:1.1rem; color:var(--lime); font:900 .72rem/1 "Inter",sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+#uarl-schedule .uarl-schedule-kicker::before { content:"//"; margin-right:.75rem; color:var(--blue); }
+#uarl-schedule .uarl-schedule-title { position:relative; z-index:2; max-width:1000px; color:#fff !important; font:italic 900 clamp(4.6rem,10vw,10rem)/.78 "Barlow Condensed",sans-serif !important; letter-spacing:-.045em !important; text-transform:uppercase !important; }
+#uarl-schedule .uarl-schedule-title span { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; text-shadow:7px 7px 0 var(--hot); }
+#uarl-schedule .uarl-schedule-lede { position:relative; z-index:2; max-width:700px; margin-top:2rem; color:rgba(255,255,255,.8); font-size:1.05rem; line-height:1.75; }
+
+#uarl-schedule .uarl-countdown-panel { display:grid; grid-template-columns:1fr; align-items:stretch; scroll-margin-top:72px; background:var(--lime); color:var(--ink); border-bottom:2px solid var(--ink); }
+#uarl-schedule .uarl-countdown-copy { padding:clamp(2rem,4vw,4rem) clamp(1.25rem,7vw,8rem); }
+#uarl-schedule .uarl-countdown-status { display:flex; align-items:center; gap:.65rem; margin-bottom:1.1rem; font:900 .68rem/1 "Inter",sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+#uarl-schedule .uarl-countdown-status i { width:10px; height:10px; background:var(--hot); border-radius:50%; box-shadow:0 0 0 5px rgba(255,77,46,.18); animation:uarlPulse 1.4s ease-in-out infinite; }
+#uarl-schedule .uarl-countdown-copy h2 { max-width:850px; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; font:italic 900 clamp(2.8rem,5vw,5.4rem)/.84 "Barlow Condensed",sans-serif !important; letter-spacing:-.03em !important; text-transform:uppercase !important; }
+#uarl-schedule .uarl-countdown-copy p { display:flex; flex-wrap:wrap; gap:.7rem 1.3rem; margin-top:1.5rem; font-size:.78rem; text-transform:uppercase; }
+#uarl-schedule .uarl-countdown-copy p strong { font-weight:900; }
+#uarl-schedule .uarl-countdown-copy p span { opacity:.72; }
+#uarl-schedule .uarl-countdown-clock { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); align-items:center; gap:0; padding:clamp(1.1rem,2.5vw,2rem) clamp(1.25rem,7vw,8rem); background:var(--ink); color:#fff; }
+#uarl-schedule .uarl-countdown-clock > span { position:relative; display:grid; place-items:center; align-content:center; min-width:0; border:0; }
+#uarl-schedule .uarl-countdown-clock > span:not(:last-child)::after { content:":"; position:absolute; right:-.08em; top:42%; color:var(--hot); font:italic 900 clamp(2rem,5vw,5rem)/1 "Barlow Condensed",sans-serif; transform:translate(50%,-50%); }
+#uarl-schedule .uarl-countdown-clock b { color:#fff !important; -webkit-text-fill-color:#fff !important; font:italic 900 clamp(3.1rem,7vw,7.5rem)/.82 "Barlow Condensed",sans-serif; letter-spacing:-.03em; }
+#uarl-schedule .uarl-countdown-clock small { margin-top:.55rem; color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 clamp(.48rem,.8vw,.68rem)/1 "Inter",sans-serif; letter-spacing:.14em; text-transform:uppercase; }
+
+#uarl-schedule .uarl-filter-bar { position:sticky; top:54px; z-index:20; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:1.5rem; padding:.85rem clamp(1.25rem,7vw,8rem); background:rgba(10,11,16,.96); color:#fff; border-bottom:1px solid rgba(255,255,255,.18); backdrop-filter:blur(12px); }
+#uarl-schedule .uarl-filter-label { color:var(--lime); font:900 .62rem/1 "Inter",sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+#uarl-schedule .uarl-filter-tabs { display:flex; gap:.45rem; }
+#uarl-schedule .uarl-filter-tabs button { min-width:74px; padding:.75rem 1rem; appearance:none; border:1px solid rgba(255,255,255,.28); border-radius:0; background:transparent; color:#fff; font:900 .7rem/1 "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; transition:background .18s ease,color .18s ease,border-color .18s ease; }
+#uarl-schedule .uarl-filter-tabs button:hover { border-color:var(--lime); color:var(--lime); }
+#uarl-schedule .uarl-filter-tabs button.is-active { border-color:var(--lime); background:var(--lime); color:var(--ink); }
+#uarl-schedule .uarl-filter-result { color:rgba(255,255,255,.62); font-size:.72rem; text-align:right; }
+
+#uarl-schedule .uarl-series-switcher { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:rgba(255,255,255,.18); }
+#uarl-schedule .uarl-series-jump { min-height:176px; display:flex; align-items:center; gap:1.35rem; padding:1.5rem clamp(1rem,3vw,2.5rem); background:#11131b; transition:background .2s ease,color .2s ease; }
+#uarl-schedule .uarl-series-jump:nth-child(1):hover { background:var(--hot); }
+#uarl-schedule .uarl-series-jump:nth-child(2):hover { background:var(--blue); }
+#uarl-schedule .uarl-series-jump:nth-child(3):hover { background:var(--lime); color:var(--ink) !important; }
+#uarl-schedule .uarl-series-jump img { width:130px; height:100px; object-fit:contain; flex:0 0 130px; }
+#uarl-schedule .uarl-series-jump small { display:block; margin-bottom:.5rem; color:var(--lime); font:900 .62rem/1 "Inter",sans-serif; letter-spacing:.12em; text-transform:uppercase; }
+#uarl-schedule .uarl-series-jump strong { display:block; font:italic 900 clamp(1.6rem,2.4vw,2.5rem)/.9 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+
+#uarl-schedule .uarl-schedule-section { padding:clamp(5rem,8vw,8rem) clamp(1.25rem,7vw,8rem); scroll-margin-top:120px; }
+#uarl-schedule .uarl-schedule-section:nth-of-type(even) { background:#0e1017; }
+#uarl-schedule .uarl-series-head { display:grid; grid-template-columns:minmax(220px,.55fr) minmax(0,1.45fr); gap:clamp(2rem,6vw,7rem); align-items:center; margin-bottom:3rem; }
+#uarl-schedule .uarl-series-head img { width:min(100%,360px); height:170px; object-fit:contain; object-position:left center; }
+#uarl-schedule .uarl-series-head h2 { color:#fff !important; font:italic 900 clamp(3.4rem,6vw,6.5rem)/.82 "Barlow Condensed",sans-serif !important; letter-spacing:-.035em !important; text-transform:uppercase !important; }
+#uarl-schedule .uarl-series-head p { max-width:700px; margin-top:1rem; color:rgba(255,255,255,.7); line-height:1.7; }
+#uarl-schedule .uarl-series-meta { display:flex; flex-wrap:wrap; gap:.6rem; margin-top:1.25rem; }
+#uarl-schedule .uarl-series-meta span { padding:.55rem .7rem; border:1px solid rgba(255,255,255,.3); font:800 .65rem/1 "Inter",sans-serif; letter-spacing:.08em; text-transform:uppercase; }
+
+#uarl-schedule .uarl-race-list { list-style:none; margin:0; padding:0; border-top:1px solid rgba(255,255,255,.2); }
+#uarl-schedule .uarl-race-row { position:relative; display:grid; grid-template-columns:110px minmax(220px,.9fr) minmax(240px,1.1fr) 180px; align-items:center; gap:1.5rem; min-height:106px; padding:1.25rem 1rem; border-bottom:1px solid rgba(255,255,255,.15); transition:transform .18s ease,background .18s ease; }
+#uarl-schedule .uarl-race-row:hover { z-index:2; background:#fff; color:var(--ink); transform:translateX(8px); }
+#uarl-schedule .uarl-round { font:italic 900 2rem/1 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+#uarl-schedule .uarl-round small { display:block; margin-bottom:.3rem; color:var(--lime); font:900 .58rem/1 "Inter",sans-serif; letter-spacing:.1em; text-transform:uppercase; }
+#uarl-schedule .uarl-race-row:hover .uarl-round small { color:var(--hot); }
+#uarl-schedule .uarl-race-name { font:italic 900 clamp(1.55rem,2.25vw,2.35rem)/.95 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+#uarl-schedule .uarl-track { color:rgba(255,255,255,.65); font-size:.92rem; }
+#uarl-schedule .uarl-race-row:hover .uarl-track { color:rgba(10,11,16,.7); }
+#uarl-schedule .uarl-race-date { justify-self:end; color:#fff !important; -webkit-text-fill-color:#fff !important; font:900 .8rem/1.15 "Inter",sans-serif; text-align:right; text-transform:uppercase; }
+#uarl-schedule .uarl-race-date small { display:block; margin-bottom:.4rem; color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 .55rem/1 "Inter",sans-serif; letter-spacing:.11em; }
+#uarl-schedule .uarl-race-date span { display:block; margin-top:.4rem; color:rgba(255,255,255,.65) !important; -webkit-text-fill-color:rgba(255,255,255,.65) !important; font-size:.66rem; }
+#uarl-schedule .uarl-date-pending { color:rgba(255,255,255,.72) !important; -webkit-text-fill-color:rgba(255,255,255,.72) !important; }
+#uarl-schedule .uarl-race-row:hover .uarl-race-date { color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; }
+#uarl-schedule .uarl-race-row:hover .uarl-race-date small { color:var(--hot) !important; -webkit-text-fill-color:var(--hot) !important; }
+#uarl-schedule .uarl-race-row:hover .uarl-race-date span { color:rgba(10,11,16,.65) !important; -webkit-text-fill-color:rgba(10,11,16,.65) !important; }
+#uarl-schedule .uarl-race-row.is-next-race { background:linear-gradient(90deg,rgba(216,255,62,.15),transparent 72%); box-shadow:inset 5px 0 0 var(--lime); }
+#uarl-schedule .uarl-race-row.uarl-chase { background:linear-gradient(90deg,rgba(142,92,255,.2),rgba(255,77,46,.07) 65%,transparent); box-shadow:inset 5px 0 0 var(--violet); }
+#uarl-schedule .uarl-race-row.uarl-chase .uarl-round small { color:#c9afff !important; -webkit-text-fill-color:#c9afff !important; }
+#uarl-schedule .uarl-race-row.uarl-chase::after { content:"THE CHASE"; position:absolute; right:1rem; top:.75rem; color:#c9afff; font:900 .52rem/1 "Inter",sans-serif; letter-spacing:.12em; }
+#uarl-schedule .uarl-race-row.uarl-chase:hover { background:#fff; box-shadow:inset 5px 0 0 var(--violet); }
+#uarl-schedule .uarl-race-row.uarl-chase:hover .uarl-round small,
+#uarl-schedule .uarl-race-row.uarl-chase:hover::after { color:var(--violet) !important; -webkit-text-fill-color:var(--violet) !important; }
+#uarl-schedule .uarl-exhibition { background:rgba(216,255,62,.06); }
+#uarl-schedule .uarl-exhibition::after { content:"NON-POINTS"; position:absolute; right:1rem; top:1rem; color:var(--lime); font:900 .55rem/1 "Inter",sans-serif; letter-spacing:.1em; }
+#uarl-schedule .uarl-race-row:hover.uarl-exhibition::after { color:var(--hot); }
+
+#uarl-schedule .uarl-schedule-footnote { padding:2.5rem clamp(1.25rem,7vw,8rem) 5rem; background:var(--hot); color:#fff; }
+#uarl-schedule .uarl-schedule-footnote strong { display:block; font:italic 900 clamp(2.2rem,4vw,4rem)/.9 "Barlow Condensed",sans-serif; text-transform:uppercase; }
+#uarl-schedule .uarl-schedule-footnote p { max-width:760px; margin-top:.8rem; line-height:1.65; }
+
+#uarl-schedule .uarl-back-to-top { position:fixed; right:22px; bottom:22px; z-index:60; width:62px; height:62px; display:grid; place-items:center; appearance:none; border:0; border-radius:0; background:var(--lime); color:var(--ink); box-shadow:6px 6px 0 var(--hot); font:900 1.35rem/1 "Inter",sans-serif; cursor:pointer; opacity:0; visibility:hidden; transform:translateY(16px); transition:opacity .2s ease,transform .2s ease,visibility .2s ease; }
+#uarl-schedule .uarl-back-to-top span { display:block; margin-top:-13px; font-size:.48rem; letter-spacing:.1em; text-transform:uppercase; }
+#uarl-schedule .uarl-back-to-top.is-visible { opacity:1; visibility:visible; transform:translateY(0); }
+#uarl-schedule .uarl-back-to-top:hover { background:#fff; }
+
+@keyframes uarlPulse { 0%,100%{transform:scale(.82);opacity:.65} 50%{transform:scale(1);opacity:1} }
+
+@media (max-width:900px) {
+  #uarl-schedule .uarl-filter-bar { top:0; grid-template-columns:1fr; gap:.7rem; }
+  #uarl-schedule .uarl-filter-label { display:none; }
+  #uarl-schedule .uarl-filter-tabs { width:100%; }
+  #uarl-schedule .uarl-filter-tabs button { min-width:0; flex:1; }
+  #uarl-schedule .uarl-filter-result { text-align:left; }
+  #uarl-schedule .uarl-series-switcher { grid-template-columns:1fr; }
+  #uarl-schedule .uarl-series-jump { min-height:130px; }
+  #uarl-schedule .uarl-series-jump img { width:100px; height:82px; flex-basis:100px; }
+  #uarl-schedule .uarl-series-head { grid-template-columns:1fr; gap:1rem; }
+  #uarl-schedule .uarl-series-head img { width:min(100%,300px); height:130px; }
+  #uarl-schedule .uarl-race-row { grid-template-columns:82px 1fr; gap:.7rem 1rem; }
+  #uarl-schedule .uarl-track,
+  #uarl-schedule .uarl-race-date { grid-column:2; }
+  #uarl-schedule .uarl-race-date { justify-self:start; margin-top:.45rem; text-align:left; }
+}
+
+@media (max-width:560px) {
+  #uarl-schedule .uarl-schedule-hero { min-height:500px; }
+  #uarl-schedule .uarl-schedule-title { font-size:clamp(4rem,21vw,6.5rem) !important; }
+  #uarl-schedule .uarl-series-jump { padding:1.15rem; }
+  #uarl-schedule .uarl-series-jump img { width:82px; height:70px; flex-basis:82px; }
+  #uarl-schedule .uarl-race-row { grid-template-columns:62px 1fr; min-height:112px; padding:1rem .25rem; }
+  #uarl-schedule .uarl-round { font-size:1.55rem; }
+  #uarl-schedule .uarl-exhibition::after { display:none; }
+  #uarl-schedule .uarl-race-row.uarl-chase::after { display:none; }
+  #uarl-schedule .uarl-countdown-copy { padding-bottom:2rem; }
+  #uarl-schedule .uarl-countdown-clock { padding:1.15rem .8rem; }
+  #uarl-schedule .uarl-countdown-clock b { font-size:clamp(2.35rem,13vw,4.2rem); }
+  #uarl-schedule .uarl-countdown-clock > span:not(:last-child)::after { font-size:clamp(1.6rem,8vw,2.8rem); }
+  #uarl-schedule .uarl-countdown-clock small { margin-top:.35rem; font-size:.43rem; letter-spacing:.08em; }
+  #uarl-schedule .uarl-back-to-top { right:14px; bottom:14px; width:54px; height:54px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  #uarl-schedule .uarl-series-jump,
+  #uarl-schedule .uarl-race-row,
+  #uarl-schedule .uarl-back-to-top { transition:none; }
+  #uarl-schedule .uarl-countdown-status i { animation:none; }
+}
+
+
+/* UARL HISTORY PAGE V2 — AUTHORITATIVE LEAGUE AND SEASON RECORD BOOK */
+body:has(#uarl-history) section.page-section:has(#uarl-history),
+body:has(#uarl-history) section.page-section:has(#uarl-history) > .content-wrapper {
+  min-height:0 !important;
+  padding-top:0 !important;
+  padding-bottom:0 !important;
+}
+
+body:has(#uarl-history) section.page-section:has(#uarl-history) > .content-wrapper {
+  max-width:none !important;
+  width:100% !important;
+  margin:0 !important;
+}
+
+body:has(#uarl-history) .fluid-engine:has(#uarl-history) {
+  display:block !important;
+  height:auto !important;
+  min-height:0 !important;
+  padding:0 !important;
+}
+
+body:has(#uarl-history) .fe-block:has(#uarl-history),
+body:has(#uarl-history) .sqs-block:has(#uarl-history),
+body:has(#uarl-history) .sqs-block-content:has(#uarl-history),
+body:has(#uarl-history) .sqs-code-container:has(#uarl-history) {
+  position:relative !important;
+  inset:auto !important;
+  width:100% !important;
+  max-width:none !important;
+  height:auto !important;
+  min-height:0 !important;
+  margin:0 !important;
+  padding:0 !important;
+  grid-area:auto !important;
+}
+
+#uarl-history,
+#uarl-history * { box-sizing:border-box !important; }
+
+#uarl-history {
+  --ink:#0a0b10;
+  --paper:#f5f1e8;
+  --hot:#ff4d2e;
+  --blue:#169cff;
+  --lime:#d8ff3e;
+  --violet:#8e5cff;
+  --series:var(--lime);
+  isolation:isolate !important;
+  width:100vw !important;
+  max-width:none !important;
+  margin:0 0 0 calc(50% - 50vw) !important;
+  padding:0 !important;
+  overflow:hidden !important;
+  background:var(--ink) !important;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff;
+  font:400 1rem/1.5 "Inter",Arial,sans-serif !important;
+  color-scheme:dark;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+#uarl-history :where(h1,h2,h3,h4,h5,h6,p,a,span,strong,b,small,button,ol,li,img) {
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:none;
+  box-shadow:none;
+  color:inherit;
+  -webkit-text-fill-color:currentColor;
+  font:inherit;
+  letter-spacing:normal;
+  line-height:inherit;
+  text-decoration:none;
+  text-transform:none;
+  opacity:1;
+}
+
+#uarl-history [hidden] { display:none !important; }
+#uarl-history .uarl-history-skip { position:absolute; left:-9999px; }
+#uarl-history .uarl-history-skip:focus { left:1rem; top:1rem; z-index:100; padding:.8rem 1rem; background:#fff; color:#000 !important; -webkit-text-fill-color:#000 !important; }
+
+#uarl-history .uarl-history-hero {
+  position:relative;
+  min-height:690px;
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(300px,.6fr);
+  align-items:end;
+  gap:clamp(3rem,7vw,8rem);
+  padding:clamp(6rem,10vw,10rem) clamp(1.25rem,7vw,8rem) clamp(4rem,7vw,7rem);
+  overflow:hidden;
+  background:
+    linear-gradient(118deg,rgba(10,11,16,.99) 0 49%,rgba(10,11,16,.76) 73%,rgba(22,156,255,.2)),
+    repeating-linear-gradient(120deg,transparent 0 62px,rgba(255,255,255,.025) 63px 64px);
+  border-bottom:1px solid rgba(255,255,255,.16);
+}
+
+#uarl-history .uarl-history-hero::before {
+  content:"HISTORY";
+  position:absolute;
+  right:-.07em;
+  top:-.18em;
+  color:rgba(255,255,255,.028);
+  -webkit-text-fill-color:rgba(255,255,255,.028);
+  font:italic 900 clamp(12rem,25vw,26rem)/1 "Barlow Condensed",sans-serif;
+  letter-spacing:-.07em;
+  writing-mode:vertical-rl;
+  transform:rotate(180deg);
+}
+
+#uarl-history .uarl-history-hero::after {
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:12%;
+  width:43%;
+  height:16px;
+  background:linear-gradient(180deg,var(--hot) 0 42%,transparent 42% 61%,var(--lime) 61% 79%,transparent 79%);
+  transform:skewY(-12deg);
+  transform-origin:right;
+}
+
+#uarl-history .uarl-history-hero-copy,
+#uarl-history .uarl-history-totals { position:relative; z-index:2; }
+#uarl-history .uarl-history-kicker { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 .72rem/1 "Inter",sans-serif !important; letter-spacing:.14em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-kicker::before { content:"//"; margin-right:.75rem; color:var(--blue); -webkit-text-fill-color:var(--blue); }
+#uarl-history .uarl-history-title { max-width:1000px; margin-top:1.3rem; color:#fff !important; -webkit-text-fill-color:#fff !important; font:italic 900 clamp(5.2rem,10.5vw,10.7rem)/.76 "Barlow Condensed",sans-serif !important; letter-spacing:-.05em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-title span { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; text-shadow:8px 8px 0 var(--hot); }
+#uarl-history .uarl-history-hero-copy > p { max-width:720px; margin-top:2rem; color:rgba(255,255,255,.8) !important; -webkit-text-fill-color:rgba(255,255,255,.8) !important; font-size:1.03rem !important; line-height:1.75 !important; }
+
+#uarl-history .uarl-history-totals { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:rgba(255,255,255,.18); box-shadow:9px 9px 0 var(--hot); }
+#uarl-history .uarl-history-totals > div { min-height:142px; display:flex; flex-direction:column; justify-content:flex-end; padding:1.25rem; background:#11131b; }
+#uarl-history .uarl-history-totals > div:nth-child(2) { background:var(--blue); color:var(--ink); }
+#uarl-history .uarl-history-totals > div:nth-child(3) { background:var(--lime); color:var(--ink); }
+#uarl-history .uarl-history-totals b { font:italic 900 clamp(3.2rem,5vw,5.6rem)/.74 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-history-totals span { margin-top:.8rem; font:900 .57rem/1 "Inter",sans-serif !important; letter-spacing:.1em !important; text-transform:uppercase !important; }
+
+#uarl-history .uarl-history-filter {
+  position:sticky;
+  top:54px;
+  z-index:30;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center;
+  gap:1.3rem;
+  padding:.85rem clamp(1.25rem,7vw,8rem);
+  scroll-margin-top:20px;
+  background:rgba(10,11,16,.97) !important;
+  color:#fff !important;
+  -webkit-text-fill-color:#fff;
+  border-bottom:1px solid rgba(255,255,255,.18);
+  backdrop-filter:blur(14px);
+}
+
+#uarl-history .uarl-history-filter-label { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; font:900 .59rem/1 "Inter",sans-serif !important; letter-spacing:.12em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-tabs { display:flex; flex-wrap:wrap; gap:.42rem; }
+#uarl-history .uarl-history-tabs button,
+#uarl-history .uarl-history-season-tabs button { min-height:43px; padding:.7rem .82rem !important; appearance:none; border:1px solid rgba(255,255,255,.3) !important; background:transparent !important; color:#fff !important; -webkit-text-fill-color:#fff !important; font:900 .63rem/1 "Inter",sans-serif !important; letter-spacing:.065em !important; text-transform:uppercase !important; cursor:pointer; transition:background .18s ease,color .18s ease,border-color .18s ease; }
+#uarl-history .uarl-history-tabs button:hover,
+#uarl-history .uarl-history-season-tabs button:hover { border-color:var(--lime) !important; color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; }
+#uarl-history .uarl-history-tabs button.is-active,
+#uarl-history .uarl-history-season-tabs button.is-active { border-color:var(--lime) !important; background:var(--lime) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; }
+#uarl-history .uarl-history-filter-result { color:rgba(255,255,255,.64) !important; -webkit-text-fill-color:rgba(255,255,255,.64) !important; font-size:.7rem !important; text-align:right; }
+
+#uarl-history .uarl-history-season-bar { display:flex; align-items:center; flex-wrap:wrap; gap:1.1rem; padding:1rem clamp(1.25rem,7vw,8rem); background:#11131b !important; border-bottom:1px solid rgba(255,255,255,.15); }
+#uarl-history .uarl-history-season-bar > span { color:rgba(255,255,255,.72) !important; -webkit-text-fill-color:rgba(255,255,255,.72) !important; font:900 .62rem/1 "Inter",sans-serif !important; letter-spacing:.11em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-season-tabs { display:flex; flex-wrap:wrap; gap:.45rem; }
+#uarl-history .uarl-history-season-tabs button { min-height:36px; padding:.58rem .76rem !important; font-size:.59rem !important; }
+
+#uarl-history .uarl-history-stage { --series:var(--lime); background:var(--ink) !important; }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="cup"] { --series:var(--hot); }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="xfinity"] { --series:var(--blue); }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="trucks"] { --series:var(--violet); }
+#uarl-history .uarl-history-stage[data-uarl-history-theme="open"] { --series:var(--lime); }
+
+#uarl-history .uarl-history-series-card { position:relative; min-height:350px; display:grid; grid-template-columns:minmax(220px,.65fr) minmax(0,1.35fr); align-items:center; gap:clamp(2.5rem,7vw,8rem); padding:clamp(4rem,7vw,7rem) clamp(1.25rem,7vw,8rem); overflow:hidden; background:radial-gradient(circle at 15% 35%,color-mix(in srgb,var(--series) 14%,transparent),transparent 35%),#0e1017 !important; border-bottom:1px solid rgba(255,255,255,.15); }
+#uarl-history .uarl-history-series-card::after { content:""; position:absolute; inset:auto 0 0 auto; width:42%; height:8px; background:var(--series); transform:skewX(-20deg); }
+#uarl-history .uarl-history-logo-wrap { width:min(100%,340px); height:175px; display:grid; place-items:center; background:transparent !important; border:0 !important; box-shadow:none !important; }
+#uarl-history .uarl-history-series-logo { display:block !important; width:100% !important; max-width:340px !important; height:165px !important; max-height:165px !important; margin:0 !important; padding:0 !important; object-fit:contain !important; object-position:center center !important; background:transparent !important; border:0 !important; box-shadow:none !important; }
+#uarl-history .uarl-history-logo-placeholder { width:100%; display:grid; grid-template-columns:auto 1fr; grid-template-rows:1fr auto; align-items:center; gap:.3rem .8rem; background:transparent !important; }
+#uarl-history .uarl-history-logo-placeholder > span { grid-row:1/3; color:var(--series) !important; -webkit-text-fill-color:var(--series) !important; font:italic 900 6.5rem/.75 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-history-logo-placeholder > strong { font:italic 900 2.8rem/.85 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-logo-placeholder > small { color:rgba(255,255,255,.55) !important; -webkit-text-fill-color:rgba(255,255,255,.55) !important; font:800 .55rem/1 "Inter",sans-serif !important; letter-spacing:.08em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-series-copy .uarl-history-kicker { color:var(--series) !important; -webkit-text-fill-color:var(--series) !important; }
+#uarl-history .uarl-history-series-copy h2 { max-width:950px; margin-top:1rem; color:#fff !important; -webkit-text-fill-color:#fff !important; font:italic 900 clamp(3.4rem,6vw,6.6rem)/.82 "Barlow Condensed",sans-serif !important; letter-spacing:-.04em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-series-copy > p { max-width:720px; margin-top:1rem; color:rgba(255,255,255,.7) !important; -webkit-text-fill-color:rgba(255,255,255,.7) !important; line-height:1.7 !important; }
+#uarl-history .uarl-history-series-meta { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:1.4rem; }
+#uarl-history .uarl-history-series-meta span { padding:.56rem .75rem; border:1px solid rgba(255,255,255,.28); font:800 .58rem/1 "Inter",sans-serif !important; letter-spacing:.085em !important; text-transform:uppercase !important; }
+
+#uarl-history .uarl-history-champions,
+#uarl-history .uarl-history-podium,
+#uarl-history .uarl-history-leaderboard,
+#uarl-history .uarl-history-empty { padding:clamp(4.6rem,7vw,7rem) clamp(1.25rem,7vw,8rem); }
+#uarl-history .uarl-history-champions { background:#11131b !important; }
+#uarl-history .uarl-history-podium { background:var(--paper) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink); }
+#uarl-history .uarl-history-leaderboard { background:var(--ink) !important; }
+#uarl-history .uarl-history-section-head { display:grid; grid-template-columns:minmax(0,1fr) minmax(260px,.48fr); align-items:end; gap:2rem; margin-bottom:2.8rem; }
+#uarl-history .uarl-history-section-head h2 { margin-top:1rem; font:italic 900 clamp(3.6rem,7vw,7rem)/.78 "Barlow Condensed",sans-serif !important; letter-spacing:-.04em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-section-head > p { max-width:560px; color:rgba(255,255,255,.68) !important; -webkit-text-fill-color:rgba(255,255,255,.68) !important; line-height:1.7 !important; }
+#uarl-history .uarl-history-podium .uarl-history-section-head > p { color:rgba(10,11,16,.67) !important; -webkit-text-fill-color:rgba(10,11,16,.67) !important; }
+
+#uarl-history .uarl-history-champion-cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1px; background:rgba(255,255,255,.18); }
+#uarl-history .uarl-history-champion-cards article { --card-accent:var(--lime); min-height:195px; display:flex; flex-direction:column; justify-content:flex-end; padding:1.25rem; background:#181a24 !important; border-top:7px solid var(--card-accent); }
+#uarl-history .uarl-history-champion-cards article[data-uarl-card-theme="cup"] { --card-accent:var(--hot); }
+#uarl-history .uarl-history-champion-cards article[data-uarl-card-theme="xfinity"] { --card-accent:var(--blue); }
+#uarl-history .uarl-history-champion-cards article[data-uarl-card-theme="trucks"] { --card-accent:var(--violet); }
+#uarl-history .uarl-history-champion-cards article > span { margin-bottom:auto; color:var(--card-accent) !important; -webkit-text-fill-color:var(--card-accent) !important; font:900 .62rem/1 "Inter",sans-serif !important; letter-spacing:.11em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-champion-cards h3 { margin-top:2rem; font:italic 900 clamp(2.5rem,4vw,4.5rem)/.8 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-champion-cards p { margin-top:.7rem; color:rgba(255,255,255,.7) !important; -webkit-text-fill-color:rgba(255,255,255,.7) !important; font-size:.76rem !important; }
+
+#uarl-history .uarl-history-podium-grid { list-style:none !important; display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:1px; background:rgba(10,11,16,.18); }
+#uarl-history .uarl-history-podium-grid li { position:relative; min-height:245px; display:grid; grid-template-columns:1fr auto; grid-template-rows:auto 1fr auto; gap:.5rem; padding:1.4rem; background:#fff !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink); }
+#uarl-history .uarl-history-podium-grid li:first-child { background:var(--lime) !important; box-shadow:inset 0 -8px 0 var(--hot) !important; }
+#uarl-history .uarl-history-podium-grid li:nth-child(2) { background:var(--blue) !important; }
+#uarl-history .uarl-history-podium-grid li:nth-child(3) { background:var(--violet) !important; color:#fff !important; -webkit-text-fill-color:#fff; }
+#uarl-history .uarl-podium-rank { grid-column:1; font:900 .65rem/1 "Inter",sans-serif !important; letter-spacing:.1em !important; }
+#uarl-history .uarl-history-podium-grid strong { grid-column:1/-1; align-self:end; font:italic 900 clamp(2.2rem,4vw,4.8rem)/.82 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-podium-grid b { grid-column:2; grid-row:1/3; align-self:center; font:italic 900 clamp(4rem,7vw,8rem)/.75 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-history-podium-grid small { grid-column:1/-1; font:900 .56rem/1 "Inter",sans-serif !important; letter-spacing:.1em !important; text-transform:uppercase !important; opacity:.66; }
+
+#uarl-history .uarl-record-table { border-top:1px solid rgba(255,255,255,.22); }
+#uarl-history .uarl-record-header,
+#uarl-history .uarl-record-table li { display:grid; grid-template-columns:90px minmax(180px,1fr) 130px minmax(200px,.55fr); align-items:center; gap:1.2rem; }
+#uarl-history .uarl-record-header { min-height:54px; padding:0 1rem; color:rgba(255,255,255,.5) !important; -webkit-text-fill-color:rgba(255,255,255,.5) !important; font:900 .58rem/1 "Inter",sans-serif !important; letter-spacing:.12em !important; text-transform:uppercase !important; border-bottom:1px solid rgba(255,255,255,.14); }
+#uarl-history .uarl-record-table ol { list-style:none !important; }
+#uarl-history .uarl-record-table li { position:relative; min-height:88px; padding:1rem; border-bottom:1px solid rgba(255,255,255,.14); transition:background .16s ease,color .16s ease,transform .16s ease; }
+#uarl-history .uarl-record-table li:hover { z-index:2; background:#fff !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; transform:translateX(7px); }
+#uarl-history .uarl-record-table li.is-champion { background:linear-gradient(90deg,color-mix(in srgb,var(--series) 21%,transparent),transparent 72%) !important; box-shadow:inset 5px 0 0 var(--series) !important; }
+#uarl-history .uarl-record-table li.is-champion:hover { background:#fff !important; }
+#uarl-history .uarl-rank { color:var(--series) !important; -webkit-text-fill-color:var(--series) !important; font:italic 900 2rem/1 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-record-table strong { font:italic 900 clamp(1.65rem,2.4vw,2.7rem)/.9 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-record-table b { font:italic 900 clamp(2.6rem,4vw,4rem)/.8 "Barlow Condensed",sans-serif !important; }
+#uarl-history .uarl-title-badge { justify-self:start; display:grid; gap:.34rem; padding:.58rem .72rem !important; background:var(--lime) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; font:900 .59rem/1 "Inter",sans-serif !important; letter-spacing:.07em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-title-badge small { color:rgba(10,11,16,.72) !important; -webkit-text-fill-color:rgba(10,11,16,.72) !important; font:800 .52rem/1 "Inter",sans-serif !important; letter-spacing:.05em !important; }
+#uarl-history .uarl-no-title { color:rgba(255,255,255,.25) !important; -webkit-text-fill-color:rgba(255,255,255,.25) !important; }
+#uarl-history .uarl-record-table li:hover .uarl-no-title { color:rgba(10,11,16,.28) !important; -webkit-text-fill-color:rgba(10,11,16,.28) !important; }
+
+#uarl-history .uarl-history-empty { min-height:440px; display:grid; align-content:center; justify-items:start; background:linear-gradient(120deg,#11131b 0 62%,rgba(216,255,62,.12)) !important; }
+#uarl-history .uarl-history-empty h2 { margin-top:1rem; font:italic 900 clamp(5rem,12vw,11rem)/.77 "Barlow Condensed",sans-serif !important; letter-spacing:-.04em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-empty h2 span { color:var(--lime) !important; -webkit-text-fill-color:var(--lime) !important; text-shadow:6px 6px 0 var(--hot); }
+#uarl-history .uarl-history-empty p { max-width:680px; margin-top:1.6rem; color:rgba(255,255,255,.75) !important; -webkit-text-fill-color:rgba(255,255,255,.75) !important; line-height:1.7 !important; }
+
+#uarl-history .uarl-history-footnote { padding:clamp(4rem,7vw,7rem) clamp(1.25rem,7vw,8rem); background:var(--hot) !important; color:#fff !important; -webkit-text-fill-color:#fff; }
+#uarl-history .uarl-history-footnote strong { display:block; max-width:1100px; margin-top:1rem; font:italic 900 clamp(3.4rem,7vw,7rem)/.8 "Barlow Condensed",sans-serif !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-footnote p { max-width:760px; margin-top:1.4rem; line-height:1.7 !important; }
+
+#uarl-history .uarl-history-back { position:fixed; right:22px; bottom:22px; z-index:60; width:64px; height:64px; display:grid; place-items:center; appearance:none; border:0 !important; background:var(--lime) !important; color:var(--ink) !important; -webkit-text-fill-color:var(--ink) !important; box-shadow:6px 6px 0 var(--hot) !important; font:900 1.35rem/1 "Inter",sans-serif !important; cursor:pointer; opacity:0; visibility:hidden; transform:translateY(16px); transition:opacity .2s ease,transform .2s ease,visibility .2s ease; }
+#uarl-history .uarl-history-back span { display:block; margin-top:-13px; font-size:.44rem !important; letter-spacing:.09em !important; text-transform:uppercase !important; }
+#uarl-history .uarl-history-back.is-visible { opacity:1; visibility:visible; transform:translateY(0); }
+#uarl-history .uarl-history-back:hover { background:#fff !important; }
+
+@media (max-width:1100px) {
+  #uarl-history .uarl-history-hero { grid-template-columns:1fr; min-height:760px; }
+  #uarl-history .uarl-history-totals { max-width:650px; }
+  #uarl-history .uarl-history-filter { grid-template-columns:1fr; gap:.65rem; }
+  #uarl-history .uarl-history-filter-label { display:none; }
+  #uarl-history .uarl-history-filter-result { text-align:left; }
+  #uarl-history .uarl-history-series-card { grid-template-columns:minmax(180px,.55fr) minmax(0,1.45fr); gap:2rem; }
+  #uarl-history .uarl-history-logo-wrap { height:150px; }
+  #uarl-history .uarl-history-series-logo { height:140px !important; max-height:140px !important; }
+}
+
+@media (max-width:820px) {
+  #uarl-history .uarl-history-filter { top:0; }
+  #uarl-history .uarl-history-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
+  #uarl-history .uarl-history-tabs button:first-child { grid-column:1/-1; }
+  #uarl-history .uarl-history-season-bar { align-items:flex-start; }
+  #uarl-history .uarl-history-series-card { grid-template-columns:1fr; gap:1.4rem; }
+  #uarl-history .uarl-history-logo-wrap { width:min(100%,320px); height:150px; }
+  #uarl-history .uarl-history-section-head { grid-template-columns:1fr; align-items:start; gap:1.2rem; }
+  #uarl-history .uarl-history-champion-cards { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #uarl-history .uarl-history-podium-grid { grid-template-columns:1fr; }
+  #uarl-history .uarl-history-podium-grid li { min-height:190px; }
+  #uarl-history .uarl-record-header { display:none; }
+  #uarl-history .uarl-record-table li { grid-template-columns:56px minmax(0,1fr) auto; gap:.8rem; min-height:94px; }
+  #uarl-history .uarl-record-table li > :last-child { grid-column:2/-1; justify-self:start; }
+  #uarl-history .uarl-no-title { display:none; }
+}
+
+@media (max-width:560px) {
+  #uarl-history .uarl-history-hero { min-height:700px; padding-top:5rem; }
+  #uarl-history .uarl-history-title { font-size:clamp(4.4rem,21vw,7rem) !important; }
+  #uarl-history .uarl-history-title span { text-shadow:5px 5px 0 var(--hot); }
+  #uarl-history .uarl-history-totals { grid-template-columns:1fr 1fr; box-shadow:6px 6px 0 var(--hot); }
+  #uarl-history .uarl-history-totals > div { min-height:112px; padding:1rem; }
+  #uarl-history .uarl-history-totals b { font-size:3.1rem !important; }
+  #uarl-history .uarl-history-tabs button { min-height:44px; padding:.62rem .34rem !important; font-size:.54rem !important; }
+  #uarl-history .uarl-history-season-tabs { width:100%; }
+  #uarl-history .uarl-history-season-tabs button { min-height:38px; font-size:.52rem !important; }
+  #uarl-history .uarl-history-logo-wrap { width:min(100%,290px); height:135px; }
+  #uarl-history .uarl-history-series-logo { max-width:290px !important; height:130px !important; max-height:130px !important; }
+  #uarl-history .uarl-history-series-copy h2 { font-size:clamp(3rem,13vw,5rem) !important; }
+  #uarl-history .uarl-history-logo-placeholder > span { font-size:5rem !important; }
+  #uarl-history .uarl-history-logo-placeholder > strong { font-size:2.2rem !important; }
+  #uarl-history .uarl-history-champion-cards { grid-template-columns:1fr; }
+  #uarl-history .uarl-history-champion-cards article { min-height:165px; }
+  #uarl-history .uarl-record-table li { grid-template-columns:44px minmax(0,1fr) 48px; padding:.9rem .38rem; }
+  #uarl-history .uarl-rank { font-size:1.55rem !important; }
+  #uarl-history .uarl-record-table strong { font-size:1.55rem !important; }
+  #uarl-history .uarl-record-table b { justify-self:end; font-size:2.5rem !important; }
+  #uarl-history .uarl-title-badge { font-size:.52rem !important; }
+  #uarl-history .uarl-history-back { right:14px; bottom:14px; width:56px; height:56px; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  #uarl-history .uarl-history-tabs button,
+  #uarl-history .uarl-history-season-tabs button,
+  #uarl-history .uarl-record-table li,
+  #uarl-history .uarl-history-back { transition:none; }
+}
+
+
+/* UARL RACE CENTER — broadcast-style live scoring and Season 6 control desk */
+body:has(#uarl-race-center) section.page-section:has(#uarl-race-center),body:has(#uarl-race-center) section.page-section:has(#uarl-race-center)>.content-wrapper{min-height:0!important;padding-top:0!important;padding-bottom:0!important}
+body:has(#uarl-race-center) section.page-section:has(#uarl-race-center)>.content-wrapper{width:100%!important;max-width:none!important;margin:0!important}
+body:has(#uarl-race-center) .fluid-engine:has(#uarl-race-center){display:block!important;height:auto!important;min-height:0!important;padding:0!important}
+body:has(#uarl-race-center) .fe-block:has(#uarl-race-center),body:has(#uarl-race-center) .sqs-block:has(#uarl-race-center),body:has(#uarl-race-center) .sqs-block-content:has(#uarl-race-center),body:has(#uarl-race-center) .sqs-code-container:has(#uarl-race-center){position:relative!important;inset:auto!important;width:100%!important;max-width:none!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;grid-area:auto!important;overflow:visible!important}
+#uarl-race-center,#uarl-race-center *{box-sizing:border-box!important}
+#uarl-race-center{--ink:#090a0e;--panel:#12141d;--surface:#181b25;--paper:#f5f1e8;--hot:#ff4d2e;--blue:#169cff;--lime:#d8ff3e;--violet:#8e5cff;--accent:#ff4d2e;--sticky:0px;width:100vw!important;max-width:none!important;margin:0 0 0 calc(50% - 50vw)!important;padding:0!important;overflow:visible!important;background:var(--ink)!important;color:#fff!important;-webkit-text-fill-color:#fff;font:400 1rem/1.5 "Inter",Arial,sans-serif!important;isolation:isolate}
+#uarl-race-center :where(h1,h2,h3,h4,p,a,span,strong,b,small,button,input,select,ol,li,img){margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none;color:inherit;-webkit-text-fill-color:currentColor;font:inherit;line-height:inherit;letter-spacing:normal;text-decoration:none;text-transform:none;opacity:1}
+#uarl-race-center [hidden]{display:none!important}
+#uarl-race-center .rc-kicker{color:var(--lime)!important;-webkit-text-fill-color:var(--lime)!important;font:850 .64rem/1 "Inter",sans-serif!important;letter-spacing:.15em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-kicker::before{content:"//";margin-right:.65rem;color:var(--blue);-webkit-text-fill-color:var(--blue)}
+#uarl-race-center .rc-topline{display:flex;align-items:center;justify-content:space-between;gap:1rem;min-height:44px;padding:0 clamp(1rem,7vw,8rem);background:#11131b!important;border-bottom:1px solid rgba(255,255,255,.16);font:750 .58rem/1 "Inter",sans-serif!important;letter-spacing:.07em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-signal{display:flex;align-items:center;gap:.6rem;color:var(--lime)!important;-webkit-text-fill-color:var(--lime)!important}
+#uarl-race-center .rc-signal i{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px rgba(216,255,62,.13)}
+#uarl-race-center .rc-topline-right{color:rgba(255,255,255,.63)!important;-webkit-text-fill-color:rgba(255,255,255,.63)!important}
+#uarl-race-center .rc-hero{position:relative;display:grid;grid-template-columns:minmax(0,1.28fr) minmax(300px,.72fr);align-items:end;gap:clamp(2.5rem,6vw,7rem);min-height:590px;padding:clamp(5rem,9vw,9rem) clamp(1.25rem,7vw,8rem) clamp(4rem,7vw,7rem);overflow:hidden;background:radial-gradient(ellipse at 83% 23%,rgba(255,77,46,.18),transparent 32%),repeating-linear-gradient(117deg,transparent 0 53px,rgba(255,255,255,.025) 54px 55px),linear-gradient(110deg,#11131b 0%,#090a0e 66%,#131823)}
+#uarl-race-center .rc-hero::before{content:"S6";position:absolute;right:-.06em;bottom:-.23em;font:italic 900 clamp(16rem,38vw,37rem)/.78 "Barlow Condensed",sans-serif;color:transparent;-webkit-text-fill-color:transparent;-webkit-text-stroke:2px rgba(255,255,255,.055);pointer-events:none}
+#uarl-race-center .rc-hero-copy,#uarl-race-center .rc-session-board{position:relative;z-index:2}
+#uarl-race-center .rc-hero h1{margin-top:1.1rem;font:italic 900 clamp(5rem,10vw,10.8rem)/.76 "Barlow Condensed",sans-serif!important;letter-spacing:-.047em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-hero h1 span{color:var(--lime)!important;-webkit-text-fill-color:var(--lime)!important;font:inherit!important;text-shadow:7px 7px 0 var(--hot)}
+#uarl-race-center .rc-hero-copy>p{max-width:660px;margin-top:1.8rem;color:rgba(255,255,255,.77)!important;-webkit-text-fill-color:rgba(255,255,255,.77)!important;line-height:1.75!important}
+#uarl-race-center .rc-session-board{background:#f5f1e8!important;color:#0a0b10!important;-webkit-text-fill-color:#0a0b10!important;box-shadow:9px 9px 0 var(--blue)!important}
+#uarl-race-center .rc-session-board-head{display:flex;justify-content:space-between;align-items:center;padding:.8rem 1rem;background:var(--lime)!important;font:850 .58rem/1 "Inter",sans-serif!important;letter-spacing:.1em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-session-board-body{padding:1.25rem}
+#uarl-race-center .rc-session-board-body h2{font:800 clamp(2rem,3.5vw,3.4rem)/.9 "Barlow Condensed",sans-serif!important;letter-spacing:.01em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-session-board-body p{margin-top:.65rem;font-size:.75rem!important}
+#uarl-race-center .rc-event-countdown{display:flex;align-items:baseline;gap:.55rem;margin-top:1.2rem;padding-top:1rem;border-top:1px solid rgba(10,11,16,.22)}
+#uarl-race-center .rc-event-countdown b{font:800 2.4rem/.9 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-event-countdown span{font:750 .58rem/1 "Inter",sans-serif!important;letter-spacing:.07em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-command{position:sticky;top:var(--sticky);z-index:85;padding:.75rem clamp(1.25rem,7vw,8rem);background:rgba(9,10,14,.98)!important;border-bottom:1px solid rgba(255,255,255,.18);box-shadow:0 10px 30px rgba(0,0,0,.3);backdrop-filter:blur(12px)}
+#uarl-race-center .rc-division-tabs,#uarl-race-center .rc-view-tabs{display:flex;align-items:center;gap:.42rem;overflow-x:auto;scrollbar-width:none}
+#uarl-race-center .rc-division-tabs::-webkit-scrollbar,#uarl-race-center .rc-view-tabs::-webkit-scrollbar{display:none}
+#uarl-race-center .rc-division-tabs button{flex:0 0 auto;min-height:38px;padding:.65rem .8rem!important;border:1px solid rgba(255,255,255,.33)!important;font:850 .59rem/1 "Inter",sans-serif!important;letter-spacing:.075em!important;text-transform:uppercase!important;white-space:nowrap;cursor:pointer}
+#uarl-race-center .rc-division-tabs button.is-active{border-color:var(--accent)!important;background:var(--accent)!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+#uarl-race-center[data-division="open"] .rc-division-tabs button.is-active{color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important}
+#uarl-race-center .rc-view-tabs{gap:.2rem;margin-top:.55rem}
+#uarl-race-center .rc-view-tabs button{flex:0 0 auto;padding:.55rem .74rem!important;border-bottom:2px solid transparent!important;color:rgba(255,255,255,.66)!important;-webkit-text-fill-color:rgba(255,255,255,.66)!important;font:750 .58rem/1 "Inter",sans-serif!important;letter-spacing:.065em!important;text-transform:uppercase!important;white-space:nowrap;cursor:pointer}
+#uarl-race-center .rc-view-tabs button.is-active{border-bottom-color:var(--lime)!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
+#uarl-race-center .rc-dashboard{padding:clamp(3.4rem,6vw,6rem) clamp(1.25rem,7vw,8rem);background:var(--ink)!important}
+#uarl-race-center .rc-overview{display:grid;grid-template-columns:1.2fr repeat(3,minmax(0,.7fr));gap:1px;background:rgba(255,255,255,.18)!important}
+#uarl-race-center .rc-overview>div{min-height:144px;padding:1rem;background:#141620!important}
+#uarl-race-center .rc-overview>div:first-child{background:var(--lime)!important;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important}
+#uarl-race-center .rc-overview strong{display:block;font:750 clamp(2.1rem,4vw,4rem)/.9 "Barlow Condensed",sans-serif!important;letter-spacing:.005em!important}
+#uarl-race-center .rc-overview small{display:block;margin-top:.65rem;font:800 .57rem/1.3 "Inter",sans-serif!important;letter-spacing:.075em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-section{margin-top:3.5rem}
+#uarl-race-center .rc-section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:1.4rem;margin-bottom:1.5rem}
+#uarl-race-center .rc-section-heading h2{margin-top:.65rem;font:750 clamp(2.6rem,5.6vw,5.8rem)/.87 "Barlow Condensed",sans-serif!important;letter-spacing:-.018em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-section-note{max-width:350px;color:rgba(255,255,255,.65)!important;-webkit-text-fill-color:rgba(255,255,255,.65)!important;font-size:.75rem!important;line-height:1.65!important}
+#uarl-race-center .rc-standings-tools{display:flex;align-items:center;justify-content:space-between;gap:.7rem;margin-bottom:.8rem}
+#uarl-race-center .rc-search{width:min(350px,100%);padding:.78rem .85rem!important;border:1px solid rgba(255,255,255,.3)!important;background:#141620!important;color:#fff!important;-webkit-text-fill-color:#fff!important;font:600 .74rem/1 "Inter",sans-serif!important}
+#uarl-race-center .rc-search::placeholder{color:rgba(255,255,255,.54)!important;-webkit-text-fill-color:rgba(255,255,255,.54)!important}
+#uarl-race-center .rc-preseason-note{color:var(--lime)!important;-webkit-text-fill-color:var(--lime)!important;font:800 .6rem/1.2 "Inter",sans-serif!important;letter-spacing:.065em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-table-shell{overflow-x:auto;border-top:2px solid var(--accent);scrollbar-color:var(--lime) #161821;scrollbar-width:thin}
+#uarl-race-center .rc-table{min-width:860px;border-collapse:collapse;width:100%}
+#uarl-race-center .rc-table th{text-align:left;padding:.8rem .6rem;background:#141620!important;color:rgba(255,255,255,.68)!important;-webkit-text-fill-color:rgba(255,255,255,.68)!important;font:850 .56rem/1 "Inter",sans-serif!important;letter-spacing:.075em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-table td{padding:.86rem .6rem;border-bottom:1px solid rgba(255,255,255,.14);font:650 .76rem/1.3 "Inter",sans-serif!important}
+#uarl-race-center .rc-table tr:hover td{background:rgba(255,255,255,.055)!important}
+#uarl-race-center .rc-rank{color:var(--accent)!important;-webkit-text-fill-color:var(--accent)!important;font:750 1.4rem/1 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-driver-cell strong{display:block;font:700 1.25rem/.95 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-driver-cell span{display:block;margin-top:.25rem;color:rgba(255,255,255,.58)!important;-webkit-text-fill-color:rgba(255,255,255,.58)!important;font-size:.61rem!important}
+#uarl-race-center .rc-driver-cell .rc-driver-username{color:var(--blue)!important;-webkit-text-fill-color:var(--blue)!important;font-weight:800!important;letter-spacing:.015em!important}
+#uarl-race-center .rc-driver-cell .rc-driver-team{margin-top:.18rem!important}
+#uarl-race-center .rc-number{color:var(--lime)!important;-webkit-text-fill-color:var(--lime)!important;font-weight:850!important}
+#uarl-race-center .rc-pts{font:800 1.35rem/.9 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-muted{color:rgba(255,255,255,.52)!important;-webkit-text-fill-color:rgba(255,255,255,.52)!important}
+#uarl-race-center .rc-stat-pills{display:flex;flex-wrap:wrap;gap:.45rem;margin-bottom:1.3rem}
+#uarl-race-center .rc-stat-pills button{padding:.57rem .68rem!important;border:1px solid rgba(255,255,255,.26)!important;font:750 .58rem/1 "Inter",sans-serif!important;letter-spacing:.06em!important;text-transform:uppercase!important;cursor:pointer}
+#uarl-race-center .rc-stat-pills button.is-active{border-color:var(--lime)!important;background:var(--lime)!important;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important}
+#uarl-race-center .rc-stat-board{display:grid;gap:.55rem}
+#uarl-race-center .rc-stat-row{display:grid;grid-template-columns:50px minmax(0,1fr) 70px;align-items:center;gap:.7rem;padding:.8rem;background:#141620!important}
+#uarl-race-center .rc-stat-row .rc-stat-value{text-align:right;font:800 1.8rem/.9 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-stat-meter{height:3px;margin-top:.42rem;background:rgba(255,255,255,.13)}
+#uarl-race-center .rc-stat-meter i{display:block;height:100%;background:var(--accent)}
+#uarl-race-center .rc-control-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.58fr);gap:1.1rem}
+#uarl-race-center .rc-panel{padding:1.25rem;background:#141620!important;border-top:3px solid var(--accent)!important}
+#uarl-race-center .rc-panel h3{font:700 1.95rem/.94 "Barlow Condensed",sans-serif!important;text-transform:uppercase!important}
+#uarl-race-center .rc-panel>p{margin-top:.6rem;color:rgba(255,255,255,.68)!important;-webkit-text-fill-color:rgba(255,255,255,.68)!important;font-size:.75rem!important;line-height:1.6!important}
+#uarl-race-center .rc-season-progress{height:9px;margin-top:1.25rem;background:rgba(255,255,255,.13)}
+#uarl-race-center .rc-season-progress i{display:block;height:100%;background:var(--accent)}
+#uarl-race-center .rc-progress-labels{display:flex;justify-content:space-between;margin-top:.55rem;color:rgba(255,255,255,.68)!important;-webkit-text-fill-color:rgba(255,255,255,.68)!important;font:750 .61rem/1 "Inter",sans-serif!important}
+#uarl-race-center .rc-upcoming-list{display:grid;gap:.55rem;margin-top:1.1rem}
+#uarl-race-center .rc-upcoming-item{display:grid;grid-template-columns:50px minmax(0,1fr);gap:.65rem;padding:.65rem 0;border-bottom:1px solid rgba(255,255,255,.13)}
+#uarl-race-center .rc-upcoming-item b{font:750 1.35rem/1 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-upcoming-item strong{display:block;font:700 .76rem/1.25 "Inter",sans-serif!important}
+#uarl-race-center .rc-upcoming-item small{display:block;margin-top:.24rem;color:rgba(255,255,255,.64)!important;-webkit-text-fill-color:rgba(255,255,255,.64)!important;font-size:.62rem!important}
+#uarl-race-center .rc-battle-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
+#uarl-race-center .rc-entity-list{display:grid;gap:.55rem;margin-top:1.05rem}
+#uarl-race-center .rc-entity{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:.6rem;padding:.72rem;background:#1c1f29!important}
+#uarl-race-center .rc-entity strong{display:block;font:700 1.15rem/1 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-entity small{display:block;margin-top:.3rem;color:rgba(255,255,255,.62)!important;-webkit-text-fill-color:rgba(255,255,255,.62)!important;font-size:.6rem!important}
+#uarl-race-center .rc-entity b{font:750 1.6rem/.9 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-compare{margin-top:3.4rem;padding:1.5rem;background:#f5f1e8!important;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important}
+#uarl-race-center .rc-compare .rc-kicker{color:var(--hot)!important;-webkit-text-fill-color:var(--hot)!important}
+#uarl-race-center .rc-compare h2{margin-top:.55rem;font:750 clamp(2.5rem,5vw,4.7rem)/.9 "Barlow Condensed",sans-serif!important;text-transform:uppercase!important}
+#uarl-race-center .rc-compare-selects{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:.8rem;margin-top:1.2rem}
+#uarl-race-center .rc-compare-selects select{min-width:0;padding:.78rem .75rem!important;border:1px solid rgba(10,11,16,.35)!important;background:#fff!important;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important;font:700 .72rem/1 "Inter",sans-serif!important}
+#uarl-race-center .rc-compare-selects>span{font:800 1.2rem/1 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-compare-rows{display:grid;gap:.55rem;margin-top:1.1rem}
+#uarl-race-center .rc-compare-row{display:grid;grid-template-columns:60px minmax(0,1fr) 60px;align-items:center;gap:.6rem;padding:.55rem;background:#fff!important}
+#uarl-race-center .rc-compare-row>b{font:750 1.55rem/.9 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-compare-row>b:last-child{text-align:right}
+#uarl-race-center .rc-compare-row>span{text-align:center;font:750 .53rem/1.2 "Inter",sans-serif!important;letter-spacing:.06em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-results-list{display:grid;gap:.8rem}
+#uarl-race-center .rc-result-card{padding:1rem;background:#141620!important;border-left:4px solid var(--accent)!important}
+#uarl-race-center .rc-result-card h3{font:700 1.65rem/.9 "Barlow Condensed",sans-serif!important}
+#uarl-race-center .rc-result-card p{margin-top:.55rem;color:rgba(255,255,255,.7)!important;-webkit-text-fill-color:rgba(255,255,255,.7)!important;font-size:.75rem!important}
+#uarl-race-center .rc-empty{padding:2.8rem 1.1rem;background:#141620!important;text-align:center}
+#uarl-race-center .rc-empty h3{font:750 2.6rem/.9 "Barlow Condensed",sans-serif!important;text-transform:uppercase!important}
+#uarl-race-center .rc-empty p{max-width:560px;margin:.8rem auto 0;color:rgba(255,255,255,.68)!important;-webkit-text-fill-color:rgba(255,255,255,.68)!important;line-height:1.65!important}
+#uarl-race-center .rc-footer{padding:3.5rem clamp(1.25rem,7vw,8rem);background:var(--blue)!important}
+#uarl-race-center .rc-footer h2{font:italic 900 clamp(3rem,7vw,7rem)/.82 "Barlow Condensed",sans-serif!important;text-transform:uppercase!important}
+#uarl-race-center .rc-footer p{max-width:620px;margin-top:.75rem;line-height:1.65!important}
+#uarl-race-center .rc-footer-links{display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.3rem}
+#uarl-race-center .rc-footer-links a{padding:.7rem .85rem!important;background:#fff!important;color:#0a0b10!important;-webkit-text-fill-color:#0a0b10!important;font:800 .63rem/1 "Inter",sans-serif!important;letter-spacing:.06em!important;text-transform:uppercase!important}
+#uarl-race-center .rc-back{position:fixed;right:20px;bottom:20px;z-index:75;display:grid;place-items:center;width:56px;height:56px;background:var(--lime)!important;color:var(--ink)!important;-webkit-text-fill-color:var(--ink)!important;box-shadow:5px 5px 0 var(--hot)!important;font:850 1.2rem/1 "Inter",sans-serif!important;cursor:pointer;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .2s ease,transform .2s ease,visibility .2s ease}
+#uarl-race-center .rc-back.is-visible{opacity:1;visibility:visible;transform:translateY(0)}
+#uarl-race-center .rc-back small{font:800 .43rem/1 "Inter",sans-serif!important;text-transform:uppercase!important}
+@media(max-width:1050px){#uarl-race-center .rc-hero{grid-template-columns:1fr;min-height:0}#uarl-race-center .rc-session-board{max-width:550px}#uarl-race-center .rc-overview{grid-template-columns:1fr 1fr}#uarl-race-center .rc-control-layout{grid-template-columns:1fr}}
+@media(max-width:720px){#uarl-race-center .rc-topline-right{display:none}#uarl-race-center .rc-hero{padding-top:5.5rem}#uarl-race-center .rc-hero h1{font-size:clamp(4.8rem,20vw,8rem)}#uarl-race-center .rc-command{padding:.65rem 1rem}#uarl-race-center .rc-division-tabs button{min-height:36px;font-size:.54rem!important}#uarl-race-center .rc-view-tabs button{font-size:.53rem!important}#uarl-race-center .rc-overview>div{min-height:115px;padding:.8rem}#uarl-race-center .rc-section-heading{display:block}#uarl-race-center .rc-section-note{margin-top:.55rem}#uarl-race-center .rc-standings-tools{align-items:flex-start;flex-direction:column}#uarl-race-center .rc-battle-grid{grid-template-columns:1fr}#uarl-race-center .rc-compare{padding:1rem}#uarl-race-center .rc-compare-selects{grid-template-columns:1fr;gap:.4rem}#uarl-race-center .rc-compare-selects>span{text-align:center}#uarl-race-center .rc-stat-pills{flex-wrap:nowrap;overflow-x:auto}#uarl-race-center .rc-stat-pills button{flex:0 0 auto}#uarl-race-center .rc-back{right:14px;bottom:14px;width:50px;height:50px}}
+@media(prefers-reduced-motion:reduce){#uarl-race-center *,#uarl-race-center *::before,#uarl-race-center *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+</style>
+
+<div id="uarl-race-center" data-division="d1">
+  <div class="rc-topline"><div class="rc-signal"><i></i><span data-rc-live-label>Race control · Preseason</span></div><span class="rc-topline-right">Official Season 6 scoring desk · Eastern Time</span></div>
+  <header class="rc-hero"><div class="rc-hero-copy"><div class="rc-kicker">Race control is on standby</div><h1>Points.<br><span>Pressure.</span><br>Everything.</h1><p>The standings, race results, season leaders, championship battles, and every number that matters—live in one place when Season 6 gets the green flag.</p></div><aside class="rc-session-board"><div class="rc-session-board-head"><span>Next points race</span><span data-rc-board-division>D1</span></div><div class="rc-session-board-body"><h2 data-rc-event-name>The 6th Annual Daytona 500</h2><p data-rc-event-track>Daytona International Speedway</p><p data-rc-event-date>Sun, Sep 20 · 8:30 PM ET</p><div class="rc-event-countdown"><b data-rc-event-clock>—</b><span data-rc-clock-label>until the green flag</span></div></div></aside></header>
+
+  <section class="rc-league-update"><b>SEASON 6 STRUCTURE UPDATE</b><strong>D2 CLOSED · D1 DELAYED ONE WEEK</strong><p>The Grand National Series ended after Daytona. Its completed race stays in the archive, all D2 rostered drivers become D1 free agents, and the full remaining Cup schedule shifts back seven days.</p></section><nav class="rc-command" id="uarl-race-center-controls" aria-label="Race Center controls"><div class="rc-division-tabs" role="tablist" aria-label="Select a racing series"><button class="is-active" type="button" data-rc-division="d1">D1 · Cup</button><button type="button" data-rc-division="d2">D2 · Archive</button><button type="button" data-rc-division="open">Open Series</button></div><div class="rc-view-tabs" role="tablist" aria-label="Select Race Center information"><button class="is-active" type="button" data-rc-view="standings">Points standings</button><button type="button" data-rc-view="stats">Stats lab</button><button type="button" data-rc-view="results">Race results</button><button type="button" data-rc-view="battle">Team battle</button><button type="button" data-rc-view="control">Race control</button></div></nav>
+
+  <main class="rc-dashboard"><div class="rc-overview" aria-label="Current championship overview"><div><strong data-rc-leader>NO LEADER</strong><small>Championship leader</small></div><div><strong data-rc-points>0</strong><small>Leader points</small></div><div><strong data-rc-round>0 / 18</strong><small>Points races completed</small></div><div><strong data-rc-drivers>16</strong><small>Confirmed drivers</small></div></div>
+
+    <section class="rc-section" data-rc-panel="standings"><div class="rc-section-heading"><div><div class="rc-kicker">The championship picture</div><h2>Points standings.</h2></div><p class="rc-section-note">Official Season 6 totals. D2 is now an archive: Daytona remains preserved as the division’s only completed round, and all former D2 rostered drivers have moved to D1 free agency.</p></div><div class="rc-standings-tools"><input class="rc-search" type="search" placeholder="Search a driver, number, or team…" aria-label="Search the points standings"><span class="rc-preseason-note" data-rc-preseason>Season 6 has not started</span></div><div class="rc-table-shell"><table class="rc-table"><thead><tr><th>Pos</th><th>Car</th><th>Driver / Team</th><th>PTS</th><th>Gap</th><th>Starts</th><th>Wins</th><th>Top 5</th><th>Top 10</th><th>Poles</th><th>Laps led</th></tr></thead><tbody data-rc-standings-body></tbody></table></div><div class="rc-empty" data-rc-standings-empty hidden><h3>No confirmed grid yet.</h3><p>This series will populate as soon as its driver roster or first official race results are available.</p></div></section>
+
+    <section class="rc-section" data-rc-panel="stats" hidden><div class="rc-section-heading"><div><div class="rc-kicker">Season 6 by the numbers</div><h2>The stats lab.</h2></div><p class="rc-section-note">Switch categories to see who is leading every major statistical battle once the season begins.</p></div><div class="rc-stat-pills"><button class="is-active" type="button" data-rc-stat="wins">Wins</button><button type="button" data-rc-stat="top5">Top 5s</button><button type="button" data-rc-stat="top10">Top 10s</button><button type="button" data-rc-stat="poles">Poles</button><button type="button" data-rc-stat="stageWins">Stage wins</button><button type="button" data-rc-stat="lapsLed">Laps led</button><button type="button" data-rc-stat="averageFinish">Avg. finish</button></div><div class="rc-stat-board" data-rc-stat-board></div></section>
+
+    <section class="rc-section" data-rc-panel="results" hidden><div class="rc-section-heading"><div><div class="rc-kicker">Every finish, every round</div><h2>Race results.</h2></div><p class="rc-section-note">Official points races and recorded non-points specials live here together; exhibitions never alter the championship standings.</p></div><div class="rc-results-list" data-rc-results></div></section>
+
+    <section class="rc-section" data-rc-panel="battle" hidden><div class="rc-section-heading"><div><div class="rc-kicker">It is bigger than one car</div><h2>The team battle.</h2></div><p class="rc-section-note">Track every organization and manufacturer by combined Season 6 points, victories, and confirmed drivers.</p></div><div class="rc-battle-grid"><article class="rc-panel"><h3>Team standings</h3><p>Combined points from confirmed drivers in the selected division.</p><div class="rc-entity-list" data-rc-team-list></div></article><article class="rc-panel"><h3>Manufacturer standings</h3><p>Chevrolet, Ford, and Toyota by current-season points and driver depth.</p><div class="rc-entity-list" data-rc-make-list></div></article></div></section>
+
+    <section class="rc-section" data-rc-panel="control" hidden><div class="rc-section-heading"><div><div class="rc-kicker">Eyes on the entire season</div><h2>Race control.</h2></div><p class="rc-section-note">Season progress, the next rounds on deck, and the road toward The Chase.</p></div><div class="rc-control-layout"><article class="rc-panel"><h3 data-rc-progress-title>Season progress</h3><p data-rc-progress-copy>0 of 18 championship races completed.</p><div class="rc-season-progress"><i data-rc-progress-fill style="width:0%"></i></div><div class="rc-progress-labels"><span>Opening round</span><span data-rc-progress-end>Championship finale</span></div><div class="rc-upcoming-list" data-rc-upcoming></div></article><article class="rc-panel"><h3 data-rc-chase-title>The Chase</h3><p data-rc-chase-copy>Rounds 14 through 18 decide the championship. The official Chase qualification and scoring format will appear once confirmed.</p><div class="rc-upcoming-list" data-rc-chase-list></div></article></div></section>
+
+    <section class="rc-compare" aria-labelledby="uarl-race-compare-title"><div class="rc-kicker">Settle it in the numbers</div><h2 id="uarl-race-compare-title">Head to head.</h2><div class="rc-compare-selects"><select data-rc-compare-a aria-label="First driver"></select><span>VS</span><select data-rc-compare-b aria-label="Second driver"></select></div><div class="rc-compare-rows" data-rc-compare-rows></div><div class="rc-empty" data-rc-compare-empty hidden><h3>Waiting on a grid.</h3><p>Driver comparisons become available when this series has at least two confirmed entries.</p></div></section>
+  </main>
+
+  <footer class="rc-footer"><div class="rc-kicker">When the green flag drops</div><h2>The numbers<br>start talking.</h2><p>Follow the schedule, meet the drivers, and check back after each race for official championship standings and results.</p><div class="rc-footer-links"><a href="/schedule">See the schedule ↗</a><a href="/drivers">Meet the grid ↗</a><a href="/history">League history ↗</a></div></footer>
+  <button class="rc-back" type="button" aria-label="Return to the Race Center controls">↑<small>Center</small></button>
+</div>
+
+<script src="/assets/runtime-data.js"></script>
+<script src="/assets/uarl-events.js"></script>
+<script>
+/*
+  UARL SEASON 6 RACE RESULTS — EDIT THIS ARRAY AFTER EACH OFFICIAL RACE.
+  Example:
+  window.UARL_RACE_CENTER_RESULTS = [{
+    division: "d1", round: 1, event: "The 6th Annual Daytona 500", date: "2026-09-12",
+    finishes: [
+      { username: "lancejuly", finish: 1, points: 40, stagePoints: 10, lapsLed: 24, pole: true, stageWins: 1 },
+      { username: "codydgoforth", finish: 2, points: 35, stagePoints: 7, lapsLed: 12, pole: false, stageWins: 0 }
+    ]
+  }];
+  Points values must come from UARL's official results. Nothing is automatically invented.
+*/
+window.UARL_RACE_CENTER_RESULTS = [{
+  id: "d2-r01-2026-09-12",
+  division: "d2",
+  round: 1,
+  event: "The Cracker Barrel 250 at Daytona",
+  date: "2026-09-12",
+  start: "2026-09-12T23:00:00.000Z",
+  pointsPending: false,
+  finishes: [
+    { username: "IIKyle5Larson", name: "Rocky", number: "19", team: "Aetherwing eMotorsports", make: "Toyota", finish: 1, points: 0, stagePoints: 0, pole: false, stageWins: 0, pointsEligible: false },
+    { username: "58bbwapache", name: "Dale", number: "54", team: "Aetherwing eMotorsports", make: "Toyota", finish: 2, points: 0, stagePoints: 0, pole: true, stageWins: 0, pointsEligible: false },
+    { username: "TaylorKenseth17", name: "Taylor", number: "24", team: "Goat Whitlock Motorsports", make: "Toyota", finish: 3, points: 45, stagePoints: 10, pole: false, stageWins: 2, pointsEligible: true, pointsPending: false, bonusPoints: 3, mostLapsLed: true, lapsLed: 20, raceLaps: 35 },
+    { username: "Aokikoto", name: "Wispy", number: "62", team: "Aetherwing eMotorsports", make: "Toyota", finish: 4, points: 0, stagePoints: 0, pole: false, stageWins: 0, pointsEligible: false }
+  ]
+}];
+
+(async function(){
+  var root=document.getElementById('uarl-race-center');if(!root)return;
+  var data={"drivers":[{"id":"58bbwapache","name":"Dale","number":"16","division":"d1","team":"Dakota Sullivan Racing","make":"Chevrolet","careerWins":0,"careerTitles":0,"careerRank":0},{"id":"UN88475544","name":"Nurtec","number":"20","division":"d1","team":"Dakota Sullivan Racing","make":"Chevrolet","careerWins":5,"careerTitles":0,"careerRank":13},{"id":"PlaneFan638","name":"Plane","number":"61","division":"d1","team":"Dakota Sullivan Racing","make":"Chevrolet","careerWins":1,"careerTitles":0,"careerRank":44},{"id":"pa05","name":"Payson","number":"05","division":"d1","team":"Avery Motorsports","make":"Ford","careerWins":18,"careerTitles":1,"careerRank":2},{"id":"bowlingsham1","name":"Shane","number":"58","division":"d1","team":"Avery Motorsports","make":"Ford","careerWins":3,"careerTitles":0,"careerRank":23},{"id":"codydgoforth","name":"Cody","number":"60","division":"d1","team":"Avery Motorsports","make":"Ford","careerWins":6,"careerTitles":2,"careerRank":9},{"id":"TBDAN1E","name":"Daniel","number":"72","division":"d1","team":"Avery Motorsports","make":"Ford","careerWins":1,"careerTitles":0,"careerRank":37},{"id":"John_Hunter38","name":"John","number":"24","division":"d1","team":"Goat Whitlock Motorsports","make":"Toyota","careerWins":3,"careerTitles":0,"careerRank":19},{"id":"JJElliott2004","name":"James","number":"84","division":"d1","team":"Goat Whitlock Motorsports","make":"Toyota","careerWins":3,"careerTitles":1,"careerRank":18},{"id":"Kingofgamez","name":"King","number":"77","division":"d1","team":"Goforth Motorsports","make":"Ford","careerWins":3,"careerTitles":0,"careerRank":20},{"id":"GuillermoChase","name":"GuillermoChase","number":"81","division":"d1","team":"Goforth Motorsports","make":"Ford","careerWins":0,"careerTitles":0,"careerRank":0},{"id":"lancejuly","name":"Lance","number":"88","division":"d1","team":"Goforth Motorsports","make":"Ford","careerWins":25,"careerTitles":0,"careerRank":1},{"id":"Aokikoto","name":"Wispy","number":"28","division":"d1","team":"Aetherwing eMotorsports","make":"Toyota","careerWins":1,"careerTitles":0,"careerRank":47,"status":"FT"},{"id":"IIKyle5Larson","name":"Rocky","number":"92","division":"d1","team":"Aetherwing eMotorsports","make":"Toyota","careerWins":5,"careerTitles":0,"careerRank":14,"status":"FT"},{"id":"pa05","name":"Payson","number":"05","division":"open","team":"Independent entry","make":"Ford","careerWins":18,"careerTitles":1,"careerRank":2},{"id":"Aokikoto","name":"Wispy","number":"28","division":"open","team":"Independent entry","make":"Toyota","careerWins":1,"careerTitles":0,"careerRank":47,"status":"PT"},{"id":"bowlingsham1","name":"Shane","number":"44","division":"open","team":"Independent entry","make":"Ford","careerWins":3,"careerTitles":0,"careerRank":23},{"id":"JJElliott2004","name":"James","number":"48","division":"open","team":"Independent entry","make":"Chevrolet","careerWins":3,"careerTitles":1,"careerRank":18},{"id":"pxssis","name":"Pxssis","number":"49","division":"open","team":"Independent entry","make":"Ford","careerWins":2,"careerTitles":0,"careerRank":30},{"id":"IIKyle5Larson","name":"Rocky","number":"57","division":"open","team":"Independent entry","make":"Ford","careerWins":5,"careerTitles":0,"careerRank":14},{"id":"codydgoforth","name":"Cody","number":"60","division":"open","team":"Independent entry","make":"Ford","careerWins":6,"careerTitles":2,"careerRank":9},{"id":"FueledByMayonnaise","name":"FueledByMayo","number":"87","division":"open","team":"Independent entry","make":"Generic","careerWins":1,"careerTitles":0,"careerRank":40},{"id":"daleapache88","name":"Dale","number":"88","division":"open","team":"Independent entry","make":"Generic","careerWins":0,"careerTitles":0,"careerRank":0},{"id":"FueledByMayonnaise","name":"FueledByMayo","number":"20","division":"d2","team":"Dakota Sullivan Racing","make":"Chevrolet","careerWins":1,"careerTitles":0,"careerRank":40,"status":"FT"},{"id":"Callsign_Hestia","name":"Nick","number":"05","division":"d2","team":"Avery Motorsports","make":"Ford","careerWins":0,"careerTitles":0,"careerRank":0,"status":"FT"},{"id":"Frogboy4783","name":"Frog","number":"72","division":"d2","team":"Avery Motorsports","make":"Ford","careerWins":2,"careerTitles":0,"careerRank":26,"status":"FT"},{"id":"Comodw","name":"Jay","number":"9","division":"d2","team":"Goat Whitlock Motorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"FT"},{"id":"TaylorKenseth17","name":"Taylor","number":"24","division":"d2","team":"Goat Whitlock Motorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"FT"},{"id":"JeremyFrey12","name":"Jeremy","number":"48","division":"d2","team":"Goat Whitlock Motorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"FT"},{"id":"AnyGameAnyTime09","name":"Muffin","number":"84","division":"d2","team":"Goat Whitlock Motorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"FT"},{"id":"uhhbzb","name":"BurgerTown2Good","number":"11","division":"d2","team":"Aetherwing eMotorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"FT"},{"id":"sealsntags","name":"Gk3r","number":"19","division":"d2","team":"Aetherwing eMotorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"FT"},{"id":"TaylorKenseth17","name":"Taylor","number":"48","division":"d1","team":"Goat Whitlock Motorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"SIGNED"},{"id":"uhhbzb","name":"BurgerTown2Good","number":"32","division":"d1","team":"Aetherwing eMotorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"SIGNED"},{"id":"Frogboy4783","name":"Frog","number":"73","division":"d1","team":"Avery Motorsports","make":"Ford","careerWins":2,"careerTitles":0,"careerRank":26,"status":"SIGNED"},{"id":"sealsntags","name":"Gk3r","number":"52","division":"d1","team":"Aetherwing eMotorsports","make":"Toyota","careerWins":0,"careerTitles":0,"careerRank":0,"status":"SIGNED"}],"schedule":[{"division":"d1","start":"2026-09-10T00:30:00.000Z","name":"L.L. Bean Clash","track":"Daytona International Speedway","exhibition":true,"round":null},{"division":"d1","start":"2026-09-21T00:30:00.000Z","name":"The 6th Annual Daytona 500","track":"Daytona International Speedway","exhibition":false,"round":1,"originalStart":"2026-09-14T00:30:00.000Z"},{"division":"d1","start":"2026-09-28T00:30:00.000Z","name":"Queen City 500","track":"Charlotte Motor Speedway","exhibition":false,"round":2,"originalStart":"2026-09-21T00:30:00.000Z"},{"division":"d1","start":"2026-10-05T00:30:00.000Z","name":"Aztec Grand Prix 400","track":"Mexico City","exhibition":false,"round":3,"originalStart":"2026-09-28T00:30:00.000Z"},{"division":"d1","start":"2026-10-12T00:30:00.000Z","name":"Echo Park Thunder 400","track":"Echo Park Speedway","exhibition":false,"round":4,"originalStart":"2026-10-05T00:30:00.000Z"},{"division":"d1","start":"2026-10-19T00:30:00.000Z","name":"Music City 300","track":"Nashville Fairgrounds","exhibition":false,"round":5,"originalStart":"2026-10-12T00:30:00.000Z"},{"division":"d1","start":"2026-10-26T00:30:00.000Z","name":"Jackpot 400","track":"Las Vegas Motor Speedway","exhibition":false,"round":6,"originalStart":"2026-10-19T00:30:00.000Z"},{"division":"d1","start":"2026-11-02T00:30:00.000Z","name":"British Crown 300","track":"Silverstone Circuit","exhibition":false,"round":7,"originalStart":"2026-10-26T00:30:00.000Z"},{"division":"d1","start":"2026-11-09T01:30:00.000Z","name":"Lone Star 500","track":"Texas Motor Speedway","exhibition":false,"round":8,"originalStart":"2026-11-02T01:30:00.000Z"},{"division":"d1","start":"2026-11-16T01:30:00.000Z","name":"The 6th Annual UARL All-Star Race","track":"USA International Speedway","exhibition":true,"round":null,"originalStart":"2026-11-09T01:30:00.000Z"},{"division":"d1","start":"2026-11-23T01:30:00.000Z","name":"Monza Speed Festival 350","track":"Monza Oval","exhibition":false,"round":9,"originalStart":"2026-11-16T01:30:00.000Z"},{"division":"d1","start":"2026-11-30T01:30:00.000Z","name":"Olympian 300","track":"Greece Speedway","exhibition":false,"round":10,"originalStart":"2026-11-23T01:30:00.000Z"},{"division":"d1","start":"2026-12-07T01:30:00.000Z","name":"Mountain Peak 400","track":"Pocono Raceway","exhibition":false,"round":11,"originalStart":"2026-11-30T01:30:00.000Z"},{"division":"d1","start":"2026-12-14T01:30:00.000Z","name":"Brickyard 500","track":"Indianapolis Motor Speedway","exhibition":false,"round":12,"originalStart":"2026-12-07T01:30:00.000Z"},{"division":"d1","start":"2026-12-21T01:30:00.000Z","name":"Rising Sun 300","track":"Twin Ring Motegi","exhibition":false,"round":13,"originalStart":"2026-12-14T01:30:00.000Z"},{"division":"d1","start":"2026-12-28T01:30:00.000Z","name":"Windy City Grand Prix","track":"Chicago Street Course","exhibition":false,"round":14,"originalStart":"2026-12-21T01:30:00.000Z"},{"division":"d1","start":"2026-12-31T01:30:00.000Z","name":"Midwest 400","track":"Chicagoland Speedway","exhibition":false,"round":15,"originalStart":"2026-12-24T01:30:00.000Z"},{"division":"d1","start":"2027-01-04T01:30:00.000Z","name":"Gateway 400","track":"World Wide Technology Raceway","exhibition":false,"round":16,"originalStart":"2026-12-28T01:30:00.000Z"},{"division":"d1","start":"2027-01-11T01:30:00.000Z","name":"Southern 500","track":"Darlington Raceway","exhibition":false,"round":17,"originalStart":"2027-01-04T01:30:00.000Z"},{"division":"d1","start":"2027-01-18T01:30:00.000Z","name":"L.L. Bean Championship Finale","track":"Homestead-Miami Speedway","exhibition":false,"round":18,"originalStart":"2027-01-11T01:30:00.000Z"},{"division":"d2","start":"2026-09-12T23:00:00.000Z","name":"The Cracker Barrel 250 at Daytona","track":"Daytona International Speedway","exhibition":false,"round":1,"scheduleStatus":"rescheduled","originalStart":"2026-09-11T22:45:00.000Z"},{"division":"open","start":"2026-09-13T15:30:00.000Z","name":"Sunshine State 150","track":"Daytona Backstretch","exhibition":false,"round":1},{"division":"open","start":"2026-09-20T15:30:00.000Z","name":"Snowball Summer Classic","track":"Five Flags Speedway","exhibition":false,"round":2},{"division":"open","start":"2026-09-27T15:30:00.000Z","name":"Southern Heritage 100","track":"Sunny South Raceway Park","exhibition":false,"round":3},{"division":"open","start":"2026-10-04T15:30:00.000Z","name":"Queen City Dirt Nationals","track":"The Dirt Track at Charlotte","exhibition":false,"round":4},{"division":"open","start":"2026-10-11T15:30:00.000Z","name":"Capital Cup","track":"Wake County Speedway","exhibition":false,"round":5},{"division":"open","start":"2026-10-18T15:30:00.000Z","name":"Badger State 150","track":"Slinger Speedway","exhibition":false,"round":6},{"division":"open","start":"2026-10-25T15:30:00.000Z","name":"Appalachian Challenge","track":"Tyler County Speedway","exhibition":false,"round":7},{"division":"open","start":"2026-11-01T16:30:00.000Z","name":"Great Lakes Showdown","track":"Cedar Lake Speedway","exhibition":false,"round":8},{"division":"open","start":"2026-11-08T16:30:00.000Z","name":"North Country Classic","track":"ABC Raceway","exhibition":false,"round":9},{"division":"open","start":"2026-11-15T16:30:00.000Z","name":"Pine Tree State 150","track":"Baileyville Speedway","exhibition":false,"round":10},{"division":"open","start":"2026-11-22T16:30:00.000Z","name":"Heartland Dirt Crown","track":"Eldora Speedway","exhibition":false,"round":11},{"division":"open","start":"2026-11-29T16:30:00.000Z","name":"Madhouse 100","track":"Bowman Gray Stadium","exhibition":false,"round":12}],"series":{"d1":{"short":"D1 \u00b7 Cup","category":"Cup Series","name":"L.L. Bean Cup Series","logo":"https://i.ibb.co/gb079CL2/imageedit-1-6265648040.png","color":"#ff4d2e","rounds":18,"chaseStart":14},"d2":{"short":"D2 \u00b7 Archive","category":"Grand National Archive","name":"National Fallen Firefighters Foundation Grand National Series \u00b7 Archive","logo":"https://i.ibb.co/LdWsC6mY/imageedit-2-7627989187.png","color":"#169cff","rounds":1,"chaseStart":null},"open":{"short":"Open Series","category":"Open Series","name":"Bangor Savings Bank Super Late Model Open Series","logo":"https://i.ibb.co/2zmZpdb/imageedit-1-6460712268.png","color":"#d8ff3e","rounds":12,"chaseStart":null}}};
+  try {
+    var liveData=await window.UARLData.load();
+    data=liveData.race||data;
+    window.UARL_EVENT_RECORDS=liveData.records||window.UARL_EVENT_RECORDS||[];
+    window.UARL_RACE_CENTER_RESULTS=(liveData.records||[]).filter(function(record){return record.pointsEvent!==false;});
+  } catch(error) { console.warn('Using built-in Race Center fallback',error); }
+  var results=window.UARL_RACE_CENTER_RESULTS;
+  var requestedEvent=new URLSearchParams(location.search).get('event');var requestedRecord=(window.UARL_EVENT_RECORDS||[]).find(function(item){return item.id===requestedEvent;});var state={division:requestedRecord?requestedRecord.division:'d1',view:requestedEvent?'results':'standings',stat:'wins',query:''};
+  var labels={wins:'Race wins',top5:'Top-five finishes',top10:'Top-ten finishes',poles:'Pole positions',stageWins:'Stage victories',lapsLed:'Laps led',averageFinish:'Average finishing position'};
+  function safe(value){return String(value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+  function num(value){var n=Number(value);return Number.isFinite(n)?n:0;}
+  function identity(value){return String(value||'').trim().toLowerCase();}
+  function matchingDriver(list,finish){var id=identity(finish.username||finish.user||finish.driverId),name=identity(finish.name),number=String(finish.number||'');return (id&&list.find(function(driver){return identity(driver.id)===id;}))||(name&&list.find(function(driver){return identity(driver.name)===name||identity(driver.id)===name;}))||(!id&&!name&&number&&list.find(function(driver){return String(driver.number||'')===number;}))||null;}
+  function seriesResults(){return results.filter(function(result){return result.division===state.division;});}
+  function activeDrivers(){
+    var roster=data.drivers.filter(function(driver){
+      if(driver.division!==state.division)return false;
+      /* D2 championship standings are driver-based, not charter-based. Only drivers
+         explicitly listed as FT on the current D2 roster are championship eligible. */
+      if(state.division==='d2')return driver.status==='FT';
+      return true;
+    }).map(function(driver){return Object.assign({},driver);});
+    /* Non-roster race participants may still appear in official race results, but they
+       must never be injected into D2 championship standings merely because they drove
+       a full-time charter for an event. */
+    if(state.division!=='d2')seriesResults().forEach(function(result){(result.finishes||[]).forEach(function(finish){if(!matchingDriver(roster,finish)){var known=matchingDriver(data.drivers,finish),id=finish.username||finish.user||finish.driverId||(known&&known.id)||('guest:'+state.division+':'+identity(finish.name||finish.number));roster.push({id:id,name:finish.name||(known&&known.name)||finish.user||finish.username||('Car #'+(finish.number||'—')),number:String(finish.number||(known&&known.number)||'—'),division:state.division,team:finish.team||(known&&known.team)||'Independent entry',make:finish.make||(known&&known.make)||'Unlisted',careerWins:known?known.careerWins:0,careerTitles:known?known.careerTitles:0,careerRank:known?known.careerRank:0});}});});
+    return roster;
+  }
+  function standings(){
+    var rows=activeDrivers().map(function(driver){return Object.assign({},driver,{points:0,stagePoints:0,starts:0,wins:0,top5:0,top10:0,poles:0,stageWins:0,lapsLed:0,finishTotal:0,averageFinish:null,pointsPending:false});});
+    seriesResults().forEach(function(result){(result.finishes||[]).forEach(function(finish){var row=matchingDriver(rows,finish);if(!row)return;var pos=num(finish.finish||finish.position);row.points+=num(finish.points)+num(finish.stagePoints);row.stagePoints+=num(finish.stagePoints);row.pointsPending=row.pointsPending||Boolean(finish.pointsPending);row.starts+=1;row.wins+=pos===1?1:0;row.top5+=pos>0&&pos<=5?1:0;row.top10+=pos>0&&pos<=10?1:0;row.poles+=finish.pole?1:0;row.stageWins+=num(finish.stageWins);row.lapsLed+=num(finish.lapsLed);row.finishTotal+=pos;row.averageFinish=row.starts?row.finishTotal/row.starts:null;});});
+    return rows.sort(function(a,b){return b.points-a.points||b.wins-a.wins||b.top5-a.top5||a.name.localeCompare(b.name);});
+  }
+  function eastern(iso){return new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}).format(new Date(iso)).replace(',',' ·')+' ET';}
+  function nextEvent(){var done=seriesResults().map(function(item){return item.round;});return data.schedule.filter(function(event){return event.division===state.division&&!event.exhibition&&done.indexOf(event.round)<0;}).sort(function(a,b){return new Date(a.start)-new Date(b.start);})[0]||null;}
+  function updateEvent(){var event=nextEvent();root.querySelector('[data-rc-board-division]').textContent=data.series[state.division].short;if(!event){root.querySelector('[data-rc-event-name]').textContent=state.division==='d2'?'D2 archive':'Season complete';root.querySelector('[data-rc-event-track]').textContent=state.division==='d2'?'Grand National discontinued after Round 1 · drivers moved to D1 free agency.':'All scheduled points races have been completed.';root.querySelector('[data-rc-event-date]').textContent='';root.querySelector('[data-rc-event-clock]').textContent='✓';return;}root.querySelector('[data-rc-event-name]').textContent=event.name;root.querySelector('[data-rc-event-track]').textContent=event.track;root.querySelector('[data-rc-event-date]').textContent=(event.scheduleStatus==='rescheduled'?'POSTPONED → ':'')+eastern(event.start);tick();}
+  function tick(){var event=nextEvent();if(!event)return;var diff=new Date(event.start).getTime()-Date.now(),clock=root.querySelector('[data-rc-event-clock]'),label=root.querySelector('[data-rc-clock-label]');if(diff<=0){clock.textContent='RACE DAY';label.textContent='Awaiting official results';return;}var days=Math.floor(diff/86400000),hours=Math.floor(diff%86400000/3600000),minutes=Math.floor(diff%3600000/60000);clock.textContent=(days?days+'d ':'')+String(hours).padStart(2,'0')+'h '+String(minutes).padStart(2,'0')+'m';label.textContent=event.scheduleStatus==='rescheduled'?'until the rescheduled green flag':'until the green flag';}
+  function updateOverview(rows){var races=seriesResults(),leader=races.length&&rows.length?rows[0]:null;root.querySelector('[data-rc-leader]').textContent=leader?leader.name:'NO LEADER';root.querySelector('[data-rc-points]').textContent=leader?(leader.points+(leader.pointsPending?'+':'')):0;root.querySelector('[data-rc-round]').textContent=races.length+' / '+data.series[state.division].rounds;root.querySelector('[data-rc-drivers]').textContent=rows.length;root.querySelector('[data-rc-live-label]').textContent=state.division==='d2'?'Race control · D2 archive':(races.length?'Race control · Season 6 active':'Race control · Preseason');root.querySelector('[data-rc-preseason]').textContent=state.division==='d2'?'D2 discontinued after Round 1 · Daytona record preserved':(races.length?'Official results through Round '+Math.max.apply(null,races.map(function(r){return num(r.round);})):state.division==='open'&&!rows.length?'Open Series roster pending':'Season 6 has not started');}
+  function carNo(v){return v?'#'+safe(v):'NO. PENDING';}
+  function renderStandings(rows){var started=Boolean(seriesResults().length),leader=rows.length?rows[0].points:0,hasPending=rows.some(function(row){return row.pointsPending;});var filtered=rows.filter(function(row){return !state.query||[row.name,row.id,row.number,'#'+row.number,row.team,row.make].join(' ').toLowerCase().indexOf(state.query)>=0;});root.querySelector('[data-rc-standings-body]').innerHTML=filtered.map(function(row,index){var rank=started?String(index+1).padStart(2,'0'):'—',gap=started?(index===0?'LEADER':hasPending?'PENDING':'-'+(leader-row.points)):'—',pts=row.points+(row.pointsPending?'+':''),username=String(row.id||'').replace(/^@/,'').trim(),usernameLine=username&&!/^guest:/i.test(username)?'<span class="rc-driver-username">@'+safe(username)+'</span>':'';return '<tr><td class="rc-rank">'+rank+'</td><td class="rc-number">#'+safe(row.number)+'</td><td class="rc-driver-cell"><strong>'+safe(row.name)+'</strong>'+usernameLine+'<span class="rc-driver-team">'+safe(row.team)+'</span></td><td class="rc-pts">'+pts+'</td><td class="rc-muted">'+gap+'</td><td>'+row.starts+'</td><td>'+row.wins+'</td><td>'+row.top5+'</td><td>'+row.top10+'</td><td>'+row.poles+'</td><td>'+row.lapsLed+'</td></tr>';}).join('');root.querySelector('[data-rc-standings-empty]').hidden=Boolean(filtered.length);root.querySelector('.rc-table-shell').hidden=!filtered.length;if(started&&hasPending)root.querySelector('[data-rc-preseason]').textContent='Round 1 complete · bonus-point audit pending'; else if(started&&state.division==='d2')root.querySelector('[data-rc-preseason]').textContent='Round 1 complete · FT drivers only · official points posted';}
+  function renderStats(rows){var board=root.querySelector('[data-rc-stat-board]'),started=Boolean(seriesResults().length);if(!rows.length||!started){board.innerHTML='<div class="rc-empty"><h3>The stat sheet is clean.</h3><p>'+(!rows.length?'There are no confirmed drivers for this series yet.':'Every driver starts Season 6 with zero '+safe(labels[state.stat].toLowerCase())+'. Official stats populate after the first race.')+'</p></div>';return;}var ranking=rows.slice().filter(function(row){return state.stat!=='averageFinish'||row.averageFinish!==null;}).sort(function(a,b){return state.stat==='averageFinish'?a.averageFinish-b.averageFinish:b[state.stat]-a[state.stat];});var max=state.stat==='averageFinish'?Math.max.apply(null,ranking.map(function(r){return r.averageFinish||0;})):Math.max(1,ranking[0]?ranking[0][state.stat]:1);board.innerHTML=ranking.slice(0,10).map(function(row,i){var value=state.stat==='averageFinish'?row.averageFinish.toFixed(1):row[state.stat];var width=state.stat==='averageFinish'?Math.max(8,100-(row.averageFinish/max*72)):Math.max(3,num(value)/max*100);return '<article class="rc-stat-row"><span class="rc-rank">'+String(i+1).padStart(2,'0')+'</span><div class="rc-driver-cell"><strong>'+safe(row.name)+'</strong><span>#'+safe(row.number)+' · '+safe(row.team)+'</span><div class="rc-stat-meter"><i style="width:'+width+'%"></i></div></div><b class="rc-stat-value">'+value+'</b></article>';}).join('');}
+  function renderResults(){
+    var list=root.querySelector('[data-rc-results]'),recordItems=(window.UARL_EVENT_RECORDS||[]).filter(function(item){return item.division===state.division&&item.status==='complete';}),pointsItems=seriesResults().filter(function(item){return !recordItems.some(function(record){return record.id===item.id||(record.round&&record.round===item.round);});}),items=recordItems.concat(pointsItems).sort(function(a,b){return new Date(b.start||b.date)-new Date(a.start||a.date);});
+    if(!items.length){var upcoming=nextEvent();list.innerHTML='<div class="rc-empty"><h3>No checkered flags yet.</h3><p>'+(upcoming?'The first official result will appear after '+safe(upcoming.name)+' at '+safe(upcoming.track)+'.':'Results will appear as soon as an official race is completed.')+'</p></div>';return;}
+    function sorted(rows){return (rows||[]).slice().sort(function(a,b){return num(a.position||a.finish)-num(b.position||b.finish);});}
+    function driverName(row){return row.name||(activeDrivers().find(function(item){return item.id===(row.username||row.user||row.driverId);})||{}).name||row.username||row.user||'Driver pending';}
+    function compactList(rows){return sorted(rows).map(function(row,index){var position=row.position||row.finish||index+1;return '<li'+(num(position)===1?' class="is-winner"':'')+'><b>P'+safe(position)+'</b><span class="rc-mini-number">'+(row.number?'#'+safe(row.number):'—')+'</span><strong>'+safe(driverName(row))+'</strong></li>';}).join('');}
+    function supportCard(title,rows){return '<section class="rc-session-card"><h4>'+safe(title)+'</h4><ol>'+(rows&&rows.length?compactList(rows):'<li class="rc-session-empty">No classification recorded</li>')+'</ol></section>';}
+    function pointsValue(value){return value===undefined||value===null?'—':safe(value);}
+    function finishTable(rows,isSpecial){return '<div class="rc-finish-shell"><table class="rc-finish-table"><thead><tr><th>Pos</th><th>Car</th><th>Driver</th><th>Status</th><th>Race pts</th><th>Stage</th><th>Bonus</th><th>Total</th></tr></thead><tbody>'+sorted(rows).map(function(row,index){var position=row.position||row.finish||index+1,status=row.resultStatus||row.status||'Finish',noPoints=row.pointsEligible===false||isSpecial,total=noPoints?0:(row.totalPoints!==undefined?row.totalPoints:num(row.points)+num(row.stagePoints)),badge=noPoints?'<em class="no-points">NO POINTS</em>':'';return '<tr'+(num(position)===1?' class="is-winner"':'')+'><td><b>P'+safe(position)+'</b></td><td><span class="rc-finish-number">'+(row.number?'#'+safe(row.number):'—')+'</span></td><td><strong>'+safe(driverName(row))+'</strong>'+badge+'</td><td>'+safe(status)+'</td><td>'+pointsValue(noPoints?0:row.points)+'</td><td>'+pointsValue(noPoints?0:row.stagePoints)+'</td><td>'+pointsValue(noPoints?0:row.bonusPoints)+'</td><td><b class="rc-finish-total">'+pointsValue(total)+'</b></td></tr>';}).join('')+'</tbody></table></div>';}
+    list.innerHTML=items.map(function(result){
+      var isSpecial=result.pointsEvent===false||result.exhibition===true,finishes=sorted(result.finishes),qualifying=sorted(result.qualifying),stageRows=(result.stages||[]).map(function(stage){return supportCard(stage.name,stage.results);}).join(''),podium=finishes.slice(0,3).map(function(finish){return 'P'+(finish.position||finish.finish)+' '+driverName(finish);}).join(' · '),label=isSpecial?'NON-POINTS · '+safe(result.eventType||'EXHIBITION'):'ROUND '+safe(result.round),title=safe(result.event||result.name||'Official race'),pointsText=isSpecial?'Exhibition · no championship points':safe(result.pointsSummary||(result.pointsPending?'Known points · bonus audit pending':'Official points event')),open=(new URLSearchParams(location.search).get('event')===result.id?'open':''),support=(qualifying.length||stageRows)?'<div class="rc-session-grid">'+supportCard('Qualifying',qualifying)+stageRows+'</div>':'',details=(qualifying.length||finishes.length||stageRows)?'<details class="rc-result-details" '+open+'><summary><span>View complete event record</span><i>+</i></summary><div class="rc-result-detail-grid"><div><small>Race winner</small><b>'+safe(result.winner||driverName(finishes[0]||{}))+'</b></div><div><small>Pole winner</small><b>'+safe(result.pole||'—')+'</b></div><div><small>Track</small><b>'+safe(result.track||'—')+'</b></div><div><small>Scoring</small><b>'+pointsText+'</b></div></div>'+support+'<section class="rc-official-finish"><header><div><small>Official classification</small><h4>Race finish</h4></div><span>'+finishes.length+' starters</span></header>'+finishTable(finishes,isSpecial)+'</section>'+(result.recordNote||result.pointsNote?'<p class="rc-result-note">'+safe(result.recordNote||result.pointsNote)+'</p>':'')+'</details>':'';
+      return '<article class="rc-result-card'+(isSpecial?' is-exhibition':'')+'" id="event-'+safe(result.id||'')+'"><div class="rc-result-card-top"><span>'+label+'</span><span>'+safe(result.date||'')+'</span></div><h3>'+title+'</h3><p>'+safe(podium||'Official classification pending')+'</p>'+details+'</article>';
+    }).join('');
+  }
+  function renderBattles(rows){function groupBy(key){var map={};rows.forEach(function(row){var name=row[key];if(!map[name])map[name]={name:name,points:0,wins:0,drivers:0};map[name].points+=row.points;map[name].wins+=row.wins;map[name].drivers++;});return Object.keys(map).map(function(name){return map[name];}).sort(function(a,b){return b.points-a.points||b.wins-a.wins||b.drivers-a.drivers||a.name.localeCompare(b.name);});}function list(items){return items.length?items.map(function(item){return '<div class="rc-entity"><div><strong>'+safe(item.name)+'</strong><small>'+item.drivers+' '+(item.drivers===1?'driver':'drivers')+' · '+item.wins+' '+(item.wins===1?'win':'wins')+'</small></div><b>'+item.points+'</b></div>';}).join(''):'<div class="rc-empty"><p>No confirmed entries yet.</p></div>';}root.querySelector('[data-rc-team-list]').innerHTML=list(groupBy('team'));root.querySelector('[data-rc-make-list]').innerHTML=list(groupBy('make'));}
+  function renderControl(){var series=data.series[state.division],completed=seriesResults().length,percent=Math.round(completed/series.rounds*100);root.querySelector('[data-rc-progress-title]').textContent=series.category+' progress';root.querySelector('[data-rc-progress-copy]').textContent=completed+' of '+series.rounds+' championship races completed.';root.querySelector('[data-rc-progress-fill]').style.width=percent+'%';root.querySelector('[data-rc-progress-end]').textContent=state.division==='d2'?'Series discontinued':(series.chaseStart?'The Chase · Round '+series.chaseStart:'Championship finale');var done=seriesResults().map(function(item){return item.round;});var future=data.schedule.filter(function(event){return event.division===state.division&&!event.exhibition&&done.indexOf(event.round)<0;});root.querySelector('[data-rc-upcoming]').innerHTML=future.slice(0,4).map(function(event){return '<article class="rc-upcoming-item"><b>R'+String(event.round).padStart(2,'0')+'</b><div><strong>'+safe(event.name)+'</strong><small>'+safe((event.scheduleStatus==='rescheduled'?'POSTPONED · ':'')+eastern(event.start))+'</small></div></article>';}).join('');var chase=future.filter(function(event){return series.chaseStart&&event.round>=series.chaseStart;});root.querySelector('[data-rc-chase-title]').textContent=state.division==='d2'?'D2 archive':(series.chaseStart?'The Chase':'Open Series format');root.querySelector('[data-rc-chase-copy]').textContent=state.division==='d2'?'The Grand National Series was discontinued after the Daytona opener. Its Round 1 results and recorded points remain official archive records; all rostered D2 drivers are now D1 free agents.':(series.chaseStart?'Rounds '+series.chaseStart+' through '+series.rounds+' form The Chase. Qualification and scoring rules will appear when officially confirmed.':'The Open Series runs '+series.rounds+' scheduled points races. Its official championship format will appear once confirmed.');root.querySelector('[data-rc-chase-list]').innerHTML=chase.slice(0,3).map(function(event){return '<article class="rc-upcoming-item"><b>R'+event.round+'</b><div><strong>'+safe(event.name)+'</strong><small>'+safe(event.track)+'</small></div></article>';}).join('');}
+  function compareOptions(rows){var selectA=root.querySelector('[data-rc-compare-a]'),selectB=root.querySelector('[data-rc-compare-b]'),options=rows.map(function(row){return '<option value="'+safe(row.id)+'">'+carNo(row.number)+' '+safe(row.name)+'</option>';}).join('');var previousA=selectA.value,previousB=selectB.value;selectA.innerHTML=options;selectB.innerHTML=options;if(rows.some(function(row){return row.id===previousA;}))selectA.value=previousA;else if(rows.some(function(row){return row.name==='Lance';}))selectA.value=rows.find(function(row){return row.name==='Lance';}).id;if(rows.some(function(row){return row.id===previousB&&row.id!==selectA.value;}))selectB.value=previousB;else if(rows.some(function(row){return row.name==='Cody'&&row.id!==selectA.value;}))selectB.value=rows.find(function(row){return row.name==='Cody';}).id;else if(rows.length>1)selectB.value=rows.find(function(row){return row.id!==selectA.value;}).id;root.querySelector('.rc-compare-selects').hidden=rows.length<2;root.querySelector('[data-rc-compare-empty]').hidden=rows.length>=2;renderCompare(rows);}
+  function renderCompare(rows){var first=rows.find(function(row){return row.id===root.querySelector('[data-rc-compare-a]').value;}),second=rows.find(function(row){return row.id===root.querySelector('[data-rc-compare-b]').value;}),target=root.querySelector('[data-rc-compare-rows]');if(!first||!second){target.innerHTML='';return;}var metrics=[['Season points','points'],['Season wins','wins'],['Top 5 finishes','top5'],['Laps led','lapsLed'],['Career wins','careerWins'],['Career titles','careerTitles']];target.innerHTML=metrics.map(function(metric){return '<div class="rc-compare-row"><b>'+num(first[metric[1]])+'</b><span>'+safe(metric[0])+'</span><b>'+num(second[metric[1]])+'</b></div>';}).join('');}
+  function render(){var series=data.series[state.division];root.setAttribute('data-division',state.division);root.style.setProperty('--accent',series.color);var rows=standings();updateOverview(rows);updateEvent();renderStandings(rows);renderStats(rows);renderResults();renderBattles(rows);renderControl();compareOptions(rows);}
+  Array.prototype.forEach.call(root.querySelectorAll('[data-rc-division]'),function(button){button.addEventListener('click',function(){state.division=button.getAttribute('data-rc-division');Array.prototype.forEach.call(root.querySelectorAll('[data-rc-division]'),function(item){item.classList.toggle('is-active',item===button);});render();});});
+  Array.prototype.forEach.call(root.querySelectorAll('[data-rc-view]'),function(button){button.addEventListener('click',function(){state.view=button.getAttribute('data-rc-view');Array.prototype.forEach.call(root.querySelectorAll('[data-rc-view]'),function(item){item.classList.toggle('is-active',item===button);});Array.prototype.forEach.call(root.querySelectorAll('[data-rc-panel]'),function(panel){panel.hidden=panel.getAttribute('data-rc-panel')!==state.view;});});});
+  Array.prototype.forEach.call(root.querySelectorAll('[data-rc-stat]'),function(button){button.addEventListener('click',function(){state.stat=button.getAttribute('data-rc-stat');Array.prototype.forEach.call(root.querySelectorAll('[data-rc-stat]'),function(item){item.classList.toggle('is-active',item===button);});renderStats(standings());});});
+  root.querySelector('.rc-search').addEventListener('input',function(event){state.query=event.target.value.trim().toLowerCase();renderStandings(standings());});
+  root.querySelector('[data-rc-compare-a]').addEventListener('change',function(){renderCompare(standings());});root.querySelector('[data-rc-compare-b]').addEventListener('change',function(){renderCompare(standings());});
+  function headerOffset(){var offset=0;Array.prototype.forEach.call(document.querySelectorAll('#header,.header,.Header,.header-announcement-bar-wrapper'),function(header){if(root.contains(header))return;var css=getComputedStyle(header),parent=header.parentElement?getComputedStyle(header.parentElement):null,rect=header.getBoundingClientRect();if((css.position==='fixed'||css.position==='sticky'||parent&&(parent.position==='fixed'||parent.position==='sticky'))&&rect.bottom>0&&rect.top<12&&rect.height<innerHeight*.45)offset=Math.max(offset,Math.round(rect.bottom));});root.style.setProperty('--sticky',offset+'px');}
+  Array.prototype.forEach.call(root.querySelectorAll('[data-rc-division]'),function(item){item.classList.toggle('is-active',item.getAttribute('data-rc-division')===state.division);});Array.prototype.forEach.call(root.querySelectorAll('[data-rc-view]'),function(item){item.classList.toggle('is-active',item.getAttribute('data-rc-view')===state.view);});Array.prototype.forEach.call(root.querySelectorAll('[data-rc-panel]'),function(panel){panel.hidden=panel.getAttribute('data-rc-panel')!==state.view;});
+  var back=root.querySelector('.rc-back');back.addEventListener('click',function(){root.querySelector('#uarl-race-center-controls').scrollIntoView({behavior:'smooth',block:'start'});});addEventListener('scroll',function(){back.classList.toggle('is-visible',scrollY>700);headerOffset();},{passive:true});addEventListener('resize',headerOffset,{passive:true});setInterval(tick,30000);headerOffset();render();
+})();
+</script></main>
+<footer class="uarl-native-footer"><div><img src="https://i.ibb.co/W8KhZZ9/imageedit-2-9823448714.png" alt="United Alliance Racing League"><p>Roblox racing with the personality left in.</p></div><nav><a href="/schedule/">Schedule</a><a href="/race-center/">Race Center</a><a href="/paint-schemes/">Paint Booth</a><a href="https://discord.gg/PR8KsfBWgt" target="_blank" rel="noopener">Discord</a></nav><small>© 2026 United Alliance Racing League. Roblox is a trademark of Roblox Corporation. UARL is not affiliated with Roblox Corporation.</small></footer>
+<script src="/assets/site-loader.js" defer></script></body></html>

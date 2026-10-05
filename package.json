@@ -1,0 +1,9 @@
+{
+  "name": "uarl-race-control",
+  "private": true,
+  "version": "39.0.0",
+  "type": "module",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.0"
+  }
+}
