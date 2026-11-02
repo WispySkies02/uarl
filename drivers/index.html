@@ -276,19 +276,21 @@
 <style>
 #uarl-paddock-v2 .pp-upload-number{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%}
 #uarl-paddock-v2 .pp-upload-number img{width:100%;height:100%;object-fit:contain}
-#uarl-paddock-v2 .pp-upload-number-driver{position:absolute;left:10px;top:14px;width:62px;height:82px}
+#uarl-paddock-v2 .pp-upload-number-driver{position:absolute;left:10px;top:14px;width:58px;height:58px}
 #uarl-paddock-v2 .pp-upload-number-profile{width:180px;height:150px;flex-shrink:0}
-#uarl-paddock-v2 .pp-upload-number-dialog{width:130px;height:90px}
-#uarl-paddock-v2 .pp-upload-number-chip{width:150px;height:100px;max-width:100%}
+#uarl-paddock-v2 .pp-upload-number-dialog{width:90px;height:65px}
+#uarl-paddock-v2 .pp-upload-number-chip{width:110px;height:68px;max-width:100%}
+/* Name spans inherit heading typography rather than the roster status-label style. */
+#uarl-paddock-v2 .pp-name-text{font:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit;margin:0}
 #uarl-paddock-v2 .pp-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-#uarl-paddock-v2 .pp-driver-signature{display:block;width:240px;max-width:100%;height:76px;object-fit:contain;object-position:left center;margin:6px 0}
-#uarl-paddock-v2 .pp-stage-number:has(.pp-upload-number){height:104px}
+#uarl-paddock-v2 .pp-driver-signature{display:block;width:160px;max-width:100%;height:36px;object-fit:contain;object-position:left center;margin:0}
+#uarl-paddock-v2 .pp-stage-number:has(.pp-upload-number){height:72px}
 #uarl-paddock-v2 .pp-driver h3:has(.pp-driver-signature){margin-top:10px}
 @media(max-width:760px){
-  #uarl-paddock-v2 .pp-stage-person .pp-driver-signature{width:min(280px,100%);height:86px}
-  #uarl-paddock-v2 .pp-stage-number .pp-upload-number-chip{width:160px;height:104px}
-  #uarl-paddock-v2 .pp-dialog-entry .pp-driver-signature{height:70px}
-  #uarl-paddock-v2 .pp-profile-name .pp-driver-signature{width:min(260px,100%);height:86px}
+  #uarl-paddock-v2 .pp-stage-person .pp-driver-signature{width:min(160px,100%);height:36px}
+  #uarl-paddock-v2 .pp-stage-number .pp-upload-number-chip{width:110px;height:68px}
+  #uarl-paddock-v2 .pp-dialog-entry .pp-driver-signature{height:36px}
+  #uarl-paddock-v2 .pp-profile-name .pp-driver-signature{width:min(180px,100%);height:44px}
 }
 </style>
 <script src="/assets/runtime-data.js"></script>
