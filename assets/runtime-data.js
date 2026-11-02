@@ -23,6 +23,25 @@
     return String(entry.name || "").trim() || String(profile.alias || "").trim() || String(entry.user || "").trim() || "—";
   }
 
+  // Fit visible artwork, rather than its surrounding transparent canvas.
+  function trimArtwork(image) {
+    var scale=Math.min(1,1600/image.naturalWidth,1600/image.naturalHeight);
+    var source=document.createElement('canvas');
+    source.width=Math.max(1,Math.round(image.naturalWidth*scale));source.height=Math.max(1,Math.round(image.naturalHeight*scale));
+    var context=source.getContext('2d',{willReadFrequently:true});context.drawImage(image,0,0,source.width,source.height);
+    var pixels=context.getImageData(0,0,source.width,source.height).data;
+    var left=source.width,top=source.height,right=-1,bottom=-1;
+    for(var y=0;y<source.height;y++)for(var x=0;x<source.width;x++) {
+      if(pixels[(y*source.width+x)*4+3]===0)continue;
+      left=Math.min(left,x);right=Math.max(right,x);top=Math.min(top,y);bottom=Math.max(bottom,y);
+    }
+    if(right<left)return source;
+    var width=right-left+1,height=bottom-top+1,padding=Math.max(2,Math.round(Math.max(width,height)*0.03));
+    var fitted=document.createElement('canvas');fitted.width=width+padding*2;fitted.height=height+padding*2;
+    fitted.getContext('2d').drawImage(source,left,top,width,height,padding,padding,width,height);
+    return fitted;
+  }
+
   function normalize(data) {
     data = data && typeof data === "object" ? data : {};
     ["events", "records", "paints", "guide", "conduct"].forEach(function (key) {
@@ -197,6 +216,7 @@
     normalize: normalize,
     driverName: driverName,
     driverProfile: driverProfile,
+    trimArtwork: trimArtwork,
     renderSchedule: renderSchedule,
     previewKey: PREVIEW_KEY
   };

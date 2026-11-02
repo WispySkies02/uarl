@@ -69,7 +69,7 @@ test('roster overrides, profile fallback and usernames agree across cards, dialo
 
 test('large transparent artwork uploads as a resized image and appears in the public preview', async ({page}) => {
   const uploads=[];
-  await page.route('**/.netlify/functions/admin-publish**',async route=>{
+  await page.context().route('**/.netlify/functions/admin-publish**',async route=>{
     const request=route.request();
     if(request.method()==='POST'){
       const body=request.postDataJSON();expect(body.action).toBe('upload-driver-image');
@@ -99,7 +99,9 @@ test('large transparent artwork uploads as a resized image and appears in the pu
     const ctx=canvas.getContext('2d');ctx.drawImage(image,0,0);
     return {width:image.width,height:image.height,alpha:ctx.getImageData(0,0,1,1).data[3]};
   },uploads[0]);
-  expect(dimensions).toEqual({width:1600,height:800,alpha:0});
+  expect(Math.max(dimensions.width,dimensions.height)).toBeLessThanOrEqual(1600);
+  expect(dimensions.alpha).toBe(0);
+  expect(dimensions.height).toBeLessThan(800);
   expect(Buffer.from(uploads[0].split(',')[1],'base64').length).toBeLessThan(2*1024*1024);
   const popup=page.waitForEvent('popup');await page.locator('[data-action="preview"]').first().click();const preview=await popup;
   const team=preview.locator('.pp-team-stage').filter({hasText:original.drivers.teams[0].name});
@@ -109,4 +111,71 @@ test('large transparent artwork uploads as a resized image and appears in the pu
   const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('uarl-admin-draft-v1')));
   expect(data.drivers.teams[0].entries[0].numberImage).toBeUndefined();
   expect(data.drivers.teams[0].entries[0].signatureImage).toBeTruthy();
+});
+
+
+test('signatures replace visible names while retaining accessible names and text fallback', async ({page}) => {
+  const fixture=structuredClone(original);
+  fixture.drivers.teams.push({id:'signature-test',name:'Signature Racing',owner:'Test',make:'Toyota',note:'',entries:[
+    {number:'99',user:'SIGNATURE_USER',name:'Signature Driver',status:'Full-Time',signatureImage:'/test-signature.png'},
+    {number:'98',user:'TEXT_USER',name:'Text Driver',status:'Full-Time'},
+    {number:'97',user:'BROKEN_USER',name:'Broken Image Driver',status:'Full-Time',signatureImage:'/broken-signature.png'}
+  ],pendingDrivers:[{numberPending:true,user:'PENDING_USER',name:'Pending Signature',signatureImage:'/test-signature.png'}]});
+  fixture.drivers.profiles.OPEN_SIGNATURE={alias:'Open Signature',signatureImage:'/test-signature.png'};
+  fixture.drivers.openEntries.push({number:'96',user:'OPEN_SIGNATURE',make:'Toyota'});
+  await page.route('**/test-signature.png',route=>route.fulfill({contentType:'image/png',body:fs.readFileSync(new URL('../assets/aetherwing/numbers/28.png',import.meta.url))}));
+  await page.route('**/broken-signature.png',route=>route.fulfill({status:404,body:''}));
+  await page.route('**/.netlify/functions/admin-publish**',route=>route.fulfill({json:{data:fixture}}));
+  await page.goto('/drivers/');
+  const team=page.locator('.pp-team-stage').filter({hasText:'Signature Racing'});
+  const label=team.locator('.pp-stage-person strong').filter({hasText:'Signature Driver'});
+  await expect(label.locator('.pp-name-text')).toHaveClass(/pp-visually-hidden/);
+  await expect(label.locator('img')).toBeVisible();
+  await expect(team.locator('.pp-name-text').filter({hasText:'Text Driver'})).not.toHaveClass(/pp-visually-hidden/);
+  const broken=team.locator('.pp-stage-person strong').filter({hasText:'Broken Image Driver'});
+  await broken.scrollIntoViewIfNeeded();
+  await expect(broken.locator('.pp-name-text')).not.toHaveClass(/pp-visually-hidden/);
+  await expect(broken.locator('img')).toHaveCount(0);
+  await page.locator('[data-view="drivers"]').click();
+  const card=page.locator('.pp-driver').filter({hasText:'Signature Driver'});
+  await expect(card.getByRole('heading',{name:'Signature Driver'})).toHaveCount(1);
+  await expect(card.locator('h3 .pp-name-text')).toHaveClass(/pp-visually-hidden/);
+  await expect(card.locator('.user')).toHaveText('@SIGNATURE_USER');
+  await expect(page.locator('.pp-driver').filter({hasText:'Pending Signature'}).locator('h3 img')).toHaveCount(1);
+  await card.getByRole('button',{name:'Open Signature Driver profile'}).click();
+  await expect(page.locator('#pp-dialog-title .pp-name-text')).toHaveClass(/pp-visually-hidden/);
+  await expect(page.getByRole('heading',{name:'Signature Driver',level:2})).toHaveCount(1);
+  await page.getByRole('button',{name:'Close',exact:true}).click();
+  await page.locator('[data-view="open"]').click();
+  const open=page.locator('[data-open-grid] .pp-driver').filter({hasText:'Open Signature'});
+  await expect(open.locator('h3 .pp-name-text')).toHaveClass(/pp-visually-hidden/);
+  await expect(open.locator('h3 img')).toBeVisible();
+});
+
+test('mobile roster art fits its visible pixels instead of transparent source margins', async ({page}) => {
+  await page.setViewportSize({width:390,height:844});
+  const files=await page.evaluate(()=>{
+    function artwork(width,height){const canvas=document.createElement('canvas');canvas.width=1000;canvas.height=1000;const ctx=canvas.getContext('2d');ctx.fillStyle='#ff0000';ctx.fillRect(400,400,width,height);return canvas.toDataURL('image/png').split(',')[1];}
+    return {number:artwork(80,110),signature:artwork(320,60)};
+  });
+  for(const key of ['number','signature'])await page.route('**/padded-'+key+'.png',route=>route.fulfill({contentType:'image/png',body:Buffer.from(files[key],'base64')}));
+  const fixture=structuredClone(original);
+  fixture.drivers.teams.push({id:'art-size',name:'Artwork Sizing',owner:'Test',make:'Toyota',note:'',entries:[{number:'28',user:'ART_USER',name:'Artwork Driver',status:'Full-Time',numberImage:'/padded-number.png',signatureImage:'/padded-signature.png'}]});
+  await page.route('**/.netlify/functions/admin-publish**',route=>route.fulfill({json:{data:fixture}}));
+  await page.goto('/drivers/');
+  const team=page.locator('.pp-team-stage').filter({hasText:'Artwork Sizing'});
+  await team.scrollIntoViewIfNeeded();
+  const number=team.locator('.pp-upload-number img'),signature=team.locator('.pp-driver-signature');
+  for(const image of [number,signature]) {
+    await image.scrollIntoViewIfNeeded();
+    await expect(image).toHaveAttribute('data-artwork-fitted','true');
+    await expect(image).toHaveAttribute('src',/^data:image\/webp/);
+  }
+  const metrics=await signature.evaluate(async image=>{await image.decode();return {width:image.getBoundingClientRect().width,height:image.getBoundingClientRect().height,naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight};});
+  expect(metrics.width).toBeGreaterThanOrEqual(240);expect(metrics.height).toBeGreaterThanOrEqual(76);
+  expect(metrics.naturalWidth/metrics.naturalHeight).toBeGreaterThan(3);
+  const numberMetrics=await number.evaluate(async image=>{await image.decode();return {height:image.getBoundingClientRect().height,width:image.naturalWidth,heightPixels:image.naturalHeight};});
+  expect(numberMetrics.height).toBeGreaterThanOrEqual(100);expect(numberMetrics.width).toBeLessThan(150);expect(numberMetrics.heightPixels).toBeLessThan(150);
+  await page.screenshot({path:'test-results/roster-artwork-mobile.png'});
+  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

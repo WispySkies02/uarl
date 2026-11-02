@@ -375,10 +375,11 @@
     var image=new Image(), url=URL.createObjectURL(file);
     try {
       await new Promise(function(resolve,reject){image.onload=resolve;image.onerror=function(){reject(new Error('This image could not be opened. Try a PNG, JPEG or WebP export.'));};image.src=url;});
-      var scale=Math.min(1,1600/image.naturalWidth,1600/image.naturalHeight),canvas=document.createElement('canvas');
+      var artwork=window.UARLData.trimArtwork(image);
+      var scale=Math.min(1,1600/artwork.width,1600/artwork.height),canvas=document.createElement('canvas');
       for(var attempt=0;attempt<5;attempt++) {
-        canvas.width=Math.max(1,Math.round(image.naturalWidth*scale));canvas.height=Math.max(1,Math.round(image.naturalHeight*scale));
-        canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);
+        canvas.width=Math.max(1,Math.round(artwork.width*scale));canvas.height=Math.max(1,Math.round(artwork.height*scale));
+        canvas.getContext('2d').drawImage(artwork,0,0,canvas.width,canvas.height);
         var blob=await new Promise(function(resolve){canvas.toBlob(resolve,'image/webp',0.9);});
         if(blob&&blob.size<=2*1024*1024)return await new Promise(function(resolve,reject){var reader=new FileReader();reader.onload=function(){resolve(reader.result);};reader.onerror=reject;reader.readAsDataURL(blob);});
         scale*=0.7;

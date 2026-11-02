@@ -276,11 +276,20 @@
 <style>
 #uarl-paddock-v2 .pp-upload-number{display:inline-flex;align-items:center;justify-content:center;width:100%;height:100%}
 #uarl-paddock-v2 .pp-upload-number img{width:100%;height:100%;object-fit:contain}
-#uarl-paddock-v2 .pp-upload-number-driver{position:absolute;left:10px;top:14px;width:58px;height:65px}
-#uarl-paddock-v2 .pp-upload-number-profile{width:150px;height:135px;flex-shrink:0}
-#uarl-paddock-v2 .pp-upload-number-dialog{width:90px;height:65px}
-#uarl-paddock-v2 .pp-upload-number-chip{width:85px;height:60px;max-width:100%}
-#uarl-paddock-v2 .pp-driver-signature{display:block;width:140px;max-width:100%;height:45px;object-fit:contain;object-position:left center;margin:6px 0}
+#uarl-paddock-v2 .pp-upload-number-driver{position:absolute;left:10px;top:14px;width:62px;height:82px}
+#uarl-paddock-v2 .pp-upload-number-profile{width:180px;height:150px;flex-shrink:0}
+#uarl-paddock-v2 .pp-upload-number-dialog{width:130px;height:90px}
+#uarl-paddock-v2 .pp-upload-number-chip{width:150px;height:100px;max-width:100%}
+#uarl-paddock-v2 .pp-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+#uarl-paddock-v2 .pp-driver-signature{display:block;width:240px;max-width:100%;height:76px;object-fit:contain;object-position:left center;margin:6px 0}
+#uarl-paddock-v2 .pp-stage-number:has(.pp-upload-number){height:104px}
+#uarl-paddock-v2 .pp-driver h3:has(.pp-driver-signature){margin-top:10px}
+@media(max-width:760px){
+  #uarl-paddock-v2 .pp-stage-person .pp-driver-signature{width:min(280px,100%);height:86px}
+  #uarl-paddock-v2 .pp-stage-number .pp-upload-number-chip{width:160px;height:104px}
+  #uarl-paddock-v2 .pp-dialog-entry .pp-driver-signature{height:70px}
+  #uarl-paddock-v2 .pp-profile-name .pp-driver-signature{width:min(260px,100%);height:86px}
+}
 </style>
 <script src="/assets/runtime-data.js"></script>
 <script>
@@ -308,7 +317,24 @@
   function currentMatches(text,make){var q=state.query.toLowerCase();return (!q||text.indexOf(q)>-1)&&(state.make==='all'||make===state.make);}
   function entryClass(e){if(/^Open/.test(e.status))return 'open';if(/Part-Time|Development/.test(e.status)||/Part-Time|Development/.test(e.name||''))return 'special';return '';}
   function driverImage(e,key){return e[key]||profile(e.user)[key]||'';}
-  function signature(e){var src=driverImage(e,'signatureImage');return src?'<img class="pp-driver-signature" src="'+esc(src)+'" alt="'+esc(displayEntry(e))+' signature" loading="lazy">':'';}
+  function signature(e){var src=driverImage(e,'signatureImage');return src?'<img class="pp-driver-signature" src="'+esc(src)+'" alt="" aria-hidden="true" loading="lazy">':'';}
+  function driverLabel(e){var image=signature(e);return '<span class="pp-name-text'+(image?' pp-visually-hidden':'')+'">'+esc(displayEntry(e))+'</span>'+image;}
+  var fittedArtwork=new Map();
+  root.addEventListener('load',function(event){
+    var image=event.target;
+    if(!image.matches||!image.matches('.pp-upload-number img,.pp-driver-signature')||image.dataset.artworkFitted)return;
+    image.dataset.artworkFitted='true';
+    var url=image.currentSrc||image.src;
+    if(new URL(url,location.href).origin!==location.origin&&!url.startsWith('data:'))return;
+    try {
+      if(!fittedArtwork.has(url))fittedArtwork.set(url,window.UARLData.trimArtwork(image).toDataURL('image/webp',0.95));
+      image.src=fittedArtwork.get(url);
+    } catch(error) { /* Cross-origin or unsupported artwork keeps its original source. */ }
+  },true);
+
+  // Keep the driver's name usable if an image URL is unavailable.
+  root.addEventListener('error',function(event){var image=event.target;if(!image.classList||!image.classList.contains('pp-driver-signature'))return;var name=image.previousElementSibling;if(name&&name.classList.contains('pp-name-text'))name.classList.remove('pp-visually-hidden');image.remove();},true);
+
   function numberArt(team,e,where){var src=driverImage(e,'numberImage');if(src)return '<span class="pp-upload-number pp-upload-number-'+esc(where)+'"><img src="'+esc(src)+'" alt="#'+esc(e.number)+' number art" loading="lazy"></span>';var n=String(e.number);if(team&&team.id==='aetherwing'&&AEM_NUMBERS[n])return '<span class="pp-aem-num pp-aem-num-'+esc(where||'card')+'"><img src="'+AEM_NUMBERS[n]+'" alt="#'+esc(n)+'"></span>';return e&&e.numberPending?'<span class="pp-driver-number pending">Number pending</span>':'<span class="pp-number-text">#'+esc(n)+'</span>';}
   function teamSignedCount(t){return t.entries.filter(isSignedEntry).length+(t.pendingDrivers||[]).length;}
   function teamNumberArt(t,e){
@@ -340,7 +366,7 @@
       var art=teamNumberArt(t,e);
       return '<div class="pp-stage-entry'+(isOpen?' is-open':'')+'">'+
         '<div class="pp-stage-number">'+art+'</div>'+
-        '<div class="pp-stage-person"><strong>'+esc(displayEntry(e))+'</strong>'+signature(e)+
+        '<div class="pp-stage-person"><strong>'+driverLabel(e)+'</strong>'+
         (e.user?'<small>'+esc(e.user)+'</small>':'')+
         '<span>'+esc(statusLabel(e))+'</span></div>'+
         (isOpen?'<b class="pp-open-callout">OPEN FT CHARTER</b>':'')+
@@ -365,7 +391,7 @@
     var noNumber=!!r.entry.numberPending;
     var num=noNumber?'<span class="pp-driver-number pending">Number pending</span>':(r.team.id==='aetherwing'||driverImage(r.entry,'numberImage')?numberArt(r.team,r.entry,'driver'):'<span class="pp-driver-number">#'+esc(r.entry.number)+'</span>');
     var userLine=r.user?'@'+esc(r.user):'Username not listed';
-    return '<article class="pp-driver'+(r.team.id==='aetherwing'?' pp-driver-aetherwing':'')+(noNumber?' no-number':'')+'">'+num+'<span class="pp-driver-status'+recent+'">'+esc(statusLabel(r.entry))+'</span><h3>'+esc(r.name)+'</h3>'+signature(r.entry)+'<div class="user">'+userLine+'</div><div class="meta">'+esc(r.team.name)+' · '+esc(r.make)+(r.entry.seatType?' · '+esc(r.entry.seatType):'')+'</div><button class="pp-card-button" type="button" aria-label="Open '+esc(r.name)+' profile" data-driver="'+esc(r.user||'')+'" data-driver-name="'+esc(r.name)+'" data-team-id="'+esc(r.team.id)+'" data-number="'+esc(r.entry.number||'')+'" data-number-pending="'+(noNumber?'true':'false')+'"></button></article>';
+    return '<article class="pp-driver'+(r.team.id==='aetherwing'?' pp-driver-aetherwing':'')+(noNumber?' no-number':'')+'">'+num+'<span class="pp-driver-status'+recent+'">'+esc(statusLabel(r.entry))+'</span><h3>'+driverLabel(r.entry)+'</h3>'+'<div class="user">'+userLine+'</div><div class="meta">'+esc(r.team.name)+' · '+esc(r.make)+(r.entry.seatType?' · '+esc(r.entry.seatType):'')+'</div><button class="pp-card-button" type="button" aria-label="Open '+esc(r.name)+' profile" data-driver="'+esc(r.user||'')+'" data-driver-name="'+esc(r.name)+'" data-team-id="'+esc(r.team.id)+'" data-number="'+esc(r.entry.number||'')+'" data-number-pending="'+(noNumber?'true':'false')+'"></button></article>';
   }
   function freeAgentCard(f){return '<article class="pp-fa"><span class="pp-driver-status">D1 Free Agent</span><h3>'+esc(f.name)+'</h3><div class="user">@'+esc(f.user)+'</div><div class="meta">Former D2 '+esc(f.former)+'</div></article>';}
   function openEntryCard(e){
@@ -411,12 +437,12 @@
     var logo=t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'';
     var founded=t.founded?'<div><small>Founded</small><b>'+esc(t.founded)+'</b></div>':'';
     var charterMeta=t.charterCount?'<div><small>Charter structure</small><b>'+t.charterCount+' charter slots</b></div>':'';
-    var pending=(t.pendingDrivers||[]).map(function(e){var p=profile(e.user);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing pp-dialog-entry-pending"><div class="pp-dialog-entry-top"><div><h4>'+esc(displayEntry(e))+'</h4>'+signature(e)+'<p>@'+esc(e.user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
+    var pending=(t.pendingDrivers||[]).map(function(e){var p=profile(e.user);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing pp-dialog-entry-pending"><div class="pp-dialog-entry-top"><div><h4>'+driverLabel(e)+'</h4>'+'<p>@'+esc(e.user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
     var entriesHtml;
     if(t.id==='aetherwing'){
-      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing"><div class="pp-dialog-entry-top">'+numberArt(t,e,'dialog')+'<div><h4>'+esc(name)+'</h4>'+signature(e)+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
+      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing"><div class="pp-dialog-entry-top">'+numberArt(t,e,'dialog')+'<div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
     }else{
-      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry"><div class="pp-dialog-entry-top"><span class="num">#'+esc(e.number)+'</span><div><h4>'+esc(name)+'</h4>'+signature(e)+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
+      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry"><div class="pp-dialog-entry-top"><span class="num">#'+esc(e.number)+'</span><div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span></div></div></article>';}).join('');
     }
     return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Team HQ // D1</div><h2 id="pp-dialog-title">'+esc(t.name)+'</h2>'+logo+'</div><div class="pp-dialog-body"><div class="pp-team-meta"><div><small>Owner</small><b>'+esc(t.owner)+(t.ownerNote?' · '+esc(t.ownerNote):'')+'</b></div><div><small>Manufacturer</small><b>'+esc(t.make)+'</b></div>'+founded+'<div><small>Current roster</small><b>'+teamSignedCount(t)+' signed</b></div>'+charterMeta+'</div><p class="pp-team-description">'+esc(t.note)+'</p><div class="pp-dialog-grid">'+entriesHtml+pending+'</div><button class="pp-dialog-close-inline" type="button" data-close-modal>Close Team HQ ×</button></div>';
   }
@@ -425,7 +451,7 @@
     if(t){if(numberPending){e=(t.pendingDrivers||[]).find(function(x){return x.user===user;});}else{e=t.entries.find(function(x){return String(x.number)===String(number)&&(user?x.user===user:displayEntry(x)===nameOverride);});}}
     if(!t||!e){var oe=data.openEntries.find(function(x){return x.user===user&&String(x.number)===String(number);});if(oe){t={name:'Independent Open Series',make:oe.make,id:'open'};e=Object.assign({},oe,{status:oe.status||'Open Series'});}else return '';}
     var p=e.user?profile(e.user):{alias:e.name,wins:0,championships:0,rank:0};var handle=e.user?'@'+e.user:'Username not listed';var numberBlock=e.numberPending?'':(t.id==='aetherwing'||driverImage(e,'numberImage')?numberArt(t,e,'profile'):'<div class="pp-profile-number">#'+esc(number)+'</div>');
-    return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Driver profile</div><h2 id="pp-dialog-title">'+esc(displayEntry(e))+'</h2>'+(t.id==='aetherwing'&&t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'')+'</div><div class="pp-dialog-body"><div class="pp-driver-profile'+(e.numberPending?' no-number':'')+'">'+numberBlock+'<div><h3 class="pp-profile-name">'+esc(displayEntry(e))+'</h3>'+signature(e)+'<p class="pp-profile-user">'+esc(handle)+'</p><p style="margin:.7rem 0 0;color:#505762;line-height:1.6">'+esc(t.name)+' · '+esc(t.make)+' · '+esc(statusLabel(e))+'</p><div class="pp-profile-stats"><div><b>'+p.wins+'</b><small>Career wins</small></div><div><b>'+p.championships+'</b><small>Championships</small></div><div><b>'+(p.rank?'#'+p.rank:'—')+'</b><small>Win-list rank</small></div></div></div></div></div>';
+    return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Driver profile</div><h2 id="pp-dialog-title">'+driverLabel(e)+'</h2>'+(t.id==='aetherwing'&&t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'')+'</div><div class="pp-dialog-body"><div class="pp-driver-profile'+(e.numberPending?' no-number':'')+'">'+numberBlock+'<div><h3 class="pp-profile-name">'+driverLabel(e)+'</h3>'+'<p class="pp-profile-user">'+esc(handle)+'</p><p style="margin:.7rem 0 0;color:#505762;line-height:1.6">'+esc(t.name)+' · '+esc(t.make)+' · '+esc(statusLabel(e))+'</p><div class="pp-profile-stats"><div><b>'+p.wins+'</b><small>Career wins</small></div><div><b>'+p.championships+'</b><small>Championships</small></div><div><b>'+(p.rank?'#'+p.rank:'—')+'</b><small>Win-list rank</small></div></div></div></div></div>';
   }
   function openModal(markup){if(!markup)return;dialog.innerHTML=markup;bindShareButtons(dialog);lastFocus=document.activeElement;modal.hidden=false;document.body.style.overflow='hidden';root.querySelector('.pp-dialog-close').focus();}
   function closeModal(){modal.hidden=true;document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus();}
