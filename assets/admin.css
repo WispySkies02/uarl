@@ -37,3 +37,5 @@
 
 .item-picker>summary{display:none}.race-details{border:1px solid var(--line);border-radius:12px;padding:16px;margin-top:14px}.race-details>summary{cursor:pointer;font-weight:700;line-height:1.6}.race-details>p{font-size:.8rem;color:var(--soft)}
 @media(max-width:760px){.item-picker>summary{display:list-item;cursor:pointer;padding:16px;font-size:.8rem;overflow-wrap:anywhere}.item-picker[open]{max-height:220px}.editor-title{padding-bottom:12px;margin-bottom:12px}.editor-guidance{font-size:.72rem}.admin-topbar{border-radius:0 0 16px 16px}}
+
+.image-upload{border:1px solid var(--line);padding:12px;border-radius:10px;grid-column:1/-1}.image-upload img{display:block;max-width:220px;width:100%;height:90px;object-fit:contain;background:#20242f;border-radius:8px}.image-upload .button{position:relative;display:inline-flex;align-items:center;justify-content:center;overflow:hidden}.image-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}.image-upload small{font-size:.7rem;line-height:1.5;color:var(--soft);text-transform:none;letter-spacing:normal}.image-upload [data-image-status]{font-size:.75rem}
