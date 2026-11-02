@@ -91,15 +91,24 @@ test('public mobile navigation opens all pages and stays hidden on desktop', asy
   await page.route('**/.netlify/functions/admin-publish**',route=>route.fulfill({json:{data:null}}));
   for(const path of ['/','/schedule/','/race-center/','/drivers/','/paint-schemes/','/history/','/competition-guide/']) {
     await page.goto(path);await expect(page.locator('.uarl-bottom-nav')).toBeVisible();
+    await expect(page.locator('.uarl-native-menu-btn')).not.toBeVisible();
+    await expect(page.locator('.uarl-native-nav')).not.toBeVisible();
     await expect(page.locator('.uarl-bottom-nav .is-active')).toHaveCount(1);
     await page.getByRole('button',{name:'More pages'}).click();
     await expect(page.locator('.uarl-native-drawer')).toHaveClass(/is-open/);
     await expect(page.locator('.uarl-native-drawer a[href="/history/"]')).toBeVisible();
     await page.keyboard.press('Escape');
+    await expect(page.getByRole('button',{name:'More pages'})).toBeFocused();
+    await expect(page.getByRole('button',{name:'More pages'})).toHaveAttribute('aria-expanded','false');
   }
   await page.goto('/');await page.screenshot({path:'test-results/public-mobile.png',fullPage:true});
   await page.setViewportSize({width:1440,height:900});await expect(page.locator('.uarl-bottom-nav')).not.toBeVisible();
   await expect(page.locator('.uarl-native-nav')).toBeVisible();
+  await page.setViewportSize({width:900,height:900});
+  await expect(page.locator('.uarl-native-menu-btn')).toBeVisible();
+  await page.locator('.uarl-native-menu-btn').click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.uarl-native-menu-btn')).toBeFocused();
 });
 
 
