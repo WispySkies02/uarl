@@ -183,3 +183,12 @@ The admin dashboard has a **Record a race** action. Pick the scheduled event, se
 Driver choices come from the current division roster and that race's guest entries, grouped by team. Previous races no longer populate new driver dropdowns. An existing historical selection remains visible only in its own saved row. Roblox usernames distinguish different drivers with the same display name.
 
 Car numbers can be corrected manually in qualifying, stages and finishes, including leading zeros; a race override does not change the team roster number. Bonuses only list drivers in that race's finishing classification, and their numbers come from the classification. The publisher rejects awards for missing finishers and duplicate awards to the same recipient. **Most laps led** remains an award; entering or accumulating individual lap totals is no longer part of the workflow or the public stats screens.
+
+
+### Admin task workspace
+
+The admin home now starts with common jobs: continue a race, adjust the next event, update a roster, move/sign a driver, and add a paint scheme. Unpublished entries appear on the home screen so you can continue them directly. **Find** (`Ctrl+K` or `⌘K`) searches the records your staff role can edit, including driver names and car numbers within team rosters. Previous/Next controls let you keep the same editing section open while moving between records.
+
+**Move or sign a driver** updates the destination charter, vacates the source D1 seat, removes an outdated free-agent listing, and optionally adds the signing announcement in one draft action. It preserves charter metadata and driver artwork, and leaves Open Series participation and historical results unchanged. A saved Roblox username and an available destination seat are required. Review number artwork when changing car numbers. Paint entry can fill the driver's name, username, number, team and manufacturer from the roster.
+
+Undo/Redo keeps up to 30 draft snapshots in the current editing session and groups typing in a field into one edit. Transfers are undone together. Draft content still recovers after a reload; undo history starts fresh for that session. Review changes shows record names and the fields updated before publishing. Charter settings, artwork and reference IDs remain accessible through expandable details.

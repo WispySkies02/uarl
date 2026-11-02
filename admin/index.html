@@ -7,6 +7,7 @@
   <title>UARL Race Control</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/assets/admin.css">
+  <link rel="stylesheet" href="/assets/admin-workspace.css">
 </head>
 <body>
   <section class="login-gate" data-login-gate>
@@ -33,6 +34,7 @@
     </a>
     <div class="admin-status"><span class="status-dot" data-status-dot></span><span data-save-status>Loading website data…</span></div>
     <div class="admin-top-actions">
+      <button type="button" class="button ghost workspace-find" data-open-search aria-haspopup="dialog">Find <kbd>⌘ K</kbd></button>
       <span class="signed-in-user"><b data-current-user>Staff</b><small data-current-role>Account</small></span>
       <button class="button ghost" type="button" data-action="preview">Preview</button>
       <button class="button publish" type="button" data-action="publish">Publish website</button>
@@ -91,6 +93,31 @@
     <label class="button ghost" data-full-admin>Import backup<input type="file" accept="application/json,.json" data-import hidden></label>
   </dialog>
 
+  <dialog class="workspace-dialog" data-workspace-search-dialog aria-labelledby="workspace-search-title">
+    <header><h2 id="workspace-search-title">Find anything</h2><button type="button" class="button ghost" data-close-workspace-dialog aria-label="Close search">Close ×</button></header>
+    <label>Driver, team, race or content<input type="search" data-workspace-search placeholder="Try a driver name, number or race…" autocomplete="off"></label>
+    <nav data-workspace-search-results aria-label="Search results"></nav>
+  </dialog>
+  <dialog class="workspace-dialog" data-workspace-changes-dialog aria-labelledby="workspace-changes-title">
+    <header><h2 id="workspace-changes-title">Your unpublished changes</h2><button type="button" class="button ghost" data-close-workspace-dialog>Close ×</button></header>
+    <div data-workspace-changes-list class="change-review"></div>
+    <div class="dialog-actions"><button class="button ghost" data-action="preview">Preview website</button><button class="button publish" data-workspace-publish>Review & publish</button></div>
+  </dialog>
+  <dialog class="workspace-dialog" data-transfer-dialog aria-labelledby="transfer-title">
+    <header><h2 id="transfer-title">Move or sign a driver</h2><button type="button" class="button ghost" data-close-workspace-dialog>Close ×</button></header>
+    <p>Choose the driver and their destination. The roster and signing announcement update together in your draft.</p>
+    <form class="transfer-form" data-transfer-form>
+      <label>Driver<select required data-transfer-person></select></label>
+      <label>Destination team<select required data-transfer-team></select></label>
+      <label>Charter / seat<select data-transfer-seat></select></label>
+      <label>Car number<input type="text" inputmode="numeric" data-transfer-number required></label>
+      <label class="workspace-check"><input type="checkbox" data-transfer-announce checked> Add a recent signing announcement</label>
+      <div class="transfer-preview" data-transfer-preview></div>
+      <p class="workspace-message" data-transfer-message role="status"></p>
+      <button class="button publish" type="submit" data-transfer-confirm>Save move to draft</button>
+    </form>
+  </dialog>
+
   <dialog class="publish-dialog" data-publish-dialog>
     <form method="dialog" data-publish-form>
       <button class="dialog-close" type="button" data-close-publish aria-label="Close">×</button>
@@ -107,6 +134,7 @@
   <div class="toast" role="status" aria-live="polite" data-toast></div>
   <script src="/assets/runtime-data.js"></script>
   <script src="/assets/result-drivers.js"></script>
+  <script src="/assets/admin-workspace.js"></script>
   <script src="/assets/admin.js"></script>
 </body>
 </html>
