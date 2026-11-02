@@ -33,11 +33,9 @@
 
 <style id="uarl-drivers-ed24-mobile-fixes">
 
-/* Team share / deep-link controls */
+/* Team card layout */
 #uarl-paddock-v2 .pp-team-foot{flex-wrap:wrap}
-#uarl-paddock-v2 .pp-share{min-height:44px;padding:.72rem .85rem;border:1px solid rgba(8,10,15,.18);background:#fff;color:#080a0f;font:900 .62rem/1 Inter,sans-serif;letter-spacing:.07em;text-transform:uppercase}
-#uarl-paddock-v2 .pp-share:hover{border-color:var(--blue);color:#075f9f}
-@media(max-width:720px){#uarl-paddock-v2 .pp-team-foot .pp-action,#uarl-paddock-v2 .pp-team-foot .pp-share{flex:1 1 100%}}
+@media(max-width:720px){#uarl-paddock-v2 .pp-team-foot .pp-action{flex:1 1 100%}}
 
 /* Equal Aetherwing number-art footprints. */
 #uarl-paddock-v2 .pp-number:has(.pp-aem-num){width:62px!important;height:62px!important;min-width:62px!important;padding:0!important}
@@ -176,19 +174,6 @@
 <style id="uarl-team-share-circle">
 #uarl-paddock-v2 .pp-team-stage{position:relative}
 #uarl-paddock-v2 .pp-stage-actions{display:none!important}
-#uarl-paddock-v2 .pp-stage-share{
- position:absolute;right:14px;top:14px;z-index:8;
- width:32px;height:32px;padding:0;border-radius:50%;
- display:grid;place-items:center;
- border:1px solid rgba(255,255,255,.24);
- background:rgba(8,11,14,.72);color:#fff;
- font:900 .85rem/1 Inter,sans-serif;
- cursor:pointer;backdrop-filter:blur(8px);
- transition:transform .16s ease,border-color .16s ease,background .16s ease
-}
-#uarl-paddock-v2 .pp-stage-share:hover{
- transform:translateY(-1px);border-color:var(--make);background:#11171d
-}
 </style>
 
 <style id="uarl-manufacturer-marks">
@@ -214,16 +199,6 @@
 </style>
 
 <style id="uarl-share-and-open28-fix">
-#uarl-paddock-v2 .pp-stage-share{
- width:34px!important;height:34px!important;border:0!important;border-radius:7px!important;
- background:transparent!important;opacity:.66;box-shadow:none!important
-}
-#uarl-paddock-v2 .pp-stage-share:hover{opacity:1;background:rgba(255,255,255,.08)!important;transform:none!important}
-.pp-share-glyph{position:relative;display:block;width:18px;height:18px}
-.pp-share-glyph i{position:absolute;width:5px;height:5px;border:1.7px solid currentColor;border-radius:50%;box-sizing:border-box}
-.pp-share-glyph i:nth-child(1){right:0;top:0}.pp-share-glyph i:nth-child(2){left:0;top:6.5px}.pp-share-glyph i:nth-child(3){right:0;bottom:0}
-.pp-share-glyph b{position:absolute;left:4px;width:9px;height:1.5px;background:currentColor;transform-origin:left center}
-.pp-share-glyph b:nth-of-type(1){top:7px;transform:rotate(-28deg)}.pp-share-glyph b:nth-of-type(2){top:10px;transform:rotate(28deg)}
 #uarl-paddock-v2 .pp-open-aem28{display:flex!important;align-items:center!important;justify-content:center!important}
 #uarl-paddock-v2 .pp-open-aem28 img{display:block;max-width:64px;max-height:62px;object-fit:contain}
 </style>
@@ -384,7 +359,6 @@
       '<h3>'+esc(t.name)+'</h3><p>'+esc(t.note)+'</p>'+
       '<div class="pp-stage-status"><b>'+signed+' signed</b><b class="'+(open?'has-open':'')+'">'+open+' open FT</b>'+(t.charterCount?'<b>'+t.charterCount+' charters</b>':'')+'</div></div></div>'+
       '<div class="pp-stage-roster">'+regular.map(stageEntry).join('')+'</div>'+sharedBlock+
-      '<button class="pp-stage-share pp-share" type="button" data-share-team="'+esc(t.id)+'" aria-label="Share '+esc(t.name)+'" title="Share team"><span class="pp-share-glyph" aria-hidden="true"><i></i><i></i><i></i><b></b><b></b></span></button>'+
     '</article>';
   }
   function driverRecord(t,e){var p=e.user?profile(e.user):{alias:e.name,wins:0,championships:0,rank:0};return {team:t,entry:e,name:displayEntry(e),user:e.user||'',profile:p,make:t.make};}
@@ -455,16 +429,9 @@
     var p=e.user?profile(e.user):{alias:e.name,wins:0,championships:0,rank:0};var handle=e.user?'@'+e.user:'Username not listed';var numberBlock=e.numberPending?'':(t.id==='aetherwing'||driverImage(e,'numberImage')?numberArt(t,e,'profile'):'<div class="pp-profile-number">#'+esc(number)+'</div>');
     return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Driver profile</div><h2 id="pp-dialog-title">'+driverLabel(e)+'</h2>'+(t.id==='aetherwing'&&t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'')+'</div><div class="pp-dialog-body"><div class="pp-driver-profile'+(e.numberPending?' no-number':'')+'">'+numberBlock+'<div><h3 class="pp-profile-name">'+driverLabel(e)+'</h3>'+'<p class="pp-profile-user">'+esc(handle)+'</p><p style="margin:.7rem 0 0;color:#505762;line-height:1.6">'+esc(t.name)+' · '+esc(t.make)+' · '+esc(statusLabel(e))+'</p><div class="pp-profile-stats"><div><b>'+p.wins+'</b><small>Career wins</small></div><div><b>'+p.championships+'</b><small>Championships</small></div><div><b>'+(p.rank?'#'+p.rank:'—')+'</b><small>Win-list rank</small></div></div></div></div></div>';
   }
-  function openModal(markup){if(!markup)return;dialog.innerHTML=markup;bindShareButtons(dialog);lastFocus=document.activeElement;modal.hidden=false;document.body.style.overflow='hidden';root.querySelector('.pp-dialog-close').focus();}
+  function openModal(markup){if(!markup)return;dialog.innerHTML=markup;lastFocus=document.activeElement;modal.hidden=false;document.body.style.overflow='hidden';root.querySelector('.pp-dialog-close').focus();}
   function closeModal(){modal.hidden=true;document.body.style.overflow='';if(lastFocus&&lastFocus.focus)lastFocus.focus();}
-  function teamUrl(id){return window.location.origin+'/team/'+encodeURIComponent(id)+'/?share=18';}
-  function copyText(text,button){
-    function done(){if(button){var old=button.textContent;button.textContent='Copied ✓';setTimeout(function(){button.textContent=old;},1400);}}
-    if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(done).catch(function(){fallbackCopy(text);done();});}else{fallbackCopy(text);done();}
-  }
-  function fallbackCopy(text){var a=document.createElement('textarea');a.value=text;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}a.remove();}
-  function bindShareButtons(scope){(scope||root).querySelectorAll('[data-share-team]').forEach(function(b){if(b.dataset.shareBound)return;b.dataset.shareBound='1';b.addEventListener('click',function(e){e.stopPropagation();copyText(teamUrl(b.getAttribute('data-share-team')),b);});});}
-  function bindCards(){bindShareButtons(root);root.querySelectorAll('[data-team]').forEach(function(b){b.addEventListener('click',function(){var t=data.teams.find(function(x){return x.id===b.getAttribute('data-team');});if(t)openModal(teamDialog(t));});});root.querySelectorAll('[data-driver]').forEach(function(b){b.addEventListener('click',function(){openModal(driverDialog(b.getAttribute('data-driver'),b.getAttribute('data-team-id'),b.getAttribute('data-number'),b.getAttribute('data-driver-name'),b.getAttribute('data-number-pending')==='true'));});});}
+  function bindCards(){root.querySelectorAll('[data-team]').forEach(function(b){b.addEventListener('click',function(){var t=data.teams.find(function(x){return x.id===b.getAttribute('data-team');});if(t)openModal(teamDialog(t));});});root.querySelectorAll('[data-driver]').forEach(function(b){b.addEventListener('click',function(){openModal(driverDialog(b.getAttribute('data-driver'),b.getAttribute('data-team-id'),b.getAttribute('data-number'),b.getAttribute('data-driver-name'),b.getAttribute('data-number-pending')==='true'));});});}
   root.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){state.view=b.getAttribute('data-view');root.querySelectorAll('[data-view]').forEach(function(x){x.classList.toggle('is-active',x===b);});render();});});
   root.querySelector('.pp-search').addEventListener('input',function(e){state.query=e.target.value.trim();render();});
   root.querySelectorAll('[data-make]').forEach(function(b){b.addEventListener('click',function(){state.make=b.getAttribute('data-make');root.querySelectorAll('[data-make]').forEach(function(x){x.classList.toggle('is-active',x===b);});render();});});
