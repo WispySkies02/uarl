@@ -152,7 +152,7 @@ test('signatures replace visible names while retaining accessible names and text
   await expect(open.locator('h3 img')).toBeVisible();
 });
 
-test('mobile roster art fits its visible pixels instead of transparent source margins', async ({page}) => {
+test('roster art stays proportional to text entries while trimming transparent source margins', async ({page}) => {
   await page.setViewportSize({width:390,height:844});
   const files=await page.evaluate(()=>{
     function artwork(width,height){const canvas=document.createElement('canvas');canvas.width=1000;canvas.height=1000;const ctx=canvas.getContext('2d');ctx.fillStyle='#ff0000';ctx.fillRect(400,400,width,height);return canvas.toDataURL('image/png').split(',')[1];}
@@ -160,7 +160,7 @@ test('mobile roster art fits its visible pixels instead of transparent source ma
   });
   for(const key of ['number','signature'])await page.route('**/padded-'+key+'.png',route=>route.fulfill({contentType:'image/png',body:Buffer.from(files[key],'base64')}));
   const fixture=structuredClone(original);
-  fixture.drivers.teams.push({id:'art-size',name:'Artwork Sizing',owner:'Test',make:'Toyota',note:'',entries:[{number:'28',user:'ART_USER',name:'Artwork Driver',status:'Full-Time',numberImage:'/padded-number.png',signatureImage:'/padded-signature.png'}]});
+  fixture.drivers.teams.push({id:'art-size',name:'Artwork Sizing',owner:'Test',make:'Toyota',note:'',entries:[{number:'24',user:'TEXT_24',name:'John',status:'Full-Time'},{number:'28',user:'ART_USER',name:'Artwork Driver',status:'Full-Time',numberImage:'/padded-number.png',signatureImage:'/padded-signature.png'},{number:'84',user:'TEXT_84',name:'James',status:'Full-Time'}]});
   await page.route('**/.netlify/functions/admin-publish**',route=>route.fulfill({json:{data:fixture}}));
   await page.goto('/drivers/');
   const team=page.locator('.pp-team-stage').filter({hasText:'Artwork Sizing'});
@@ -172,10 +172,21 @@ test('mobile roster art fits its visible pixels instead of transparent source ma
     await expect(image).toHaveAttribute('src',/^data:image\/webp/);
   }
   const metrics=await signature.evaluate(async image=>{await image.decode();return {width:image.getBoundingClientRect().width,height:image.getBoundingClientRect().height,naturalWidth:image.naturalWidth,naturalHeight:image.naturalHeight};});
-  expect(metrics.width).toBeGreaterThanOrEqual(240);expect(metrics.height).toBeGreaterThanOrEqual(76);
+  expect(metrics.width).toBe(160);expect(metrics.height).toBe(36);
   expect(metrics.naturalWidth/metrics.naturalHeight).toBeGreaterThan(3);
   const numberMetrics=await number.evaluate(async image=>{await image.decode();return {height:image.getBoundingClientRect().height,width:image.naturalWidth,heightPixels:image.naturalHeight};});
-  expect(numberMetrics.height).toBeGreaterThanOrEqual(100);expect(numberMetrics.width).toBeLessThan(150);expect(numberMetrics.heightPixels).toBeLessThan(150);
+  expect(numberMetrics.height).toBe(68);expect(numberMetrics.width).toBeLessThan(150);expect(numberMetrics.heightPixels).toBeLessThan(150);
+  for(const width of [320,390,430,1440]) {
+    await page.setViewportSize({width,height:844});
+    const rows=await team.locator('.pp-stage-entry').evaluateAll(rows=>rows.map(row=>row.getBoundingClientRect().height));
+    expect(Math.max(...rows)-Math.min(...rows)).toBeLessThanOrEqual(16);
+    const text=team.locator('.pp-stage-person strong').filter({hasText:'John'}).locator('.pp-name-text');
+    expect(await text.evaluate(node=>getComputedStyle(node).fontSize===getComputedStyle(node.parentElement).fontSize)).toBe(true);
+    expect(await signature.evaluate(node=>node.getBoundingClientRect().height)).toBeLessThanOrEqual(36);
+    expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  }
+  await page.setViewportSize({width:390,height:844});
+  await team.scrollIntoViewIfNeeded();
   await page.screenshot({path:'test-results/roster-artwork-mobile.png'});
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });

@@ -174,4 +174,4 @@ Owners and Admins can upload Number art and Signature logo under each team entry
 
 When a signature logo is available, public roster and driver headings display the signature in place of the visible name. The text name remains available to assistive technology and search, and reappears if the image cannot load. Entries without signatures continue showing their display name.
 
-Number artwork and signatures use larger, responsive display areas on mobile. Empty transparent margins are trimmed for new uploads and when displaying existing same-origin artwork, so previously uploaded images also fit their visible content without re-uploading. The original stored artwork is preserved.
+Roster number artwork uses the same 72-pixel row slot as text numbers, with artwork capped at 110 × 68 pixels. Signatures replace names within a 160 × 36 pixel area so uploaded and text-only entries remain proportionate on mobile. Empty transparent margins are trimmed for new uploads and when displaying existing same-origin artwork, so previously uploaded images also fit their visible content without re-uploading. The original stored artwork is preserved.
