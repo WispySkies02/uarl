@@ -5,5 +5,11 @@
   "type": "module",
   "dependencies": {
     "@netlify/blobs": "^11.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2"
+  },
+  "scripts": {
+    "test": "playwright test"
   }
 }

@@ -78,6 +78,19 @@
     </main>
   </div>
 
+  <nav class="admin-bottom-nav" aria-label="Mobile admin navigation">
+    <button type="button" data-section="dashboard"><span aria-hidden="true">⌂</span>Home</button>
+    <button type="button" data-section="schedule"><span aria-hidden="true">▦</span>Schedule</button>
+    <button type="button" data-section="results"><span aria-hidden="true">⚑</span>Results</button>
+    <button type="button" data-admin-more aria-haspopup="dialog"><span aria-hidden="true">☰</span>More</button>
+  </nav>
+  <dialog class="admin-section-menu" data-admin-menu aria-labelledby="admin-menu-title">
+    <header><h2 id="admin-menu-title">Race Control</h2><button type="button" class="button ghost" data-close-admin-menu>Close ×</button></header>
+    <nav data-admin-menu-items aria-label="All admin sections"></nav>
+    <button type="button" class="button ghost" data-action="export">Download backup</button>
+    <label class="button ghost" data-full-admin>Import backup<input type="file" accept="application/json,.json" data-import hidden></label>
+  </dialog>
+
   <dialog class="publish-dialog" data-publish-dialog>
     <form method="dialog" data-publish-form>
       <button class="dialog-close" type="button" data-close-publish aria-label="Close">×</button>
