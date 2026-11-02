@@ -116,10 +116,34 @@ function raceControlChangeOnly(nextData, currentData) {
   return JSON.stringify(strip(nextData)) === JSON.stringify(strip(currentData));
 }
 
+const IMAGE_LIMIT = 2 * 1024 * 1024;
+export function decodeDriverImage(value) {
+  if (typeof value !== "string" || value.length > Math.ceil(IMAGE_LIMIT / 3) * 4 + 100) throw new Error("Image is too large after resizing. Try a smaller image.");
+  const match = /^data:(image\/(?:png|jpeg|webp));base64,([A-Za-z0-9+/]+={0,2})$/.exec(value);
+  if (!match || match[2].length % 4 !== 0) throw new Error("Choose a PNG, JPEG or WebP image.");
+  const bytes = Buffer.from(match[2], "base64");
+  if (!bytes.length || bytes.length > IMAGE_LIMIT) throw new Error("Image is too large after resizing.");
+  const valid = match[1] === "image/png" ? bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])) :
+    match[1] === "image/jpeg" ? bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255 :
+    bytes.toString("ascii",0,4) === "RIFF" && bytes.toString("ascii",8,12) === "WEBP";
+  if (!valid) throw new Error("The image contents do not match its file type.");
+  return { bytes, contentType: match[1] };
+}
+
 export default async (request) => {
   const secret = process.env.UARL_ADMIN_KEY || "";
   const url = new URL(request.url);
   const store = getStore(STORE_NAME);
+
+  if (request.method === "GET" && url.searchParams.has("image")) {
+    const id = url.searchParams.get("image");
+    if (!/^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/.test(id)) return json(404, { error: "Image not found." });
+    try {
+      const image = await store.getWithMetadata("driver-images/" + id, { type: "arrayBuffer" });
+      if (!image) return json(404, { error: "Image not found." });
+      return new Response(image.data, { headers: { "content-type": image.metadata.contentType, "cache-control": "public, max-age=31536000, immutable", "x-content-type-options": "nosniff", "content-security-policy": "default-src 'none'" } });
+    } catch { return json(503, { error: "Image storage is temporarily unavailable." }); }
+  }
 
   if (request.method === "GET" && url.searchParams.get("status") === "1") {
     if (!secret) return json(200, { ready: false, needsSetup: false, user: null });
@@ -177,6 +201,15 @@ export default async (request) => {
 
     const user = await sessionUser(request, secret, store);
     if (!user) return json(401, { error: "Your Admin session expired. Sign in again." });
+
+    if (payload.action === "upload-driver-image") {
+      if (user.role !== "owner" && user.role !== "admin") return json(403, { error: "Only Owners and Admins can upload roster images." });
+      let image;
+      try { image = decodeDriverImage(payload.image); } catch (error) { return json(422, { error: error.message }); }
+      const id = crypto.randomUUID();
+      await store.set("driver-images/" + id, image.bytes, { metadata: { contentType: image.contentType } });
+      return json(200, { url: "/.netlify/functions/admin-publish?image=" + id });
+    }
 
     if (payload.action === "list-users") {
       if (user.role !== "owner") return json(403, { error: "Only the Owner can manage staff accounts." });

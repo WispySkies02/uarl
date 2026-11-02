@@ -164,3 +164,10 @@ Use Node 22.12.0 (the Netlify runtime pin), run `npm ci`, and start the site wit
 Run `npx playwright install chromium` once, then `npm test`. Tests start a local Python 3 static server and intercept the admin API, so they cannot publish content or create production accounts. To use an existing browser, set `PLAYWRIGHT_EXECUTABLE_PATH=/path/to/chromium`. The suite covers schedule selection, classifications and automatic points, draft recovery and counting, form sections, and mobile navigation/permissions.
 
 Admin entry forms now use sections and expandable row cards. Adding a result selects the earliest scheduled event without a result, including overdue races still awaiting entry. The scheduled-race dropdown fills race metadata; switching races asks before discarding classifications. Change totals count entries changed from published content, rather than letters typed; reverting an entry removes its change. Public and admin mobile layouts include bottom navigation, with remaining pages in More. Desktop keeps the existing navigation.
+
+
+### Driver names and artwork
+
+Roster entries use Public display name first, then the name saved under Driver Profiles, and finally the Roblox username. The Roblox username stays separate for results and career statistics. Names entered while adding a driver to a new team are preserved when switching fields.
+
+Owners and Admins can upload Number art and Signature logo under each team entry (including pending drivers), Open Series entry, or Driver Profile. Profile artwork is reused across team moves; an individual roster upload overrides it. Uploads accept PNG, JPEG and WebP, resize to a maximum 1600 pixels on the longest side, preserve transparency and reduce the encoded image below 2 MiB before sending it. This works within Netlify's request limits rather than removing provider limits. Uploaded images use persistent Netlify Blobs and become attached to public rosters when the draft is published. Removing an image from a draft does not delete files still referenced by published data.

@@ -9,6 +9,20 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  // Presentation names must not replace Roblox usernames used as driver identities.
+  function driverProfile(user, profiles) {
+    profiles = profiles || {};
+    var key = String(user || "").trim().toLowerCase();
+    var match = Object.keys(profiles).find(function (name) { return name.trim().toLowerCase() === key; });
+    return match ? profiles[match] : {};
+  }
+
+  function driverName(entry, profiles) {
+    entry = entry || {};
+    var profile = driverProfile(entry.user, profiles);
+    return String(entry.name || "").trim() || String(profile.alias || "").trim() || String(entry.user || "").trim() || "—";
+  }
+
   function normalize(data) {
     data = data && typeof data === "object" ? data : {};
     ["events", "records", "paints", "guide", "conduct"].forEach(function (key) {
@@ -48,18 +62,18 @@
     data.drivers.teams.forEach(function (team) {
       (team.entries || []).forEach(function (entry) {
         if (!entry.user || /^Open/.test(entry.status || "") || /Development|Part-Time Charter/.test(entry.status || "")) return;
-        var profile = data.drivers.profiles[entry.user] || {};
+        var profile = driverProfile(entry.user, data.drivers.profiles);
         activeDrivers.push({
-          id: entry.user, name: profile.alias || entry.name || entry.user, number: entry.number, division: "d1",
+          id: entry.user, name: driverName(entry, data.drivers.profiles), number: entry.number, division: "d1",
           team: team.name, make: team.make, careerWins: Number(profile.wins || 0), careerTitles: Number(profile.championships || 0),
           careerRank: Number(profile.rank || 0), status: entry.status || "FT"
         });
       });
     });
     data.drivers.openEntries.forEach(function (entry) {
-      var profile = data.drivers.profiles[entry.user] || {};
+      var profile = driverProfile(entry.user, data.drivers.profiles);
       activeDrivers.push({
-        id: entry.user, name: entry.name || profile.alias || entry.user, number: entry.number, division: "open",
+        id: entry.user, name: driverName(entry, data.drivers.profiles), number: entry.number, division: "open",
         team: entry.team || "Independent entry", make: entry.make || "Generic", careerWins: Number(profile.wins || 0),
         careerTitles: Number(profile.championships || 0), careerRank: Number(profile.rank || 0), status: entry.status || "FT"
       });
@@ -181,6 +195,8 @@
   window.UARLData = {
     load: load,
     normalize: normalize,
+    driverName: driverName,
+    driverProfile: driverProfile,
     renderSchedule: renderSchedule,
     previewKey: PREVIEW_KEY
   };

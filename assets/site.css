@@ -137,6 +137,7 @@ body section.page-section:has(#uarl-home),body section.page-section:has(#uarl-sc
 /* Touch navigation stays within the device safe area; desktop keeps its header. */
 .uarl-bottom-nav{display:none}
 @media(max-width:760px){
+  .uarl-native-menu-btn,.uarl-native-nav{display:none!important}
   body:has(.uarl-bottom-nav){padding-bottom:calc(78px + env(safe-area-inset-bottom))!important}
   html:has(.uarl-bottom-nav){scroll-padding-bottom:calc(90px + env(safe-area-inset-bottom))}
   .uarl-bottom-nav{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));position:fixed;inset:auto 0 0;z-index:2147483400;padding:7px 7px calc(7px + env(safe-area-inset-bottom));background:#0c0f15f5;border-top:1px solid #ffffff24;backdrop-filter:blur(18px)}
