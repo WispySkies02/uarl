@@ -175,3 +175,11 @@ Owners and Admins can upload Number art and Signature logo under each team entry
 When a signature logo is available, public roster and driver headings display the signature in place of the visible name. The text name remains available to assistive technology and search, and reappears if the image cannot load. Entries without signatures continue showing their display name.
 
 Roster number artwork uses the same 72-pixel row slot as text numbers, with artwork capped at 110 × 68 pixels. Signatures replace names within a 160 × 36 pixel area so uploaded and text-only entries remain proportionate on mobile. Empty transparent margins are trimmed for new uploads and when displaying existing same-origin artwork, so previously uploaded images also fit their visible content without re-uploading. The original stored artwork is preserved.
+
+### Faster race entry
+
+The admin dashboard has a **Record a race** action. Pick the scheduled event, select the participants together, and use the finish-order arrows to arrange the classification. Positions, automatic winner selection and points update together. Guests, qualifying, stages and notes remain available under the expandable race details. Awards and a summary are the final step.
+
+Driver choices come from the current division roster and that race's guest entries, grouped by team. Previous races no longer populate new driver dropdowns. An existing historical selection remains visible only in its own saved row. Roblox usernames distinguish different drivers with the same display name.
+
+Car numbers can be corrected manually in qualifying, stages and finishes, including leading zeros; a race override does not change the team roster number. Bonuses only list drivers in that race's finishing classification, and their numbers come from the classification. The publisher rejects awards for missing finishers and duplicate awards to the same recipient. **Most laps led** remains an award; entering or accumulating individual lap totals is no longer part of the workflow or the public stats screens.

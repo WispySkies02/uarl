@@ -1,0 +1,15 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {validateRaceBonuses} from '../../netlify/functions/admin-publish.mjs';
+import fs from 'node:fs';
+const league=()=>({drivers:{teams:[{name:'Team',entries:[{user:'max',name:'Max',number:'19'},{user:'hayden',name:'Hayden',number:'20'}]}]},records:[{division:'d1',event:'Test Race',finishes:[{username:'max',name:'Max',number:'021',numberManual:true}],bonuses:[]}]});
+test('the publish validator accepts archive data and actual finishers',()=>{
+ assert.deepEqual(validateRaceBonuses(JSON.parse(fs.readFileSync(new URL('../../data/uarl.json',import.meta.url)))),[]);
+ const data=league();data.records[0].bonuses=[{driver:'Max',driverUsername:'max',name:'Most laps led'}];assert.deepEqual(validateRaceBonuses(data),[]);
+});
+test('the publish validator rejects roster-only recipients, empty recipients and duplicate awards',()=>{
+ const data=league();
+ for(const bonuses of [[{name:'Most laps led',driver:'Hayden',driverUsername:'hayden'}],[{name:'Fastest lap',driver:''}],[{name:'Fastest lap',driver:'Max',driverUsername:'max'},{name:'Fastest lap',driver:'Max',driverUsername:'max'}]]){
+  data.records[0].bonuses=bonuses;assert.ok(validateRaceBonuses(data).length);
+ }
+});

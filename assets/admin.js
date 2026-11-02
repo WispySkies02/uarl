@@ -26,8 +26,8 @@
     results: {
       title: "Results + Points", kicker: "Race Center", description: "Official classifications, stages, bonuses, eligibility, and points. Add the result here once race control signs off.", path: "records",
       itemTitle: function (x) { return x.event || x.name || "Untitled result"; }, itemMeta: function (x) { return [String(x.division || "").toUpperCase(), x.date, x.status].filter(Boolean).join(" · "); },
-      template: function () { return { id: "result-" + Date.now(), division: "d1", event: "New Race Result", date: dateOnly(new Date()), start: new Date().toISOString(), track: "", status: "complete", eventType: "Points race", pointsEvent: true, exhibition: false, qualifying: [], stages: [], finishes: [], bonuses: [] }; },
-      fields: [["id","Event ID"],["division","Division","select",["d1","d2","open"]],["event","Event name","textarea","wide"],["date","Date","date"],["start","Start time","datetime"],["track","Track"],["round","Round","number"],["laps","Laps","number"],["status","Status","select",["complete","official","pending"]],["eventType","Event type"],["winner","Winner","seriesDriver"],["pole","Pole winner","seriesDriver"],["pointsSummary","Points summary"],["pointsNote","Points note","textarea","wide"],["recordNote","Official record note","textarea","wide"],["pointsEvent","Points event","bool"],["exhibition","Exhibition","bool"],["entries","Event-only / guest drivers","eventEntries","wide"],["qualifying","Qualifying classification","classification","wide"],["stages","Stage classifications","stages","wide"],["finishes","Race finish + points","finishes","wide"],["bonuses","Bonuses","bonuses","wide"]]
+      template: function () { return { id: "result-" + Date.now(), division: "d1", event: "New Race Result", date: dateOnly(new Date()), start: new Date().toISOString(), track: "", status: "complete", eventType: "Points race", pointsEvent: true, exhibition: false, qualifying: [], stages: [], finishes: [], bonuses: [], winnerAutomatic:true }; },
+      fields: [["id","Event ID"],["division","Division","select",["d1","d2","open"]],["event","Event name","textarea","wide"],["date","Date","date"],["start","Start time","datetime"],["track","Track"],["round","Round","number"],["laps","Laps","number"],["status","Status","select",["complete","official","pending"]],["eventType","Event type"],["winnerAutomatic","Winner follows first place","bool"],["winner","Winner","seriesDriver"],["pole","Pole winner","seriesDriver"],["pointsSummary","Points summary"],["pointsNote","Points note","textarea","wide"],["recordNote","Official record note","textarea","wide"],["pointsEvent","Points event","bool"],["exhibition","Exhibition","bool"],["entries","Event-only / guest drivers","eventEntries","wide"],["qualifying","Qualifying classification","classification","wide"],["stages","Stage classifications","stages","wide"],["finishes","Race finish + points","finishes","wide"],["bonuses","Bonuses","bonuses","wide"]]
     },
     teams: {
       title: "Teams + Charters", kicker: "D1 paddock", description: "Team ownership, branding, entries, open seats, and special shared charters.", path: "drivers.teams",
@@ -213,6 +213,7 @@
     var upcoming = state.data.events.filter(function (x) { return new Date(x.start || x.date) > new Date(); }).sort(function (a,b) { return new Date(a.start)-new Date(b.start); })[0];
     var openSeats = state.data.drivers.teams.reduce(function (sum,t) { return sum + (t.entries || []).filter(function (e) { return /^Open/.test(e.status || "") || e.name === "OPEN"; }).length; }, 0);
     view.innerHTML = renderHeader({ kicker:"UARL website", title:"Race Control", description:"One control center for the public schedule, results, standings inputs, rosters, paints, history, and competition guide." }) +
+      '<section class="daily-actions"><button type="button" data-start-race><b>Record a race →</b><span>Pick the event, choose who raced, set the finish order.</span></button><button type="button" data-section="schedule"><b>Adjust the schedule →</b><span>Change a date, track or event status.</span></button>'+(state.user&&state.user.role!=='race_control'?'<button type="button" data-section="teams"><b>Update a roster →</b><span>Drivers, car numbers and artwork, one team at a time.</span></button>':'')+'</section>'+
       '<section class="stat-grid"><article class="stat-card"><small>Scheduled events</small><strong>' + state.data.events.length + '</strong></article><article class="stat-card" style="--accent:var(--blue)"><small>Official records</small><strong>' + state.data.records.length + '</strong></article><article class="stat-card" style="--accent:var(--red)"><small>Paint schemes</small><strong>' + state.data.paints.length + '</strong></article><article class="stat-card" style="--accent:var(--green)"><small>Open D1 seats</small><strong>' + openSeats + '</strong></article></section>' +
       '<section class="dashboard-grid"><article class="dash-panel"><h2>Next event on the website</h2>' + (upcoming ? '<div class="next-event"><span>' + esc(String(upcoming.division).toUpperCase()) + ' · ' + esc(new Date(upcoming.start).toLocaleString([], {dateStyle:"full",timeStyle:"short"})) + '</span><h3>' + esc(upcoming.name) + '</h3><p>' + esc(upcoming.track) + (upcoming.scheduleNote ? '<br>' + esc(upcoming.scheduleNote) : '') + '</p></div>' : '<div class="next-event"><h3>Season complete</h3></div>') + '</article>' +
       '<article class="dash-panel"><h2>Publishing health</h2><div class="check-list"><div><span>Live website data</span><b>CONNECTED</b></div><div><span>Browser recovery draft</span><b>' + (state.dirty ? "SAVED" : "CLEAN") + '</b></div><div><span>Schedule countdown feed</span><b>CONNECTED</b></div><div><span>Secure publisher</span><b>SIGNED IN</b></div></div></article></section>';
@@ -256,36 +257,28 @@
     var records=getPath("records"),record=records[state.selected];return record&&record.division||"d1";
   }
   function seriesDriverPool(division,current,record) {
-    var map=new Map();
-    function add(name,number,user,source) {
-      name=String(name||"").trim();if(!name||name.toUpperCase()==="OPEN")return;
-      var key=(user?"user:"+String(user):"name:"+name).toLowerCase(),existing=map.get(key);if(!existing)map.set(key,{name:name,number:String(number||""),user:user||"",source:source||"roster"});else if(!existing.number&&number)existing.number=String(number);
-    }
-    if(division==="d1"){
-      (state.data.drivers.teams||[]).forEach(function(team){(team.entries||[]).forEach(function(entry){if(/^Open/.test(entry.status||"")||String(entry.status||"").toLowerCase()==="inactive"||String(entry.name||"").toUpperCase()==="OPEN")return;add(window.UARLData.driverName(entry,state.data.drivers.profiles),entry.number,entry.user,"D1 roster");});});
-    }else if(division==="open"){
-      (state.data.drivers.openEntries||[]).forEach(function(entry){add(window.UARLData.driverName(entry,state.data.drivers.profiles),entry.number,entry.user,"Open roster");});
-    }else if(division==="d2"){
-      ((state.data.race&&state.data.race.drivers)||[]).filter(function(driver){return driver.division==="d2";}).forEach(function(driver){add(driver.name,driver.number,driver.id,"D2 archive");});
-    }
-    var selectedRecord=record||(state.section==="results"&&(state.data.records||[])[state.selected]);
-    if(selectedRecord&&selectedRecord.division===division)(selectedRecord.entries||[]).forEach(function(entry){add(entry.name,entry.number,entry.user||entry.driverId,"Event entry");});
-    (state.data.records||[]).filter(function(record){return record.division===division;}).forEach(function(record){
-      (record.qualifying||[]).forEach(function(row){add(row.name,row.number,row.username,"Official result");});
-      (record.finishes||[]).forEach(function(row){add(row.name,row.number,row.username,"Official result");});
-      (record.stages||[]).forEach(function(stage){(stage.results||[]).forEach(function(row){add(row.name,row.number,row.username,"Official result");});});
-      (record.bonuses||[]).forEach(function(row){add(row.driver,row.number,row.driverUsername,"Official result");});
-      add(record.winner,"",record.winnerUsername,"Official result");add(record.pole,"",record.poleUsername,"Official result");
+    record=record || (state.section==='results'&&state.data.records[state.selected]) || {division:division};
+    return window.UARLResultDrivers.pool(state.data,record);
+  }
+  function driverOptionLabel(driver,number,invalid) {
+    return (number?'#'+number+' · ':'')+driver.name+(driver.user&&!/^guest:/.test(driver.user)?' (@'+driver.user+')':'')+(invalid?' — not in race finish':driver.source==='saved'?' — saved result':'');
+  }
+  function seriesDriverSelect(value,attrs,identity,number,finishersOnly) {
+    var record=state.data.records[state.selected],base=finishersOnly?window.UARLResultDrivers.bonusPool(state.data,record):seriesDriverPool(currentResultDivision(),null,record);
+    var options=window.UARLResultDrivers.optionsForCurrent(base,value,identity,number);
+    var selected=window.UARLResultDrivers.resolve(options,value,identity,number);
+    var groups=new Map();
+    options.forEach(function(driver){
+      var group=driver.source==='saved'?'Saved result':driver.source==='guest'?'Race guests':driver.team|| (finishersOnly?'Race finish':'Roster');
+      if(!groups.has(group))groups.set(group,[]);groups.get(group).push(driver);
     });
-    if(current&&!Array.from(map.values()).some(function(driver){return driver.name===current;}))add(current,"","","Existing result");
-    return Array.from(map.values()).sort(function(a,b){var an=parseInt(a.number,10),bn=parseInt(b.number,10);if(Number.isFinite(an)&&Number.isFinite(bn)&&an!==bn)return an-bn;return a.name.localeCompare(b.name);});
-  }
-  function seriesDriverSelect(value,attrs,identity) {
-    var pool=seriesDriverPool(currentResultDivision(),value);
-    return '<select '+attrs+'><option value="">Select a series driver</option>'+pool.map(function(driver){var label=(driver.number?'#'+driver.number+' · ':'')+driver.name+(driver.user&&driver.user!==driver.name&&!/^guest:/.test(driver.user)?' (@'+driver.user.replace(/^@/,"")+')':'');var selected=identity?String(identity).toLowerCase()===String(driver.user).toLowerCase():String(value||"")===driver.name;return '<option value="'+esc(driver.name)+'" data-name="'+esc(driver.name)+'" data-number="'+esc(driver.number)+'" data-user="'+esc(driver.user)+'" '+(selected?'selected':'')+'>'+esc(label)+'</option>';}).join("")+'</select>';
-  }
-  function seriesDriverNumber(name,identity,record) {
-    var match=seriesDriverInfo(name,identity,record);return match&&match.number||"";
+    return '<select data-driver-select '+attrs+'><option value="">'+(finishersOnly?'Choose a driver from this race finish':'Choose a roster driver')+'</option>'+Array.from(groups).map(function(group){
+      return '<optgroup label="'+esc(group[0])+'">'+group[1].map(function(driver){
+        var shownNumber=selected&&selected.key===driver.key&&number!==undefined?String(number==null?'':number):driver.number;
+        var invalid=finishersOnly&&driver.source==='saved',label=driverOptionLabel(driver,shownNumber,invalid);
+        return '<option value="'+esc(driver.key)+'" data-name="'+esc(driver.name)+'" data-source="'+esc(driver.source)+'" data-number="'+esc(driver.number)+'" data-user="'+esc(driver.user)+'" '+(selected&&selected.key===driver.key?'selected ':'')+(invalid?'disabled':'')+'>'+esc(label)+'</option>';
+      }).join('')+'</optgroup>';
+    }).join('')+'</select>';
   }
   var FINISH_POINTS=[50,45,42,40,38,36,34,32,30,28,27,26,25,24,23,22];
   var STAGE_POINTS=[5,4,3,2,1];
@@ -293,37 +286,57 @@
   function identityText(value) { return String(value||"").trim().replace(/^@/,"").toLowerCase(); }
   function sameResultDriver(left,right) {
     var leftUser=identityText(left&&left.username||left&&left.driverUsername||left&&left.user),rightUser=identityText(right&&right.username||right&&right.driverUsername||right&&right.user);
-    if(leftUser&&rightUser)return leftUser===rightUser;
+    if(leftUser||rightUser)return Boolean(leftUser&&rightUser&&leftUser===rightUser);
     var leftName=identityText(left&&left.name||left&&left.driver),rightName=identityText(right&&right.name||right&&right.driver);
     return Boolean(leftName&&rightName&&leftName===rightName);
   }
-  function seriesDriverInfo(name,identity,record) {
-    var division=record&&record.division||currentResultDivision();
-    return seriesDriverPool(division,name,record).find(function(driver){return identity&&identityText(driver.user)===identityText(identity)||identityText(driver.name)===identityText(name);})||{};
+  function seriesDriverInfo(name,identity,record,number) {
+    var candidates=seriesDriverPool(record&&record.division||currentResultDivision(),null,record);
+    return window.UARLResultDrivers.resolve(candidates,name,identity,number)||{};
   }
   function bonusPoints(name) { return BONUS_POINTS[name]||0; }
   function recalculateResult(record) {
     if(!record||!Array.isArray(record.finishes))return record;
     var isPoints=record.pointsEvent!==false&&!record.exhibition;
-    function attachIdentity(row,nameKey,userKey) { var info=seriesDriverInfo(row[nameKey],row[userKey],record);if(info.user)row[userKey]=info.user;if(!row.number&&info.number)row.number=info.number; }
+    function attachIdentity(row,nameKey,userKey) { var info=seriesDriverInfo(row[nameKey],row[userKey],record,row.number);if(info.user)row[userKey]=info.user;if(row.numberManual!==true&&!row.number&&info.number)row.number=info.number; }
     (record.qualifying||[]).forEach(function(row){attachIdentity(row,"name","username");});
     (record.stages||[]).forEach(function(stage){(stage.results||[]).forEach(function(row){attachIdentity(row,"name","username");});});
+    record.finishes.forEach(function(row){attachIdentity(row,"name","username");});
     var poleInfo=seriesDriverInfo(record.pole,record.poleUsername,record);if(poleInfo.user)record.poleUsername=poleInfo.user;
     var winnerInfo=seriesDriverInfo(record.winner,record.winnerUsername,record);if(winnerInfo.user)record.winnerUsername=winnerInfo.user;
-    (record.bonuses||[]).forEach(function(bonus){bonus.points=bonusPoints(bonus.name);var info=seriesDriverInfo(bonus.driver,bonus.driverUsername,record);if(!bonus.number&&info.number)bonus.number=info.number;if(info.user)bonus.driverUsername=info.user;});
+    if(record.winnerAutomatic){var first=record.finishes.find(function(row){return Number(row.position)===1;});record.winner=first&&first.name||'';record.winnerUsername=first&&first.username||'';}
+    var finishers=window.UARLResultDrivers.bonusPool(state.data,record),awarded=new Set();
+    (record.bonuses||[]).forEach(function(bonus){
+      var recipient=window.UARLResultDrivers.resolve(finishers,bonus.driver,bonus.driverUsername,bonus.number);
+      var awardKey=recipient&&bonus.name+':'+recipient.key;bonus.points=recipient&&!awarded.has(awardKey)?bonusPoints(bonus.name):0;if(recipient)awarded.add(awardKey);
+      if(recipient){bonus.number=recipient.number;if(recipient.user)bonus.driverUsername=recipient.user;}
+    });
     record.finishes.forEach(function(finish){
-      var info=seriesDriverInfo(finish.name,finish.username,record),eligible=finish.pointsEligible!==false&&isPoints,position=Number(finish.position),status=finish.resultStatus||"Finish";
-      if(info.user)finish.username=info.user;if(!finish.number&&info.number)finish.number=info.number;
+      var info=seriesDriverInfo(finish.name,finish.username,record,finish.number),eligible=finish.pointsEligible!==false&&isPoints,position=Number(finish.position),status=finish.resultStatus||"Finish";
+      if(info.user)finish.username=info.user;if(finish.numberManual!==true&&!finish.number&&info.number)finish.number=info.number;
       var base=0;if(eligible){if(status==="DNQ")base=10;else if(status==="DNF")base=2;else if(position>0)base=FINISH_POINTS[Math.min(position,FINISH_POINTS.length)-1]||22;}
       var stagePoints=0,stageWins=0;
       if(eligible)(record.stages||[]).forEach(function(stage){var row=(stage.results||[]).find(function(result){return sameResultDriver(finish,result);});var stagePosition=row&&Number(row.position);if(stagePosition>0&&stagePosition<=STAGE_POINTS.length){stagePoints+=STAGE_POINTS[stagePosition-1];if(stagePosition===1)stageWins+=1;}});
-      var earnedPole=sameResultDriver(finish,{name:record.pole,username:record.poleUsername}),polePoints=eligible&&earnedPole?5:0,extraPoints=eligible?(record.bonuses||[]).filter(function(bonus){return sameResultDriver(finish,{driver:bonus.driver,driverUsername:bonus.driverUsername});}).reduce(function(sum,bonus){return sum+bonusPoints(bonus.name);},0):0;
+      var earnedPole=sameResultDriver(finish,{name:record.pole,username:record.poleUsername}),polePoints=eligible&&earnedPole?5:0,extraPoints=eligible?(record.bonuses||[]).filter(function(bonus){return bonus.points>0&&sameResultDriver(finish,{driver:bonus.driver,driverUsername:bonus.driverUsername});}).reduce(function(sum,bonus){return sum+bonus.points;},0):0;
       finish.basePoints=base;finish.stagePoints=stagePoints;finish.stageWins=stageWins;finish.pole=Boolean(earnedPole);finish.bonusPoints=polePoints+extraPoints;finish.points=base+polePoints+extraPoints;finish.totalPoints=finish.points+stagePoints;
-      var laps=(record.bonuses||[]).find(function(bonus){return bonus.driver===finish.name&&bonus.name==="Most laps led";});if(laps){finish.mostLapsLed=true;finish.lapsLed=Number(laps.lapsLed||0);finish.raceLaps=Number(laps.totalLaps||record.laps||0);}
+      finish.mostLapsLed=Boolean((record.bonuses||[]).some(function(bonus){return bonus.points>0&&bonus.name==='Most laps led'&&sameResultDriver(finish,{driver:bonus.driver,driverUsername:bonus.driverUsername});}));
     });
     return record;
   }
   function syncResultPoints(record) {
+    view.querySelectorAll('[data-driver-select]').forEach(function(select){
+      var option=select.selectedOptions[0];if(!option||!option.value)return;
+      var row;
+      if(select.dataset.sfield){
+        var rows=record[select.dataset.sfield]||[];
+        if(select.dataset.sparent!=null)rows=(rows[Number(select.dataset.sparent)]||{})[select.dataset.scollection]||[];
+        row=rows[Number(select.dataset.srow)];
+      } else if(select.dataset.field==='winner'||select.dataset.field==='pole') {
+        var field=select.dataset.field;row=(record[field==='winner'?'finishes':'qualifying']||[]).find(function(row){return sameResultDriver(row,{name:record[field],username:record[field+'Username']});});
+      }
+      if(row)option.textContent=driverOptionLabel({name:option.dataset.name,user:option.dataset.user,source:option.dataset.source},String(row.number==null?'':row.number),option.disabled);
+    });
+    var review=view.querySelector('.race-review');if(review)review.outerHTML=raceReview(record);
     (record.finishes||[]).forEach(function(finish,index){var node=document.querySelector('[data-auto-points="'+index+'"]'),stageNode=document.querySelector('[data-auto-stage="'+index+'"]');if(stageNode)stageNode.value=finish.stagePoints||0;if(node){node.value=finish.totalPoints||0;node.title=(finish.basePoints||0)+' finish/status + '+(finish.stagePoints||0)+' stage + '+(finish.bonusPoints||0)+' bonus';}});
     (record.bonuses||[]).forEach(function(bonus,index){var node=document.querySelector('[data-auto-bonus="'+index+'"]');if(node)node.value=bonus.points||0;});
   }
@@ -338,7 +351,7 @@
   }
   function classificationRow(field,row,item,finish,listId,parent,collection) {
     var attrs='data-sfield="'+esc(field)+'" data-srow="'+row+'" data-skey="name" data-stype="text"'+(parent!=null?' data-sparent="'+parent+'"':'')+(collection?' data-scollection="'+esc(collection)+'"':'');
-    return '<div class="builder-row"><div class="builder-grid classification-grid"><label>Car #<input type="text" data-auto-number readonly value="'+esc(item.number||"")+'"></label><label>Position'+dataInput(field,row,"position",item.position,"number",parent,collection)+'</label><label class="builder-span-2">Driver'+seriesDriverSelect(item.name,attrs,item.username)+'</label>'+(finish?'<label>Result status<select data-sfield="'+esc(field)+'" data-srow="'+row+'" data-skey="resultStatus" data-stype="text">'+optionList(["Finish","DNF","DNQ"],item.resultStatus||"Finish")+'</select></label><label>Stage points<input type="number" data-auto-stage="'+row+'" readonly value="'+esc(item.stagePoints||0)+'" title="Calculated from stage results"></label><label>Total points<input type="number" data-auto-points="'+row+'" readonly value="'+esc(item.totalPoints||0)+'" title="Calculated automatically"></label><label class="builder-check">'+dataInput(field,row,"pointsEligible",item.pointsEligible,"bool",parent,collection)+' Eligible</label>':'')+'</div>'+removeButton(field,row,parent,collection)+'</div>';
+    return '<div class="builder-row"><div class="builder-grid classification-grid"><label>Car #'+dataInput(field,row,'number',item.number,'text',parent,collection).replace('<input ','<input data-auto-number inputmode="numeric" title="Filled from the roster; edit for this race" ')+'</label><label>Position'+dataInput(field,row,"position",item.position,"number",parent,collection)+'</label><label class="builder-span-2">Driver'+seriesDriverSelect(item.name,attrs,item.username,item.number)+'</label>'+(finish?'<label>Result status<select data-sfield="'+esc(field)+'" data-srow="'+row+'" data-skey="resultStatus" data-stype="text">'+optionList(["Finish","DNF","DNQ"],item.resultStatus||"Finish")+'</select></label><label>Stage points<input type="number" data-auto-stage="'+row+'" readonly value="'+esc(item.stagePoints||0)+'" title="Calculated from stage results"></label><label>Total points<input type="number" data-auto-points="'+row+'" readonly value="'+esc(item.totalPoints||0)+'" title="Calculated automatically"></label><label class="builder-check">'+dataInput(field,row,"pointsEligible",item.pointsEligible!==false,"bool",parent,collection)+' Eligible</label>':'')+'</div>'+removeButton(field,row,parent,collection)+'</div>';
   }
   function winnerPairRow(field,row,pair,parent,collection,listId) {
     return '<div class="builder-row"><div class="builder-grid pair-grid"><label>Driver'+dataInput(field,row,"0",pair[0],"text",parent,collection,listId)+'</label><label>Wins'+dataInput(field,row,"1",pair[1],"number",parent,collection)+'</label></div>'+removeButton(field,row,parent,collection)+'</div>';
@@ -353,7 +366,7 @@
     }else if(type==="classification"||type==="finishes"){
       addLabel=type==="finishes"?"Add finishing position":"Add qualifying position";rows=value.map(function(entry,index){return classificationRow(key,index,entry,type==="finishes",listId);}).join("");
     }else if(type==="bonuses"){
-      addLabel="Add bonus";rows=value.map(function(entry,index){return '<div class="builder-row"><div class="builder-grid bonus-grid"><label>Bonus type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="name" data-stype="text">'+optionList(Object.keys(BONUS_POINTS),entry.name)+'</select></label><label>Driver'+seriesDriverSelect(entry.driver,'data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="driver" data-stype="text"',entry.driverUsername)+'</label><label>Car #<input type="text" data-auto-number readonly value="'+esc(entry.number||"")+'"></label><label>Points<input type="number" data-auto-bonus="'+index+'" readonly value="'+esc(bonusPoints(entry.name))+'"></label><label>Laps led'+dataInput(key,index,"lapsLed",entry.lapsLed,"number")+'</label><label>Total laps'+dataInput(key,index,"totalLaps",entry.totalLaps,"number")+'</label></div>'+removeButton(key,index)+'</div>';}).join("");
+      addLabel="Add bonus";rows=value.map(function(entry,index){return '<div class="builder-row"><div class="builder-grid bonus-grid"><label>Bonus type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="name" data-stype="text">'+optionList(Object.keys(BONUS_POINTS),entry.name)+'</select></label><label>Driver'+seriesDriverSelect(entry.driver,'data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="driver" data-stype="text"',entry.driverUsername,entry.number,true)+'</label><label>Car #<input type="text" data-auto-number readonly value="'+esc(entry.number||"")+'"></label><label>Points<input type="number" data-auto-bonus="'+index+'" readonly value="'+esc(entry.points||0)+'"></label></div>'+removeButton(key,index)+'</div>';}).join("");
     }else if(type==="tags"){
       addLabel="Add tag";rows=value.map(function(tag,index){return '<div class="builder-row compact-row"><label class="builder-inline">Tag'+dataInput(key,index,"value",tag)+'</label>'+removeButton(key,index)+'</div>';}).join("");
     }else if(type==="winnerTotals"){
@@ -415,7 +428,11 @@
     var key=field[0],label=field[1],type=field[2]||"text",options=Array.isArray(field[3])?field[3]:null,wide=field[3]==="wide"||field[4]==="wide",value=item[key];
     if (["eventEntries","roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(type)) return renderStructuredField(key,label,type,item);
     if (type === "image") return renderImageControl(key,label,item);
-    if (type === "seriesDriver") return '<label class="field"><span>'+esc(label)+'</span>'+seriesDriverSelect(value,'data-field="'+esc(key)+'" data-type="select"',item[key+"Username"])+'</label>';
+    if (type === "seriesDriver") {
+      var rows=key==='winner'?item.finishes:key==='pole'?item.qualifying:null;
+      var row=rows&&rows.find(function(row){return sameResultDriver(row,{name:value,username:item[key+'Username']});});
+      return '<label class="field"><span>'+esc(label)+'</span>'+seriesDriverSelect(value,'data-field="'+esc(key)+'" data-type="select"',item[key+"Username"],row&&row.number)+'</label>';
+    }
     if (type === "bool") return '<label class="field check-field' + (wide?' wide':'') + '"><input type="checkbox" data-field="' + esc(key) + '" data-type="bool" ' + (value?'checked':'') + '><span>' + esc(label) + '</span></label>';
     if (type === "select") return '<label class="field' + (wide?' wide':'') + '"><span>' + esc(label) + '</span><select data-field="' + esc(key) + '" data-type="select">' + options.map(function(o){return '<option value="'+esc(o)+'" '+(String(value||"")===String(o)?'selected':'')+'>'+esc(o||"None")+'</option>';}).join("") + '</select></label>';
     if (type === "textarea" || type === "json") return '<label class="field wide"><span>' + esc(label) + '</span><textarea class="' + (type==='json'?'json-field':'') + '" data-field="' + esc(key) + '" data-type="' + type + '">' + esc(type==='json'?JSON.stringify(value == null ? [] : value,null,2):(value||"")) + '</textarea></label>';
@@ -440,7 +457,7 @@
   }
 
   var editorGroups = {
-    results: [ ["Race", ["id","division","event","date","start","track","round","laps","status","eventType","pointsEvent","exhibition"]], ["Guest drivers", ["entries"]], ["Qualifying", ["pole","qualifying"]], ["Stages", ["stages"]], ["Finish", ["winner","finishes"]], ["Bonuses", ["bonuses"]], ["Notes", ["pointsSummary","pointsNote","recordNote"]] ],
+    results: [ ["Race", ["id","division","event","date","start","track","round","laps","status","eventType","pointsEvent","exhibition"]], ["Guest drivers", ["entries"]], ["Qualifying", ["pole","qualifying"]], ["Stages", ["stages"]], ["Finish", ["winnerAutomatic","winner","finishes"]], ["Bonuses", ["bonuses"]], ["Notes", ["pointsSummary","pointsNote","recordNote"]] ],
     teams: [ ["Team", ["id","name","owner","ownerNote","make","founded","note"]], ["Branding", ["logo","brandColor","brandColor2"]], ["Charters", ["charterCount","entries"]], ["Pending drivers", ["pendingDrivers"]] ],
     schedule: [ ["Event", ["id","division","series","name","track","round","laps"]], ["Date + status", ["date","start","scheduleStatus","scheduleNote","completed"]], ["Race format", ["exhibition","pointsEvent","crownJewel","chase","special"]], ["Original date", ["originalDate","originalStart"]] ]
   };
@@ -473,17 +490,50 @@
   function nextUnrecordedRace() {
     return state.data.events.filter(function(event){return event.scheduleStatus!=="cancelled" && !state.data.records.some(function(record){return record.id===event.id || record.scheduleEventId===event.id;});}).sort(function(a,b){return new Date(a.start||a.date)-new Date(b.start||b.date);})[0];
   }
+  function resultNavigation(groups) {
+    function button(index,label){return '<button type="button" data-step="'+index+'" '+(index===state.step?'aria-current="step"':'')+'>'+esc(label)+'</button>';}
+    return '<div class="editor-steps result-flow"><nav aria-label="Race entry">'+button(0,'1. Pick race')+button(4,'2. Finish order')+button(5,'3. Awards & review')+'</nav><details data-result-details '+([1,2,3,6].includes(state.step)?'open':'')+'><summary>Guests, qualifying, stages & notes</summary><nav aria-label="More race details">'+[1,2,3,6].map(function(i){return button(i,groups[i][0]);}).join('')+'</nav></details></div>';
+  }
+  function renderFinisherPicker(record) {
+    var all=seriesDriverPool(record.division,null,record),entered=(record.finishes||[]).map(function(row){return window.UARLResultDrivers.resolve(all,row.name,row.username,row.number);});
+    var drivers=all.filter(function(driver){return !entered.some(function(found){return found&&found.key===driver.key;});});
+    return '<details class="finisher-picker" data-finisher-picker><summary>+ Select drivers who raced</summary><p>Pick the participants once, then use the arrows to arrange their finish order. Numbers stay editable.</p><input type="search" data-finish-search placeholder="Find a driver or team" aria-label="Find a race participant"><div class="participant-list">'+drivers.map(function(driver){return '<label data-participant><input type="checkbox" data-finisher-choice value="'+esc(driver.key)+'"><span><b>'+esc((driver.number?'#'+driver.number+' · ':'')+driver.name)+'</b><small>'+esc([driver.team,driver.user&&'@'+driver.user].filter(Boolean).join(' · '))+'</small></span></label>';}).join('')+'</div><button type="button" class="button" data-add-finishers>Add selected drivers</button>'+(drivers.length?'':'<p>All current roster drivers are already listed. Add a guest under More race details if needed.</p>')+'</details>';
+  }
+  function raceReview(record) {
+    var issues=window.UARLResultDrivers.bonusIssues({drivers:state.data.drivers,race:state.data.race,records:[record]});
+    return '<div class="race-review"><b>'+esc(record.event)+' · '+(record.finishes||[]).length+' finishers</b><p>Winner: '+esc(record.winner||'Not set')+' · '+(record.bonuses||[]).length+' awards</p><p>'+(issues.length?esc(issues[0].message):'Ready to review. Preview the site or publish when the order and awards are correct.')+'</p><button type="button" class="button ghost" data-action="preview">Preview race</button></div>';
+  }
   function renderEditor(config,item,index) {
     var groups=groupsFor(config); state.step=Math.min(state.step,groups.length-1);
-    var group=groups[state.step];
+    var group=groups[state.step],isResult=state.section==='results';
     var fields=config.fields.filter(function(f){return group[1].includes(f[0]);}).map(function(f){return renderField(f,item);}).join('');
-    var linkedRace=state.section==='results'&&state.step===0;
+    var linkedRace=isResult&&state.step===0;
     var body=linkedRace ? '<div class="field-grid">'+scheduleOptions(item)+'</div><details class="race-details" '+(item.scheduleEventId||state.data.events.some(function(e){return e.id===item.id;})?'':'open')+'><summary>Race details · '+esc(item.event)+' · '+esc(item.date)+'</summary><p>Filled from the schedule. Expand to review or correct the details.</p><div class="field-grid">'+fields+'</div></details>' : '<div class="field-grid">'+fields+'</div>';
-    return '<div class="editor-title"><div><small>ENTRY ' + String(index+1).padStart(2,"0") + '</small><h2>' + esc(config.itemTitle(item)) + '</h2></div><div class="view-actions"><button class="button" data-action="duplicate">Duplicate</button></div></div>'+resultIdentityWarning(item)+
-      '<p class="editor-guidance">One section at a time. All fields remain available and edits save automatically. The counter tracks changed entries, not keystrokes.</p><nav class="editor-steps" aria-label="Entry sections">'+groups.map(function(g,i){return '<button type="button" data-step="'+i+'" '+(i===state.step?'aria-current="step"':'')+'>'+ (i+1)+'. '+esc(g[0])+'</button>';}).join('')+'</nav>'+
-      '<section aria-label="'+esc(group[0])+'"><h3 class="step-heading" tabindex="-1">'+esc(group[0])+'</h3>'+body+'</section>'+
-      '<div class="step-actions"><button class="button ghost" data-step="'+(state.step-1)+'" '+(!state.step?'disabled':'')+'>← Back</button><span>Section '+(state.step+1)+' of '+groups.length+'</span>'+(state.step<groups.length-1?'<button class="button" data-step="'+(state.step+1)+'">Next →</button>':'<button class="button" data-action="preview">Preview changes</button>')+'</div>'+
-      '<footer class="editor-footer"><div class="shift-tools">' + (config.shifts?'<button class="button ghost" data-shift="-7">← Shift 1 week</button><button class="button ghost" data-shift="7">Shift 1 week →</button>':'') + '</div><button class="button danger" data-action="delete">Delete entry</button></footer>';
+    if(isResult&&state.step===4)body=renderFinisherPicker(item)+body;
+    if(isResult&&state.step===5)body='<p class="editor-guidance">Awards are only available to drivers in this race finish. Choose who earned each bonus; no lap totals are needed.</p>'+body+raceReview(item);
+    var next=isResult&&state.step===0?4:isResult&&state.step===4?5:state.step+1;
+    var back=isResult&&state.step===4?0:isResult&&state.step===5?4:state.step-1;
+    var final=isResult?state.step===5||state.step===6:state.step===groups.length-1;
+    return '<div class="editor-title"><div><small>ENTRY '+String(index+1).padStart(2,'0')+'</small><h2>'+esc(config.itemTitle(item))+'</h2></div><div class="view-actions"><button class="button" data-action="duplicate">Duplicate</button></div></div>'+resultIdentityWarning(item)+
+      '<p class="editor-guidance">'+(isResult?'Pick the race, build the finish order, then award bonuses. Your draft saves as you go.':'One section at a time. Edits save automatically.')+'</p>'+
+      (isResult?resultNavigation(groups):'<nav class="editor-steps" aria-label="Entry sections">'+groups.map(function(g,i){return '<button type="button" data-step="'+i+'" '+(i===state.step?'aria-current="step"':'')+'>'+(i+1)+'. '+esc(g[0])+'</button>';}).join('')+'</nav>')+
+      '<section aria-label="'+esc(group[0])+'"><h3 class="step-heading" tabindex="-1">'+esc(isResult&&state.step===5?'Awards & review':group[0])+'</h3>'+body+'</section>'+
+      '<div class="step-actions"><button class="button ghost" data-step="'+back+'" '+(!state.step?'disabled':'')+'>← Back</button><span>'+(isResult?'Saved as a draft':'Section '+(state.step+1)+' of '+groups.length)+'</span>'+(final?'<button class="button" data-action="'+(isResult?'publish':'preview')+'">'+(isResult?'Review & publish':'Preview changes')+'</button>':'<button class="button" data-step="'+next+'">'+(isResult&&state.step===0?'Enter finish order →':isResult&&state.step===4?'Assign bonuses →':'Next →')+'</button>')+'</div>'+
+      '<footer class="editor-footer"><div class="shift-tools">'+(config.shifts?'<button class="button ghost" data-shift="-7">← Shift 1 week</button><button class="button ghost" data-shift="7">Shift 1 week →</button>':'')+'</div><button class="button danger" data-action="delete">Delete entry</button></footer>';
+  }
+
+  function addSelectedFinishers() {
+    var record=structuredItem(),drivers=seriesDriverPool(record.division,null,record),selected=Array.from(view.querySelectorAll('[data-finisher-choice]:checked')).map(function(input){return input.value;});
+    if(!selected.length){toast('Select the drivers who raced.');return;}
+    selected.forEach(function(key){var driver=drivers.find(function(d){return d.key===key;});if(!driver)return;var row=structuredTemplate('finishes',record.finishes);row.position=Math.max(0,...record.finishes.map(function(r){return Number(r.position)||0;}))+1;row.name=driver.name;row.username=driver.user;row.number=driver.number;record.finishes.push(row);});
+    recalculateResult(record);changed();render();toast('Drivers added. Use the arrows to set their finish order.');
+  }
+  function moveFinisher(button) {
+    var record=structuredItem(),from=Number(button.dataset.moveFinish),to=from+Number(button.dataset.direction);
+    if(to<0||to>=record.finishes.length)return;
+    var row=record.finishes.splice(from,1)[0];record.finishes.splice(to,0,row);
+    record.finishes.forEach(function(finish,index){finish.position=index+1;});recalculateResult(record);changed();render();
+    var moved=view.querySelector('[data-move-finish="'+to+'"][data-direction="'+button.dataset.direction+'"]');if(moved){if(moved.disabled)moved=moved.closest('.entry-card').querySelector('.finish-order-controls button:not(:disabled)')||moved.closest('summary');moved.focus();}
   }
 
   // Compact row editors keep even a full roster or classification manageable.
@@ -493,6 +543,7 @@
       var field=row.closest('.structured-field'), key=state.section+':'+state.selected+':'+state.step+':'+index;
       var details=document.createElement('details'), summary=document.createElement('summary');
       details.className='entry-card'; details.open=Boolean(rowOpen[key]);
+      var summaryLabel=document.createElement('span');summary.append(summaryLabel);
       function updateSummary() {
         var inputs=Array.from(row.querySelectorAll('input:not([type="checkbox"]), select'));
         var text=inputs.filter(function(input){return !input.readOnly && input.value;}).slice(0,3).map(function(input){return input.tagName==='SELECT'?input.selectedOptions[0].textContent:input.value;}).join(' · ');
@@ -501,9 +552,14 @@
           function value(key) { var input=row.querySelector('[data-skey="'+key+'"]'); return input ? input.value : ''; }
           text=[value('number')&&'#'+value('number'),window.UARLData.driverName({name:value('name'),user:value('user')},state.data.drivers.profiles),value('status')].filter(Boolean).join(' · ');
         }
-        summary.textContent=text || 'New entry — tap to fill in';
+        var finish=row.querySelector('[data-sfield="finishes"][data-skey="position"]');
+        if(finish){var select=row.querySelector('[data-driver-select]'),selected=select&&select.selectedOptions[0],car=row.querySelector('[data-auto-number]'),points=row.querySelector('[data-auto-points]');text='P'+finish.value+' · '+(car&&car.value?'#'+car.value+' · ':'')+(selected&&selected.dataset.name||'Choose driver')+(points?' · '+points.value+' pts':'');}
+        summaryLabel.textContent=text || 'New entry — tap to fill in';
       }
-      updateSummary(); row.addEventListener('input',function(){queueMicrotask(updateSummary);});
+      updateSummary();
+      var position=row.querySelector('[data-sfield="finishes"][data-skey="position"]');
+      if(position){var rowIndex=position.dataset.srow;var controls=document.createElement('span');controls.className='finish-order-controls';controls.innerHTML='<button type="button" data-move-finish="'+rowIndex+'" data-direction="-1" aria-label="Move finisher up" '+(rowIndex==='0'?'disabled':'')+'>↑</button><button type="button" data-move-finish="'+rowIndex+'" data-direction="1" aria-label="Move finisher down" '+(Number(rowIndex)===structuredItem().finishes.length-1?'disabled':'')+'>↓</button>';summary.append(controls);}
+      row.addEventListener('input',function(){queueMicrotask(updateSummary);});
       details.addEventListener('toggle',function(){rowOpen[key]=details.open;});
       row.replaceWith(details); details.append(summary,row);
       if (state.openNewRow) {
@@ -579,7 +635,7 @@
     if(type==="roster")return {number:"",user:"",name:"",status:"Full-Time",seatType:"",charterType:"",signedAt:"",recent:false};
     if(type==="classification")return {position:(array.length+1),number:"",name:""};
     if(type==="finishes")return {position:(array.length+1),number:"",name:"",resultStatus:"Finish",pointsEligible:true,points:0,stagePoints:0,bonusPoints:0,totalPoints:0};
-    if(type==="bonuses")return {name:"Most laps led",driver:"",number:"",points:0,lapsLed:0,totalLaps:0};
+    if(type==="bonuses")return {name:"Most laps led",driver:"",number:"",points:0};
     if(type==="tags")return "";
     if(type==="winnerTotals"||type==="pair")return ["",0];
     if(type==="stages")return {name:"Stage "+(array.length+1),results:[]};
@@ -592,10 +648,24 @@
   function updateStructured(input) {
     var item=structuredItem(),root=item[input.dataset.sfield],row=Number(input.dataset.srow),target;
     if(input.dataset.sparent!=null)target=root[Number(input.dataset.sparent)][input.dataset.scollection][row];else target=root[row];
-    var value=input.dataset.stype==="bool"?input.checked:input.dataset.stype==="number"?(input.value===""?null:Number(input.value)):input.value;
-    if(target==null||typeof target!=="object")root[row]=value;else {var selected=input.options&&input.selectedIndex>=0?input.options[input.selectedIndex]:null,selectedUser=selected&&selected.dataset.user||"";target[Array.isArray(target)?Number(input.dataset.skey):input.dataset.skey]=value;if(input.tagName==="SELECT"&&(input.dataset.skey==="name"||input.dataset.skey==="driver")){target.number=seriesDriverNumber(value,selectedUser);if(input.dataset.skey==="driver")target.driverUsername=selectedUser;else target.username=selectedUser;var numberInput=input.closest(".builder-row")&&input.closest(".builder-row").querySelector("[data-auto-number]");if(numberInput)numberInput.value=target.number;}}
-    if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();
+    var value=input.dataset.stype==='bool'?input.checked:input.dataset.stype==='number'?(input.value===''?null:Number(input.value)):input.value;
+    if(target==null||typeof target!=='object')root[row]=value;
+    else if(input.hasAttribute('data-driver-select')) {
+      var chosen=input.options[input.selectedIndex],nameKey=input.dataset.skey,userKey=nameKey==='driver'?'driverUsername':'username';
+      var base=nameKey==='driver'?window.UARLResultDrivers.bonusPool(state.data,item):seriesDriverPool(item.division,null,item);
+      var previous=window.UARLResultDrivers.resolve(base,target[nameKey],target[userKey],target.number);
+      var same=previous&&previous.key===input.value,hadDriver=Boolean(target[nameKey]||target[userKey]);
+      if(!same&&(!target.numberManual||hadDriver)||nameKey==='driver'){target.number=chosen&&chosen.dataset.number||'';delete target.numberManual;}
+      target[nameKey]=chosen&&chosen.dataset.name||'';
+      target[userKey]=chosen&&chosen.dataset.user|| (same?target[userKey]:'');
+      var numberInput=input.closest('.builder-row').querySelector('[data-auto-number]');if(numberInput)numberInput.value=target.number||'';
+    } else {
+      target[Array.isArray(target)?Number(input.dataset.skey):input.dataset.skey]=value;
+      if(state.section==='results'&&input.dataset.skey==='number')target.numberManual=true;
+    }
+    if(state.section==='results'){recalculateResult(item);syncResultPoints(item);}changed();
   }
+
   function addItem() { var pair=currentConfigAndItems(); var item=pair.config.template(); if(state.section==="results"){var next=nextUnrecordedRace();if(next)applyScheduledRace(item,next);} state.step=0; pair.items.push(item); commitItems(pair.items); state.selected=pair.items.length-1; state.query=""; changed(); render(); }
   function deleteItem() { var pair=currentConfigAndItems(); if(!pair.items[state.selected]||!confirm("Delete this entry? This can be undone by reloading the published data."))return; pair.items.splice(state.selected,1); commitItems(pair.items); state.selected=Math.max(0,state.selected-1); changed(); render(); }
   function duplicateItem() { var pair=currentConfigAndItems(); var copy=clone(pair.items[state.selected]); if(copy.id)copy.id=copy.id+"-copy-"+Date.now();if(state.section==="results")delete copy.scheduleEventId; pair.items.splice(state.selected+1,0,copy); commitItems(pair.items); state.selected+=1; changed(); render(); }
@@ -609,12 +679,20 @@
   function exportData() { var blob=new Blob([JSON.stringify(state.data,null,2)+"\n"],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="uarl-data-backup-"+dateOnly(new Date())+".json";a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000); }
   function preview() { localStorage.setItem(window.UARLData.previewKey,JSON.stringify(state.data)); var route={schedule:"/schedule/",results:"/race-center/",teams:"/drivers/",profiles:"/drivers/",open:"/drivers/",freeAgents:"/drivers/",moves:"/drivers/",paints:"/paint-schemes/",history:"/history/",guide:"/competition-guide/"}[state.section]||"/"; window.open(route+"?preview=admin","_blank","noopener"); }
 
+  function validRaceAwards() {
+    var issues=window.UARLResultDrivers.bonusIssues(state.data);
+    if(!issues.length)return true;
+    var issue=issues[0],record=state.data.records[issue.recordIndex];
+    toast((record.event||record.name||'Race')+': '+issue.message,true);return false;
+  }
   function openPublish() {
+    if(!validRaceAwards())return;
     if(pendingImageUploads){toast("Wait for image uploads to finish before publishing.",true);return;}
     document.querySelector("[data-publish-summary]").innerHTML='<b>'+countChanges()+' changed entr'+(countChanges()===1?'y':'ies')+'</b><br>'+state.data.events.length+' events · '+state.data.records.length+' records · '+state.data.drivers.teams.length+' teams · '+state.data.paints.length+' paints';
     publishDialog.showModal();
   }
   async function publish() {
+    if(!validRaceAwards())return;
     if(pendingImageUploads){toast("Wait for image uploads to finish before publishing.",true);return;}
     var note=document.querySelector("[data-publish-note]").value;var button=document.querySelector("[data-confirm-publish]");
     button.disabled=true;button.textContent="Publishing…";
@@ -624,6 +702,9 @@
 
   document.addEventListener("click",function(event){
     if(event.target.closest("[data-close-publish]")){publishDialog.close();return;}
+    if(event.target.closest('[data-start-race]')){state.section='results';state.selected=0;state.step=0;addItem();return;}
+    var move=event.target.closest('[data-move-finish]');if(move){event.preventDefault();moveFinisher(move);return;}
+    if(event.target.closest('[data-add-finishers]')){addSelectedFinishers();return;}
     var clearImage=event.target.closest('[data-image-clear]');if(clearImage){var pair=currentConfigAndItems();delete imageTarget(clearImage,pair.items)[clearImage.dataset.imageKey];commitItems(pair.items);changed();render();return;}
     var structuredAdd=event.target.closest("[data-sadd]");if(structuredAdd){addStructured(structuredAdd);return;}
     var nestedAdd=event.target.closest("[data-snadd]");if(nestedAdd){addNestedStructured(nestedAdd);return;}
@@ -639,11 +720,12 @@
     var shift=event.target.closest("[data-shift]");if(shift){shiftEvent(shift.dataset.shift);}
   });
   document.addEventListener("input",function(event){
+    if(event.target.matches('[data-finish-search]')){var query=event.target.value.trim().toLowerCase();view.querySelectorAll('[data-participant]').forEach(function(label){label.hidden=!label.textContent.toLowerCase().includes(query);});return;}
     if(event.target.matches("[data-list-search]")){state.query=event.target.value;renderCollection(state.section);var input=document.querySelector("[data-list-search]");input.focus();input.setSelectionRange(input.value.length,input.value.length);return;}
     if(event.target.matches("[data-sfield]")){updateStructured(event.target);return;}
     if(!event.target.matches("[data-field]"))return;var pair=currentConfigAndItems(),item=pair.items[state.selected],field=event.target.dataset.field,type=event.target.dataset.type,value;
     if(type==="bool")value=event.target.checked;else if(type==="number")value=event.target.value===""?null:Number(event.target.value);else if(type==="datetime")value=fromLocal(event.target.value);else if(type==="json"){try{value=JSON.parse(event.target.value);event.target.style.borderColor="";}catch(error){event.target.style.borderColor="var(--red)";return;}}else value=event.target.value;
-    if(state.section==="results"&&(field==="winner"||field==="pole")){var selected=event.target.options&&event.target.options[event.target.selectedIndex];item[field+"Username"]=selected&&selected.dataset.user||"";value=selected&&selected.dataset.name||value;}
+    if(state.section==="results"&&(field==="winner"||field==="pole")){if(field==="winner")item.winnerAutomatic=false;var selected=event.target.options&&event.target.options[event.target.selectedIndex];item[field+"Username"]=selected&&selected.dataset.user||"";value=selected&&selected.dataset.name||value;}
     item[field]=value;commitItems(pair.items);if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();if(state.section==="results"&&field==="division")render();
   });
   document.addEventListener("change",function(event){if(event.target.matches("[data-image-upload]")){uploadDriverImage(event.target);return;}if(event.target.matches('[data-schedule-race]')){var record=structuredItem(),id=event.target.value;if(!id){delete record.scheduleEventId;record.id='result-'+Date.now();changed();return;}var scheduled=state.data.events.find(function(e){return e.id===id;});if(!scheduled)return;if(['entries','qualifying','stages','finishes','bonuses'].some(function(key){return (record[key]||[]).length;})&&!confirm('Change the linked race and clear its classifications? This prevents carrying results into another race.')){render();return;}['entries','qualifying','stages','finishes','bonuses'].forEach(function(key){record[key]=[];});['winner','winnerUsername','pole','poleUsername'].forEach(function(key){delete record[key];});applyScheduledRace(record,scheduled);changed();render();return;}if(event.target.matches("[data-mobile-section]")){state.section=event.target.value;state.step=0;state.selected=0;state.query="";render();}if(event.target.matches("[data-import]")){var file=event.target.files[0];if(!file)return;file.text().then(function(text){state.data=window.UARLData.normalize(JSON.parse(text));changed();render();toast("Backup imported into the draft.");}).catch(function(error){toast("Could not import: "+error.message,true);});}});
