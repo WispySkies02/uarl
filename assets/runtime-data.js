@@ -107,16 +107,16 @@
     }
     function recordCandidates(record){
       var candidates=data.race.drivers.filter(function(driver){return driver.division===record.division;}).map(function(driver){return {id:driver.id,user:driver.id,name:driver.name,number:String(driver.number||"")};});
-      (record.entries||[]).forEach(function(entry){var id=guestIdentity(record,entry);candidates.push({id:id,user:entry.user||"",name:entry.name||entry.user||("Car #"+entry.number),number:String(entry.number||"")});});
+      (record.entries||[]).forEach(function(entry){var id=guestIdentity(record,entry);var participant={id:id,user:entry.user||"",name:entry.name||entry.user||("Car #"+entry.number),number:String(entry.number||"")};var existing=candidates.findIndex(function(driver){return identityKey(driver.id)===identityKey(id);});if(existing>=0)candidates[existing]=participant;else candidates.push(participant);});
       return candidates;
     }
     function resolveParticipant(record,row,nameField,idField){
       if(!row||typeof row!=="object")return;
       var candidates=recordCandidates(record),id=identityKey(row[idField]||row.username||row.user||row.driverId),name=identityKey(row[nameField]),number=String(row.number||"");
       var match=id&&candidates.find(function(driver){return identityKey(driver.id)===id||identityKey(driver.user)===id;});
-      if(!match&&name)match=candidates.find(function(driver){return identityKey(driver.name)===name||identityKey(driver.user)===name||identityKey(driver.id)===name;});
-      if(!match&&!name&&number)match=candidates.find(function(driver){return driver.number===number;});
-      if(match){row[idField]=match.id;row[nameField]=match.name;row.number=row.number||match.number;}
+      if(!match&&(!id||/^guest:/.test(id))&&name){var named=candidates.filter(function(driver){return identityKey(driver.name)===name||identityKey(driver.user)===name||identityKey(driver.id)===name;});if(named.length===1)match=named[0];}
+      if(!match&&!id&&!name&&number){var numbered=candidates.filter(function(driver){return driver.number===number;});if(numbered.length===1)match=numbered[0];}
+      if(match){row[idField]=match.id;row[nameField]=match.name;row.number=row.numberManual===true?String(row.number==null?"":row.number):row.number||match.number;}
       else if(!row[idField]){var fallback=String(row[nameField]||row.number||"unknown").toLowerCase().replace(/[^a-z0-9]+/g,"-");row[idField]="guest:"+(record.division||"series")+":"+fallback;}
       if(!row[nameField])row[nameField]=row.user||row.username||row.driverId||("Car #"+(row.number||"—"));
     }

@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import "../../assets/result-drivers.js";
 
 const STORE_NAME = "uarl-race-control";
 const DATA_KEY = "website-data";
@@ -114,6 +115,10 @@ function raceControlChangeOnly(nextData, currentData) {
     return copy;
   };
   return JSON.stringify(strip(nextData)) === JSON.stringify(strip(currentData));
+}
+
+export function validateRaceBonuses(data) {
+  return globalThis.UARLResultDrivers.bonusIssues(data);
 }
 
 const IMAGE_LIMIT = 2 * 1024 * 1024;
@@ -255,6 +260,11 @@ export default async (request) => {
     }
 
     if (!validPayload(payload.data)) return json(422, { error: "The UARL dataset is incomplete or invalid." });
+    const awardIssues = validateRaceBonuses(payload.data);
+    if (awardIssues.length) {
+      const issue = awardIssues[0], race = payload.data.records[issue.recordIndex];
+      return json(422, { error: `${race.event || race.name || "Race"}: ${issue.message}` });
+    }
     const current = await store.get(DATA_KEY, { type: "json", consistency: "strong" });
     if (user.role === "race_control" && !raceControlChangeOnly(payload.data, current && current.data)) {
       return json(403, { error: "Race Control accounts can publish schedule and results changes only." });

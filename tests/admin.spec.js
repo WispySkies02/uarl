@@ -12,6 +12,7 @@ async function admin(page, role = 'owner') {
 }
 const section = (page, name) => page.locator('.admin-sidebar [data-section="'+name+'"]');
 const step = (page, n) => page.locator('.editor-steps [data-step="'+n+'"]');
+async function goStep(page,n){const button=step(page,n);if(!await button.isVisible())await page.locator('[data-result-details]>summary').click();await button.click();}
 const draft = page => page.evaluate(() => JSON.parse(localStorage.getItem('uarl-admin-draft-v1')));
 
 test('schedule-linked results choose the next unrecorded race and preserve data through steps', async ({page}) => {
@@ -22,7 +23,7 @@ test('schedule-linked results choose the next unrecorded race and preserve data 
   let current=(await draft(page)).records.at(-1);
   expect(current).toMatchObject({id:next.id,event:next.name,track:next.track,division:next.division});
   await expect(page.locator('[data-schedule-race] option[value="'+data.records[0].id+'"]')).toHaveAttribute('disabled','');
-  await step(page,4).click();
+  await goStep(page,4);
   await page.locator('[data-sadd="finishes"]').click();
   await expect(page.locator('.entry-card').last()).toHaveAttribute('open','');
   const driver=page.locator('[data-sfield="finishes"][data-skey="name"]');
@@ -30,9 +31,9 @@ test('schedule-linked results choose the next unrecorded race and preserve data 
   await expect(page.locator('[data-auto-number]')).not.toHaveValue('');
   await expect(page.locator('[data-auto-points="0"]')).not.toHaveValue('0');
   const saved=(await draft(page)).records.at(-1).finishes[0];
-  await step(page,0).click(); await step(page,4).click();
+  await goStep(page,0); await goStep(page,4);
   expect((await draft(page)).records.at(-1).finishes[0]).toEqual(saved);
-  await step(page,0).click();
+  await goStep(page,0);
   page.once('dialog',d=>d.dismiss());
   await page.locator('[data-schedule-race]').selectOption(data.events.find(e=>e.id!==next.id&&!data.records.some(r=>r.id===e.id)).id);
   await expect(page.locator('[data-schedule-race]')).toHaveValue(next.id);
@@ -57,7 +58,7 @@ test('every collection exposes every field through short sections without edits 
   for(const name of ['schedule','results','teams','profiles','open','freeAgents','moves','paints','history','guide','conduct']) {
     await section(page,name).click();
     const steps=page.locator('.editor-steps button');
-    for(let i=0;i<await steps.count();i++) {await step(page,i).click();}
+    for(let i=0;i<await steps.count();i++) {await goStep(page,i);}
   }
   await section(page,'teams').click();await page.locator('[data-field="name"]').press('End');
   // A no-op input after viewing every panel must remain clean.
@@ -70,7 +71,7 @@ test('mobile bottom navigation and compact roster editing respect roles', async 
   await expect(page.locator('.admin-bottom-nav')).toBeVisible();
   await page.locator('[data-admin-more]').click();await page.locator('[data-admin-menu] [data-section="teams"]').click();
   await expect(page.locator('[data-admin-menu]')).not.toBeVisible();
-  await step(page,2).click();
+  await goStep(page,2);
   await expect(page.locator('.entry-card').first()).not.toHaveAttribute('open','');
   await page.locator('.entry-card>summary').first().click();
   await expect(page.locator('[data-sfield="entries"][data-skey="user"]').first()).toBeVisible();
@@ -115,13 +116,13 @@ test('public mobile navigation opens all pages and stays hidden on desktop', asy
 test('stage rows open when added and points survive a race switch only after confirmation', async ({page}) => {
   await admin(page);await section(page,'results').click();
   await page.locator('.view-head [data-action="add"]').click();
-  await step(page,3).click();await page.locator('[data-sadd="stages"]').click();
+  await goStep(page,3);await page.locator('[data-sadd="stages"]').click();
   await expect(page.locator('.entry-card').first()).toHaveAttribute('open','');
   await page.locator('[data-snadd="stages"]').click();
   const driver=page.locator('[data-sfield="stages"][data-skey="name"][data-sparent="0"]');
   await expect(driver).toBeVisible();await driver.selectOption({index:1});
   const id=(await draft(page)).records.at(-1).id;
-  await step(page,0).click();page.once('dialog',d=>d.accept());
+  await goStep(page,0);page.once('dialog',d=>d.accept());
   const next=data.events.find(e=>e.id!==id&&!data.records.some(r=>r.id===e.id));
   await page.locator('[data-schedule-race]').selectOption(next.id);
   const result=(await draft(page)).records.at(-1);
