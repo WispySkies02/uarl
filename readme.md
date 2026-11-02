@@ -155,3 +155,12 @@ Edition 28
 - Points standings show the canonical Roblox username in small blue text beneath each driver's display name.
 - Team names remain visible on a separate line for quick identification.
 - Internal guest identity keys stay hidden until an actual Roblox username is entered.
+
+
+## Local development and browser checks
+
+Use Node 22.12.0 (the Netlify runtime pin), run `npm ci`, and start the site with Netlify CLI. For isolated local editing without a linked production site, use `netlify dev --offline --no-open --skip-gitignore --framework '#static' --internal-disable-edge-functions`. Provide a locally generated `UARL_ADMIN_KEY` to test Owner setup; never use a production key. Local account/content writes use the Netlify Blob sandbox.
+
+Run `npx playwright install chromium` once, then `npm test`. Tests start a local Python 3 static server and intercept the admin API, so they cannot publish content or create production accounts. To use an existing browser, set `PLAYWRIGHT_EXECUTABLE_PATH=/path/to/chromium`. The suite covers schedule selection, classifications and automatic points, draft recovery and counting, form sections, and mobile navigation/permissions.
+
+Admin entry forms now use sections and expandable row cards. Adding a result selects the earliest scheduled event without a result, including overdue races still awaiting entry. The scheduled-race dropdown fills race metadata; switching races asks before discarding classifications. Change totals count entries changed from published content, rather than letters typed; reverting an entry removes its change. Public and admin mobile layouts include bottom navigation, with remaining pages in More. Desktop keeps the existing navigation.

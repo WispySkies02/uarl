@@ -2,7 +2,7 @@
   "use strict";
 
   var DRAFT_KEY = "uarl-admin-draft-v1";
-  var state = { data: null, original: null, section: "dashboard", selected: 0, query: "", dirty: false, changes: 0, user: null, authMode: "login" };
+  var state = { data: null, original: null, section: "dashboard", selected: 0, step: 0, query: "", dirty: false, changes: 0, user: null, authMode: "login" };
   var view = document.querySelector("[data-admin-view]");
   var toastNode = document.querySelector("[data-toast]");
   var statusNode = document.querySelector("[data-save-status]");
@@ -82,7 +82,46 @@
   function toLocal(value) { if (!value) return ""; var d = new Date(value); if (Number.isNaN(d.getTime())) return value; var p = function (n) { return String(n).padStart(2,"0"); }; return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate())+"T"+p(d.getHours())+":"+p(d.getMinutes()); }
   function fromLocal(value) { if (!value) return ""; var d = new Date(value); return Number.isNaN(d.getTime()) ? value : d.toISOString(); }
   function profileName(user) { var p = state.data && state.data.drivers && state.data.drivers.profiles && state.data.drivers.profiles[user]; return p && p.alias; }
-  function countChanges() { return state.changes || (state.dirty ? 1 : 0); }
+  // Count changed entries against the published snapshot, not input events.
+  // Stable IDs count each added, removed or edited entry once. Unkeyed rows
+  // use multiset matching so deleting a row does not mark every later row changed.
+  function entryChanges(before, after) {
+    if (JSON.stringify(before) === JSON.stringify(after)) return 0;
+    if (Array.isArray(before) && Array.isArray(after)) {
+      var all=before.concat(after);
+      if(all.length && all.every(function(item){return item && item.id;}) && new Set(before.map(function(item){return item.id;})).size===before.length && new Set(after.map(function(item){return item.id;})).size===after.length) {
+        var a=new Map(before.map(function(item){return [item.id,item];})), b=new Map(after.map(function(item){return [item.id,item];}));
+        return Array.from(new Set(Array.from(a.keys()).concat(Array.from(b.keys())))).reduce(function(sum,id){return sum+(JSON.stringify(a.get(id))!==JSON.stringify(b.get(id))?1:0);},0) || 1;
+      }
+      var remaining = before.map(function (item) { return JSON.stringify(item); }), added = 0;
+      after.forEach(function (item) { var index = remaining.indexOf(JSON.stringify(item)); if (index < 0) added++; else remaining.splice(index, 1); });
+      return Math.max(remaining.length, added, 1);
+    }
+    if (before && after && typeof before === "object" && typeof after === "object") {
+      return Array.from(new Set(Object.keys(before).concat(Object.keys(after)))).reduce(function (sum, key) { return sum + entryChanges(before[key], after[key]); }, 0);
+    }
+    return 1;
+  }
+  function countChanges() {
+    if (!state.original || !state.data) return 0;
+    var total = 0;
+    Object.keys(state.data).concat(Object.keys(state.original)).filter(function (key, index, keys) { return keys.indexOf(key) === index; }).forEach(function (key) {
+      if (key === "drivers") {
+        var before = state.original.drivers || {}, after = state.data.drivers || {};
+        Array.from(new Set(Object.keys(before).concat(Object.keys(after)))).forEach(function (field) {
+          if (field === "profiles") {
+            var a = before.profiles || {}, b = after.profiles || {};
+            Array.from(new Set(Object.keys(a).concat(Object.keys(b)))).forEach(function (user) { if (JSON.stringify(a[user]) !== JSON.stringify(b[user])) total++; });
+          } else total += entryChanges(before[field], after[field]);
+        });
+      } else if (key === "race") {
+        var a=clone(state.original.race||{}), b=clone(state.data.race||{});
+        delete a.drivers; delete b.drivers; delete a.schedule; delete b.schedule;
+        total += entryChanges(a,b);
+      } else total += entryChanges(state.original[key], state.data[key]);
+    });
+    return total;
+  }
 
   function setStatus(text, mode) {
     statusNode.textContent = text;
@@ -125,6 +164,7 @@
     if(state.user.role==="owner")labels.accounts="Staff accounts";
     if(!Object.prototype.hasOwnProperty.call(labels,state.section))state.section="dashboard";
     var picker=document.querySelector("[data-mobile-section]");
+    var menu=document.querySelector('[data-admin-menu-items]');if(menu)menu.innerHTML=Object.keys(labels).map(function(key){return '<button type="button" data-section="'+key+'">'+labels[key]+'</button>';}).join('');
     if(picker){picker.innerHTML=Object.keys(labels).map(function(key){return '<option value="'+key+'">'+labels[key]+'</option>';}).join("");picker.value=state.section;}
   }
   async function checkSession() {
@@ -159,9 +199,9 @@
     showLogin("You have been signed out.", false);
   }
   function changed() {
-    state.dirty = true; state.changes += 1;
+    state.changes = countChanges(); state.dirty = state.changes > 0;
     localStorage.setItem(DRAFT_KEY, JSON.stringify(state.data));
-    setStatus("Draft saved · " + countChanges() + " change" + (countChanges() === 1 ? "" : "s") + " not published", "dirty");
+    setStatus(state.dirty ? "Draft saved · " + state.changes + " changed entr" + (state.changes === 1 ? "y" : "ies") + " not published" : "No unpublished changes", state.dirty ? "dirty" : "ready");
   }
 
   function renderHeader(config) {
@@ -196,7 +236,8 @@
     var rows = filtered.map(function (pair) { return '<button class="item-row' + (pair.index === state.selected ? ' is-active' : '') + '" data-select="' + pair.index + '"><strong>' + esc(config.itemTitle(pair.item)) + '</strong><span>' + esc(config.itemMeta(pair.item)) + '</span></button>'; }).join("");
     var current = items[state.selected];
     if(section==="results"&&current)recalculateResult(current);
-    view.innerHTML = renderHeader(config) + '<div class="editor-layout"><section class="item-list"><div class="list-tools"><input type="search" data-list-search value="' + esc(state.query) + '" placeholder="Search this section"><button type="button" data-action="add" aria-label="Add new">+</button></div><div class="list-scroll">' + (rows || '<div class="editor-empty">No entries yet.<br>Add the first one.</div>') + '</div></section><section class="editor-panel">' + (current ? renderEditor(config,current,state.selected) : '<div class="editor-empty">Select or add an entry.</div>') + '</section></div>';
+    view.innerHTML = renderHeader(config) + '<div class="editor-layout"><details class="item-list item-picker" '+(window.matchMedia('(min-width:761px)').matches||state.query?'open':'')+'><summary>Switch entry · '+esc(current?config.itemTitle(current):'Choose an entry')+'</summary><div class="list-tools"><input type="search" data-list-search value="' + esc(state.query) + '" placeholder="Search this section"><button type="button" data-action="add" aria-label="Add new">+</button></div><div class="list-scroll">' + (rows || '<div class="editor-empty">No entries yet.<br>Add the first one.</div>') + '</div></details><section class="editor-panel">' + (current ? renderEditor(config,current,state.selected) : '<div class="editor-empty">Select or add an entry.</div>') + '</section></div>';
+    enhanceRows();
   }
 
   function optionList(values,current) {
@@ -302,7 +343,7 @@
     return '<div class="builder-row"><div class="builder-grid pair-grid"><label>Driver'+dataInput(field,row,"0",pair[0],"text",parent,collection,listId)+'</label><label>Wins'+dataInput(field,row,"1",pair[1],"number",parent,collection)+'</label></div>'+removeButton(field,row,parent,collection)+'</div>';
   }
   function renderStructuredField(key,label,type,item) {
-    var value=Array.isArray(item[key])?item[key]:(item[key]=[]),listId='driver-list-'+key+'-'+state.selected;
+    var value=Array.isArray(item[key])?item[key]:[],listId='driver-list-'+key+'-'+state.selected;
     var suggestions='<datalist id="'+listId+'">'+driverSuggestions().map(function(name){return '<option value="'+esc(name)+'">';}).join("")+'</datalist>',rows="",addLabel="Add row",help="";
     if(type==="eventEntries"){
       help="Use this for a verified substitute or one-off entrant who is not on the series roster. A Roblox username is required to keep standings and stage points attached to the correct driver.";addLabel="Add event-only driver";rows=value.map(function(entry,index){return '<div class="builder-row"><div class="builder-grid roster-grid"><label>Car #'+dataInput(key,index,"number",entry.number)+'</label><label>Driver name'+dataInput(key,index,"name",entry.name)+'</label><label>Roblox username'+dataInput(key,index,"user",entry.user)+'</label><label class="builder-check">'+dataInput(key,index,"pointsEligible",entry.pointsEligible!==false,"bool")+' Points eligible</label></div>'+removeButton(key,index)+'</div>';}).join("");
@@ -351,8 +392,74 @@
     return '<div class="warning"><b>Roblox username needed:</b> '+Array.from(missing.values()).map(esc).join(", ")+'. Add it in Teams + Charters for a rostered driver, or Event-only drivers for a guest. This prevents split standings and makes stage points follow the correct driver.</div>';
   }
 
+  var editorGroups = {
+    results: [ ["Race", ["id","division","event","date","start","track","round","laps","status","eventType","pointsEvent","exhibition"]], ["Guest drivers", ["entries"]], ["Qualifying", ["pole","qualifying"]], ["Stages", ["stages"]], ["Finish", ["winner","finishes"]], ["Bonuses", ["bonuses"]], ["Notes", ["pointsSummary","pointsNote","recordNote"]] ],
+    teams: [ ["Team", ["id","name","owner","ownerNote","make","founded","note"]], ["Branding", ["logo","brandColor","brandColor2"]], ["Charters", ["charterCount","entries"]], ["Pending drivers", ["pendingDrivers"]] ],
+    schedule: [ ["Event", ["id","division","series","name","track","round","laps"]], ["Date + status", ["date","start","scheduleStatus","scheduleNote","completed"]], ["Race format", ["exhibition","pointsEvent","crownJewel","chase","special"]], ["Original date", ["originalDate","originalStart"]] ]
+  };
+  function groupsFor(config) {
+    if (editorGroups[state.section]) return editorGroups[state.section];
+    var groups = [], batch = [];
+    config.fields.forEach(function (field) {
+      if (["eventEntries","roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(field[2])) {
+        if (batch.length) { groups.push([groups.length ? "More details" : "Overview", batch]); batch = []; }
+        groups.push([field[1], [field[0]]]);
+      } else {
+        batch.push(field[0]);
+        if (batch.length === 4) { groups.push([groups.length ? field[1] + " + details" : "Overview", batch]); batch = []; }
+      }
+    });
+    if (batch.length) groups.push([groups.length ? "More details" : "Overview", batch]);
+    return groups;
+  }
+  function scheduleOptions(record) {
+    return '<label class="field wide schedule-link"><span>Scheduled race</span><select data-schedule-race><option value="">Unlinked / custom event</option>' + state.data.events.slice().sort(function(a,b){return new Date(a.start||a.date)-new Date(b.start||b.date);}).map(function(event){
+      var taken=state.data.records.some(function(r){return r!==record && (r.id===event.id || r.scheduleEventId===event.id);});
+      return '<option value="'+esc(event.id)+'" '+(record.id===event.id||record.scheduleEventId===event.id?'selected ':'')+(taken?'disabled':'')+'>'+esc(String(event.division).toUpperCase()+' · '+event.date+' · '+event.name+(taken?' (result exists)':''))+'</option>';
+    }).join('')+'</select><small>Choosing a race fills its details and keeps the result linked to the schedule.</small></label>';
+  }
+  function applyScheduledRace(record, event) {
+    ["division","date","start","track","round","laps","pointsEvent","exhibition","series","scheduleStatus"].forEach(function(key){ if (event[key] !== undefined) record[key]=clone(event[key]); else delete record[key]; });
+    record.id=event.id; record.scheduleEventId=event.id; record.event=event.name;
+    record.eventType=event.exhibition ? "Exhibition" : "Points race";
+  }
+  function nextUnrecordedRace() {
+    return state.data.events.filter(function(event){return event.scheduleStatus!=="cancelled" && !state.data.records.some(function(record){return record.id===event.id || record.scheduleEventId===event.id;});}).sort(function(a,b){return new Date(a.start||a.date)-new Date(b.start||b.date);})[0];
+  }
   function renderEditor(config,item,index) {
-    return '<div class="editor-title"><div><small>ENTRY ' + String(index+1).padStart(2,"0") + '</small><h2>' + esc(config.itemTitle(item)) + '</h2></div><div class="view-actions"><button class="button" data-action="duplicate">Duplicate</button></div></div>'+resultIdentityWarning(item)+'<div class="field-grid">' + config.fields.map(function(f){return renderField(f,item);}).join("") + '</div><footer class="editor-footer"><div class="shift-tools">' + (config.shifts?'<button class="button ghost" data-shift="-7">← Shift 1 week</button><button class="button ghost" data-shift="7">Shift 1 week →</button>':'') + '</div><button class="button danger" data-action="delete">Delete entry</button></footer>';
+    var groups=groupsFor(config); state.step=Math.min(state.step,groups.length-1);
+    var group=groups[state.step];
+    var fields=config.fields.filter(function(f){return group[1].includes(f[0]);}).map(function(f){return renderField(f,item);}).join('');
+    var linkedRace=state.section==='results'&&state.step===0;
+    var body=linkedRace ? '<div class="field-grid">'+scheduleOptions(item)+'</div><details class="race-details" '+(item.scheduleEventId||state.data.events.some(function(e){return e.id===item.id;})?'':'open')+'><summary>Race details · '+esc(item.event)+' · '+esc(item.date)+'</summary><p>Filled from the schedule. Expand to review or correct the details.</p><div class="field-grid">'+fields+'</div></details>' : '<div class="field-grid">'+fields+'</div>';
+    return '<div class="editor-title"><div><small>ENTRY ' + String(index+1).padStart(2,"0") + '</small><h2>' + esc(config.itemTitle(item)) + '</h2></div><div class="view-actions"><button class="button" data-action="duplicate">Duplicate</button></div></div>'+resultIdentityWarning(item)+
+      '<p class="editor-guidance">One section at a time. All fields remain available and edits save automatically. The counter tracks changed entries, not keystrokes.</p><nav class="editor-steps" aria-label="Entry sections">'+groups.map(function(g,i){return '<button type="button" data-step="'+i+'" '+(i===state.step?'aria-current="step"':'')+'>'+ (i+1)+'. '+esc(g[0])+'</button>';}).join('')+'</nav>'+
+      '<section aria-label="'+esc(group[0])+'"><h3 class="step-heading" tabindex="-1">'+esc(group[0])+'</h3>'+body+'</section>'+
+      '<div class="step-actions"><button class="button ghost" data-step="'+(state.step-1)+'" '+(!state.step?'disabled':'')+'>← Back</button><span>Section '+(state.step+1)+' of '+groups.length+'</span>'+(state.step<groups.length-1?'<button class="button" data-step="'+(state.step+1)+'">Next →</button>':'<button class="button" data-action="preview">Preview changes</button>')+'</div>'+
+      '<footer class="editor-footer"><div class="shift-tools">' + (config.shifts?'<button class="button ghost" data-shift="-7">← Shift 1 week</button><button class="button ghost" data-shift="7">Shift 1 week →</button>':'') + '</div><button class="button danger" data-action="delete">Delete entry</button></footer>';
+  }
+
+  // Compact row editors keep even a full roster or classification manageable.
+  var rowOpen = {};
+  function enhanceRows() {
+    view.querySelectorAll('.structured-list > .builder-row, .structured-list > .nested-builder, .nested-rows > .builder-row').forEach(function(row, index){
+      var field=row.closest('.structured-field'), key=state.section+':'+state.selected+':'+state.step+':'+index;
+      var details=document.createElement('details'), summary=document.createElement('summary');
+      details.className='entry-card'; details.open=Boolean(rowOpen[key]);
+      function updateSummary() {
+        var inputs=Array.from(row.querySelectorAll('input:not([type="checkbox"]), select'));
+        var text=inputs.filter(function(input){return !input.readOnly && input.value;}).slice(0,3).map(function(input){return input.tagName==='SELECT'?input.selectedOptions[0].textContent:input.value;}).join(' · ');
+        summary.textContent=text || 'New entry — tap to fill in';
+      }
+      updateSummary(); row.addEventListener('input',function(){queueMicrotask(updateSummary);});
+      details.addEventListener('toggle',function(){rowOpen[key]=details.open;});
+      row.replaceWith(details); details.append(summary,row);
+      if (state.openNewRow) {
+        var marker=row.querySelector('[data-sfield="'+state.openNewRow.field+'"][data-srow="'+state.openNewRow.row+'"]'+(state.openNewRow.parent!=null?'[data-sparent="'+state.openNewRow.parent+'"]':''));
+        if(marker)details.open=true;
+      }
+    });
+    state.openNewRow=false;
   }
 
   function renderAdvanced() {
@@ -401,8 +508,9 @@
   }
 
   function render() {
-    document.querySelectorAll("[data-section]").forEach(function (button) { button.classList.toggle("is-active",button.dataset.section===state.section); });
+    document.querySelectorAll("[data-section]").forEach(function (button) { button.classList.toggle("is-active",button.dataset.section===state.section);if(button.dataset.section===state.section)button.setAttribute("aria-current","page");else button.removeAttribute("aria-current"); });
     document.querySelector("[data-mobile-section]").value=state.section;
+    var more=document.querySelector('[data-admin-more]');more.classList.toggle('is-active',!['dashboard','schedule','results'].includes(state.section));
     if (state.section === "dashboard") renderDashboard(); else if (state.section === "advanced") renderAdvanced(); else if(state.section==="accounts")renderAccounts(); else renderCollection(state.section);
   }
 
@@ -426,8 +534,8 @@
     if(type==="seasons")return {number:array.length+1,champion:"",winners:[]};
     return {};
   }
-  function addStructured(button) { var item=structuredItem(),key=button.dataset.sadd,type=button.dataset.stype;if(!Array.isArray(item[key]))item[key]=[];item[key].push(structuredTemplate(type,item[key]));if(state.section==="results")recalculateResult(item);changed();render(); }
-  function addNestedStructured(button) { var item=structuredItem(),root=item[button.dataset.snadd],parent=root[Number(button.dataset.sparent)],collection=button.dataset.scollection;if(!Array.isArray(parent[collection]))parent[collection]=[];parent[collection].push(structuredTemplate(button.dataset.stype,parent[collection]));if(state.section==="results")recalculateResult(item);changed();render(); }
+  function addStructured(button) { var item=structuredItem(),key=button.dataset.sadd,type=button.dataset.stype;if(!Array.isArray(item[key]))item[key]=[];item[key].push(structuredTemplate(type,item[key]));state.openNewRow={field:key,row:item[key].length-1};if(state.section==="results")recalculateResult(item);changed();render(); }
+  function addNestedStructured(button) { var item=structuredItem(),root=item[button.dataset.snadd],parent=root[Number(button.dataset.sparent)],collection=button.dataset.scollection;if(!Array.isArray(parent[collection]))parent[collection]=[];parent[collection].push(structuredTemplate(button.dataset.stype,parent[collection]));state.openNewRow={field:button.dataset.snadd,parent:Number(button.dataset.sparent),row:parent[collection].length-1};if(state.section==="results")recalculateResult(item);changed();render(); }
   function removeStructured(button) { if(!confirm("Remove this row?"))return;var item=structuredItem(),root=item[button.dataset.sremove],row=Number(button.dataset.srow);if(button.dataset.sparent!=null)root=root[Number(button.dataset.sparent)][button.dataset.scollection];root.splice(row,1);if(state.section==="results")recalculateResult(item);changed();render(); }
   function updateStructured(input) {
     var item=structuredItem(),root=item[input.dataset.sfield],row=Number(input.dataset.srow),target;
@@ -436,21 +544,21 @@
     if(target==null||typeof target!=="object")root[row]=value;else {var selected=input.options&&input.selectedIndex>=0?input.options[input.selectedIndex]:null,selectedUser=selected&&selected.dataset.user||"";target[Array.isArray(target)?Number(input.dataset.skey):input.dataset.skey]=value;if(input.tagName==="SELECT"&&(input.dataset.skey==="name"||input.dataset.skey==="driver")){target.number=seriesDriverNumber(value,selectedUser);if(input.dataset.skey==="driver")target.driverUsername=selectedUser;else target.username=selectedUser;var numberInput=input.closest(".builder-row")&&input.closest(".builder-row").querySelector("[data-auto-number]");if(numberInput)numberInput.value=target.number;}}
     if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();
   }
-  function addItem() { var pair=currentConfigAndItems(); pair.items.push(pair.config.template()); commitItems(pair.items); state.selected=pair.items.length-1; state.query=""; changed(); render(); }
+  function addItem() { var pair=currentConfigAndItems(); var item=pair.config.template(); if(state.section==="results"){var next=nextUnrecordedRace();if(next)applyScheduledRace(item,next);} state.step=0; pair.items.push(item); commitItems(pair.items); state.selected=pair.items.length-1; state.query=""; changed(); render(); }
   function deleteItem() { var pair=currentConfigAndItems(); if(!pair.items[state.selected]||!confirm("Delete this entry? This can be undone by reloading the published data."))return; pair.items.splice(state.selected,1); commitItems(pair.items); state.selected=Math.max(0,state.selected-1); changed(); render(); }
-  function duplicateItem() { var pair=currentConfigAndItems(); var copy=clone(pair.items[state.selected]); if(copy.id)copy.id=copy.id+"-copy"; pair.items.splice(state.selected+1,0,copy); commitItems(pair.items); state.selected+=1; changed(); render(); }
+  function duplicateItem() { var pair=currentConfigAndItems(); var copy=clone(pair.items[state.selected]); if(copy.id)copy.id=copy.id+"-copy-"+Date.now();if(state.section==="results")delete copy.scheduleEventId; pair.items.splice(state.selected+1,0,copy); commitItems(pair.items); state.selected+=1; changed(); render(); }
   function shiftEvent(days) { var event=getPath("events")[state.selected],amount=Number(days)*86400000; ["start","originalStart"].forEach(function(k){if(event[k])event[k]=new Date(new Date(event[k]).getTime()+amount).toISOString();}); ["date","originalDate"].forEach(function(k){if(event[k])event[k]=dateOnly(new Date(new Date(event[k]+"T12:00:00").getTime()+amount));}); changed(); render(); }
 
   async function reloadPublished() {
     if(state.dirty&&!confirm("Discard the browser draft and reload the currently published data?"))return;
-    try { state.data=await window.UARLData.load(true); state.original=clone(state.data); state.dirty=false;state.changes=0;localStorage.removeItem(DRAFT_KEY);setStatus("Published data loaded","ready");render();toast("Published website data reloaded."); } catch(error){toast(error.message,true);}
+    try { state.data=await window.UARLData.load(true); (state.data.records||[]).forEach(recalculateResult);state.original=clone(state.data); state.dirty=false;state.changes=0;localStorage.removeItem(DRAFT_KEY);setStatus("Published data loaded","ready");render();toast("Published website data reloaded."); } catch(error){toast(error.message,true);}
   }
 
   function exportData() { var blob=new Blob([JSON.stringify(state.data,null,2)+"\n"],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="uarl-data-backup-"+dateOnly(new Date())+".json";a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000); }
   function preview() { localStorage.setItem(window.UARLData.previewKey,JSON.stringify(state.data)); var route={schedule:"/schedule/",results:"/race-center/",teams:"/drivers/",profiles:"/drivers/",open:"/drivers/",freeAgents:"/drivers/",moves:"/drivers/",paints:"/paint-schemes/",history:"/history/",guide:"/competition-guide/"}[state.section]||"/"; window.open(route+"?preview=admin","_blank","noopener"); }
 
   function openPublish() {
-    document.querySelector("[data-publish-summary]").innerHTML='<b>'+countChanges()+' draft change'+(countChanges()===1?'':'s')+'</b><br>'+state.data.events.length+' events · '+state.data.records.length+' records · '+state.data.drivers.teams.length+' teams · '+state.data.paints.length+' paints';
+    document.querySelector("[data-publish-summary]").innerHTML='<b>'+countChanges()+' changed entr'+(countChanges()===1?'y':'ies')+'</b><br>'+state.data.events.length+' events · '+state.data.records.length+' records · '+state.data.drivers.teams.length+' teams · '+state.data.paints.length+' paints';
     publishDialog.showModal();
   }
   async function publish() {
@@ -467,8 +575,11 @@
     var structuredRemove=event.target.closest("[data-sremove]");if(structuredRemove){removeStructured(structuredRemove);return;}
     if(event.target.closest("[data-account-refresh]")){loadAccounts();return;}
     var accountSave=event.target.closest("[data-account-save]");if(accountSave){saveAccount(accountSave.closest("[data-account-id]"));return;}
-    var section=event.target.closest("[data-section]");if(section){state.section=section.dataset.section;state.selected=0;state.query="";render();return;}
-    var select=event.target.closest("[data-select]");if(select){state.selected=Number(select.dataset.select);render();return;}
+    var step=event.target.closest("[data-step]");if(step){state.step=Number(step.dataset.step);render();var heading=view.querySelector('.step-heading');if(heading){heading.focus();heading.scrollIntoView({block:'nearest'});}return;}
+    var more=event.target.closest('[data-admin-more]');if(more){document.querySelector('[data-admin-menu]').showModal();return;}
+    if(event.target.closest('[data-close-admin-menu]')){document.querySelector('[data-admin-menu]').close();return;}
+    var section=event.target.closest("[data-section]");if(section){state.section=section.dataset.section;state.step=0;document.querySelector("[data-admin-menu]").close();state.selected=0;state.query="";render();return;}
+    var select=event.target.closest("[data-select]");if(select){state.selected=Number(select.dataset.select);state.step=0;render();return;}
     var action=event.target.closest("[data-action]");if(action){var a=action.dataset.action;if(a==="add")addItem();else if(a==="delete")deleteItem();else if(a==="duplicate")duplicateItem();else if(a==="reload")reloadPublished();else if(a==="export")exportData();else if(a==="preview")preview();else if(a==="publish")openPublish();else if(a==="logout")logout();else if(a==="apply-json"){try{state.data=window.UARLData.normalize(JSON.parse(document.querySelector("[data-advanced-json]").value));changed();render();toast("Advanced JSON applied to the draft.");}catch(error){toast("Invalid JSON: "+error.message,true);}}return;}
     var shift=event.target.closest("[data-shift]");if(shift){shiftEvent(shift.dataset.shift);}
   });
@@ -480,7 +591,7 @@
     if(state.section==="results"&&(field==="winner"||field==="pole")){var selected=event.target.options&&event.target.options[event.target.selectedIndex];item[field+"Username"]=selected&&selected.dataset.user||"";value=selected&&selected.dataset.name||value;}
     item[field]=value;commitItems(pair.items);if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();if(state.section==="results"&&field==="division")render();
   });
-  document.addEventListener("change",function(event){if(event.target.matches('[data-sfield="entries"]')){render();return;}if(event.target.matches("[data-mobile-section]")){state.section=event.target.value;state.selected=0;state.query="";render();}if(event.target.matches("[data-import]")){var file=event.target.files[0];if(!file)return;file.text().then(function(text){state.data=window.UARLData.normalize(JSON.parse(text));changed();render();toast("Backup imported into the draft.");}).catch(function(error){toast("Could not import: "+error.message,true);});}});
+  document.addEventListener("change",function(event){if(event.target.matches('[data-schedule-race]')){var record=structuredItem(),id=event.target.value;if(!id){delete record.scheduleEventId;record.id='result-'+Date.now();changed();return;}var scheduled=state.data.events.find(function(e){return e.id===id;});if(!scheduled)return;if(['entries','qualifying','stages','finishes','bonuses'].some(function(key){return (record[key]||[]).length;})&&!confirm('Change the linked race and clear its classifications? This prevents carrying results into another race.')){render();return;}['entries','qualifying','stages','finishes','bonuses'].forEach(function(key){record[key]=[];});['winner','winnerUsername','pole','poleUsername'].forEach(function(key){delete record[key];});applyScheduledRace(record,scheduled);changed();render();return;}if(event.target.matches('[data-sfield="entries"]')){render();return;}if(event.target.matches("[data-mobile-section]")){state.section=event.target.value;state.step=0;state.selected=0;state.query="";render();}if(event.target.matches("[data-import]")){var file=event.target.files[0];if(!file)return;file.text().then(function(text){state.data=window.UARLData.normalize(JSON.parse(text));changed();render();toast("Backup imported into the draft.");}).catch(function(error){toast("Could not import: "+error.message,true);});}});
   document.addEventListener("submit",function(event){var form=event.target.closest("[data-account-create-form]");if(form){event.preventDefault();createAccount(form);}});
   document.querySelector("[data-publish-form]").addEventListener("submit",function(event){event.preventDefault();publish();});
 
@@ -488,7 +599,7 @@
     configureSections();
     try { var live=await window.UARLData.load();
       if(!live.conduct.length){try{var html=await fetch('/competition-guide/',{cache:'no-store'}).then(function(response){return response.text();});var doc=new DOMParser().parseFromString(html,'text/html');live.conduct=[];doc.querySelectorAll('.urg-accordion[data-urg-group]').forEach(function(group){group.querySelectorAll('.urg-rule').forEach(function(rule){var id=(rule.querySelector('.urg-rule-id')||{}).textContent||'';var copy=(rule.querySelector('.urg-rule-copy')||{}).textContent||'';var penalty=rule.querySelector('.urg-rule-penalty');if(id&&copy)live.conduct.push({id:id.trim(),group:group.getAttribute('data-urg-group')||'procedures',text:copy.trim(),penalty:penalty?penalty.textContent.trim():'',severe:Boolean(penalty&&penalty.classList.contains('is-severe'))});});});}catch(error){}}
-      state.original=clone(live);var draft=localStorage.getItem(DRAFT_KEY);if(draft){try{state.data=window.UARLData.normalize(JSON.parse(draft));state.dirty=JSON.stringify(state.data)!==JSON.stringify(live);}catch(error){state.data=live;}}else state.data=live;if(state.dirty)setStatus("Recovered unpublished browser draft","dirty");else setStatus("Published data loaded","ready");render(); }
+      state.data=live;(live.records||[]).forEach(recalculateResult);state.original=clone(live);var draft=localStorage.getItem(DRAFT_KEY);if(draft){try{state.data=window.UARLData.normalize(JSON.parse(draft));(state.data.records||[]).forEach(recalculateResult);state.dirty=countChanges()>0;}catch(error){state.data=live;}}else state.data=live;if(state.dirty)setStatus("Recovered unpublished browser draft","dirty");else setStatus("Published data loaded","ready");render(); }
     catch(error){setStatus("Could not load website data","error");view.innerHTML='<div class="warning">'+esc(error.message)+'</div>';}
   }
   document.querySelector("[data-login-form]").addEventListener("submit",login);
