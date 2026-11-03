@@ -13,6 +13,9 @@
   var loginMessage = document.querySelector("[data-login-message]");
   var adminStarted = false;
   var pendingImageUploads = 0;
+  var undoSnapshots=[],redoSnapshots=[],historyAnchor=null,editSession=null,historyRestoring=false;
+  var artworkOpen=Object.create(null);
+  var sectionNames={dashboard:'Home',schedule:'Schedule',results:'Results',teams:'Teams & rosters',profiles:'Driver profiles',open:'Open Series',freeAgents:'Free agents',moves:'Signings',paints:'Paint Booth',history:'History',guide:'Rules & FAQ',conduct:'Conduct',advanced:'Advanced JSON',accounts:'Staff accounts'};
 
   var configs = {
     schedule: {
@@ -196,28 +199,126 @@
   async function logout() {
     try { await fetch("/.netlify/functions/admin-publish", { method:"POST", credentials:"same-origin", headers:{"content-type":"application/json"}, body:JSON.stringify({action:"logout"}) }); } catch (error) {}
     if (publishDialog.open) publishDialog.close();
-    state.user = null;
+    state.user = null;resetHistory();document.querySelectorAll('.workspace-dialog[open]').forEach(function(dialog){dialog.close();});
     showLogin("You have been signed out.", false);
   }
   function changed() {
+    if(!editSession&&!historyRestoring)recordHistory();
     state.changes = countChanges(); state.dirty = state.changes > 0;
     localStorage.setItem(DRAFT_KEY, JSON.stringify(state.data));
     setStatus(state.dirty ? "Draft saved · " + state.changes + " changed entr" + (state.changes === 1 ? "y" : "ies") + " not published" : "No unpublished changes", state.dirty ? "dirty" : "ready");
+    updateDraftTools();updateWorkspacePreview();
   }
 
+  function draftTools() {
+    return '<div class="draft-tools" aria-label="Draft actions"><button class="button ghost" type="button" data-workspace-undo '+(!undoSnapshots.length?'disabled':'')+' title="Undo last edit">↶ Undo</button><button class="button ghost" type="button" data-workspace-redo '+(!redoSnapshots.length?'disabled':'')+' title="Redo last edit">↷ Redo</button><button class="button ghost" type="button" data-review-changes>Review changes <span data-draft-total>'+countChanges()+'</span></button></div>';
+  }
   function renderHeader(config) {
-    return '<header class="view-head"><div><span class="eyebrow">' + esc(config.kicker) + '</span><h1>' + esc(config.title) + '</h1><p>' + esc(config.description) + '</p></div><div class="view-actions"><button class="button ghost" data-action="reload">Reload published</button>' + (config.path ? '<button class="button" data-action="add">+ Add new</button>' : '') + '</div></header>';
+    return '<header class="view-head workspace-toolbar"><div><span class="eyebrow">'+esc(config.kicker)+'</span><h1>'+esc(config.title)+'</h1><p>'+esc(config.description)+'</p></div><div class="view-actions"><button class="button ghost" data-action="reload">Reload published</button>'+(config.path?'<button class="button" data-action="add">+ Add new</button>':'')+'</div></header>'+draftTools();
   }
-
+  function workspaceChanges() { return window.UARLWorkspace.changes(state.original,state.data); }
+  function renderDraftEntries(changes) {
+    return changes.slice(0,8).map(function(change){return '<button type="button" '+(change.kind!=='removed'?'data-resume-section="'+esc(change.section)+'" data-resume-index="'+change.index+'"':'disabled')+'><span><b>'+esc(change.title)+'</b><small>'+esc(sectionNames[change.section]||change.section)+' · '+esc((change.fields||[]).slice(0,3).join(', ')||change.kind)+'</small></span><span class="workspace-chip">'+esc(change.kind)+'</span></button>';}).join('');
+  }
   function renderDashboard() {
-    var upcoming = state.data.events.filter(function (x) { return new Date(x.start || x.date) > new Date(); }).sort(function (a,b) { return new Date(a.start)-new Date(b.start); })[0];
-    var openSeats = state.data.drivers.teams.reduce(function (sum,t) { return sum + (t.entries || []).filter(function (e) { return /^Open/.test(e.status || "") || e.name === "OPEN"; }).length; }, 0);
-    view.innerHTML = renderHeader({ kicker:"UARL website", title:"Race Control", description:"One control center for the public schedule, results, standings inputs, rosters, paints, history, and competition guide." }) +
-      '<section class="daily-actions"><button type="button" data-start-race><b>Record a race →</b><span>Pick the event, choose who raced, set the finish order.</span></button><button type="button" data-section="schedule"><b>Adjust the schedule →</b><span>Change a date, track or event status.</span></button>'+(state.user&&state.user.role!=='race_control'?'<button type="button" data-section="teams"><b>Update a roster →</b><span>Drivers, car numbers and artwork, one team at a time.</span></button>':'')+'</section>'+
-      '<section class="stat-grid"><article class="stat-card"><small>Scheduled events</small><strong>' + state.data.events.length + '</strong></article><article class="stat-card" style="--accent:var(--blue)"><small>Official records</small><strong>' + state.data.records.length + '</strong></article><article class="stat-card" style="--accent:var(--red)"><small>Paint schemes</small><strong>' + state.data.paints.length + '</strong></article><article class="stat-card" style="--accent:var(--green)"><small>Open D1 seats</small><strong>' + openSeats + '</strong></article></section>' +
-      '<section class="dashboard-grid"><article class="dash-panel"><h2>Next event on the website</h2>' + (upcoming ? '<div class="next-event"><span>' + esc(String(upcoming.division).toUpperCase()) + ' · ' + esc(new Date(upcoming.start).toLocaleString([], {dateStyle:"full",timeStyle:"short"})) + '</span><h3>' + esc(upcoming.name) + '</h3><p>' + esc(upcoming.track) + (upcoming.scheduleNote ? '<br>' + esc(upcoming.scheduleNote) : '') + '</p></div>' : '<div class="next-event"><h3>Season complete</h3></div>') + '</article>' +
-      '<article class="dash-panel"><h2>Publishing health</h2><div class="check-list"><div><span>Live website data</span><b>CONNECTED</b></div><div><span>Browser recovery draft</span><b>' + (state.dirty ? "SAVED" : "CLEAN") + '</b></div><div><span>Schedule countdown feed</span><b>CONNECTED</b></div><div><span>Secure publisher</span><b>SIGNED IN</b></div></div></article></section>';
+    var upcoming=state.data.events.filter(function(event){return new Date(event.start||event.date)>new Date();}).sort(function(a,b){return new Date(a.start||a.date)-new Date(b.start||b.date);})[0];
+    var full=state.user&&state.user.role!=='race_control',changes=workspaceChanges();
+    function task(key,icon,title,copy){return '<button type="button" class="workspace-task" data-workspace-task="'+key+'"><span class="task-icon" aria-hidden="true">'+icon+'</span><span class="task-title">'+title+'</span><span class="task-copy">'+copy+'</span></button>';}
+    view.innerHTML='<div class="workspace-home"><header class="workspace-greeting"><span class="eyebrow">Your paddock</span><h1>What are we updating?</h1><p>'+esc(state.user&&state.user.displayName||'Welcome')+', jump straight to the job. Your work saves as a draft while you edit.</p></header>'+draftTools()+
+      '<div class="workspace-home-grid"><section class="workspace-task-grid" aria-label="Common tasks">'+task('race','⚑','Record a race','Select the field, arrange the finish, award bonuses.')+task('schedule','▦','Adjust an event','Go straight to the next event’s date and status.')+(full?task('roster','▰','Update a roster','Choose a team and edit its drivers.')+task('transfer','⇄','Move or sign a driver','Update the roster and announcement together.')+task('paint','◆','Add a paint scheme','Use saved driver details instead of retyping them.')+task('search','⌕','Find & edit anything','Search drivers, races, teams and site content.'):'')+'</section>'+
+      '<article class="workspace-next-event"><span class="eyebrow">Next on the calendar</span>'+(upcoming?'<h2>'+esc(upcoming.name)+'</h2><p>'+esc(upcoming.date)+' · '+esc(upcoming.track)+'</p><span class="workspace-chip">'+esc(String(upcoming.division||'').toUpperCase())+'</span><button type="button" class="button ghost" data-workspace-task="schedule">Edit this event →</button>':'<h2>Calendar up to date</h2><p>Add the next event whenever you’re ready.</p><button class="button ghost" data-section="schedule">Open schedule</button>')+(state.data.events.length?'<button class="button ghost" type="button" data-start-race>Start a new race entry →</button>':'')+'</article></div>'+
+      '<section class="workspace-draft-panel"><header><div><span class="eyebrow">Pick up where you left off</span><h2>'+ (changes.length?'Your unpublished work':'A clear desk')+'</h2></div><button class="button ghost" data-review-changes>Review all changes</button></header>'+(changes.length?'<div class="draft-entry-list">'+renderDraftEntries(changes)+'</div>':'<p>No unfinished edits. Choose a task above to get started.</p>')+'</section></div>';
   }
+  function recordHistory() {
+    if(!state.data)return;
+    if(historyAnchor&&JSON.stringify(historyAnchor)!==JSON.stringify(state.data)){
+      undoSnapshots.push(clone(historyAnchor));if(undoSnapshots.length>30)undoSnapshots.shift();redoSnapshots=[];
+    }
+    historyAnchor=clone(state.data);
+  }
+  function commitPendingEdit(){if(editSession){editSession=null;recordHistory();updateDraftTools();}}
+  function resetHistory(){undoSnapshots=[];redoSnapshots=[];editSession=null;historyAnchor=state.data&&clone(state.data);updateDraftTools();}
+  function updateDraftTools(){
+    document.querySelectorAll('[data-workspace-undo]').forEach(function(button){button.disabled=(!undoSnapshots.length&&!(editSession&&historyAnchor&&JSON.stringify(historyAnchor)!==JSON.stringify(state.data)))||pendingImageUploads>0;});
+    document.querySelectorAll('[data-workspace-redo]').forEach(function(button){button.disabled=!redoSnapshots.length||pendingImageUploads>0||Boolean(editSession&&historyAnchor&&JSON.stringify(historyAnchor)!==JSON.stringify(state.data));});
+    document.querySelectorAll('[data-draft-total]').forEach(function(node){node.textContent=countChanges();});
+  }
+  function restoreHistory(redo){
+    commitPendingEdit();if(pendingImageUploads){toast('Wait for the image upload to finish.',true);return;}
+    var from=redo?redoSnapshots:undoSnapshots,to=redo?undoSnapshots:redoSnapshots;if(!from.length)return;
+    to.push(clone(state.data));state.data=from.pop();historyAnchor=clone(state.data);historyRestoring=true;changed();historyRestoring=false;render();toast(redo?'Edit restored.':'Last edit undone.');
+  }
+  function goToEntry(section,index,step){
+    commitPendingEdit();state.section=section;state.selected=Math.max(0,Number(index)||0);state.step=step==null?(section==='teams'?2:0):step;state.query='';render();
+  }
+  function openWorkspaceSearch(){if(!state.data)return;commitPendingEdit();var dialog=document.querySelector('[data-workspace-search-dialog]');dialog.showModal();var input=dialog.querySelector('[data-workspace-search]');input.value='';renderWorkspaceSearch('');input.focus();}
+  function renderWorkspaceSearch(query){
+    var results=window.UARLWorkspace.search(state.data,query,state.user&&state.user.role);
+    document.querySelector('[data-workspace-search-results]').innerHTML=results.length?results.map(function(result){return '<button type="button" class="workspace-search-result" data-search-section="'+esc(result.section)+'" data-search-index="'+result.index+'" data-search-step="'+(result.step||0)+'"><b>'+esc(result.title)+'</b><small>'+esc(result.meta)+'</small></button>';}).join(''):'<p>'+(query.trim()?'No matching records. Try a name, number, team or track.':'Type a driver, team, car number or race to jump to its editor.')+'</p>';
+  }
+  function openChanges(){
+    commitPendingEdit();var changes=workspaceChanges(),dialog=document.querySelector('[data-workspace-changes-dialog]');
+    dialog.querySelector('[data-workspace-changes-list]').innerHTML=changes.length?changes.map(function(change){return '<article><header><b>'+esc(change.title)+'</b><span class="workspace-chip">'+esc(change.kind)+'</span></header><p>'+esc(sectionNames[change.section]||change.section)+'</p><ul>'+(change.fields||[]).map(function(field){return '<li>'+esc(field)+'</li>';}).join('')+'</ul>'+(change.kind!=='removed'?'<button class="button ghost" data-resume-section="'+esc(change.section)+'" data-resume-index="'+change.index+'">Continue editing →</button>':'')+'</article>';}).join(''):'<p>No unpublished changes.</p>';
+    dialog.showModal();
+  }
+  function workspaceTask(task){
+    if(task==='search')return openWorkspaceSearch();
+    if(task==='transfer')return openTransfer();
+    if(task==='race'){
+      var pending=state.data.records.findIndex(function(record){return record.status==='pending'||JSON.stringify(record)!==JSON.stringify((state.original.records||[]).find(function(old){return old.id===record.id;}));});
+      if(pending>=0){goToEntry('results',pending,4);return;}
+      state.section='results';state.selected=0;state.step=0;addItem();return;
+    }
+    if(task==='roster')return goToEntry('teams',0,2);
+    if(task==='schedule'){
+      var events=state.data.events,index=events.map(function(event,index){return {event:event,index:index};}).filter(function(pair){return new Date(pair.event.start||pair.event.date)>new Date();}).sort(function(a,b){return new Date(a.event.start||a.event.date)-new Date(b.event.start||b.event.date);})[0];
+      return goToEntry('schedule',index?index.index:0,1);
+    }
+    if(task==='paint'){state.section='paints';state.selected=0;state.step=0;addItem();}
+  }
+  function peopleOptions(people,selectedKey){return '<option value="">Choose a saved driver</option>'+people.map(function(person){return '<option value="'+esc(person.key)+'" data-user="'+esc(person.user)+'" '+(person.key===selectedKey?'selected':'')+'>'+esc((person.number?'#'+person.number+' · ':'')+person.name+' · '+(person.team||person.source)+(person.user?' (@'+person.user+')':''))+'</option>';}).join('');}
+  function paintAssist(){var paint=state.data.paints[state.selected],people=window.UARLWorkspace.people(state.data).filter(function(person){return person.source==='team'||person.source==='open';}),selected=people.find(function(person){return identityText(person.user)===identityText(paint.handle)&&String(person.number)===String(paint.number)&&person.team===paint.team;});return '<div class="workspace-assist"><label>Fill driver details from the roster<select data-paint-driver>'+peopleOptions(people,selected&&selected.key)+'</select></label><small>Name, username, number, team and manufacturer fill together. You can still edit any field.</small></div>';}
+
+  function prefillPaint(input){
+    var person=window.UARLWorkspace.people(state.data).find(function(person){return person.key===input.value;});if(!person)return;
+    var paint=state.data.paints[state.selected];Object.assign(paint,{name:person.name,handle:person.user,number:person.number,team:person.team,make:person.make,division:person.division,series:person.division==='open'?'Open Series':'D1 · L.L. Bean Cup Series'});
+    if(!paint.body||/^BBR (Toyota|Ford|Chevrolet|Generic) Body$/.test(paint.body))paint.body='BBR '+person.make+' Body';
+    paint.search=[paint.name,paint.handle,paint.number,paint.team,paint.make,paint.title].filter(Boolean).join(' ').toLowerCase();changed();render();toast('Driver details filled. Add the scheme title and image.');
+  }
+  function openTransfer(){
+    if(!state.user||state.user.role==='race_control')return;commitPendingEdit();
+    var represented=new Set(),dialog=document.querySelector('[data-transfer-dialog]'),people=window.UARLWorkspace.people(state.data).filter(function(person){var user=identityText(person.user);if(!user||represented.has(user))return false;represented.add(user);return true;});
+    dialog.querySelector('[data-transfer-person]').innerHTML=peopleOptions(people);
+    dialog.querySelector('[data-transfer-team]').innerHTML='<option value="">Choose destination team</option>'+state.data.drivers.teams.map(function(team){return '<option value="'+esc(team.id)+'">'+esc(team.name)+'</option>';}).join('');
+    dialog.querySelector('[data-transfer-number]').value='';dialog.querySelector('[data-transfer-message]').textContent='';dialog.querySelector('[data-transfer-announce]').checked=true;updateTransferSeats();dialog.showModal();
+  }
+  function updateTransferSeats(){
+    var dialog=document.querySelector('[data-transfer-dialog]'),team=state.data.drivers.teams.find(function(team){return team.id===dialog.querySelector('[data-transfer-team]').value;}),person=window.UARLWorkspace.people(state.data).find(function(person){return person.key===dialog.querySelector('[data-transfer-person]').value;});
+    var seats=dialog.querySelector('[data-transfer-seat]');seats.innerHTML='<option value="new">Add an entry</option>'+(team?team.entries.map(function(entry,index){var vacant=!(entry.user||entry.username||entry.driverId)&&(!entry.name||/^(OPEN|VACANT|TBD|TBA)$/i.test(entry.name)||/^(?:(?:Part[ -]Time|Development|Shared)\s+)?(?:Entry|Charter|Seat)$/i.test(entry.name));return '<option value="'+index+'" '+(!vacant?'disabled':'')+'>#'+esc(entry.number||'—')+' · '+esc(vacant?'Available charter':window.UARLData.driverName(entry,state.data.drivers.profiles))+'</option>';}).join(''):'');
+    var available=seats.querySelector('option[value]:not([value="new"]):not(:disabled)');if(available)seats.value=available.value;
+    var number=dialog.querySelector('[data-transfer-number]');number.value=team&&available?team.entries[Number(available.value)].number:person&&person.number||'';updateTransferPreview();
+  }
+  function updateTransferPreview(){
+    var dialog=document.querySelector('[data-transfer-dialog]'),person=window.UARLWorkspace.people(state.data).find(function(person){return person.key===dialog.querySelector('[data-transfer-person]').value;}),team=state.data.drivers.teams.find(function(team){return team.id===dialog.querySelector('[data-transfer-team]').value;});
+    dialog.querySelector('[data-transfer-preview]').textContent=person&&team?person.name+' → '+team.name+' #'+dialog.querySelector('[data-transfer-number]').value+(person.number&&person.number!==dialog.querySelector('[data-transfer-number]').value&&person.numberImage?' · Review the number artwork after changing the car number.':''):'Choose a driver and their destination to preview the move.';
+  }
+  function siteToday(){var parts=new Intl.DateTimeFormat('en',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date()),date={};parts.forEach(function(part){date[part.type]=part.value;});return date.year+'-'+date.month+'-'+date.day;}
+  function saveTransfer(event){
+    event.preventDefault();var dialog=document.querySelector('[data-transfer-dialog]');
+    try{var result=window.UARLWorkspace.transfer(state.data,{personKey:dialog.querySelector('[data-transfer-person]').value,teamId:dialog.querySelector('[data-transfer-team]').value,seatIndex:dialog.querySelector('[data-transfer-seat]').value==='new'?null:Number(dialog.querySelector('[data-transfer-seat]').value),number:dialog.querySelector('[data-transfer-number]').value,announce:dialog.querySelector('[data-transfer-announce]').checked,date:siteToday()});changed();dialog.close();goToEntry('teams',result.teamIndex,2);toast(result.name+' moved. Review your draft when ready.');}
+    catch(error){dialog.querySelector('[data-transfer-message]').textContent=error.message;}
+  }
+  function renderWorkspacePreview(section,item){
+    var title='',meta='',image='';
+    if(section==='teams'){title=item.name;meta=[item.make,item.owner&&'Owner: '+item.owner,(item.entries||[]).length+' entries'].filter(Boolean).join(' · ');image=item.logo;}
+    else if(section==='paints'){title=item.title||'New paint scheme';meta=[item.number&&'#'+item.number,item.name,item.team].filter(Boolean).join(' · ');image=item.image;}
+    else if(section==='profiles'){title=item.alias||item.username;meta='@'+item.username;image=item.signatureImage;}
+    else if(section==='schedule'){title=item.name;meta=[item.date,item.track,item.scheduleStatus||'Scheduled'].filter(Boolean).join(' · ');}
+    else if(section==='open'){title=window.UARLData.driverName(item,state.data.drivers.profiles);meta=[item.number&&'#'+item.number,item.make,item.status].filter(Boolean).join(' · ');image=item.signatureImage;}
+    if(!title)return '';
+    return '<aside class="workspace-preview" aria-label="Entry preview">'+(image?'<img src="'+esc(image)+'" alt="" loading="lazy">':'')+'<div><span class="eyebrow">At a glance</span><h3>'+esc(title)+'</h3><p>'+esc(meta)+'</p></div></aside>';
+  }
+  function updateWorkspacePreview(){if(!state.data||!configs[state.section]&&state.section!=='profiles')return;var node=view.querySelector('.workspace-preview');if(node){var pair=currentConfigAndItems(),item=pair.items[state.selected];if(item)node.outerHTML=renderWorkspacePreview(state.section,item);}}
 
   function profileRows() {
     return Object.keys(state.data.drivers.profiles).map(function (user) { return Object.assign({ username:user }, state.data.drivers.profiles[user]); });
@@ -235,10 +336,15 @@
     if (state.selected >= items.length) state.selected = Math.max(0, items.length - 1);
     var query = state.query.toLowerCase();
     var filtered = items.map(function (item,index) { return {item:item,index:index}; }).filter(function (pair) { return !query || (config.itemTitle(pair.item)+" "+config.itemMeta(pair.item)).toLowerCase().includes(query); });
-    var rows = filtered.map(function (pair) { return '<button class="item-row' + (pair.index === state.selected ? ' is-active' : '') + '" data-select="' + pair.index + '"><strong>' + esc(config.itemTitle(pair.item)) + '</strong><span>' + esc(config.itemMeta(pair.item)) + '</span></button>'; }).join("");
+    var changedEntries=workspaceChanges().filter(function(change){return change.section===section&&change.kind!=='removed';});
+    var rows = filtered.map(function (pair) {
+      var image=section==='teams'?pair.item.logo:section==='paints'?pair.item.image:section==='profiles'?pair.item.signatureImage:null;
+      var dirty=changedEntries.some(function(change){return change.index===pair.index;});
+      return '<button class="item-row'+(pair.index===state.selected?' is-active':'')+'" data-select="'+pair.index+'">'+(image?'<img class="workspace-thumb" src="'+esc(image)+'" alt="" loading="lazy">':'')+'<span><strong>'+esc(config.itemTitle(pair.item))+'</strong><small>'+esc(config.itemMeta(pair.item))+'</small>'+(dirty?'<span class="workspace-chip">Draft</span>':'')+'</span></button>';
+    }).join('');
     var current = items[state.selected];
     if(section==="results"&&current)recalculateResult(current);
-    view.innerHTML = renderHeader(config) + '<div class="editor-layout"><details class="item-list item-picker" '+(window.matchMedia('(min-width:761px)').matches||state.query?'open':'')+'><summary>Switch entry · '+esc(current?config.itemTitle(current):'Choose an entry')+'</summary><div class="list-tools"><input type="search" data-list-search value="' + esc(state.query) + '" placeholder="Search this section"><button type="button" data-action="add" aria-label="Add new">+</button></div><div class="list-scroll">' + (rows || '<div class="editor-empty">No entries yet.<br>Add the first one.</div>') + '</div></details><section class="editor-panel">' + (current ? renderEditor(config,current,state.selected) : '<div class="editor-empty">Select or add an entry.</div>') + '</section></div>';
+    view.innerHTML = renderHeader(config) + '<div class="editor-layout"><details class="item-list item-picker workspace-records" '+(window.matchMedia('(min-width:761px)').matches||state.query?'open':'')+'><summary>Switch entry · '+esc(current?config.itemTitle(current):'Choose an entry')+'</summary><div class="list-tools"><input type="search" data-list-search value="' + esc(state.query) + '" placeholder="Search this section"><button type="button" data-action="add" aria-label="Add new">+</button></div><div class="list-scroll">' + (rows || '<div class="editor-empty">No entries yet.<br>Add the first one.</div>') + '</div></details><section class="editor-panel">' + (current ? renderEditor(config,current,state.selected) : '<div class="editor-empty">Select or add an entry.</div>') + '</section></div>';
     enhanceRows();
   }
 
@@ -356,13 +462,21 @@
   function winnerPairRow(field,row,pair,parent,collection,listId) {
     return '<div class="builder-row"><div class="builder-grid pair-grid"><label>Driver'+dataInput(field,row,"0",pair[0],"text",parent,collection,listId)+'</label><label>Wins'+dataInput(field,row,"1",pair[1],"number",parent,collection)+'</label></div>'+removeButton(field,row,parent,collection)+'</div>';
   }
+  function driverMini(entry){var profile=window.UARLData.driverProfile(entry.user,state.data.drivers.profiles),numberImage=entry.numberImage||profile.numberImage,signature=entry.signatureImage||profile.signatureImage;return '<div class="driver-mini"><div class="driver-mini-number">'+(numberImage?'<img src="'+esc(numberImage)+'" alt="">':'#'+esc(entry.number||'—'))+'</div><div>'+(signature?'<img class="driver-mini-signature" src="'+esc(signature)+'" alt="'+esc(window.UARLData.driverName(entry,state.data.drivers.profiles))+'">':'<b>'+esc(window.UARLData.driverName(entry,state.data.drivers.profiles))+'</b>')+'<small>'+esc(entry.user?'@'+entry.user:entry.status||'Available seat')+'</small></div></div>';}
   function renderStructuredField(key,label,type,item) {
     var value=Array.isArray(item[key])?item[key]:[],listId='driver-list-'+key+'-'+state.selected;
     var suggestions='<datalist id="'+listId+'">'+driverSuggestions().map(function(name){return '<option value="'+esc(name)+'">';}).join("")+'</datalist>',rows="",addLabel="Add row",help="";
     if(type==="eventEntries"){
       help="Use this for a verified substitute or one-off entrant who is not on the series roster. A Roblox username is required to keep standings and stage points attached to the correct driver.";addLabel="Add event-only driver";rows=value.map(function(entry,index){return '<div class="builder-row"><div class="builder-grid roster-grid"><label>Car #'+dataInput(key,index,"number",entry.number)+'</label><label>Driver name'+dataInput(key,index,"name",entry.name)+'</label><label>Roblox username'+dataInput(key,index,"user",entry.user)+'</label><label class="builder-check">'+dataInput(key,index,"pointsEligible",entry.pointsEligible!==false,"bool")+' Points eligible</label></div>'+removeButton(key,index)+'</div>';}).join("");
     }else if(type==="roster"){
-      help="Public display name appears on the site. Leave it blank to use the Driver Profiles name. The Roblox username keeps results and career stats linked to the same driver.";addLabel="Add charter / entry";rows=value.map(function(entry,index){return '<div class="builder-row roster-row"><div class="builder-grid roster-grid"><label>Car #'+dataInput(key,index,"number",entry.number)+'</label><label>Roblox username'+dataInput(key,index,"user",entry.user,"text",null,null,listId)+'</label><label>Public display name'+dataInput(key,index,"name",entry.name,"text",null,null,listId)+'</label><label>Status<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="status" data-stype="text">'+optionList(["","Full-Time","Signed","Open FT","Part-Time","Development","Inactive"],entry.status)+'</select></label><label>Seat type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="seatType" data-stype="text">'+optionList(["","Full-Time","Part-Time","Development","Shared"],entry.seatType)+'</select></label><label>Charter type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="charterType" data-stype="text">'+optionList(["","FT","PT","DEV","FLEX"],entry.charterType)+'</select></label><label>Signed date'+dataInput(key,index,"signedAt",entry.signedAt,"date")+'</label><label class="builder-check">'+dataInput(key,index,"recent",entry.recent,"bool")+' Recent move</label>'+renderImageControl('numberImage','Number art',entry,key,index)+renderImageControl('signatureImage','Signature logo',entry,key,index)+'</div>'+removeButton(key,index)+'</div>';}).join("");
+      help="Enter the driver's username and public name, then check the car number. Charter details and artwork are available when you need them.";
+      addLabel="Add charter / entry";
+      rows=value.map(function(entry,index){
+        return '<div class="builder-row roster-row">'+driverMini(entry)+'<div class="builder-grid roster-grid">'+
+          '<label>Car #'+dataInput(key,index,"number",entry.number)+'</label><label>Roblox username'+dataInput(key,index,"user",entry.user,"text",null,null,listId)+'</label><label>Public display name'+dataInput(key,index,"name",entry.name,"text",null,null,listId)+'</label><label>Status<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="status" data-stype="text">'+optionList(["","Full-Time","Signed","Open FT","Part-Time","Development","Inactive"],entry.status)+'</select></label>'+
+          '<details class="seat-details"><summary>Charter details & signing date</summary><div class="builder-grid">'+
+          '<label>Seat type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="seatType" data-stype="text">'+optionList(["","Full-Time","Part-Time","Development","Shared"],entry.seatType)+'</select></label><label>Charter type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="charterType" data-stype="text">'+optionList(["","FT","PT","DEV","FLEX"],entry.charterType)+'</select></label><label>Signed date'+dataInput(key,index,"signedAt",entry.signedAt,"date")+'</label><label class="builder-check">'+dataInput(key,index,"recent",entry.recent,"bool")+' Recent move</label></div></details>'+renderDriverArtwork(entry,key,index)+'</div>'+removeButton(key,index)+'</div>';
+      }).join('');
     }else if(type==="classification"||type==="finishes"){
       addLabel=type==="finishes"?"Add finishing position":"Add qualifying position";rows=value.map(function(entry,index){return classificationRow(key,index,entry,type==="finishes",listId);}).join("");
     }else if(type==="bonuses"){
@@ -379,6 +493,7 @@
     return '<section class="field wide structured-field"><span>'+esc(label)+'</span>'+(help?'<p class="builder-help">'+esc(help)+'</p>':'')+'<div class="structured-list">'+(rows||'<div class="builder-empty">No rows yet.</div>')+'</div><button type="button" class="builder-add" data-sadd="'+esc(key)+'" data-stype="'+esc(type)+'">+ '+esc(addLabel)+'</button>'+suggestions+'</section>';
   }
 
+  function renderDriverArtwork(entry,field,row){var key=state.section+':'+state.selected+':'+field+':'+row;return '<details class="roster-artwork" data-artwork-key="'+esc(key)+'" '+(artworkOpen[key]?'open':'')+'><summary>Number art & signature</summary><div class="builder-grid">'+renderImageControl('numberImage','Number art',entry,field,row)+renderImageControl('signatureImage','Signature logo',entry,field,row)+'</div></details>';}
   function renderImageControl(key, label, entry, field, row) {
     var attrs=' data-image-key="'+esc(key)+'"'+(field?' data-image-field="'+esc(field)+'" data-image-row="'+row+'"':'');
     return '<div class="field wide image-upload"><span>'+esc(label)+'</span>'+(entry[key]?'<img src="'+esc(entry[key])+'" alt="'+esc(label)+' preview"><button type="button" class="button ghost" data-image-clear'+attrs+'>Remove image</button>':'')+'<label class="button ghost">Upload '+esc(label.toLowerCase())+'<input type="file" accept="image/png,image/jpeg,image/webp" data-image-upload'+attrs+'></label><small>PNG, JPEG or WebP. Large images resize automatically; transparent backgrounds are preserved. Publish the draft to show this on the site.</small><span data-image-status role="status"></span></div>';
@@ -408,25 +523,28 @@
     var file=input.files[0];if(!file)return;
     var pair=currentConfigAndItems(),target=imageTarget(input,pair.items),key=input.dataset.imageKey,section=state.section,selected=state.selected,data=state.data;
     var message=input.closest('.image-upload').querySelector('[data-image-status]');
-    pendingImageUploads++;input.disabled=true;message.textContent='Preparing image…';
+    var artwork=input.closest('.roster-artwork');if(artwork){artwork.open=true;artworkOpen[artwork.dataset.artworkKey]=true;}
+    pendingImageUploads++;updateDraftTools();input.disabled=true;message.textContent='Preparing image…';
     try {
       var image=await prepareDriverImage(file);message.textContent='Uploading…';
       var result=await accountRequest('upload-driver-image',{image:image});
       if(state.data!==data)throw new Error('The draft changed while uploading. Please select the image again.');
+      var currentEdit=editSession;commitPendingEdit();
       if(section==='profiles') {
         var profile=state.data.drivers.profiles[target.username];
         if(!profile)throw new Error('The profile was renamed or removed while uploading. Please select the image again.');
         profile[key]=result.url;
-      } else target[key]=result.url;
+      } else {var stillPresent=input.dataset.imageField?pair.items.some(function(owner){return (owner[input.dataset.imageField]||[]).includes(target);}):pair.items.includes(target);if(!stillPresent)throw new Error('This entry was removed while uploading. Please select the image again.');target[key]=result.url;}
       changed();
-      if(state.section===section&&state.selected===selected)render();toast('Image saved to draft. Publish when ready.');
+      if(state.section===section&&state.selected===selected&&!currentEdit)render();else if(input.isConnected){var container=input.closest('.image-upload');container.outerHTML=renderImageControl(key,key==='numberImage'?'Number art':'Signature logo',target,input.dataset.imageField,input.dataset.imageRow);}toast('Image saved to draft. Publish when ready.');
     } catch(error) { message.textContent=error.message;toast(error.message,true); }
-    finally {pendingImageUploads--;input.disabled=false;input.value='';}
+    finally {pendingImageUploads--;input.disabled=false;input.value='';if(currentEdit&&document.activeElement===currentEdit.node)editSession=currentEdit;updateDraftTools();}
   }
 
   function renderField(field, item) {
     var key=field[0],label=field[1],type=field[2]||"text",options=Array.isArray(field[3])?field[3]:null,wide=field[3]==="wide"||field[4]==="wide",value=item[key];
     if (["eventEntries","roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(type)) return renderStructuredField(key,label,type,item);
+    if(key==='id')return '<details class="field wide internal-id"><summary>Advanced: reference ID</summary><label>'+esc(label)+'<input type="text" data-field="id" data-type="text" value="'+esc(value||'')+'"></label></details>';
     if (type === "image") return renderImageControl(key,label,item);
     if (type === "seriesDriver") {
       var rows=key==='winner'?item.finishes:key==='pole'?item.qualifying:null;
@@ -457,6 +575,12 @@
   }
 
   var editorGroups = {
+    profiles:[['Identity',['username','alias']],['Career',['wins','championships','rank']],['Artwork',['numberImage','signatureImage']]],
+    open:[['Driver',['number','user','name','make','status']],['Artwork',['numberImage','signatureImage']]],
+    freeAgents:[['Driver',['name','user']],['Previous entry',['former']]],
+    moves:[['Signing',['driver','team','number','make','signedAt']]],
+    paints:[['Driver',['division','series','number','name','handle','team','make']],['Scheme',['id','title','subtitle','image','body','scrAffiliate']],['Tags & search',['extra','search']]],
+    conduct:[['Rule',['id','group','text']],['Penalty',['penalty','severe']]],
     results: [ ["Race", ["id","division","event","date","start","track","round","laps","status","eventType","pointsEvent","exhibition"]], ["Guest drivers", ["entries"]], ["Qualifying", ["pole","qualifying"]], ["Stages", ["stages"]], ["Finish", ["winnerAutomatic","winner","finishes"]], ["Bonuses", ["bonuses"]], ["Notes", ["pointsSummary","pointsNote","recordNote"]] ],
     teams: [ ["Team", ["id","name","owner","ownerNote","make","founded","note"]], ["Branding", ["logo","brandColor","brandColor2"]], ["Charters", ["charterCount","entries"]], ["Pending drivers", ["pendingDrivers"]] ],
     schedule: [ ["Event", ["id","division","series","name","track","round","laps"]], ["Date + status", ["date","start","scheduleStatus","scheduleNote","completed"]], ["Race format", ["exhibition","pointsEvent","crownJewel","chase","special"]], ["Original date", ["originalDate","originalStart"]] ]
@@ -509,17 +633,21 @@
     var fields=config.fields.filter(function(f){return group[1].includes(f[0]);}).map(function(f){return renderField(f,item);}).join('');
     var linkedRace=isResult&&state.step===0;
     var body=linkedRace ? '<div class="field-grid">'+scheduleOptions(item)+'</div><details class="race-details" '+(item.scheduleEventId||state.data.events.some(function(e){return e.id===item.id;})?'':'open')+'><summary>Race details · '+esc(item.event)+' · '+esc(item.date)+'</summary><p>Filled from the schedule. Expand to review or correct the details.</p><div class="field-grid">'+fields+'</div></details>' : '<div class="field-grid">'+fields+'</div>';
+    if(state.section==='paints')body=paintAssist()+body;
+    if(state.section==='teams')body='<div class="workspace-assist"><button type="button" class="button" data-open-transfer>Move or sign a driver →</button><small>One action updates the roster and signing announcement.</small></div>'+body;
+    if(!isResult)body=renderWorkspacePreview(state.section,item)+body;
     if(isResult&&state.step===4)body=renderFinisherPicker(item)+body;
     if(isResult&&state.step===5)body='<p class="editor-guidance">Awards are only available to drivers in this race finish. Choose who earned each bonus; no lap totals are needed.</p>'+body+raceReview(item);
     var next=isResult&&state.step===0?4:isResult&&state.step===4?5:state.step+1;
     var back=isResult&&state.step===4?0:isResult&&state.step===5?4:state.step-1;
     var final=isResult?state.step===5||state.step===6:state.step===groups.length-1;
-    return '<div class="editor-title"><div><small>ENTRY '+String(index+1).padStart(2,'0')+'</small><h2>'+esc(config.itemTitle(item))+'</h2></div><div class="view-actions"><button class="button" data-action="duplicate">Duplicate</button></div></div>'+resultIdentityWarning(item)+
+    var total=currentConfigAndItems().items.length;
+    return '<nav class="workspace-record-nav" aria-label="Record navigation"><button type="button" class="button ghost" data-record-next="-1" '+(!index?'disabled':'')+'>← Previous</button><span>'+(index+1)+' of '+total+'</span><button type="button" class="button ghost" data-record-next="1" '+(index>=total-1?'disabled':'')+'>Next →</button></nav><div class="editor-title"><div><small>ENTRY '+String(index+1).padStart(2,'0')+'</small><h2>'+esc(config.itemTitle(item))+'</h2></div></div>'+resultIdentityWarning(item)+
       '<p class="editor-guidance">'+(isResult?'Pick the race, build the finish order, then award bonuses. Your draft saves as you go.':'One section at a time. Edits save automatically.')+'</p>'+
       (isResult?resultNavigation(groups):'<nav class="editor-steps" aria-label="Entry sections">'+groups.map(function(g,i){return '<button type="button" data-step="'+i+'" '+(i===state.step?'aria-current="step"':'')+'>'+(i+1)+'. '+esc(g[0])+'</button>';}).join('')+'</nav>')+
       '<section aria-label="'+esc(group[0])+'"><h3 class="step-heading" tabindex="-1">'+esc(isResult&&state.step===5?'Awards & review':group[0])+'</h3>'+body+'</section>'+
       '<div class="step-actions"><button class="button ghost" data-step="'+back+'" '+(!state.step?'disabled':'')+'>← Back</button><span>'+(isResult?'Saved as a draft':'Section '+(state.step+1)+' of '+groups.length)+'</span>'+(final?'<button class="button" data-action="'+(isResult?'publish':'preview')+'">'+(isResult?'Review & publish':'Preview changes')+'</button>':'<button class="button" data-step="'+next+'">'+(isResult&&state.step===0?'Enter finish order →':isResult&&state.step===4?'Assign bonuses →':'Next →')+'</button>')+'</div>'+
-      '<footer class="editor-footer"><div class="shift-tools">'+(config.shifts?'<button class="button ghost" data-shift="-7">← Shift 1 week</button><button class="button ghost" data-shift="7">Shift 1 week →</button>':'')+'</div><button class="button danger" data-action="delete">Delete entry</button></footer>';
+      '<footer class="editor-footer"><div class="shift-tools">'+(config.shifts?'<button class="button ghost" data-shift="-7">← Shift 1 week</button><button class="button ghost" data-shift="7">Shift 1 week →</button>':'')+'</div><div class="view-actions"><button class="button ghost" data-action="duplicate">Duplicate entry</button><button class="button danger" data-action="delete">Delete entry</button></div></footer>';
   }
 
   function addSelectedFinishers() {
@@ -616,6 +744,7 @@
   }
 
   function render() {
+    commitPendingEdit();
     document.querySelectorAll("[data-section]").forEach(function (button) { button.classList.toggle("is-active",button.dataset.section===state.section);if(button.dataset.section===state.section)button.setAttribute("aria-current","page");else button.removeAttribute("aria-current"); });
     document.querySelector("[data-mobile-section]").value=state.section;
     var more=document.querySelector('[data-admin-more]');more.classList.toggle('is-active',!['dashboard','schedule','results'].includes(state.section));
@@ -664,6 +793,7 @@
       if(state.section==='results'&&input.dataset.skey==='number')target.numberManual=true;
     }
     if(state.section==='results'){recalculateResult(item);syncResultPoints(item);}changed();
+    if(input.dataset.sfield==='entries'||input.dataset.sfield==='pendingDrivers'){var card=input.closest('.builder-row'),mini=card&&card.querySelector('.driver-mini');if(mini)mini.outerHTML=driverMini(target);}
   }
 
   function addItem() { var pair=currentConfigAndItems(); var item=pair.config.template(); if(state.section==="results"){var next=nextUnrecordedRace();if(next)applyScheduledRace(item,next);} state.step=0; pair.items.push(item); commitItems(pair.items); state.selected=pair.items.length-1; state.query=""; changed(); render(); }
@@ -673,7 +803,7 @@
 
   async function reloadPublished() {
     if(state.dirty&&!confirm("Discard the browser draft and reload the currently published data?"))return;
-    try { state.data=await window.UARLData.load(true); (state.data.records||[]).forEach(recalculateResult);state.original=clone(state.data); state.dirty=false;state.changes=0;localStorage.removeItem(DRAFT_KEY);setStatus("Published data loaded","ready");render();toast("Published website data reloaded."); } catch(error){toast(error.message,true);}
+    try { state.data=await window.UARLData.load(true); (state.data.records||[]).forEach(recalculateResult);state.original=clone(state.data); state.dirty=false;state.changes=0;localStorage.removeItem(DRAFT_KEY);resetHistory();setStatus("Published data loaded","ready");render();toast("Published website data reloaded."); } catch(error){toast(error.message,true);}
   }
 
   function exportData() { var blob=new Blob([JSON.stringify(state.data,null,2)+"\n"],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="uarl-data-backup-"+dateOnly(new Date())+".json";a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000); }
@@ -689,6 +819,7 @@
     if(!validRaceAwards())return;
     if(pendingImageUploads){toast("Wait for image uploads to finish before publishing.",true);return;}
     document.querySelector("[data-publish-summary]").innerHTML='<b>'+countChanges()+' changed entr'+(countChanges()===1?'y':'ies')+'</b><br>'+state.data.events.length+' events · '+state.data.records.length+' records · '+state.data.drivers.teams.length+' teams · '+state.data.paints.length+' paints';
+    document.querySelector('[data-publish-summary]').innerHTML+='<div class="change-review">'+workspaceChanges().slice(0,8).map(function(change){return '<p><b>'+esc(change.title)+'</b> · '+esc(change.kind)+'<br><small>'+esc((change.fields||[]).slice(0,4).join(', '))+'</small></p>';}).join('')+'</div>';
     publishDialog.showModal();
   }
   async function publish() {
@@ -696,11 +827,23 @@
     if(pendingImageUploads){toast("Wait for image uploads to finish before publishing.",true);return;}
     var note=document.querySelector("[data-publish-note]").value;var button=document.querySelector("[data-confirm-publish]");
     button.disabled=true;button.textContent="Publishing…";
-    try { (state.data.records||[]).forEach(recalculateResult);var response=await fetch("/.netlify/functions/admin-publish",{method:"POST",credentials:"same-origin",headers:{"content-type":"application/json"},body:JSON.stringify({data:state.data,message:note})});var result=await response.json();if(response.status===401){publishDialog.close();showLogin(result.error);return;}if(!response.ok)throw new Error(result.error||"Publish failed."); state.original=clone(state.data);state.dirty=false;state.changes=0;localStorage.removeItem(DRAFT_KEY);localStorage.removeItem(window.UARLData.previewKey);setStatus("Published live","ready");publishDialog.close();toast(result.message||"Published successfully."); }
+    try { (state.data.records||[]).forEach(recalculateResult);var response=await fetch("/.netlify/functions/admin-publish",{method:"POST",credentials:"same-origin",headers:{"content-type":"application/json"},body:JSON.stringify({data:state.data,message:note})});var result=await response.json();if(response.status===401){publishDialog.close();showLogin(result.error);return;}if(!response.ok)throw new Error(result.error||"Publish failed."); state.original=clone(state.data);state.dirty=false;state.changes=0;localStorage.removeItem(DRAFT_KEY);localStorage.removeItem(window.UARLData.previewKey);resetHistory();setStatus("Published live","ready");publishDialog.close();render();toast(result.message||"Published successfully."); }
     catch(error){toast(error.message,true);} finally{button.disabled=false;button.textContent="Publish now";}
   }
 
   document.addEventListener("click",function(event){
+    if(event.target.closest('[data-open-search]')){openWorkspaceSearch();return;}
+    if(event.target.closest('[data-close-workspace-dialog]')){event.target.closest('dialog').close();return;}
+    if(event.target.closest('[data-workspace-undo]')){restoreHistory(false);return;}
+    if(event.target.closest('[data-workspace-redo]')){restoreHistory(true);return;}
+    if(event.target.closest('[data-review-changes]')){openChanges();return;}
+    if(event.target.closest('[data-open-transfer]')){openTransfer();return;}
+    if(event.target.closest('[data-workspace-publish]')){document.querySelector('[data-workspace-changes-dialog]').close();openPublish();return;}
+    var task=event.target.closest('[data-workspace-task]');if(task){workspaceTask(task.dataset.workspaceTask);return;}
+    var search=event.target.closest('[data-search-section]');if(search){document.querySelector('[data-workspace-search-dialog]').close();goToEntry(search.dataset.searchSection,search.dataset.searchIndex,Number(search.dataset.searchStep));return;}
+    var resume=event.target.closest('[data-resume-section]');if(resume){if(resume.closest('dialog'))resume.closest('dialog').close();goToEntry(resume.dataset.resumeSection,resume.dataset.resumeIndex);return;}
+    var nextRecord=event.target.closest('[data-record-next]');if(nextRecord){var pair=currentConfigAndItems();commitPendingEdit();state.selected=Math.max(0,Math.min(pair.items.length-1,state.selected+Number(nextRecord.dataset.recordNext)));render();return;}
+
     if(event.target.closest("[data-close-publish]")){publishDialog.close();return;}
     if(event.target.closest('[data-start-race]')){state.section='results';state.selected=0;state.step=0;addItem();return;}
     var move=event.target.closest('[data-move-finish]');if(move){event.preventDefault();moveFinisher(move);return;}
@@ -715,11 +858,13 @@
     var more=event.target.closest('[data-admin-more]');if(more){document.querySelector('[data-admin-menu]').showModal();return;}
     if(event.target.closest('[data-close-admin-menu]')){document.querySelector('[data-admin-menu]').close();return;}
     var section=event.target.closest("[data-section]");if(section){state.section=section.dataset.section;state.step=0;document.querySelector("[data-admin-menu]").close();state.selected=0;state.query="";render();return;}
-    var select=event.target.closest("[data-select]");if(select){state.selected=Number(select.dataset.select);state.step=0;render();return;}
+    var select=event.target.closest("[data-select]");if(select){state.selected=Number(select.dataset.select);render();return;}
     var action=event.target.closest("[data-action]");if(action){var a=action.dataset.action;if(a==="add")addItem();else if(a==="delete")deleteItem();else if(a==="duplicate")duplicateItem();else if(a==="reload")reloadPublished();else if(a==="export")exportData();else if(a==="preview")preview();else if(a==="publish")openPublish();else if(a==="logout")logout();else if(a==="apply-json"){try{state.data=window.UARLData.normalize(JSON.parse(document.querySelector("[data-advanced-json]").value));changed();render();toast("Advanced JSON applied to the draft.");}catch(error){toast("Invalid JSON: "+error.message,true);}}return;}
     var shift=event.target.closest("[data-shift]");if(shift){shiftEvent(shift.dataset.shift);}
   });
   document.addEventListener("input",function(event){
+    if(event.target.matches('[data-workspace-search]')){renderWorkspaceSearch(event.target.value);return;}
+    if(event.target.matches('[data-transfer-number]')){updateTransferPreview();return;}
     if(event.target.matches('[data-finish-search]')){var query=event.target.value.trim().toLowerCase();view.querySelectorAll('[data-participant]').forEach(function(label){label.hidden=!label.textContent.toLowerCase().includes(query);});return;}
     if(event.target.matches("[data-list-search]")){state.query=event.target.value;renderCollection(state.section);var input=document.querySelector("[data-list-search]");input.focus();input.setSelectionRange(input.value.length,input.value.length);return;}
     if(event.target.matches("[data-sfield]")){updateStructured(event.target);return;}
@@ -728,7 +873,12 @@
     if(state.section==="results"&&(field==="winner"||field==="pole")){if(field==="winner")item.winnerAutomatic=false;var selected=event.target.options&&event.target.options[event.target.selectedIndex];item[field+"Username"]=selected&&selected.dataset.user||"";value=selected&&selected.dataset.name||value;}
     item[field]=value;commitItems(pair.items);if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();if(state.section==="results"&&field==="division")render();
   });
-  document.addEventListener("change",function(event){if(event.target.matches("[data-image-upload]")){uploadDriverImage(event.target);return;}if(event.target.matches('[data-schedule-race]')){var record=structuredItem(),id=event.target.value;if(!id){delete record.scheduleEventId;record.id='result-'+Date.now();changed();return;}var scheduled=state.data.events.find(function(e){return e.id===id;});if(!scheduled)return;if(['entries','qualifying','stages','finishes','bonuses'].some(function(key){return (record[key]||[]).length;})&&!confirm('Change the linked race and clear its classifications? This prevents carrying results into another race.')){render();return;}['entries','qualifying','stages','finishes','bonuses'].forEach(function(key){record[key]=[];});['winner','winnerUsername','pole','poleUsername'].forEach(function(key){delete record[key];});applyScheduledRace(record,scheduled);changed();render();return;}if(event.target.matches("[data-mobile-section]")){state.section=event.target.value;state.step=0;state.selected=0;state.query="";render();}if(event.target.matches("[data-import]")){var file=event.target.files[0];if(!file)return;file.text().then(function(text){state.data=window.UARLData.normalize(JSON.parse(text));changed();render();toast("Backup imported into the draft.");}).catch(function(error){toast("Could not import: "+error.message,true);});}});
+  document.addEventListener("change",function(event){if(event.target.matches('[data-paint-driver]')){commitPendingEdit();prefillPaint(event.target);return;}if(event.target.matches('[data-transfer-team],[data-transfer-person]')){updateTransferSeats();return;}if(event.target.matches('[data-transfer-seat]')){var dialog=document.querySelector('[data-transfer-dialog]'),team=state.data.drivers.teams.find(function(team){return team.id===dialog.querySelector('[data-transfer-team]').value;});if(team&&event.target.value!=='new')dialog.querySelector('[data-transfer-number]').value=team.entries[Number(event.target.value)].number;else{var person=window.UARLWorkspace.people(state.data).find(function(person){return person.key===dialog.querySelector('[data-transfer-person]').value;});dialog.querySelector('[data-transfer-number]').value=person&&!team.entries.some(function(entry){return String(entry.number)===person.number;})?person.number:'';}updateTransferPreview();return;}if(event.target.matches("[data-image-upload]")){uploadDriverImage(event.target);return;}if(event.target.matches('[data-schedule-race]')){var record=structuredItem(),id=event.target.value;if(!id){delete record.scheduleEventId;record.id='result-'+Date.now();changed();return;}var scheduled=state.data.events.find(function(e){return e.id===id;});if(!scheduled)return;if(['entries','qualifying','stages','finishes','bonuses'].some(function(key){return (record[key]||[]).length;})&&!confirm('Change the linked race and clear its classifications? This prevents carrying results into another race.')){render();return;}['entries','qualifying','stages','finishes','bonuses'].forEach(function(key){record[key]=[];});['winner','winnerUsername','pole','poleUsername'].forEach(function(key){delete record[key];});applyScheduledRace(record,scheduled);changed();render();return;}if(event.target.matches("[data-mobile-section]")){state.section=event.target.value;state.step=0;state.selected=0;state.query="";render();}if(event.target.matches("[data-import]")){var file=event.target.files[0];if(!file)return;file.text().then(function(text){state.data=window.UARLData.normalize(JSON.parse(text));changed();render();toast("Backup imported into the draft.");}).catch(function(error){toast("Could not import: "+error.message,true);});}});
+  document.addEventListener('toggle',function(event){if(event.target.matches('[data-artwork-key]'))artworkOpen[event.target.dataset.artworkKey]=event.target.open;},true);
+  document.addEventListener('focusin',function(event){if(state.data&&event.target.matches('[data-field],[data-sfield],[data-advanced-json]')){commitPendingEdit();editSession={node:event.target};}});
+  document.addEventListener('focusout',function(event){if(editSession&&event.target===editSession.node)commitPendingEdit();});
+  document.addEventListener('keydown',function(event){if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'&&state.user){if(!document.querySelector('dialog[open]')||document.querySelector('[data-workspace-search-dialog]').open){event.preventDefault();if(!document.querySelector('[data-workspace-search-dialog]').open)openWorkspaceSearch();}}});
+  document.querySelector('[data-transfer-form]').addEventListener('submit',saveTransfer);
   document.addEventListener("submit",function(event){var form=event.target.closest("[data-account-create-form]");if(form){event.preventDefault();createAccount(form);}});
   document.querySelector("[data-publish-form]").addEventListener("submit",function(event){event.preventDefault();publish();});
 
@@ -736,7 +886,7 @@
     configureSections();
     try { var live=await window.UARLData.load();
       if(!live.conduct.length){try{var html=await fetch('/competition-guide/',{cache:'no-store'}).then(function(response){return response.text();});var doc=new DOMParser().parseFromString(html,'text/html');live.conduct=[];doc.querySelectorAll('.urg-accordion[data-urg-group]').forEach(function(group){group.querySelectorAll('.urg-rule').forEach(function(rule){var id=(rule.querySelector('.urg-rule-id')||{}).textContent||'';var copy=(rule.querySelector('.urg-rule-copy')||{}).textContent||'';var penalty=rule.querySelector('.urg-rule-penalty');if(id&&copy)live.conduct.push({id:id.trim(),group:group.getAttribute('data-urg-group')||'procedures',text:copy.trim(),penalty:penalty?penalty.textContent.trim():'',severe:Boolean(penalty&&penalty.classList.contains('is-severe'))});});});}catch(error){}}
-      state.data=live;(live.records||[]).forEach(recalculateResult);state.original=clone(live);var draft=localStorage.getItem(DRAFT_KEY);if(draft){try{state.data=window.UARLData.normalize(JSON.parse(draft));(state.data.records||[]).forEach(recalculateResult);state.dirty=countChanges()>0;}catch(error){state.data=live;}}else state.data=live;if(state.dirty)setStatus("Recovered unpublished browser draft","dirty");else setStatus("Published data loaded","ready");render(); }
+      state.data=live;(live.records||[]).forEach(recalculateResult);state.original=clone(live);var draft=localStorage.getItem(DRAFT_KEY);if(draft){try{state.data=window.UARLData.normalize(JSON.parse(draft));(state.data.records||[]).forEach(recalculateResult);state.dirty=countChanges()>0;}catch(error){state.data=live;}}else state.data=live;resetHistory();if(state.dirty)setStatus("Recovered unpublished browser draft","dirty");else setStatus("Published data loaded","ready");render(); }
     catch(error){setStatus("Could not load website data","error");view.innerHTML='<div class="warning">'+esc(error.message)+'</div>';}
   }
   document.querySelector("[data-login-form]").addEventListener("submit",login);
