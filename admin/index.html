@@ -8,6 +8,7 @@
   <link rel="icon" href="/favicon.ico">
   <link rel="stylesheet" href="/assets/admin.css">
   <link rel="stylesheet" href="/assets/admin-workspace.css">
+  <link rel="stylesheet" href="/assets/admin-imports.css">
 </head>
 <body>
   <section class="login-gate" data-login-gate>
@@ -50,6 +51,7 @@
         <small>Race operations</small>
         <button data-section="schedule"><span>▦</span> Schedule</button>
         <button data-section="results"><span>⚑</span> Results + points</button>
+        <button data-section="standings"><span>≡</span> Standings</button>
         <small data-full-admin>Paddock</small>
         <button data-section="teams" data-full-admin><span>▰</span> Teams + charters</button>
         <button data-section="profiles" data-full-admin><span>●</span> Driver profiles</button>
@@ -134,7 +136,10 @@
   <div class="toast" role="status" aria-live="polite" data-toast></div>
   <script src="/assets/runtime-data.js"></script>
   <script src="/assets/result-drivers.js"></script>
+  <script src="/assets/standings.js"></script>
+  <script src="/assets/race-csv.js"></script>
   <script src="/assets/admin-workspace.js"></script>
+  <script src="/assets/admin-imports.js"></script>
   <script src="/assets/admin.js"></script>
 </body>
 </html>

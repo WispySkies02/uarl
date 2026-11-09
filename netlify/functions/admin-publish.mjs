@@ -1,6 +1,7 @@
 import crypto from "node:crypto";
 import { getStore } from "@netlify/blobs";
 import "../../assets/result-drivers.js";
+import "../../assets/standings.js";
 
 const STORE_NAME = "uarl-race-control";
 const DATA_KEY = "website-data";
@@ -105,12 +106,13 @@ function accountInput(payload) {
   return { username, displayName, role, password };
 }
 
-function raceControlChangeOnly(nextData, currentData) {
+export function raceControlChangeOnly(nextData, currentData) {
   if (!currentData) return false;
   const strip = (value) => {
     const copy = JSON.parse(JSON.stringify(value));
     delete copy.events;
     delete copy.records;
+    delete copy.standings;
     if (copy.race) delete copy.race.schedule;
     return copy;
   };
@@ -119,6 +121,10 @@ function raceControlChangeOnly(nextData, currentData) {
 
 export function validateRaceBonuses(data) {
   return globalThis.UARLResultDrivers.bonusIssues(data);
+}
+
+export function validateStandings(data) {
+  return globalThis.UARLStandings.validate(data);
 }
 
 const IMAGE_LIMIT = 2 * 1024 * 1024;
@@ -260,6 +266,8 @@ export default async (request) => {
     }
 
     if (!validPayload(payload.data)) return json(422, { error: "The UARL dataset is incomplete or invalid." });
+    const standingsIssues = validateStandings(payload.data);
+    if (standingsIssues.length) return json(422, { error: standingsIssues[0] });
     const awardIssues = validateRaceBonuses(payload.data);
     if (awardIssues.length) {
       const issue = awardIssues[0], race = payload.data.records[issue.recordIndex];
@@ -267,7 +275,7 @@ export default async (request) => {
     }
     const current = await store.get(DATA_KEY, { type: "json", consistency: "strong" });
     if (user.role === "race_control" && !raceControlChangeOnly(payload.data, current && current.data)) {
-      return json(403, { error: "Race Control accounts can publish schedule and results changes only." });
+      return json(403, { error: "Race Control accounts can publish schedule, results, and standings changes only." });
     }
 
     const publishedAt = new Date().toISOString();

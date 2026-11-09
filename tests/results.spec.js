@@ -187,7 +187,7 @@ test('public standings keep distinct known and non-roster identities with the sa
  await page.goto('/race-center/');
  const rows=page.locator('[data-rc-standings-body] tr');
  for(const [user,points] of [['JordanA','50'],['JordanB','45'],['JordanOutside','42']]){
-  const row=rows.filter({has:page.getByText('@'+user,{exact:true})});
+  const row=rows.and(page.locator('[data-driver-id="'+user+'"]'));
   await expect(row).toHaveCount(1);await expect(row.locator('.rc-pts')).toHaveText(points);
  }
  await expect(rows.locator('.rc-driver-cell>strong').filter({hasText:/^Jordan$/})).toHaveCount(3);
