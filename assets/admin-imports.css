@@ -38,6 +38,10 @@
 .standings-correction { font-size: 11px; color: #c5d4bb; }
 .standings-correction summary { padding: 4px 0; cursor: pointer; }
 .standings-correction p { margin: 5px 0 0; }
+.roster-series { border: 1px solid #354136; border-radius: 8px; padding: 14px; display: flex; flex-wrap: wrap; gap: 12px; }
+.roster-series legend { padding: 0 5px; font-weight: 700; font-size: 13px; }
+.roster-series label { display: flex; align-items: center; gap: 8px; min-height: 36px; }
+.roster-series small { flex-basis: 100%; color: #afbdac; line-height: 1.5; }
 @media (max-width: 760px) {
   .csv-import > summary { padding: 14px; }
   .csv-import > summary small { width: 100%; margin-left: 20px; }

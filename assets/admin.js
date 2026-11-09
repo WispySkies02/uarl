@@ -15,7 +15,7 @@
   var pendingImageUploads = 0;
   var undoSnapshots=[],redoSnapshots=[],historyAnchor=null,editSession=null,historyRestoring=false;
   var artworkOpen=Object.create(null);
-  var sectionNames={dashboard:'Home',schedule:'Schedule',results:'Results',standings:'Standings',teams:'Teams & rosters',profiles:'Driver profiles',open:'Open Series',freeAgents:'Free agents',moves:'Signings',paints:'Paint Booth',history:'History',guide:'Rules & FAQ',conduct:'Conduct',advanced:'Advanced JSON',accounts:'Staff accounts'};
+  var sectionNames={dashboard:'Home',schedule:'Schedule',results:'Results',standings:'Standings',teams:'Teams & rosters',profiles:'Driver roster',open:'Open Series',freeAgents:'Free agents',moves:'Signings',paints:'Paint Booth',history:'History',guide:'Rules & FAQ',conduct:'Conduct',advanced:'Advanced JSON',accounts:'Staff accounts'};
   var imports=window.UARLAdminImports({data:function(){return state.data;},esc:esc,header:renderHeader,commit:commitPendingEdit,render:render,recalculate:recalculateResult,toast:toast,applied:function(){changed();render();}});
 
   var configs = {
@@ -28,10 +28,10 @@
       ], shifts: true
     },
     results: {
-      title: "Results + Points", kicker: "Race Center", description: "Official classifications, stages, bonuses, eligibility, and points. Add the result here once race control signs off.", path: "records",
+      title: "Results + Points", kicker: "Race Center", description: "Choose the race, paste your CSV, preview the calculated results, then apply and publish.", path: "records",
       itemTitle: function (x) { return x.event || x.name || "Untitled result"; }, itemMeta: function (x) { return [String(x.division || "").toUpperCase(), x.date, x.status].filter(Boolean).join(" · "); },
       template: function () { return { id: "result-" + Date.now(), division: "d1", event: "New Race Result", date: dateOnly(new Date()), start: new Date().toISOString(), track: "", status: "complete", eventType: "Points race", pointsEvent: true, exhibition: false, qualifying: [], stages: [], finishes: [], bonuses: [], winnerAutomatic:true }; },
-      fields: [["id","Event ID"],["division","Division","select",["d1","d2","open"]],["event","Event name","textarea","wide"],["date","Date","date"],["start","Start time","datetime"],["track","Track"],["round","Round","number"],["laps","Laps","number"],["status","Status","select",["complete","official","pending"]],["eventType","Event type"],["winnerAutomatic","Winner follows first place","bool"],["winner","Winner","seriesDriver"],["pole","Pole winner","seriesDriver"],["pointsSummary","Points summary"],["pointsNote","Points note","textarea","wide"],["recordNote","Official record note","textarea","wide"],["pointsEvent","Points event","bool"],["exhibition","Exhibition","bool"],["entries","Event-only / guest drivers","eventEntries","wide"],["qualifying","Qualifying classification","classification","wide"],["stages","Stage classifications","stages","wide"],["finishes","Race finish + points","finishes","wide"],["bonuses","Bonuses","bonuses","wide"]]
+      fields: [["id","Event ID"],["division","Division","select",["d1","d2","open"]],["event","Event name","textarea","wide"],["date","Date","date"],["start","Start time","datetime"],["track","Track"],["round","Round","number"],["laps","Laps","number"],["status","Status","select",["complete","official","pending"]],["eventType","Event type"],["winnerAutomatic","Winner follows first place","bool"],["winner","Winner","seriesDriver"],["pole","Pole winner","seriesDriver"],["pointsSummary","Points summary"],["pointsNote","Points note","textarea","wide"],["recordNote","Official record note","textarea","wide"],["pointsEvent","Points event","bool"],["exhibition","Exhibition","bool"],["qualifying","Qualifying classification","classification","wide"],["stages","Stage classifications","stages","wide"],["finishes","Race finish + points","finishes","wide"],["bonuses","Bonuses","bonuses","wide"]]
     },
     teams: {
       title: "Teams + Charters", kicker: "D1 paddock", description: "Team ownership, branding, entries, open seats, and special shared charters.", path: "drivers.teams",
@@ -165,7 +165,7 @@
   function configureSections() {
     if(!state.user)return;
     var labels={dashboard:"Dashboard",schedule:"Schedule",results:"Results + points",standings:"Standings"};
-    if(state.user.role!=="race_control")Object.assign(labels,{teams:"Teams + charters",profiles:"Driver profiles",open:"Open Series",freeAgents:"Free agents",moves:"Recent moves",paints:"Paint Booth",history:"History",guide:"Rules + FAQ",conduct:"Conduct rulebook",advanced:"Advanced JSON"});
+    if(state.user.role!=="race_control")Object.assign(labels,{teams:"Teams + charters",profiles:"Driver roster",open:"Open Series",freeAgents:"Free agents",moves:"Recent moves",paints:"Paint Booth",history:"History",guide:"Rules + FAQ",conduct:"Conduct rulebook",advanced:"Advanced JSON"});
     if(state.user.role==="owner")labels.accounts="Staff accounts";
     if(!Object.prototype.hasOwnProperty.call(labels,state.section))state.section="dashboard";
     var picker=document.querySelector("[data-mobile-section]");
@@ -226,7 +226,7 @@
     var full=state.user&&state.user.role!=='race_control',changes=workspaceChanges();
     function task(key,icon,title,copy){return '<button type="button" class="workspace-task" data-workspace-task="'+key+'"><span class="task-icon" aria-hidden="true">'+icon+'</span><span class="task-title">'+title+'</span><span class="task-copy">'+copy+'</span></button>';}
     view.innerHTML='<div class="workspace-home"><header class="workspace-greeting"><span class="eyebrow">Your paddock</span><h1>What are we updating?</h1><p>'+esc(state.user&&state.user.displayName||'Welcome')+', jump straight to the job. Your work saves as a draft while you edit.</p></header>'+draftTools()+
-      '<div class="workspace-home-grid"><section class="workspace-task-grid" aria-label="Common tasks">'+task('race','⚑','Record a race','Select the field, arrange the finish, award bonuses.')+task('standings','≡','Update standings','Import a points CSV or correct a driver’s total.')+task('schedule','▦','Adjust an event','Go straight to the next event’s date and status.')+(full?task('roster','▰','Update a roster','Choose a team and edit its drivers.')+task('transfer','⇄','Move or sign a driver','Update the roster and announcement together.')+task('paint','◆','Add a paint scheme','Use saved driver details instead of retyping them.')+task('search','⌕','Find & edit anything','Search drivers, races, teams and site content.'):'')+'</section>'+
+      '<div class="workspace-home-grid"><section class="workspace-task-grid" aria-label="Common tasks">'+task('race','⚑','Record a race','Choose the race, paste a CSV, preview and apply.')+task('standings','≡','Update standings','Import a points CSV or correct a driver’s total.')+task('schedule','▦','Adjust an event','Go straight to the next event’s date and status.')+(full?task('roster','▰','Update a roster','Choose a team and edit its drivers.')+task('transfer','⇄','Move or sign a driver','Update the roster and announcement together.')+task('paint','◆','Add a paint scheme','Use saved driver details instead of retyping them.')+task('search','⌕','Find & edit anything','Search drivers, races, teams and site content.'):'')+'</section>'+
       '<article class="workspace-next-event"><span class="eyebrow">Next on the calendar</span>'+(upcoming?'<h2>'+esc(upcoming.name)+'</h2><p>'+esc(upcoming.date)+' · '+esc(upcoming.track)+'</p><span class="workspace-chip">'+esc(String(upcoming.division||'').toUpperCase())+'</span><button type="button" class="button ghost" data-workspace-task="schedule">Edit this event →</button>':'<h2>Calendar up to date</h2><p>Add the next event whenever you’re ready.</p><button class="button ghost" data-section="schedule">Open schedule</button>')+(state.data.events.length?'<button class="button ghost" type="button" data-start-race>Start a new race entry →</button>':'')+'</article></div>'+
       '<section class="workspace-draft-panel"><header><div><span class="eyebrow">Pick up where you left off</span><h2>'+ (changes.length?'Your unpublished work':'A clear desk')+'</h2></div><button class="button ghost" data-review-changes>Review all changes</button></header>'+(changes.length?'<div class="draft-entry-list">'+renderDraftEntries(changes)+'</div>':'<p>No unfinished edits. Choose a task above to get started.</p>')+'</section></div>';
   }
@@ -268,7 +268,7 @@
     if(task==='transfer')return openTransfer();
     if(task==='race'){
       var pending=state.data.records.findIndex(function(record){return record.status==='pending'||JSON.stringify(record)!==JSON.stringify((state.original.records||[]).find(function(old){return old.id===record.id;}));});
-      if(pending>=0){goToEntry('results',pending,4);return;}
+      if(pending>=0){goToEntry('results',pending,0);return;}
       state.section='results';state.selected=0;state.step=0;addItem();return;
     }
     if(task==='standings')return goToEntry('standings',0);
@@ -330,7 +330,7 @@
     var next = {}; rows.forEach(function (row) { var user = row.username; var value = clone(row); delete value.username; if (user) next[user] = value; }); state.data.drivers.profiles = next;
   }
   function profileConfig() {
-    return { title:"Driver Profiles", kicker:"Identity + career data", description:"Display names, Roblox usernames, career wins, championships, and historical rank.", path:"profiles", itemTitle:function(x){return x.alias||x.username||"Driver";}, itemMeta:function(x){return "@"+(x.username||"")+" · "+(x.wins||0)+" wins · "+(x.championships||0)+" titles";}, template:function(){return {username:"new_driver_"+Date.now(),alias:"New Driver",wins:0,championships:0,rank:0};}, fields:[["username","Roblox username"],["alias","Display name"],["wins","Career wins","number"],["championships","Championships","number"],["rank","All-time rank","number"],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]] };
+    return { title:"Driver roster", kicker:"Permanent league drivers", description:"Manage driver identities, CSV names, series eligibility, and career profiles. A team assignment is optional.", path:"profiles", itemTitle:function(x){return x.alias||x.username||"Driver";}, itemMeta:function(x){return "@"+(x.username||"")+" · "+(x.csvDivisions||[]).join(" / ").toUpperCase();}, template:function(){return {username:"new_driver_"+Date.now(),alias:"New Driver",csvDivisions:["d1"],number:"",csvAliases:[],wins:0,championships:0,rank:0};}, fields:[["username","Roblox username"],["alias","Display name"],["csvDivisions","Permanent roster series","divisions"],["number","Car number (leave blank until assigned)"],["csvAliases","Other names accepted in CSV","tags","wide"],["wins","Career wins","number"],["championships","Championships","number"],["rank","All-time rank","number"],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]] };
   }
 
   function renderCollection(section) {
@@ -378,7 +378,7 @@
     var selected=window.UARLResultDrivers.resolve(options,value,identity,number);
     var groups=new Map();
     options.forEach(function(driver){
-      var group=driver.source==='saved'?'Saved result':driver.source==='guest'?'Race guests':driver.team|| (finishersOnly?'Race finish':'Roster');
+      var group=driver.source==='saved'?'Saved result':driver.source==='guest'?'Saved race entries':driver.team|| (finishersOnly?'Race finish':'Roster');
       if(!groups.has(group))groups.set(group,[]);groups.get(group).push(driver);
     });
     return '<select data-driver-select '+attrs+'><option value="">'+(finishersOnly?'Choose a driver from this race finish':'Choose a roster driver')+'</option>'+Array.from(groups).map(function(group){
@@ -469,9 +469,7 @@
   function renderStructuredField(key,label,type,item) {
     var value=Array.isArray(item[key])?item[key]:[],listId='driver-list-'+key+'-'+state.selected;
     var suggestions='<datalist id="'+listId+'">'+driverSuggestions().map(function(name){return '<option value="'+esc(name)+'">';}).join("")+'</datalist>',rows="",addLabel="Add row",help="";
-    if(type==="eventEntries"){
-      help="Use this for a verified substitute or one-off entrant who is not on the series roster. A Roblox username is required to keep standings and stage points attached to the correct driver.";addLabel="Add event-only driver";rows=value.map(function(entry,index){return '<div class="builder-row"><div class="builder-grid roster-grid"><label>Car #'+dataInput(key,index,"number",entry.number)+'</label><label>Driver name'+dataInput(key,index,"name",entry.name)+'</label><label>Roblox username'+dataInput(key,index,"user",entry.user)+'</label><label class="builder-check">'+dataInput(key,index,"pointsEligible",entry.pointsEligible!==false,"bool")+' Points eligible</label></div>'+removeButton(key,index)+'</div>';}).join("");
-    }else if(type==="roster"){
+    if(type==="roster"){
       help="Enter the driver's username and public name, then check the car number. Charter details and artwork are available when you need them.";
       addLabel="Add charter / entry";
       rows=value.map(function(entry,index){
@@ -546,9 +544,10 @@
 
   function renderField(field, item) {
     var key=field[0],label=field[1],type=field[2]||"text",options=Array.isArray(field[3])?field[3]:null,wide=field[3]==="wide"||field[4]==="wide",value=item[key];
-    if (["eventEntries","roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(type)) return renderStructuredField(key,label,type,item);
+    if (["roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(type)) return renderStructuredField(key,label,type,item);
     if(key==='id')return '<details class="field wide internal-id"><summary>Advanced: reference ID</summary><label>'+esc(label)+'<input type="text" data-field="id" data-type="text" value="'+esc(value||'')+'"></label></details>';
     if (type === "image") return renderImageControl(key,label,item);
+    if (type === "divisions") return '<fieldset class="field wide roster-series"><legend>'+esc(label)+'</legend>'+[["d1","D1 · Cup"],["open","Open Series"]].map(function(pair){return '<label><input type="checkbox" data-field="'+esc(key)+'" data-type="divisions" data-division-value="'+pair[0]+'" '+(Array.isArray(value)&&value.includes(pair[0])?'checked':'')+'>'+pair[1]+'</label>';}).join('')+'<small>Permanent entries are available for CSV imports even without a team or charter. Team entries are always available in their own series.</small></fieldset>';
     if (type === "seriesDriver") {
       var rows=key==='winner'?item.finishes:key==='pole'?item.qualifying:null;
       var row=rows&&rows.find(function(row){return sameResultDriver(row,{name:value,username:item[key+'Username']});});
@@ -574,17 +573,17 @@
     (record.finishes||[]).forEach(function(row){inspect(row.name,row.username);});
     (record.stages||[]).forEach(function(stage){(stage.results||[]).forEach(function(row){inspect(row.name,row.username);});});
     if(!missing.size)return "";
-    return '<div class="warning"><b>Roblox username needed:</b> '+Array.from(missing.values()).map(esc).join(", ")+'. Add it in Teams + Charters for a rostered driver, or Event-only drivers for a guest. This prevents split standings and makes stage points follow the correct driver.</div>';
+    return '<div class="warning"><b>Roblox username needed:</b> '+Array.from(missing.values()).map(esc).join(", ")+'. Add it in Teams + Charters for a rostered driver, or Driver roster for a permanent entry. This prevents split standings and makes stage points follow the correct driver.</div>';
   }
 
   var editorGroups = {
-    profiles:[['Identity',['username','alias']],['Career',['wins','championships','rank']],['Artwork',['numberImage','signatureImage']]],
+    profiles:[['Identity',['username','alias','csvDivisions','number','csvAliases']],['Career',['wins','championships','rank']],['Artwork',['numberImage','signatureImage']]],
     open:[['Driver',['number','user','name','make','status']],['Artwork',['numberImage','signatureImage']]],
     freeAgents:[['Driver',['name','user']],['Previous entry',['former']]],
     moves:[['Signing',['driver','team','number','make','signedAt']]],
     paints:[['Driver',['division','series','number','name','handle','team','make']],['Scheme',['id','title','subtitle','image','body','scrAffiliate']],['Tags & search',['extra','search']]],
     conduct:[['Rule',['id','group','text']],['Penalty',['penalty','severe']]],
-    results: [ ["Race", ["id","division","event","date","start","track","round","laps","status","eventType","pointsEvent","exhibition"]], ["Guest drivers", ["entries"]], ["Qualifying", ["pole","qualifying"]], ["Stages", ["stages"]], ["Finish", ["winnerAutomatic","winner","finishes"]], ["Bonuses", ["bonuses"]], ["Notes", ["pointsSummary","pointsNote","recordNote"]] ],
+    results: [ ["Race", ["id","division","event","date","start","track","round","laps","status","eventType","pointsEvent","exhibition"]], ["Roster", []], ["Qualifying", ["pole","qualifying"]], ["Stages", ["stages"]], ["Finish", ["winnerAutomatic","winner","finishes"]], ["Bonuses", ["bonuses"]], ["Notes", ["pointsSummary","pointsNote","recordNote"]] ],
     teams: [ ["Team", ["id","name","owner","ownerNote","make","founded","note"]], ["Branding", ["logo","brandColor","brandColor2"]], ["Charters", ["charterCount","entries"]], ["Pending drivers", ["pendingDrivers"]] ],
     schedule: [ ["Event", ["id","division","series","name","track","round","laps"]], ["Date + status", ["date","start","scheduleStatus","scheduleNote","completed"]], ["Race format", ["exhibition","pointsEvent","crownJewel","chase","special"]], ["Original date", ["originalDate","originalStart"]] ]
   };
@@ -592,7 +591,7 @@
     if (editorGroups[state.section]) return editorGroups[state.section];
     var groups = [], batch = [];
     config.fields.forEach(function (field) {
-      if (["eventEntries","roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(field[2])) {
+      if (["roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(field[2])) {
         if (batch.length) { groups.push([groups.length ? "More details" : "Overview", batch]); batch = []; }
         groups.push([field[1], [field[0]]]);
       } else {
@@ -619,19 +618,19 @@
   }
   function resultNavigation(groups) {
     function button(index,label){return '<button type="button" data-step="'+index+'" '+(index===state.step?'aria-current="step"':'')+'>'+esc(label)+'</button>';}
-    return '<div class="editor-steps result-flow"><nav aria-label="Race entry">'+button(0,'1. Pick race')+button(4,'2. Finish order')+button(5,'3. Awards & review')+'</nav><details data-result-details '+([1,2,3,6].includes(state.step)?'open':'')+'><summary>Guests, qualifying, stages & notes</summary><nav aria-label="More race details">'+[1,2,3,6].map(function(i){return button(i,groups[i][0]);}).join('')+'</nav></details></div>';
+    return '<div class="editor-steps result-flow"><nav aria-label="Race entry">'+button(0,'1. Race & CSV')+button(4,'Manual corrections')+button(5,'2. Review & publish')+'</nav><details data-result-details '+([2,3,6].includes(state.step)?'open':'')+'><summary>Qualifying, stages & notes</summary><nav aria-label="More race details">'+[2,3,6].map(function(i){return button(i,groups[i][0]);}).join('')+'</nav></details></div>';
   }
   function renderFinisherPicker(record) {
     var all=seriesDriverPool(record.division,null,record),entered=(record.finishes||[]).map(function(row){return window.UARLResultDrivers.resolve(all,row.name,row.username,row.number);});
     var drivers=all.filter(function(driver){return !entered.some(function(found){return found&&found.key===driver.key;});});
-    return '<details class="finisher-picker" data-finisher-picker><summary>+ Select drivers who raced</summary><p>Pick the participants once, then use the arrows to arrange their finish order. Numbers stay editable.</p><input type="search" data-finish-search placeholder="Find a driver or team" aria-label="Find a race participant"><div class="participant-list">'+drivers.map(function(driver){return '<label data-participant><input type="checkbox" data-finisher-choice value="'+esc(driver.key)+'"><span><b>'+esc((driver.number?'#'+driver.number+' · ':'')+driver.name)+'</b><small>'+esc([driver.team,driver.user&&'@'+driver.user].filter(Boolean).join(' · '))+'</small></span></label>';}).join('')+'</div><button type="button" class="button" data-add-finishers>Add selected drivers</button>'+(drivers.length?'':'<p>All current roster drivers are already listed. Add a guest under More race details if needed.</p>')+'</details>';
+    return '<details class="finisher-picker" data-finisher-picker><summary>+ Select drivers who raced</summary><p>Pick the participants once, then use the arrows to arrange their finish order. Numbers stay editable.</p><input type="search" data-finish-search placeholder="Find a driver or team" aria-label="Find a race participant"><div class="participant-list">'+drivers.map(function(driver){return '<label data-participant><input type="checkbox" data-finisher-choice value="'+esc(driver.key)+'"><span><b>'+esc((driver.number?'#'+driver.number+' · ':'')+driver.name)+'</b><small>'+esc([driver.team,driver.user&&'@'+driver.user].filter(Boolean).join(' · '))+'</small></span></label>';}).join('')+'</div><button type="button" class="button" data-add-finishers>Add selected drivers</button>'+(drivers.length?'':'<p>All current roster drivers are already listed. Add any new permanent driver under Driver roster.</p>')+'</details>';
   }
   function raceReview(record) {
     var issues=window.UARLResultDrivers.bonusIssues({drivers:state.data.drivers,race:state.data.race,records:[record]});
     return '<div class="race-review"><b>'+esc(record.event)+' · '+(record.finishes||[]).length+' finishers</b><p>Winner: '+esc(record.winner||'Not set')+' · '+(record.bonuses||[]).length+' awards</p><p>'+(issues.length?esc(issues[0].message):'Ready to review. Preview the site or publish when the order and awards are correct.')+'</p><button type="button" class="button ghost" data-action="preview">Preview race</button></div>';
   }
   function renderEditor(config,item,index) {
-    var groups=groupsFor(config); state.step=Math.min(state.step,groups.length-1);
+    var groups=groupsFor(config); state.step=Math.min(state.step,groups.length-1);if(state.section==="results"&&state.step===1)state.step=0;
     var group=groups[state.step],isResult=state.section==='results';
     var fields=config.fields.filter(function(f){return group[1].includes(f[0]);}).map(function(f){return renderField(f,item);}).join('');
     var linkedRace=isResult&&state.step===0;
@@ -641,15 +640,15 @@
     if(!isResult)body=renderWorkspacePreview(state.section,item)+body;
     if(isResult&&state.step===4)body=renderFinisherPicker(item)+body;
     if(isResult&&state.step===5)body='<p class="editor-guidance">Awards are only available to drivers in this race finish. Choose who earned each bonus; no lap totals are needed.</p>'+body+raceReview(item);
-    var next=isResult&&state.step===0?4:isResult&&state.step===4?5:state.step+1;
-    var back=isResult&&state.step===4?0:isResult&&state.step===5?4:state.step-1;
+    var next=isResult&&state.step===0?5:isResult&&state.step===4?5:state.step+1;
+    var back=isResult&&state.step===4?0:isResult&&state.step===5?0:state.step-1;
     var final=isResult?state.step===5||state.step===6:state.step===groups.length-1;
     var total=currentConfigAndItems().items.length;
     return '<nav class="workspace-record-nav" aria-label="Record navigation"><button type="button" class="button ghost" data-record-next="-1" '+(!index?'disabled':'')+'>← Previous</button><span>'+(index+1)+' of '+total+'</span><button type="button" class="button ghost" data-record-next="1" '+(index>=total-1?'disabled':'')+'>Next →</button></nav><div class="editor-title"><div><small>ENTRY '+String(index+1).padStart(2,'0')+'</small><h2>'+esc(config.itemTitle(item))+'</h2></div></div>'+resultIdentityWarning(item)+(isResult?imports.results(item):'')+
-      '<p class="editor-guidance">'+(isResult?'Pick the race, build the finish order, then award bonuses. Your draft saves as you go.':'One section at a time. Edits save automatically.')+'</p>'+
+      '<p class="editor-guidance">'+(isResult?'Paste the results CSV, preview it, then apply it to your draft. Manual corrections are optional.':'One section at a time. Edits save automatically.')+'</p>'+
       (isResult?resultNavigation(groups):'<nav class="editor-steps" aria-label="Entry sections">'+groups.map(function(g,i){return '<button type="button" data-step="'+i+'" '+(i===state.step?'aria-current="step"':'')+'>'+(i+1)+'. '+esc(g[0])+'</button>';}).join('')+'</nav>')+
       '<section aria-label="'+esc(group[0])+'"><h3 class="step-heading" tabindex="-1">'+esc(isResult&&state.step===5?'Awards & review':group[0])+'</h3>'+body+'</section>'+
-      '<div class="step-actions"><button class="button ghost" data-step="'+back+'" '+(!state.step?'disabled':'')+'>← Back</button><span>'+(isResult?'Saved as a draft':'Section '+(state.step+1)+' of '+groups.length)+'</span>'+(final?'<button class="button" data-action="'+(isResult?'publish':'preview')+'">'+(isResult?'Review & publish':'Preview changes')+'</button>':'<button class="button" data-step="'+next+'">'+(isResult&&state.step===0?'Enter finish order →':isResult&&state.step===4?'Assign bonuses →':'Next →')+'</button>')+'</div>'+
+      '<div class="step-actions"><button class="button ghost" data-step="'+back+'" '+(!state.step?'disabled':'')+'>← Back</button><span>'+(isResult?'Saved as a draft':'Section '+(state.step+1)+' of '+groups.length)+'</span>'+(final?'<button class="button" data-action="'+(isResult?'publish':'preview')+'">'+(isResult?'Review & publish':'Preview changes')+'</button>':'<button class="button" data-step="'+next+'">'+(isResult&&state.step===0?'Review & publish →':isResult&&state.step===4?'Assign bonuses →':'Next →')+'</button>')+'</div>'+
       '<footer class="editor-footer"><div class="shift-tools">'+(config.shifts?'<button class="button ghost" data-shift="-7">← Shift 1 week</button><button class="button ghost" data-shift="7">Shift 1 week →</button>':'')+'</div><div class="view-actions"><button class="button ghost" data-action="duplicate">Duplicate entry</button><button class="button danger" data-action="delete">Delete entry</button></div></footer>';
   }
 
@@ -763,7 +762,6 @@
   function commitItems(items) { if (state.section === "profiles") saveProfiles(items); }
   function structuredItem() { var pair=currentConfigAndItems();return pair.items[state.selected]; }
   function structuredTemplate(type,array) {
-    if(type==="eventEntries")return {number:"",name:"",user:"",pointsEligible:true};
     if(type==="roster")return {number:"",user:"",name:"",status:"Full-Time",seatType:"",charterType:"",signedAt:"",recent:false};
     if(type==="classification")return {position:(array.length+1),number:"",name:""};
     if(type==="finishes")return {position:(array.length+1),number:"",name:"",resultStatus:"Finish",pointsEligible:true,points:0,stagePoints:0,bonusPoints:0,totalPoints:0};
@@ -875,7 +873,7 @@
     if(event.target.matches("[data-list-search]")){state.query=event.target.value;renderCollection(state.section);var input=document.querySelector("[data-list-search]");input.focus();input.setSelectionRange(input.value.length,input.value.length);return;}
     if(event.target.matches("[data-sfield]")){updateStructured(event.target);return;}
     if(!event.target.matches("[data-field]"))return;var pair=currentConfigAndItems(),item=pair.items[state.selected],field=event.target.dataset.field,type=event.target.dataset.type,value;
-    if(type==="bool")value=event.target.checked;else if(type==="number")value=event.target.value===""?null:Number(event.target.value);else if(type==="datetime")value=fromLocal(event.target.value);else if(type==="json"){try{value=JSON.parse(event.target.value);event.target.style.borderColor="";}catch(error){event.target.style.borderColor="var(--red)";return;}}else value=event.target.value;
+    if(type==="bool")value=event.target.checked;else if(type==="divisions")value=Array.from(view.querySelectorAll('[data-field="'+field+'"][data-type="divisions"]:checked')).map(function(input){return input.dataset.divisionValue;});else if(type==="number")value=event.target.value===""?null:Number(event.target.value);else if(type==="datetime")value=fromLocal(event.target.value);else if(type==="json"){try{value=JSON.parse(event.target.value);event.target.style.borderColor="";}catch(error){event.target.style.borderColor="var(--red)";return;}}else value=event.target.value;
     if(state.section==="results"&&(field==="winner"||field==="pole")){if(field==="winner")item.winnerAutomatic=false;var selected=event.target.options&&event.target.options[event.target.selectedIndex];item[field+"Username"]=selected&&selected.dataset.user||"";value=selected&&selected.dataset.name||value;}
     item[field]=value;commitItems(pair.items);if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();if(state.section==="results"&&field==="division")render();
   });

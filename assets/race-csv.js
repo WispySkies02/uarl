@@ -58,7 +58,7 @@
     var parsed = parse(source, "results"), errors = parsed.errors, candidates = root.UARLResultDrivers.pool(data, record), seen = [new Set(), new Set(), new Set(), new Set()], drivers = new Set();
     var rows = parsed.rows.map(function (row) {
       var c = row.cells, driver = resolve(candidates, c[1]);
-      if (!driver) errors.push("Line " + row.line + ": “" + c[1] + "” is unknown or ambiguous. Use the Roblox username, or add a guest to this race first.");
+      if (!driver) errors.push("Line " + row.line + ": “" + c[1] + "” is unknown or ambiguous in this division. Use a Roblox username or saved CSV name from Driver roster.");
       if (driver) unique(driver.key, drivers, "driver", row.line, errors);
       var positions = [positive(c[0], "FinishingPosition", row.line, errors), positive(c[2], "Qualifying", row.line, errors, true), positive(c[3], "Stage1", row.line, errors, true), positive(c[4], "Stage2", row.line, errors, true)];
       positions.forEach(function (value, index) { unique(value, seen[index], ["finishing position", "qualifying position", "Stage 1 position", "Stage 2 position"][index], row.line, errors); });
@@ -100,9 +100,9 @@
     parsed.rows.forEach(function (row) {
       var c = row.cells, position = positive(c[0], "Position", row.line, errors), driver = resolve(candidates, c[3], c[2]);
       unique(position, positions, "position", row.line, errors);
-      if (!driver) errors.push("Line " + row.line + ": “" + c[3] + "” does not identify one driver in this division. Use their roster name or username; same-name drivers need the matching car number.");
+      if (!driver) errors.push("Line " + row.line + ": “" + c[3] + "” does not identify one driver in this division. Use a saved name or username from Driver roster; same-name drivers need the matching car number.");
       if (driver) unique(identity(driver.id), drivers, "driver", row.line, errors);
-      if (!/^\d{1,3}$/.test(c[2])) errors.push("Line " + row.line + ": Driver# must contain one to three digits (leading zeros are kept).");
+      if (c[2] && !/^\d{1,3}$/.test(c[2])) errors.push("Line " + row.line + ": Driver# must contain one to three digits, or be blank while the number is pending (leading zeros are kept).");
       var unknownMovement = /^(?:-|—)?$/.test(c[1]), delta = unknownMovement ? null : Number(c[1]);
       if (!unknownMovement && (!/^[+-]?\d+$/.test(c[1]) || !Number.isSafeInteger(delta))) errors.push("Line " + row.line + ": +/- must be a signed whole number, 0, or - for unknown.");
       if (delta != null && position != null && (!Number.isSafeInteger(position + delta) || position + delta < 1)) errors.push("Line " + row.line + ": +/- must imply a valid previous position of 1 or higher.");

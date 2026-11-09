@@ -149,7 +149,7 @@ test('quick race entry adds participants together, reorders finishes, and keeps 
  await page.setViewportSize({width:390,height:844});
  await page.locator('[data-start-race]').click();
  await expect(page.locator('[data-schedule-race]')).toHaveValue('new-race');
- await page.locator('.step-actions [data-step="4"]').click();
+ await page.locator('.editor-steps [data-step="4"]').click();
  await page.locator('[data-finisher-picker]>summary').click();
  for(const user of ['MaxUser','HaydenUser']){
   const key=await page.locator('[data-finisher-choice]').evaluateAll((boxes,user)=>boxes.find(box=>box.value.toLowerCase()==='user:'+user.toLowerCase()).value,user);

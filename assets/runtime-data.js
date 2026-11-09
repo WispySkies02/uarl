@@ -52,6 +52,7 @@
       if (!Array.isArray(data.drivers[key])) data.drivers[key] = [];
     });
     if (!data.drivers.profiles || typeof data.drivers.profiles !== "object") data.drivers.profiles = {};
+    if (window.UARLResultDrivers) window.UARLResultDrivers.register(data);
     if (!data.race || typeof data.race !== "object") data.race = { drivers: [], schedule: [], series: {} };
     if (!data.history || typeof data.history !== "object") data.history = { league: { winners: [] }, divisions: [] };
     function numberOrder(a,b) {
@@ -97,6 +98,13 @@
         careerTitles: Number(profile.championships || 0), careerRank: Number(profile.rank || 0), status: entry.status || "FT"
       });
     });
+    if (window.UARLResultDrivers) ["d1", "open"].forEach(function (division) {
+      window.UARLResultDrivers.pool(data, { division: division }).filter(function (entry) { return entry.source === "registered"; }).forEach(function (entry) {
+        if (activeDrivers.some(function (driver) { return driver.division === division && String(driver.id).toLowerCase() === String(entry.user).toLowerCase(); })) return;
+        var profile = driverProfile(entry.user, data.drivers.profiles);
+        activeDrivers.push({ id: entry.user, name: entry.name, number: entry.number, division: division, team: "Unassigned driver", make: profile.make || "Unlisted", careerWins: Number(profile.wins || 0), careerTitles: Number(profile.championships || 0), careerRank: Number(profile.rank || 0), status: "Registered" });
+      });
+    });
     data.race.drivers = activeDrivers.concat(archivedDrivers).sort(function(a,b){return String(a.division||"").localeCompare(String(b.division||""))||numberOrder(a,b);});
     function identityKey(value){return String(value||"").trim().toLowerCase();}
     function guestIdentity(record,entry){
@@ -115,6 +123,7 @@
       var candidates=recordCandidates(record),id=identityKey(row[idField]||row.username||row.user||row.driverId),name=identityKey(row[nameField]),number=String(row.number||"");
       var match=id&&candidates.find(function(driver){return identityKey(driver.id)===id||identityKey(driver.user)===id;});
       if(!match&&(!id||/^guest:/.test(id))&&name){var named=candidates.filter(function(driver){return identityKey(driver.name)===name||identityKey(driver.user)===name||identityKey(driver.id)===name;});if(named.length===1)match=named[0];}
+      if(!match&&(!id||/^guest:/.test(id))&&name&&window.UARLResultDrivers){var resolved=window.UARLResultDrivers.resolve(window.UARLResultDrivers.pool(data,record),row[nameField],row[idField],row.number);if(resolved&&resolved.user)match=candidates.find(function(driver){return identityKey(driver.id)===identityKey(resolved.user);});}
       if(!match&&!id&&!name&&number){var numbered=candidates.filter(function(driver){return driver.number===number;});if(numbered.length===1)match=numbered[0];}
       if(match){row[idField]=match.id;row[nameField]=match.name;row.number=row.numberManual===true?String(row.number==null?"":row.number):row.number||match.number;}
       else if(!row[idField]){var fallback=String(row[nameField]||row.number||"unknown").toLowerCase().replace(/[^a-z0-9]+/g,"-");row[idField]="guest:"+(record.division||"series")+":"+fallback;}
