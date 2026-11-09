@@ -11,7 +11,7 @@
     var exact = id && rows.find(function (row) { return identity(row.id) === id; });
     if (exact) return exact;
     if ((!id || /^guest:/.test(id)) && name) {
-      var named = rows.filter(function (row) { return identity(row.name) === name || identity(row.id) === name; });
+      var named = rows.filter(function (row) { return identity(row.name) === name || identity(row.id) === name || array(row.aliases).includes(name); });
       if (named.length === 1) return named[0];
     }
     if (!id && !name && car) {
@@ -25,6 +25,12 @@
   }
   function roster(data, division, records) {
     var all = array(data.race && data.race.drivers), rows = [];
+    if (root.UARLResultDrivers && division !== "d2") root.UARLResultDrivers.pool(data, { division: division }).forEach(function (entry) {
+      if (!entry.user) return;
+      if (all.some(function (driver) { return driver.division === division && identity(driver.id) === identity(entry.user); })) {
+        all = all.map(function (driver) { return driver.division === division && identity(driver.id) === identity(entry.user) ? Object.assign({}, driver, { aliases: entry.aliases }) : driver; });
+      } else all = all.concat({ id: entry.user, name: entry.name, number: entry.number, division: division, team: entry.team, make: "Unlisted", aliases: entry.aliases, careerWins: 0, careerTitles: 0, careerRank: 0 });
+    });
     all.filter(function (driver) { return driver.division === division && (division !== "d2" || driver.status === "FT"); }).forEach(function (driver) {
       if (!matchingDriver(rows, driver)) rows.push(Object.assign({}, driver));
     });

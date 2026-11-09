@@ -110,10 +110,14 @@ export function raceControlChangeOnly(nextData, currentData) {
   if (!currentData) return false;
   const strip = (value) => {
     const copy = JSON.parse(JSON.stringify(value));
+    globalThis.UARLResultDrivers.register(copy);
     delete copy.events;
     delete copy.records;
     delete copy.standings;
-    if (copy.race) delete copy.race.schedule;
+    if (copy.race) {
+      delete copy.race.schedule;
+      if (Array.isArray(copy.race.drivers)) copy.race.drivers = copy.race.drivers.filter((driver) => driver.division === "d2");
+    }
     return copy;
   };
   return JSON.stringify(strip(nextData)) === JSON.stringify(strip(currentData));

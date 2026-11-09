@@ -57,8 +57,8 @@ test('every collection exposes every field through short sections without edits 
   await admin(page);
   for(const name of ['schedule','results','teams','profiles','open','freeAgents','moves','paints','history','guide','conduct']) {
     await section(page,name).click();
-    const steps=page.locator('.editor-steps button');
-    for(let i=0;i<await steps.count();i++) {await goStep(page,i);}
+    const indices=await page.locator('.editor-steps button').evaluateAll(buttons=>buttons.map(button=>Number(button.dataset.step)));
+    for(const index of indices) await goStep(page,index);
   }
   await section(page,'teams').click();await page.locator('[data-field="name"]').press('End');
   // A no-op input after viewing every panel must remain clean.

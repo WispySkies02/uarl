@@ -6,6 +6,66 @@
   function nameIdentity(value) { return identity(value).replace(/^#\s*\d+[a-z]?\s*[·:–—-]?\s*/i, ""); }
   function number(value) { return text(value); }
   function unique(values) { return Array.from(new Set(values.filter(Boolean))); }
+  // Confirmed league identities. These add lookup names; they never replace the
+  // display name, team, or number an administrator has saved.
+  var confirmedNames = {
+    "58bbwapache": ["Dale", "Dale Apache"],
+    "un88475544": ["Nurtec", "Haydon Hildebrand"],
+    "pa05": ["Payson", "Payson Avery"],
+    "codydgoforth": ["Cody", "Cody Goforth"],
+    "tbdan1e": ["Daniel", "Daniel Heale"],
+    "comodw": ["Jay", "Jay Vixen"],
+    "john_hunter38": ["John", "John Hunter"],
+    "jjelliott2004": ["James", "JJ Whitlock"],
+    "aokikoto": ["Wispy", "Hailey", "Hailey Bell"],
+    "guillermochase": ["Gman", "Guillermo Chase"],
+    "lancejuly": ["Lance", "Lance July"],
+    "iikyle5larson": ["Rocky", "Regan Linney"],
+    "anygameanytime09": ["Muffin"]
+  };
+  function register(data) {
+    data = data || {};
+    if (!data.drivers || typeof data.drivers !== "object") data.drivers = {};
+    var drivers = data.drivers;
+    if (!drivers.profiles || typeof drivers.profiles !== "object") drivers.profiles = {};
+    var profiles = drivers.profiles;
+    if (Number(drivers.rosterVersion) >= 1) return data;
+    function ensure(user, fallbackName) {
+      var key = Object.keys(profiles).find(function (key) { return identity(key) === identity(user); }) || user;
+      if (!Object.hasOwn(profiles, key)) Object.defineProperty(profiles, key, { value: { alias: fallbackName, wins: 0, championships: 0, rank: 0 }, enumerable: true, writable: true, configurable: true });
+      var saved = profiles[key];
+      if (!Array.isArray(saved.csvDivisions)) saved.csvDivisions = ["d1"];
+      return saved;
+    }
+    ensure("UN88475544", "Nurtec");
+    ensure("AnyGameAnyTime09", "Muffin");
+    (drivers.freeAgents || []).forEach(function (entry) {
+      var user = text(entry.user || entry.username).replace(/^@/, "");
+      if (!/^[A-Za-z0-9_]{3,20}$/.test(user)) return;
+      var saved = ensure(user, text(entry.name) || user);
+      saved.csvDivisions = unique(saved.csvDivisions.concat("d1"));
+    });
+    Object.keys(profiles).forEach(function (user) {
+      var names = Object.hasOwn(confirmedNames, identity(user)) ? confirmedNames[identity(user)] : null;
+      if (names) profiles[user].csvAliases = unique((Array.isArray(profiles[user].csvAliases) ? profiles[user].csvAliases : []).concat(names));
+    });
+    // Carry verified entries from older race records into the permanent roster.
+    // Saved classifications keep their race-specific numbers and presentation.
+    (data.records || []).forEach(function (record) {
+      if (!["d1", "open"].includes(record.division)) return;
+      (record.entries || []).forEach(function (entry) {
+        var user = text(entry.user || entry.username).replace(/^@/, "");
+        if (!/^[A-Za-z0-9_]{3,20}$/.test(user)) return;
+        var key = Object.keys(profiles).find(function (key) { return identity(key) === identity(user); }) || user;
+        if (!Object.hasOwn(profiles, key)) Object.defineProperty(profiles, key, { value: { alias: text(entry.name) || user, wins: 0, championships: 0, rank: 0 }, enumerable: true, writable: true, configurable: true });
+        var saved = profiles[key];
+        saved.csvDivisions = unique((Array.isArray(saved.csvDivisions) ? saved.csvDivisions : []).concat(record.division));
+        if (entry.name) saved.csvAliases = unique((Array.isArray(saved.csvAliases) ? saved.csvAliases : []).concat(text(entry.name)));
+      });
+    });
+    drivers.rosterVersion = 1;
+    return data;
+  }
   function profile(data, user) {
     var profiles = data.drivers && data.drivers.profiles || {};
     var key = Object.keys(profiles).find(function (key) { return identity(key) === identity(user); });
@@ -14,7 +74,7 @@
   function profileUser(data, name) {
     if (!nameIdentity(name)) return "";
     var profiles = data.drivers && data.drivers.profiles || {};
-    var matches = Object.keys(profiles).filter(function (user) { return nameIdentity(profiles[user].alias) === nameIdentity(name); });
+    var matches = Object.keys(profiles).filter(function (user) { return [profiles[user].alias].concat(profiles[user].csvAliases || []).some(function (alias) { return nameIdentity(alias) === nameIdentity(name); }); });
     return matches.length === 1 ? text(matches[0]).replace(/^@/, "") : "";
   }
   function active(entry) {
@@ -36,7 +96,7 @@
       key: user ? "user:" + identity(user) : "name:" + nameIdentity(name),
       name: name, number: number(entry.number), user: user,
       team: text(team), source: source,
-      aliases: unique([nameIdentity(name), nameIdentity(explicitName), nameIdentity(saved.alias), identity(user)]),
+      aliases: unique([nameIdentity(name), nameIdentity(explicitName), nameIdentity(saved.alias), identity(user)].concat((Array.isArray(saved.csvAliases) ? saved.csvAliases : []).map(nameIdentity), (Array.isArray(entry.csvAliases) ? entry.csvAliases : []).map(nameIdentity))),
       explicitName: Boolean(explicitName)
     };
   }
@@ -105,6 +165,11 @@
         raw.push(driver(data, Object.assign({}, entry, { user: entry.user || entry.id }), entry.team, "archive"));
       });
     }
+    if (division !== "d2") Object.keys(drivers.profiles || {}).forEach(function (user) {
+      var saved = drivers.profiles[user];
+      if (!Array.isArray(saved.csvDivisions) || !saved.csvDivisions.includes(division) || !active({ user: user, status: saved.status })) return;
+      raw.push(driver(data, { user: user, name: saved.alias, number: saved.number }, "Unassigned driver", "registered"));
+    });
     (record.entries || []).filter(active).forEach(function (entry) { raw.push(driver(data, entry, "Race guest", "guest")); });
     return deduplicate(raw);
   }
@@ -188,5 +253,5 @@
     return issues;
   }
 
-  root.UARLResultDrivers = { pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
+  root.UARLResultDrivers = { register: register, pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
 })(typeof window !== "undefined" ? window : globalThis);

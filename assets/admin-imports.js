@@ -11,7 +11,7 @@
         if (!resultForms.has(record)) resultForms.set(record, { text: "", preview: null, open: !(record.finishes || []).length, message: "" });
         return resultForms.get(record);
       }
-      if (!standingForms[division]) standingForms[division] = { text: "", preview: null, open: false, message: "" };
+      if (!standingForms[division]) standingForms[division] = { text: "", preview: null, open: true, message: "" };
       return standingForms[division];
     }
     function context(node) {
@@ -41,7 +41,7 @@
     }
     function widget(kind, record) {
       var state = form(kind, record), index = kind === "results" ? bridge.data().records.indexOf(record) : "";
-      var instructions = kind === "results" ? 'Use a Roblox username or a unique roster display name. Add one-off drivers under Guests first. Qualifying and stage positions can be blank; both awards need Yes or No.' : 'Use the roster display name or username. Enter +/- as +2, -1, 0, or - for unknown. Car numbers keep leading zeros.';
+      var instructions = kind === "results" ? 'Use a Roblox username, roster display name, or saved CSV name. Driver roster includes permanent drivers without a team. Qualifying and stage positions can be blank; both awards need Yes or No.' : 'Use the roster display name, saved CSV name, or username. Enter +/- as +2, -1, 0, or - for unknown. Car numbers keep leading zeros.';
       var replacement = kind === "results" ? 'Apply replaces this race’s finish order, qualifying, stages, and Yes/No awards. Manual car numbers and points eligibility are kept. Review DNFs or DNQs in manual entry afterward.' : 'Apply sets the listed drivers’ totals for this division; other drivers keep their current totals. Later race results continue adding points. Movement uses the previous positions supplied by this import.';
       return '<details class="csv-import" data-csv-kind="' + kind + '" data-record="' + index + '" ' + (state.open ? 'open' : '') + '><summary><span>Import ' + kind + ' from CSV</span><small>Paste → Preview → Apply</small></summary><div class="csv-import-body"><p>' + instructions + '</p><label>CSV data<textarea data-csv-input rows="5" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="' + esc(csv.headers[kind].join(",")) + '">' + esc(state.text) + '</textarea></label><p class="csv-header-hint">Header: <code>' + esc(csv.headers[kind].join(",")) + '</code></p><p>' + replacement + '</p><button type="button" class="button" data-csv-preview-button>Preview CSV</button><div data-csv-output aria-live="polite">' + previewHTML(kind, state) + '</div></div></details>';
     }

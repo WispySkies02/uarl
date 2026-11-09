@@ -14,13 +14,13 @@ function league() {
   data.events = [{ id: 'race-one', name: 'First CSV Race', division: 'd1', date: '2026-11-15', start: '2026-11-16T00:30:00Z', track: 'Test Speedway', pointsEvent: true, round: 1 }, { id: 'race-two', name: 'Second Manual Race', division: 'd1', date: '2026-11-22', start: '2026-11-23T00:30:00Z', track: 'Test Oval', pointsEvent: true, round: 2 }];
   return data;
 }
-async function boot(page, { data = league(), role = 'owner' } = {}) {
+async function boot(page, { data = league(), role = 'owner', recovered = false } = {}) {
   const published = []; let live = data;
   await page.route('**/.netlify/functions/admin-publish**', route => {
     if (route.request().method() === 'POST') { const payload = route.request().postDataJSON(); if (payload.data) { live = payload.data; published.push(live); } return route.fulfill({ json: { ok: true, message: 'Test publish saved' } }); }
     return route.fulfill({ json: route.request().url().includes('status=1') ? { ready: true, user: { id: 'csv-owner', displayName: 'CSV Staff', role } } : { data: live } });
   });
-  await page.goto('/admin/'); await expect(page.locator('[data-save-status]')).toHaveText('Published data loaded');
+  await page.goto('/admin/'); await expect(page.locator('[data-save-status]')).toHaveText(recovered ? 'Recovered unpublished browser draft' : 'Published data loaded');
   return published;
 }
 const section = (page, name) => page.locator('.admin-sidebar [data-section="' + name + '"]');
@@ -182,4 +182,90 @@ test('published standings imports show their totals and movement even before any
   await expect(page.locator('[data-rc-preseason]')).toHaveText('Official standings · posted totals');
   await expect(page.locator('[data-rc-standings-body] [data-driver-id="MaxUser"]')).toHaveText('1+2019Max150');
   await expect(page.locator('[data-rc-standings-body] [data-driver-id="HaydenUser"]')).toHaveText('2-1020Hayden140');
+});
+
+const fullRaceCSV = `${resultsHeader}
+1,Haydon Hildebrand,1,1,1,yes,yes
+2,Regan Linney,4,,2,no,no
+3,Lance July,2,3,,no,no
+4,Guillermo Chase,7,,,no,no
+5,Muffin,10,4,3,no,no
+6,Payson Avery,5,2,5,no,no
+7,John Hunter,3,,,no,no
+8,Hailey Bell,6,5,4,no,no
+9,Frog,8,,,no,no
+10,Dale,9,,,no,no`;
+function beforeRosterUpgrade() {
+  const data = structuredClone(original);
+  delete data.drivers.rosterVersion;
+  for (const profile of Object.values(data.drivers.profiles)) { delete profile.csvAliases; delete profile.csvDivisions; }
+  data.drivers.profiles.Aokikoto.alias = 'Hailey'; data.drivers.profiles.UN88475544.alias = 'Haydon';
+  data.events = league().events; data.records = [];
+  return data;
+}
+
+test('the reported ten-driver CSV applies and publishes without race guests, preserving Hailey and permanent Muffin', async ({ page }) => {
+  const errors = []; page.on('pageerror', error => errors.push(error.message));
+  const published = await boot(page, { data: beforeRosterUpgrade(), role: 'race_control' });
+  await createRace(page);
+  await expect(page.locator('.editor-steps [data-step="1"]')).toHaveCount(0);
+  await expect(page.locator('[data-sadd="entries"]')).toHaveCount(0);
+  const node = await previewCSV(page, 'results', fullRaceCSV);
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(10);
+  await expect(node.locator('[data-csv-preview] tbody tr').nth(4)).toContainText('Muffin');
+  await expect(node.locator('[data-csv-preview] tbody tr').nth(4).locator('td').last()).toHaveText('43');
+  await expect(node.locator('[data-csv-preview] tbody tr').first().locator('td').last()).toHaveText('70');
+  await expect(node.locator('[data-csv-preview] tbody tr').nth(7)).toContainText('Hailey');
+  await node.locator('[data-csv-apply]').click();
+  await page.locator('.step-actions [data-step="5"]').click();
+  await expect(page.locator('.race-review')).toContainText('10 finishers');
+  await expect(page.locator('.race-review')).toContainText('Winner: Haydon');
+  await page.locator('.step-actions [data-step="0"]').click();
+  await page.locator('.step-actions [data-step="5"]').click();
+  await expect(page.locator('.race-review')).toContainText('10 finishers');
+  await page.locator('.step-actions [data-action="publish"]').click(); await page.locator('[data-confirm-publish]').click();
+  await expect.poll(() => published.length).toBe(1);
+  const result = published[0].records[0];
+  expect((result.entries || []).length).toBe(0);
+  expect(result.finishes[4]).toMatchObject({ username: 'AnyGameAnyTime09', number: '', totalPoints: 43 });
+  expect(published[0].drivers.profiles.AnyGameAnyTime09.csvDivisions).toEqual(['d1']);
+  expect(published[0].drivers.teams.flatMap(team => team.entries).some(entry => entry.user === 'AnyGameAnyTime09')).toBe(false);
+  await page.goto('/race-center/');
+  await expect(page.locator('[data-rc-standings-body] [data-driver-id="AnyGameAnyTime09"] .rc-pts')).toHaveText('43');
+  await expect(page.locator('[data-rc-standings-body] [data-driver-id="Aokikoto"] .rc-driver-cell')).toHaveText('Hailey');
+  expect(errors).toEqual([]);
+});
+
+test('old browser drafts receive permanent roster names without losing their saved result', async ({ page }) => {
+  const data = beforeRosterUpgrade(), saved = structuredClone(data);
+  saved.records = [{ id: 'race-one', scheduleEventId: 'race-one', division: 'd1', event: 'Recovered Race', status: 'pending', date: '2026-11-15', start: '2026-11-16T00:30:00Z', pointsEvent: true, finishes: [{ position: 1, name: 'Muffin', username: 'AnyGameAnyTime09', points: 50 }], qualifying: [], stages: [], bonuses: [] }];
+  await page.addInitScript(({ key, saved }) => { if (!sessionStorage.getItem('csv-recovery-seeded')) { localStorage.setItem(key, JSON.stringify(saved)); sessionStorage.setItem('csv-recovery-seeded', '1'); } }, { key: draftKey, saved });
+  await boot(page, { data, recovered: true }); await section(page, 'results').click();
+  await expect(page.locator('.editor-title')).toContainText('Recovered Race');
+  await previewCSV(page, 'results', fullRaceCSV);
+  await expect(widget(page, 'results').locator('.csv-errors')).toHaveCount(0);
+  const recovered = await page.evaluate(async () => window.UARLData.normalize(JSON.parse(localStorage.getItem('uarl-admin-draft-v1'))));
+  expect(recovered.records[0].finishes[0]).toMatchObject({ username: 'AnyGameAnyTime09', points: 50 });
+  expect(recovered.drivers.profiles.Aokikoto.alias).toBe('Hailey');
+  expect(recovered.drivers.profiles.AnyGameAnyTime09.csvDivisions).toEqual(['d1']);
+});
+
+test('new drivers can be permanently registered once with CSV names and used in both imports without a team', async ({ page }) => {
+  await boot(page); await section(page, 'profiles').click();
+  await page.locator('.view-head [data-action="add"]').click();
+  await page.locator('[data-field="username"]').fill('PermanentUser');
+  await page.locator('[data-field="alias"]').fill('Permanent Driver');
+  await page.locator('[data-field="number"]').fill('011');
+  await expect(page.locator('[data-field="csvDivisions"][data-division-value="d1"]')).toBeChecked();
+  await page.locator('[data-field="csvDivisions"][data-division-value="open"]').check();
+  await page.locator('[data-sadd="csvAliases"]').click();
+  await page.locator('[data-sfield="csvAliases"][data-skey="value"]').fill('Permanent Full Name');
+  await createRace(page); await applyCSV(page, 'results', resultsHeader + '\n1,Permanent Full Name,1,1,1,Yes,Yes');
+  const result = (await draft(page)).records[0];
+  expect(result.finishes[0]).toMatchObject({ username: 'PermanentUser', name: 'Permanent Driver', number: '011', totalPoints: 70 });
+  await section(page, 'standings').click();
+  await applyCSV(page, 'standings', standingsHeader + '\n1,0,011,Permanent Full Name,100');
+  await expect(pointsRow(page, 'PermanentUser').locator('[data-standings-points]')).toHaveValue('100');
+  expect((await draft(page)).drivers.profiles.PermanentUser.csvAliases).toEqual(['Permanent Full Name']);
 });

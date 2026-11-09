@@ -46,9 +46,9 @@ Roster, charter, qualifying, race-result, stage, bonus, paint-tag, and history r
 
 Race Control calculates result points automatically. Enter the finishing order, stage order, pole winner, applicable bonus types, and each driver's eligibility/status. The read-only total follows the universal UARL points table and becomes zero automatically for exhibitions or points-ineligible drivers.
 
-If a substitute or one-off driver raced but is missing from the series dropdown, add them under **Event-only / guest drivers** inside that result. Enter their car number and name once, then use the normal dropdowns everywhere else. This does not add them to the permanent series roster.
+Drivers are registered permanently under **Driver roster**. Add their Roblox username, public display name, and roster series once. A team or charter assignment is optional; leave the car number blank until it is known. Existing free agents with saved usernames are registered for D1 automatically, without reusing their former charter numbers. **Other names accepted in CSV** stores full names or former display names that should resolve to that same driver. These names do not replace the current public display name. The result editor no longer has a guest-driver entry section.
 
-Always include the Roblox username for a roster or event-only driver when it is known. Race Control uses that username as the permanent identity, so future display-name changes and older aliases continue contributing to the same standings row. Older results without a username are matched safely by display name, with car number used only when identity text is missing.
+Always include the correct Roblox username when registering a driver. Race Control uses that username as the permanent identity, so future display-name changes and saved CSV names contribute to the same standings row. Older results remain intact; verified drivers in former race-only entries are registered automatically when upgrading. Race-specific numbers in those saved records remain unchanged.
 
 Sessions remain active for up to 12 hours. **Sign out** ends the current session immediately.
 
@@ -66,7 +66,9 @@ Sessions remain active for up to 12 hours. **Sign out** ends the current session
 3. Select **Preview CSV**. Check the matched drivers, car numbers, classifications, awards, and calculated points. Errors must be corrected before applying.
 4. Select **Apply preview to draft**. You can still use the manual result editor afterward, then **Publish website** when ready.
 
-Use Roblox usernames or unique names from the selected division’s roster. Add substitutes under **Guests** before importing. Blank qualifying/stage positions mean no classification was entered; awards require **Yes** or **No**. Quote names containing commas (`"Driver, Jr."`).
+Use Roblox usernames, unique current display names, or saved CSV names from the selected division’s permanent roster. The confirmed names supplied for Haydon/Nurtec, Regan/Rocky, Hailey/Wispy, and the other known drivers are included. Haydon and Muffin are registered for D1, including when they have no team entry. Existing saved display names, team assignments, artwork, and car numbers are preserved when upgrading published data or browser drafts. Blank qualifying/stage positions mean no classification was entered; awards require **Yes** or **No**. Quote names containing commas (`"Driver, Jr."`).
+
+The normal flow is **choose race → paste CSV → Preview CSV → Apply preview to draft → Review & publish**. **Manual corrections** remains available when needed; entering the CSV does not require visiting the qualifying, stage, finish-order, or awards builders.
 
 An import replaces that race’s qualifying, stages, finish order, and Fastest lap/Most laps led awards. It keeps manually corrected car numbers and driver points eligibility. This CSV format has no DNF/DNQ column, so apply those statuses in the manual editor afterward. Existing practice awards are kept only for participants still in the finish order.
 
@@ -80,7 +82,7 @@ Position,+/-,Driver#,DriverName,Points
 2,-1,020,OtherUsername,140
 ```
 
-Select **Preview CSV**, check the full points table, then **Apply preview to draft**. Positions must agree with the points order, and driver names must match roster or recorded race participants. For same-name drivers, use their matching car numbers or usernames. Leading zeros in car numbers are preserved. Use `-` for unknown movement; otherwise enter a signed position change or `0`. Drivers omitted from an import and other divisions keep their totals.
+Select **Preview CSV**, check the full points table, then **Apply preview to draft**. The CSV box is open by default. Positions must agree with the points order, and driver names must match the permanent roster or recorded race participants. Full names saved as CSV names work here too. For same-name drivers, use their matching car numbers or usernames. Leading zeros in car numbers are preserved; Driver# can be blank while a number is pending. Use `-` for unknown movement; otherwise enter a signed position change or `0`. Drivers omitted from an import and other divisions keep their totals.
 
 For an individual correction, change their **Points** in the standings table and select **Save**. **Use race points** removes that driver’s points correction. Imported or manually corrected totals are stored as adjustments to the current race points: if a driver is set to 150 and earns 45 in the next race, their total becomes 195. Correcting or deleting a race also updates the total. Imported position changes use the previous positions supplied in that CSV; without an import, movement compares the two latest race totals.
 
