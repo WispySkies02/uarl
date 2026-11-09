@@ -15,7 +15,8 @@
   var pendingImageUploads = 0;
   var undoSnapshots=[],redoSnapshots=[],historyAnchor=null,editSession=null,historyRestoring=false;
   var artworkOpen=Object.create(null);
-  var sectionNames={dashboard:'Home',schedule:'Schedule',results:'Results',teams:'Teams & rosters',profiles:'Driver profiles',open:'Open Series',freeAgents:'Free agents',moves:'Signings',paints:'Paint Booth',history:'History',guide:'Rules & FAQ',conduct:'Conduct',advanced:'Advanced JSON',accounts:'Staff accounts'};
+  var sectionNames={dashboard:'Home',schedule:'Schedule',results:'Results',standings:'Standings',teams:'Teams & rosters',profiles:'Driver profiles',open:'Open Series',freeAgents:'Free agents',moves:'Signings',paints:'Paint Booth',history:'History',guide:'Rules & FAQ',conduct:'Conduct',advanced:'Advanced JSON',accounts:'Staff accounts'};
+  var imports=window.UARLAdminImports({data:function(){return state.data;},esc:esc,header:renderHeader,commit:commitPendingEdit,render:render,recalculate:recalculateResult,toast:toast,applied:function(){changed();render();}});
 
   var configs = {
     schedule: {
@@ -163,7 +164,7 @@
   }
   function configureSections() {
     if(!state.user)return;
-    var labels={dashboard:"Dashboard",schedule:"Schedule",results:"Results + points"};
+    var labels={dashboard:"Dashboard",schedule:"Schedule",results:"Results + points",standings:"Standings"};
     if(state.user.role!=="race_control")Object.assign(labels,{teams:"Teams + charters",profiles:"Driver profiles",open:"Open Series",freeAgents:"Free agents",moves:"Recent moves",paints:"Paint Booth",history:"History",guide:"Rules + FAQ",conduct:"Conduct rulebook",advanced:"Advanced JSON"});
     if(state.user.role==="owner")labels.accounts="Staff accounts";
     if(!Object.prototype.hasOwnProperty.call(labels,state.section))state.section="dashboard";
@@ -207,7 +208,7 @@
     state.changes = countChanges(); state.dirty = state.changes > 0;
     localStorage.setItem(DRAFT_KEY, JSON.stringify(state.data));
     setStatus(state.dirty ? "Draft saved · " + state.changes + " changed entr" + (state.changes === 1 ? "y" : "ies") + " not published" : "No unpublished changes", state.dirty ? "dirty" : "ready");
-    updateDraftTools();updateWorkspacePreview();
+    updateDraftTools();updateWorkspacePreview();imports.dataChanged();
   }
 
   function draftTools() {
@@ -225,7 +226,7 @@
     var full=state.user&&state.user.role!=='race_control',changes=workspaceChanges();
     function task(key,icon,title,copy){return '<button type="button" class="workspace-task" data-workspace-task="'+key+'"><span class="task-icon" aria-hidden="true">'+icon+'</span><span class="task-title">'+title+'</span><span class="task-copy">'+copy+'</span></button>';}
     view.innerHTML='<div class="workspace-home"><header class="workspace-greeting"><span class="eyebrow">Your paddock</span><h1>What are we updating?</h1><p>'+esc(state.user&&state.user.displayName||'Welcome')+', jump straight to the job. Your work saves as a draft while you edit.</p></header>'+draftTools()+
-      '<div class="workspace-home-grid"><section class="workspace-task-grid" aria-label="Common tasks">'+task('race','⚑','Record a race','Select the field, arrange the finish, award bonuses.')+task('schedule','▦','Adjust an event','Go straight to the next event’s date and status.')+(full?task('roster','▰','Update a roster','Choose a team and edit its drivers.')+task('transfer','⇄','Move or sign a driver','Update the roster and announcement together.')+task('paint','◆','Add a paint scheme','Use saved driver details instead of retyping them.')+task('search','⌕','Find & edit anything','Search drivers, races, teams and site content.'):'')+'</section>'+
+      '<div class="workspace-home-grid"><section class="workspace-task-grid" aria-label="Common tasks">'+task('race','⚑','Record a race','Select the field, arrange the finish, award bonuses.')+task('standings','≡','Update standings','Import a points CSV or correct a driver’s total.')+task('schedule','▦','Adjust an event','Go straight to the next event’s date and status.')+(full?task('roster','▰','Update a roster','Choose a team and edit its drivers.')+task('transfer','⇄','Move or sign a driver','Update the roster and announcement together.')+task('paint','◆','Add a paint scheme','Use saved driver details instead of retyping them.')+task('search','⌕','Find & edit anything','Search drivers, races, teams and site content.'):'')+'</section>'+
       '<article class="workspace-next-event"><span class="eyebrow">Next on the calendar</span>'+(upcoming?'<h2>'+esc(upcoming.name)+'</h2><p>'+esc(upcoming.date)+' · '+esc(upcoming.track)+'</p><span class="workspace-chip">'+esc(String(upcoming.division||'').toUpperCase())+'</span><button type="button" class="button ghost" data-workspace-task="schedule">Edit this event →</button>':'<h2>Calendar up to date</h2><p>Add the next event whenever you’re ready.</p><button class="button ghost" data-section="schedule">Open schedule</button>')+(state.data.events.length?'<button class="button ghost" type="button" data-start-race>Start a new race entry →</button>':'')+'</article></div>'+
       '<section class="workspace-draft-panel"><header><div><span class="eyebrow">Pick up where you left off</span><h2>'+ (changes.length?'Your unpublished work':'A clear desk')+'</h2></div><button class="button ghost" data-review-changes>Review all changes</button></header>'+(changes.length?'<div class="draft-entry-list">'+renderDraftEntries(changes)+'</div>':'<p>No unfinished edits. Choose a task above to get started.</p>')+'</section></div>';
   }
@@ -249,6 +250,7 @@
     to.push(clone(state.data));state.data=from.pop();historyAnchor=clone(state.data);historyRestoring=true;changed();historyRestoring=false;render();toast(redo?'Edit restored.':'Last edit undone.');
   }
   function goToEntry(section,index,step){
+    if(section==='standings'){var entry=(state.data.standings||[])[index];if(entry)imports.selectDivision(entry.division);}
     commitPendingEdit();state.section=section;state.selected=Math.max(0,Number(index)||0);state.step=step==null?(section==='teams'?2:0):step;state.query='';render();
   }
   function openWorkspaceSearch(){if(!state.data)return;commitPendingEdit();var dialog=document.querySelector('[data-workspace-search-dialog]');dialog.showModal();var input=dialog.querySelector('[data-workspace-search]');input.value='';renderWorkspaceSearch('');input.focus();}
@@ -269,6 +271,7 @@
       if(pending>=0){goToEntry('results',pending,4);return;}
       state.section='results';state.selected=0;state.step=0;addItem();return;
     }
+    if(task==='standings')return goToEntry('standings',0);
     if(task==='roster')return goToEntry('teams',0,2);
     if(task==='schedule'){
       var events=state.data.events,index=events.map(function(event,index){return {event:event,index:index};}).filter(function(pair){return new Date(pair.event.start||pair.event.date)>new Date();}).sort(function(a,b){return new Date(a.event.start||a.event.date)-new Date(b.event.start||b.event.date);})[0];
@@ -642,7 +645,7 @@
     var back=isResult&&state.step===4?0:isResult&&state.step===5?4:state.step-1;
     var final=isResult?state.step===5||state.step===6:state.step===groups.length-1;
     var total=currentConfigAndItems().items.length;
-    return '<nav class="workspace-record-nav" aria-label="Record navigation"><button type="button" class="button ghost" data-record-next="-1" '+(!index?'disabled':'')+'>← Previous</button><span>'+(index+1)+' of '+total+'</span><button type="button" class="button ghost" data-record-next="1" '+(index>=total-1?'disabled':'')+'>Next →</button></nav><div class="editor-title"><div><small>ENTRY '+String(index+1).padStart(2,'0')+'</small><h2>'+esc(config.itemTitle(item))+'</h2></div></div>'+resultIdentityWarning(item)+
+    return '<nav class="workspace-record-nav" aria-label="Record navigation"><button type="button" class="button ghost" data-record-next="-1" '+(!index?'disabled':'')+'>← Previous</button><span>'+(index+1)+' of '+total+'</span><button type="button" class="button ghost" data-record-next="1" '+(index>=total-1?'disabled':'')+'>Next →</button></nav><div class="editor-title"><div><small>ENTRY '+String(index+1).padStart(2,'0')+'</small><h2>'+esc(config.itemTitle(item))+'</h2></div></div>'+resultIdentityWarning(item)+(isResult?imports.results(item):'')+
       '<p class="editor-guidance">'+(isResult?'Pick the race, build the finish order, then award bonuses. Your draft saves as you go.':'One section at a time. Edits save automatically.')+'</p>'+
       (isResult?resultNavigation(groups):'<nav class="editor-steps" aria-label="Entry sections">'+groups.map(function(g,i){return '<button type="button" data-step="'+i+'" '+(i===state.step?'aria-current="step"':'')+'>'+(i+1)+'. '+esc(g[0])+'</button>';}).join('')+'</nav>')+
       '<section aria-label="'+esc(group[0])+'"><h3 class="step-heading" tabindex="-1">'+esc(isResult&&state.step===5?'Awards & review':group[0])+'</h3>'+body+'</section>'+
@@ -717,7 +720,7 @@
   function renderAccounts() {
     if(!state.user||state.user.role!=="owner"){state.section="dashboard";renderDashboard();return;}
     view.innerHTML='<header class="view-head"><div><span class="eyebrow">Administration</span><h1>Staff Accounts</h1><p>Create individual logins, assign permissions, reset passwords, and review who published website changes.</p></div><div class="view-actions"><button class="button ghost" data-account-refresh>Refresh</button></div></header>'+
-      '<section class="accounts-layout"><div><article class="account-panel"><h2>Add staff member</h2><p class="account-help">Every person receives a unique username and password. Passwords are stored as secure hashes.</p><form class="account-form" data-account-create-form><label>Display name<input required data-new-display maxlength="60"></label><label>Username<input required data-new-username minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+"></label><label>Role<select data-new-role>'+roleOptions("race_control")+'</select></label><label>Temporary password<input required type="password" data-new-password minlength="10" autocomplete="new-password"></label><button class="button publish" type="submit">Create account</button></form></article><article class="account-panel" style="margin-top:14px"><h2>Role permissions</h2><p class="account-help"><b>Owner:</b> full website and account control.<br><b>Admin:</b> full website control without staff management.<br><b>Race Control:</b> schedule and results publishing only.</p></article></div><div><article class="account-panel"><h2>Current staff</h2><div class="account-list" data-account-list><div class="warning">Loading accounts…</div></div></article><article class="account-panel" style="margin-top:14px"><h2>Recent activity</h2><div class="audit-list" data-audit-list><div class="warning">Loading activity…</div></div></article></div></section>';
+      '<section class="accounts-layout"><div><article class="account-panel"><h2>Add staff member</h2><p class="account-help">Every person receives a unique username and password. Passwords are stored as secure hashes.</p><form class="account-form" data-account-create-form><label>Display name<input required data-new-display maxlength="60"></label><label>Username<input required data-new-username minlength="3" maxlength="32" pattern="[A-Za-z0-9._-]+"></label><label>Role<select data-new-role>'+roleOptions("race_control")+'</select></label><label>Temporary password<input required type="password" data-new-password minlength="10" autocomplete="new-password"></label><button class="button publish" type="submit">Create account</button></form></article><article class="account-panel" style="margin-top:14px"><h2>Role permissions</h2><p class="account-help"><b>Owner:</b> full website and account control.<br><b>Admin:</b> full website control without staff management.<br><b>Race Control:</b> schedule, results, and standings publishing only.</p></article></div><div><article class="account-panel"><h2>Current staff</h2><div class="account-list" data-account-list><div class="warning">Loading accounts…</div></div></article><article class="account-panel" style="margin-top:14px"><h2>Recent activity</h2><div class="audit-list" data-audit-list><div class="warning">Loading activity…</div></div></article></div></section>';
     loadAccounts();
   }
 
@@ -748,7 +751,7 @@
     document.querySelectorAll("[data-section]").forEach(function (button) { button.classList.toggle("is-active",button.dataset.section===state.section);if(button.dataset.section===state.section)button.setAttribute("aria-current","page");else button.removeAttribute("aria-current"); });
     document.querySelector("[data-mobile-section]").value=state.section;
     var more=document.querySelector('[data-admin-more]');more.classList.toggle('is-active',!['dashboard','schedule','results'].includes(state.section));
-    if (state.section === "dashboard") renderDashboard(); else if (state.section === "advanced") renderAdvanced(); else if(state.section==="accounts")renderAccounts(); else renderCollection(state.section);
+    if (state.section === "dashboard") renderDashboard(); else if (state.section === "advanced") renderAdvanced(); else if(state.section==="accounts")renderAccounts(); else if(state.section==="standings")view.innerHTML=imports.standings(); else renderCollection(state.section);
   }
 
   function currentConfigAndItems() {
@@ -807,9 +810,10 @@
   }
 
   function exportData() { var blob=new Blob([JSON.stringify(state.data,null,2)+"\n"],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="uarl-data-backup-"+dateOnly(new Date())+".json";a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},1000); }
-  function preview() { localStorage.setItem(window.UARLData.previewKey,JSON.stringify(state.data)); var route={schedule:"/schedule/",results:"/race-center/",teams:"/drivers/",profiles:"/drivers/",open:"/drivers/",freeAgents:"/drivers/",moves:"/drivers/",paints:"/paint-schemes/",history:"/history/",guide:"/competition-guide/"}[state.section]||"/"; window.open(route+"?preview=admin","_blank","noopener"); }
+  function preview() { localStorage.setItem(window.UARLData.previewKey,JSON.stringify(state.data)); var route={schedule:"/schedule/",results:"/race-center/",standings:"/race-center/",teams:"/drivers/",profiles:"/drivers/",open:"/drivers/",freeAgents:"/drivers/",moves:"/drivers/",paints:"/paint-schemes/",history:"/history/",guide:"/competition-guide/"}[state.section]||"/"; window.open(route+"?preview=admin","_blank","noopener"); }
 
   function validRaceAwards() {
+    var standingsErrors=window.UARLStandings.validate(state.data);if(standingsErrors.length){toast(standingsErrors[0],true);return false;}
     var issues=window.UARLResultDrivers.bonusIssues(state.data);
     if(!issues.length)return true;
     var issue=issues[0],record=state.data.records[issue.recordIndex];
@@ -832,6 +836,7 @@
   }
 
   document.addEventListener("click",function(event){
+    if(imports.click(event))return;
     if(event.target.closest('[data-open-search]')){openWorkspaceSearch();return;}
     if(event.target.closest('[data-close-workspace-dialog]')){event.target.closest('dialog').close();return;}
     if(event.target.closest('[data-workspace-undo]')){restoreHistory(false);return;}
@@ -863,6 +868,7 @@
     var shift=event.target.closest("[data-shift]");if(shift){shiftEvent(shift.dataset.shift);}
   });
   document.addEventListener("input",function(event){
+    if(imports.input(event))return;
     if(event.target.matches('[data-workspace-search]')){renderWorkspaceSearch(event.target.value);return;}
     if(event.target.matches('[data-transfer-number]')){updateTransferPreview();return;}
     if(event.target.matches('[data-finish-search]')){var query=event.target.value.trim().toLowerCase();view.querySelectorAll('[data-participant]').forEach(function(label){label.hidden=!label.textContent.toLowerCase().includes(query);});return;}

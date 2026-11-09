@@ -31,7 +31,7 @@ The setup screen permanently closes after the first Owner is created. From then 
 
 - **Owner:** complete website control, staff-account management, password resets, and activity history.
 - **Admin:** complete website editing and publishing without staff-account management.
-- **Race Control:** schedule and results editing/publishing only.
+- **Race Control:** schedule, results, and standings editing/publishing only.
 
 The Owner can add, update, reset, or disable staff accounts under **Administration → Staff accounts**. Passwords are stored as secure salted hashes. Every publish records the responsible staff member, time, note, and revision.
 
@@ -51,6 +51,40 @@ If a substitute or one-off driver raced but is missing from the series dropdown,
 Always include the Roblox username for a roster or event-only driver when it is known. Race Control uses that username as the permanent identity, so future display-name changes and older aliases continue contributing to the same standings row. Older results without a username are matched safely by display name, with car number used only when identity text is missing.
 
 Sessions remain active for up to 12 hours. **Sign out** ends the current session immediately.
+
+## Import results from CSV
+
+1. Open **Results + points → Add new** and choose the scheduled race as usual.
+2. Expand **Import results from CSV** and paste the header and driver rows:
+
+   ```csv
+   FinishingPosition,Driver,Qualifying,Stage1,Stage2,FastestLap,MostLapsLed
+   1,DriverUsername,2,1,3,Yes,No
+   2,OtherUsername,1,2,1,No,Yes
+   ```
+
+3. Select **Preview CSV**. Check the matched drivers, car numbers, classifications, awards, and calculated points. Errors must be corrected before applying.
+4. Select **Apply preview to draft**. You can still use the manual result editor afterward, then **Publish website** when ready.
+
+Use Roblox usernames or unique names from the selected division’s roster. Add substitutes under **Guests** before importing. Blank qualifying/stage positions mean no classification was entered; awards require **Yes** or **No**. Quote names containing commas (`"Driver, Jr."`).
+
+An import replaces that race’s qualifying, stages, finish order, and Fastest lap/Most laps led awards. It keeps manually corrected car numbers and driver points eligibility. This CSV format has no DNF/DNQ column, so apply those statuses in the manual editor afterward. Existing practice awards are kept only for participants still in the finish order.
+
+## Import or correct standings
+
+Open **Standings**, choose the division, and expand **Import standings from CSV**:
+
+```csv
+Position,+/-,Driver#,DriverName,Points
+1,+1,019,DriverUsername,150
+2,-1,020,OtherUsername,140
+```
+
+Select **Preview CSV**, check the full points table, then **Apply preview to draft**. Positions must agree with the points order, and driver names must match roster or recorded race participants. For same-name drivers, use their matching car numbers or usernames. Leading zeros in car numbers are preserved. Use `-` for unknown movement; otherwise enter a signed position change or `0`. Drivers omitted from an import and other divisions keep their totals.
+
+For an individual correction, change their **Points** in the standings table and select **Save**. **Use race points** removes that driver’s points correction. Imported or manually corrected totals are stored as adjustments to the current race points: if a driver is set to 150 and earns 45 in the next race, their total becomes 195. Correcting or deleting a race also updates the total. Imported position changes use the previous positions supplied in that CSV; without an import, movement compares the two latest race totals.
+
+Both imports are previewed before they change the draft, and applying an import is one **Undo** action. Editing the CSV or changing the draft requires a fresh preview. CSV text and previews are temporary; applied data is saved in the browser draft and reaches the public site when published. The public standings table shows only **Position, +/-, Driver#, DriverName, Points**.
 
 ## Recovery
 
