@@ -87,8 +87,8 @@ test('standings CSV previews exact five-column totals, preserves other divisions
   await pointsRow(page, 'OpenUser').locator('[data-standings-points]').fill('75'); await pointsRow(page, 'OpenUser').locator('[data-save-points]').click();
   await page.locator('[data-standings-division="d1"]').click(); const before = await draft(page);
   const node = await previewCSV(page, 'standings', standingsHeader + '\n1,+2,019,Max,150\n2,-1,020,Hayden,140');
-  await expect(node.locator('th')).toHaveText(['Position', '+/-', 'Driver#', 'DriverName', 'Points']);
-  await expect(node.locator('tbody tr').first()).toHaveText('1+2019Max150');
+  await expect(node.locator('th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points']);
+  await expect(node.locator('tbody tr').first()).toHaveText('1▲ 2019Max150');
   expect(await draft(page)).toEqual(before);
   await node.locator('[data-csv-apply]').click();
   await expect(pointsRow(page, 'MaxUser').locator('[data-standings-points]')).toHaveValue('150');
@@ -115,7 +115,7 @@ test('manual points corrections and manual race entry keep automatic totals and 
   await page.locator('[data-action="publish"]').first().click(); await page.locator('[data-confirm-publish]').click();
   await expect.poll(() => published.length).toBe(1); await expect(page.locator('[data-save-status]')).toHaveText('Published live');
   await page.goto('/race-center/');
-  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', '+/-', 'Driver#', 'DriverName', 'Points']);
+  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points']);
   await expect(page.locator('[data-rc-standings-body] [data-driver-id="MaxUser"]')).toHaveText('1—19Max155');
   for (const width of [320, 390, 1440]) {
     await page.setViewportSize({ width, height: 900 });
@@ -174,14 +174,27 @@ test('deleting a race or undoing its creation safely removes its CSV editor and 
 
 test('published standings imports show their totals and movement even before any race records exist', async ({ page }) => {
   const published = await boot(page); await section(page, 'standings').click();
-  await applyCSV(page, 'standings', standingsHeader + '\n1,+2,019,Max,150\n2,-1,020,Hayden,140');
+  await applyCSV(page, 'standings', standingsHeader + '\n1,+2,019,Max,150\n2,-1,020,Hayden,140\n3,0,23,JordanA,130\n4,-,24,JordanB,120');
   await page.locator('[data-action="publish"]').first().click(); await page.locator('[data-confirm-publish]').click();
   await expect.poll(() => published.length).toBe(1); expect(published[0].records).toEqual([]);
   await page.goto('/race-center/');
   await expect(page.locator('[data-rc-leader]')).toHaveText('Max'); await expect(page.locator('[data-rc-points]')).toHaveText('150');
   await expect(page.locator('[data-rc-preseason]')).toHaveText('Official standings · posted totals');
-  await expect(page.locator('[data-rc-standings-body] [data-driver-id="MaxUser"]')).toHaveText('1+2019Max150');
-  await expect(page.locator('[data-rc-standings-body] [data-driver-id="HaydenUser"]')).toHaveText('2-1020Hayden140');
+  await expect(page.locator('[data-rc-standings-body] [data-driver-id="MaxUser"]')).toHaveText('1▲ 2019Max150');
+  await expect(page.locator('[data-rc-standings-body] [data-driver-id="HaydenUser"]')).toHaveText('2▼ 1020Hayden140');
+  const up = page.locator('[data-driver-id="MaxUser"] .standings-movement');
+  const down = page.locator('[data-driver-id="HaydenUser"] .standings-movement');
+  await expect(up).toHaveAttribute('aria-label', 'Up 2 positions');
+  await expect(down).toHaveAttribute('aria-label', 'Down 1 position');
+  await expect(up.locator('span')).toHaveCSS('color', 'rgb(74, 222, 128)');
+  await expect(down.locator('span')).toHaveCSS('color', 'rgb(248, 113, 113)');
+  const unchanged = page.locator('[data-driver-id="JordanA"] .standings-movement');
+  await expect(unchanged).toHaveText('—'); await expect(unchanged).toHaveAttribute('aria-label', 'No position change');
+  await expect(page.locator('[data-driver-id="JordanB"] .standings-movement')).toHaveText('—');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator('.rc-table-shell').scrollIntoViewIfNeeded();
+  await page.screenshot({ path: 'test-results/standings-movement-mobile.png' });
+
 });
 
 const fullRaceCSV = `${resultsHeader}
@@ -199,7 +212,7 @@ function beforeRosterUpgrade() {
   const data = structuredClone(original);
   delete data.drivers.rosterVersion;
   for (const profile of Object.values(data.drivers.profiles)) { delete profile.csvAliases; delete profile.csvDivisions; }
-  data.drivers.profiles.Aokikoto.alias = 'Hailey'; data.drivers.profiles.UN88475544.alias = 'Haydon';
+  data.drivers.profiles.Aokikoto.alias = 'Hailey'; data.drivers.profiles.UN88475544.alias = 'Haydon'; data.drivers.profiles.AnyGameAnyTime09.number = '';
   data.events = league().events; data.records = [];
   return data;
 }
@@ -228,7 +241,7 @@ test('the reported ten-driver CSV applies and publishes without race guests, pre
   await expect.poll(() => published.length).toBe(1);
   const result = published[0].records[0];
   expect((result.entries || []).length).toBe(0);
-  expect(result.finishes[4]).toMatchObject({ username: 'AnyGameAnyTime09', number: '', totalPoints: 43 });
+  expect(result.finishes[4]).toMatchObject({ username: 'AnyGameAnyTime09', number: '2', totalPoints: 43 });
   expect(published[0].drivers.profiles.AnyGameAnyTime09.csvDivisions).toEqual(['d1']);
   expect(published[0].drivers.teams.flatMap(team => team.entries).some(entry => entry.user === 'AnyGameAnyTime09')).toBe(false);
   await page.goto('/race-center/');

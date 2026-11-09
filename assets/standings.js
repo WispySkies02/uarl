@@ -95,6 +95,13 @@
     return rows;
   }
   function movement(value) { return value == null ? "—" : value > 0 ? "+" + value : String(value); }
+  function movementHTML(value) {
+    var known = value != null && Number.isFinite(Number(value)), amount = known ? Math.abs(Number(value)) : 0;
+    var direction = amount === 0 ? "unchanged" : Number(value) > 0 ? "up" : "down";
+    var label = !known ? "Position change unavailable" : amount === 0 ? "No position change" : (direction === "up" ? "Up " : "Down ") + amount + " position" + (amount === 1 ? "" : "s");
+    var display = amount === 0 ? "—" : (direction === "up" ? "▲ " : "▼ ") + amount;
+    return '<span class="standings-movement standings-movement--' + direction + '" role="img" aria-label="' + label + '"><span aria-hidden="true">' + display + '</span></span>';
+  }
   function correction(row, points, options) {
     options = options || {};
     if (!Number.isSafeInteger(points)) throw new Error("Points must be a whole number.");
@@ -120,5 +127,5 @@
     });
     return errors;
   }
-  root.UARLStandings = { calculate: calculate, matchingDriver: matchingDriver, movement: movement, correction: correction, merge: merge, validate: validate };
+  root.UARLStandings = { calculate: calculate, matchingDriver: matchingDriver, movement: movement, movementHTML: movementHTML, correction: correction, merge: merge, validate: validate };
 })(typeof window !== "undefined" ? window : globalThis);

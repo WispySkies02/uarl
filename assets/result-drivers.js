@@ -23,7 +23,7 @@
     "iikyle5larson": ["Rocky", "Regan Linney"],
     "anygameanytime09": ["Muffin"]
   };
-  function register(data) {
+  function registerInitialRoster(data) {
     data = data || {};
     if (!data.drivers || typeof data.drivers !== "object") data.drivers = {};
     var drivers = data.drivers;
@@ -64,6 +64,24 @@
       });
     });
     drivers.rosterVersion = 1;
+    return data;
+  }
+  function register(data) {
+    data = registerInitialRoster(data);
+    var drivers = data.drivers;
+    if (Number(drivers.rosterVersion) >= 2) return data;
+    // Apply the confirmed current number once, including already-published data
+    // and browser drafts. Older race classifications retain their own numbers.
+    var muffin = Object.keys(drivers.profiles).find(function (user) { return identity(user) === "anygameanytime09"; });
+    if (muffin) drivers.profiles[muffin].number = "2";
+    (drivers.teams || []).forEach(function (team) {
+      (team.entries || []).concat(team.pendingDrivers || []).forEach(function (entry) {
+        if (identity(entry.user || entry.username) === "anygameanytime09") entry.number = "2";
+      });
+    });
+    (drivers.freeAgents || []).forEach(function (entry) { if (identity(entry.user || entry.username) === "anygameanytime09" && Object.hasOwn(entry, "number")) entry.number = "2"; });
+    (data.standings || []).forEach(function (entry) { if (entry.division === "d1" && identity(entry.username) === "anygameanytime09") entry.number = "2"; });
+    drivers.rosterVersion = 2;
     return data;
   }
   function profile(data, user) {

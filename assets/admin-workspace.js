@@ -38,7 +38,7 @@
       var profile = profileFor(data, user), name = text(entry.name) || text(profile.alias) || user;
       if (!name || placeholder(name)) return;
       var key = [context.source, context.teamId || "", context.teamIndex == null ? "" : context.teamIndex, context.entryIndex, identity(user) || identity(name), text(entry.number)].map(encodeURIComponent).join(":");
-      rows.push({ key: key, user: user, name: name, number: text(entry.number), team: context.team || "", teamId: context.teamId || "", teamIndex: context.teamIndex, division: context.division || "d1", make: text(context.make || entry.make), numberImage: entry.numberImage || profile.numberImage || "", signatureImage: entry.signatureImage || profile.signatureImage || "", source: context.source, entryIndex: context.entryIndex });
+      rows.push({ key: key, user: user, name: name, number: text(entry.number == null || text(entry.number) === "" ? profile.number : entry.number), team: context.team || "", teamId: context.teamId || "", teamIndex: context.teamIndex, division: context.division || "d1", make: text(context.make || entry.make), numberImage: entry.numberImage || profile.numberImage || "", signatureImage: entry.signatureImage || profile.signatureImage || "", source: context.source, entryIndex: context.entryIndex });
       if (user) represented.add(identity(user));
     }
     array(drivers.teams).forEach(function (team, teamIndex) {

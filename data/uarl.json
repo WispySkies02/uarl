@@ -1284,7 +1284,8 @@
         ],
         "csvAliases": [
           "Muffin"
-        ]
+        ],
+        "number": "2"
       },
       "sealsntags": {
         "alias": "Gk3r",
@@ -1418,7 +1419,7 @@
         "signedAt": "2026-09-13"
       }
     ],
-    "rosterVersion": 1
+    "rosterVersion": 2
   },
   "history": {
     "updated": "2026-09-12",
