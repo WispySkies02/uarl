@@ -115,7 +115,7 @@ test('manual points corrections and manual race entry keep automatic totals in p
   await page.locator('[data-action="publish"]').first().click(); await page.locator('[data-confirm-publish]').click();
   await expect.poll(() => published.length).toBe(1); await expect(page.locator('[data-save-status]')).toHaveText('Published live');
   await page.goto('/race-center/');
-  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind']);
+  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind', 'Cutoff']);
   const publicMax = page.locator('[data-rc-standings-body] [data-driver-id="MaxUser"]');
   await expect(publicMax.locator('.rc-position-value')).toHaveText('1');
   await expect(publicMax.locator('.rc-movement .standings-movement')).toHaveText('—');

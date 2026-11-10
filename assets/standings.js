@@ -101,6 +101,14 @@
     if (!rows.length || !row || !rows.includes(row) || rows.some(function (entry) { return entry.pointsPending; })) return null;
     return rows[0].points - row.points;
   }
+  function gapToCutoff(rows, row) {
+    rows = array(rows);
+    if (!row || !rows.includes(row) || rows.some(function (entry) { return entry.pointsPending; })) return null;
+    var tenth = rows.find(function (entry) { return entry.position === 10; });
+    var eleventh = rows.find(function (entry) { return entry.position === 11; });
+    if (!tenth || !eleventh) return null;
+    return row.points - (row.position <= 10 ? eleventh.points : tenth.points);
+  }
   function movementHTML(value) {
     var known = value != null && Number.isFinite(Number(value)), amount = known ? Math.abs(Number(value)) : 0;
     var direction = amount === 0 ? "unchanged" : Number(value) > 0 ? "up" : "down";
@@ -133,5 +141,5 @@
     });
     return errors;
   }
-  root.UARLStandings = { calculate: calculate, matchingDriver: matchingDriver, gapToLeader: gapToLeader, movement: movement, movementHTML: movementHTML, correction: correction, merge: merge, validate: validate };
+  root.UARLStandings = { calculate: calculate, matchingDriver: matchingDriver, gapToLeader: gapToLeader, gapToCutoff: gapToCutoff, movement: movement, movementHTML: movementHTML, correction: correction, merge: merge, validate: validate };
 })(typeof window !== "undefined" ? window : globalThis);

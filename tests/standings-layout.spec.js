@@ -36,7 +36,7 @@ for (const width of [320, 390, 541, 720, 721, 1440, 1920]) {
     await page.goto('/race-center/');
     const rows = page.locator(rowSelector);
     await expect(rows.first().locator('.rc-driver-cell strong')).toHaveText('Lance');
-    await expect(page.locator('.rc-standings-table th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind']);
+    await expect(page.locator('.rc-standings-table th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind', 'Cutoff']);
     const drivers = await rows.evaluateAll(entries => entries.slice(0, 17).map(row => ({
       id: row.dataset.driverId,
       name: row.querySelector('.rc-driver-cell strong').textContent.trim(),
@@ -86,10 +86,10 @@ for (const width of [320, 390, 541, 720, 721, 1440, 1920]) {
       for (const image of await page.locator('.rc-standings-table .manufacturer-badge img').all()) {
         await expect.poll(() => image.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
       }
-      await page.locator('.rc-table-shell').evaluate(shell => window.scrollTo({
-        top: Math.max(0, shell.getBoundingClientRect().top + scrollY - 220), behavior: 'instant'
-      }));
-      await expect.poll(() => page.locator('.rc-table-shell').evaluate(shell => Math.abs(shell.getBoundingClientRect().top - 220))).toBeLessThan(5);
+      await expect.poll(() => page.locator('.rc-table-shell').evaluate(shell => {
+        window.scrollTo({ top: Math.max(0, shell.getBoundingClientRect().top + scrollY - 220), behavior: 'instant' });
+        return Math.abs(shell.getBoundingClientRect().top - 220);
+      })).toBeLessThan(2);
       await page.screenshot({ path: `test-results/standings-layout-${width}.png` });
       if (width === 390 || width === 1920) {
         await page.locator('.rc-chase-cutoff').evaluate(divider => window.scrollTo({

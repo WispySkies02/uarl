@@ -31,7 +31,7 @@ test('public standings show badges before the first race and throughout every se
     await expect(badge(standingsRow(page, user), make)).toBeVisible();
     await expect(standingsRow(page, user).locator('.rc-points-value')).toHaveText('0');
   }
-  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind']);
+  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind', 'Cutoff']);
   await expect(standingsRow(page, 'Callsign_Hestia').getByRole('img', { name: 'Manufacturer not assigned' })).toBeVisible();
   await page.locator('[data-rc-division="open"]').click();
   await expect(badge(standingsRow(page, 'JJElliott2004'), 'Chevrolet')).toBeVisible();

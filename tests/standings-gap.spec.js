@@ -20,7 +20,7 @@ async function boot(page, fixture = brokenStandings()) {
 test('gaps use the complete corrected points board while searching and after totals change', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 });
   const reload = await boot(page);
-  await expect(page.locator('.rc-standings-table th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind']);
+  await expect(page.locator('.rc-standings-table th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind', 'Cutoff']);
   for (const [index, [id, , , points]] of baseline.entries()) {
     await expect(desktopGap(page, id)).toHaveText(index === 0 ? 'Leader' : '-' + (281 - points));
   }
@@ -58,7 +58,7 @@ test('the Chase boundary separates the actual P10 and P11 and is not a filtered-
   const separator = page.locator('.rc-chase-cutoff');
   await expect(separator).toHaveCount(1);
   await expect(separator).toContainText('Chase cutoff');
-  await expect(separator.locator('td')).toHaveAttribute('colspan', '6');
+  await expect(separator.locator('td')).toHaveAttribute('colspan', '7');
   expect(await separator.evaluate(node => ({
     before: node.previousElementSibling.dataset.driverId,
     after: node.nextElementSibling.dataset.driverId
@@ -110,7 +110,7 @@ test('the cutoff spans only visible columns when resizing between desktop and mo
   await boot(page);
   for (const width of [1440, 390, 721, 320]) {
     await page.setViewportSize({ width, height: 900 });
-    await expect(page.locator('.rc-chase-cutoff td')).toHaveAttribute('colspan', width <= 720 ? '4' : '6');
+    await expect(page.locator('.rc-chase-cutoff td')).toHaveAttribute('colspan', width <= 720 ? '4' : '7');
     const nameWidth = await row(page, 'lancejuly').locator('.rc-driver-cell strong').evaluate(name => name.clientWidth);
     expect(nameWidth).toBeGreaterThanOrEqual(64);
   }
