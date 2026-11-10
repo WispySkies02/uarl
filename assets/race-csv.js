@@ -109,7 +109,7 @@
       var points = Number(c[4]);
       if (!/^-?\d+$/.test(c[4]) || !Number.isSafeInteger(points)) errors.push("Line " + row.line + ": Points must be a whole number.");
       if (driver && position && Number.isSafeInteger(points)) {
-        try { entries.push(root.UARLStandings.correction(driver, points, { name: c[3].replace(/^@/, "").toLowerCase() === identity(driver.id) ? driver.name : c[3], number: c[2], previousPosition: delta == null ? null : position + delta, order: position })); }
+        try { entries.push(root.UARLStandings.correction(driver, points, { name: c[3].replace(/^@/, "").toLowerCase() === identity(driver.id) ? driver.name : c[3], number: c[2] || text(driver.number), previousPosition: delta == null ? null : position + delta, order: position })); }
         catch (error) { errors.push("Line " + row.line + ": " + error.message); }
       }
     });

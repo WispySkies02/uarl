@@ -41,7 +41,7 @@ test('the exact ten-driver CSV resolves permanent identities, including line 6, 
   assert.equal(result.record.finishes[0].username, 'UN88475544');
   assert.equal(result.record.finishes[1].username, 'IIKyle5Larson');
   assert.equal(result.record.finishes[4].username, 'AnyGameAnyTime09');
-  assert.equal(result.record.finishes[4].number, '');
+  assert.equal(result.record.finishes[4].number, '2');
   assert.equal(result.record.finishes[7].username, 'Aokikoto');
   assert.equal(Object.hasOwn(result.record, 'entries'), false);
   for (const value of ['Nurtec', 'UN88475544']) assert.deepEqual(csv.results(source.replace('Haydon Hildebrand', value), data, record).errors, []);
@@ -77,7 +77,10 @@ test('permanent drivers work in results and standings for their series without a
   const result = csv.standings('Position,+/-,Driver#,DriverName,Points\n1,+1,,Muffin,100', data, 'd1');
   assert.deepEqual(result.errors, []);
   const muffin = result.rows.find(row => row.id === 'AnyGameAnyTime09');
-  assert.equal(muffin.points, 100); assert.equal(muffin.number, '');
+  assert.equal(muffin.points, 100); assert.equal(muffin.number, '2');
+  data.drivers.profiles.PendingUser = { alias: 'Number Pending', csvDivisions: ['d1'] };
+  const pending = csv.standings('Position,+/-,Driver#,DriverName,Points\n1,0,,Number Pending,100', data, 'd1');
+  assert.deepEqual(pending.errors, []); assert.equal(pending.rows[0].number, '');
   data.drivers.profiles.AnyGameAnyTime09.csvDivisions.push('open');
   assert.ok(roster.pool(data, { division: 'open' }).some(driver => driver.user === 'AnyGameAnyTime09'));
   data.drivers.profiles.AnyGameAnyTime09.csvDivisions = [];
@@ -136,4 +139,23 @@ test('Race Control can publish the migrated dataset but cannot change the perman
   assert.equal(raceControlChangeOnly(edited, current), false);
   const archived = structuredClone(next); archived.race.drivers.find(driver => driver.division === 'd2').name = 'Changed archive';
   assert.equal(raceControlChangeOnly(archived, current), false);
+});
+
+test('Muffin gets his confirmed number in version-one data while saved race numbers and later edits survive', () => {
+  const data = structuredClone(original); data.drivers.rosterVersion = 1;
+  data.drivers.profiles.AnyGameAnyTime09.number = '';
+  data.drivers.teams.push({ name: 'Existing Team', entries: [{ user: 'AnyGameAnyTime09', number: '84' }] });
+  data.standings = [{ division: 'd1', username: 'AnyGameAnyTime09', number: '' }, { division: 'd2', username: 'AnyGameAnyTime09', number: '84' }];
+  data.records = [{ division: 'd1', finishes: [{ name: 'Muffin', username: 'AnyGameAnyTime09', number: '84', numberManual: true }] }];
+  const previous = structuredClone(data);
+  roster.register(data);
+  assert.equal(raceControlChangeOnly(data, previous), true);
+  assert.equal(data.drivers.rosterVersion, 2);
+  assert.equal(data.drivers.profiles.AnyGameAnyTime09.number, '2');
+  assert.equal(data.drivers.teams.at(-1).entries[0].number, '2');
+  assert.equal(data.standings[0].number, '2'); assert.equal(data.standings[1].number, '84');
+  assert.equal(data.records[0].finishes[0].number, '84');
+  data.drivers.profiles.AnyGameAnyTime09.number = '7'; data.drivers.teams.at(-1).entries[0].number = '7';
+  roster.register(data);
+  assert.equal(roster.resolve(roster.pool(data, { division: 'd1' }), 'Muffin').number, '7');
 });

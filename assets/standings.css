@@ -1,0 +1,5 @@
+.standings-movement { display: inline-flex; align-items: center; white-space: nowrap; font-weight: 800; font-variant-numeric: tabular-nums; }
+#uarl-race-center .standings-movement > span, .admin-app .standings-movement > span { color: inherit !important; -webkit-text-fill-color: inherit !important; }
+#uarl-race-center .standings-movement--up, .admin-app .standings-movement--up { color: #4ade80 !important; -webkit-text-fill-color: #4ade80 !important; }
+#uarl-race-center .standings-movement--down, .admin-app .standings-movement--down { color: #f87171 !important; -webkit-text-fill-color: #f87171 !important; }
+#uarl-race-center .standings-movement--unchanged, .admin-app .standings-movement--unchanged { color: #a3aab8 !important; -webkit-text-fill-color: #a3aab8 !important; }
