@@ -19,20 +19,20 @@ test('all seventeen imported standings names recover in the reported positions w
   const errors = []; page.on('pageerror', error => errors.push(error.message));
   await page.setViewportSize({ width: 390, height: 844 });
   await boot(page, brokenStandings());
-  const rows = page.locator('[data-rc-standings-body] tr');
+  const rows = page.locator('[data-rc-standings-body] tr[data-driver-id]');
   await expect(rows.first().locator('.rc-driver-cell strong')).toHaveText('Lance');
   for (const [i, [user, , number, points]] of baseline.entries()) {
     const row = rows.nth(i);
     await expect(row).toHaveAttribute('data-driver-id', user);
     await expect(row.locator('.rc-driver-cell strong')).toHaveText(names[i]);
-    await expect(row.locator('.rc-rank')).toHaveText(String(i + 1));
+    await expect(row.locator('.rc-position-value')).toHaveText(String(i + 1));
     await expect(row.locator('.rc-number')).toHaveText(number);
-    await expect(row.locator('.rc-pts')).toHaveText(String(points));
+    await expect(row.locator('.rc-points-value')).toHaveText(String(points));
   }
   await expect(page.locator('[data-rc-standings-body]')).not.toContainText('undefined');
   await expect(rows.nth(1).getByRole('img', { name: 'Toyota manufacturer', exact: true })).toBeVisible();
   await page.locator('.rc-search').fill('JJ');
-  await expect(rows).toHaveCount(1); await expect(rows.first().locator('.rc-pts')).toHaveText('234');
+  await expect(rows).toHaveCount(1); await expect(rows.first().locator('.rc-points-value')).toHaveText('234');
   await page.locator('.rc-search').clear();
   await page.locator('.rc-table-shell').scrollIntoViewIfNeeded();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
