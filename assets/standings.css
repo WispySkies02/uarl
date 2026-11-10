@@ -5,6 +5,13 @@
 #uarl-race-center .standings-movement--unchanged, .admin-app .standings-movement--unchanged { color: #a3aab8 !important; -webkit-text-fill-color: #a3aab8 !important; }
 
 /* Keep the five standings columns while giving every logo its own aligned slot. */
+@media (min-width: 721px) {
+  #uarl-race-center [data-rc-panel="standings"] .rc-standings-tools,
+  #uarl-race-center [data-rc-panel="standings"] .rc-table-shell {
+    max-width: 50rem;
+    margin-inline: auto;
+  }
+}
 #uarl-race-center .rc-table.rc-standings-table {
   min-width: 0;
   table-layout: fixed;

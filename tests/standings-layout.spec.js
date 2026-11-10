@@ -28,7 +28,7 @@ async function expectNoOverflow(page) {
   expect(sizes.table).toBeLessThanOrEqual(sizes.available + 1);
 }
 
-for (const width of [320, 390, 541, 720, 1440]) {
+for (const width of [320, 390, 541, 720, 1440, 1920]) {
   test(`standings retain their data and aligned columns at ${width}px`, async ({ page }) => {
     let data = brokenStandings();
     await page.setViewportSize({ width, height: 900 });
@@ -58,6 +58,18 @@ for (const width of [320, 390, 541, 720, 1440]) {
     const toyota = await page.locator('.rc-standings-table .manufacturer-badge--toyota').first().boundingBox();
     expect(toyota.width).toBe(toyota.height);
     await expectNoOverflow(page);
+    if (width > 720) {
+      const layout = await page.locator('.rc-table-shell').evaluate(shell => {
+        const rect = shell.getBoundingClientRect();
+        const panel = shell.closest('[data-rc-panel="standings"]').getBoundingClientRect();
+        const tools = document.querySelector('.rc-standings-tools').getBoundingClientRect();
+        return { width: rect.width, tableCenter: rect.x + rect.width / 2, panelCenter: panel.x + panel.width / 2, toolsLeft: tools.x, tableLeft: rect.x, toolsWidth: tools.width };
+      });
+      expect(layout.width).toBeLessThanOrEqual(800);
+      expect(Math.abs(layout.tableCenter - layout.panelCenter)).toBeLessThanOrEqual(1);
+      expect(Math.abs(layout.toolsLeft - layout.tableLeft)).toBeLessThanOrEqual(1);
+      expect(Math.abs(layout.toolsWidth - layout.width)).toBeLessThanOrEqual(1);
+    }
 
     const beforeSearch = await columnSizes(page);
     await page.locator('.rc-search').fill('JJ');
@@ -69,7 +81,7 @@ for (const width of [320, 390, 541, 720, 1440]) {
     }
     await page.locator('.rc-search').clear();
     await expect(rows.first().locator('.rc-driver-cell strong')).toHaveText('Lance');
-    if (width === 390 || width === 1440) {
+    if (width === 390 || width === 1440 || width === 1920) {
       for (const image of await page.locator('.rc-standings-table .manufacturer-badge img').all()) {
         await expect.poll(() => image.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
       }
