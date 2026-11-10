@@ -72,6 +72,7 @@ test('migration preserves current names, aliases, artwork, teams and manually ch
 
 test('permanent drivers work in results and standings for their series without a team assignment', () => {
   const data = previousData(); data.records = []; roster.register(data);
+  data.drivers.teams.forEach(team => { team.entries = team.entries.filter(entry => entry.user !== 'AnyGameAnyTime09'); });
   assert.ok(roster.pool(data, { division: 'd1' }).some(driver => driver.user === 'AnyGameAnyTime09'));
   assert.ok(!roster.pool(data, { division: 'open' }).some(driver => driver.user === 'AnyGameAnyTime09'));
   const result = csv.standings('Position,+/-,Driver#,DriverName,Points\n1,+1,,Muffin,100', data, 'd1');
@@ -91,15 +92,16 @@ test('permanent drivers work in results and standings for their series without a
 test('other known free agents are permanent D1 drivers without reusing their former charter numbers', () => {
   const data = previousData(); roster.register(data);
   const choices = roster.pool(data, { division: 'd1' });
-  const jay = roster.resolve(choices, 'Jay Vixen');
-  assert.equal(jay.user, 'Comodw'); assert.equal(jay.number, '');
-  assert.equal(choices.filter(driver => driver.user === 'Comodw').length, 1);
-  assert.equal(data.drivers.freeAgents.find(driver => driver.user === 'Comodw').former, '#9 · Goat Whitlock Motorsports · Toyota');
-  assert.deepEqual(csv.results('FinishingPosition,Driver,Qualifying,Stage1,Stage2,FastestLap,MostLapsLed\n1,Jay Vixen,,,,No,No', data, { division: 'd1' }).errors, []);
+  const nick = roster.resolve(choices, 'Nick');
+  assert.equal(nick.user, 'Callsign_Hestia'); assert.equal(nick.number, '');
+  assert.equal(choices.filter(driver => driver.user === 'Callsign_Hestia').length, 1);
+  assert.equal(data.drivers.freeAgents.find(driver => driver.user === 'Callsign_Hestia').former, '#05 · Avery Motorsports · Ford');
+  assert.deepEqual(csv.results('FinishingPosition,Driver,Qualifying,Stage1,Stage2,FastestLap,MostLapsLed\n1,Nick,,,,No,No', data, { division: 'd1' }).errors, []);
 });
 
 test('saved published data and browser drafts receive the same registration and keep existing points identities', () => {
   const data = previousData(); data.drivers.profiles.UN88475544.alias = 'Haydon';
+  data.drivers.teams.forEach(team => team.entries.forEach(entry => { if (entry.user === 'UN88475544') delete entry.name; }));
   data.records = [{ id: 'saved', division: 'd1', finishes: [{ name: 'Nurtec', username: 'guest:d1:nurtec', position: 1, points: 50 }, { name: 'Muffin', position: 2, points: 45 }] }];
   const normalized = normalize(data), finishes = normalized.records[0].finishes;
   assert.equal(finishes[0].username, 'UN88475544'); assert.equal(finishes[0].name, 'Haydon');
@@ -143,6 +145,7 @@ test('Race Control can publish the migrated dataset but cannot change the perman
 
 test('Muffin gets his confirmed number in version-one data while saved race numbers and later edits survive', () => {
   const data = structuredClone(original); data.drivers.rosterVersion = 1;
+  data.drivers.teams.forEach(team => { team.entries = team.entries.filter(entry => entry.user !== 'AnyGameAnyTime09'); });
   data.drivers.profiles.AnyGameAnyTime09.number = '';
   data.drivers.teams.push({ name: 'Existing Team', entries: [{ user: 'AnyGameAnyTime09', number: '84' }] });
   data.standings = [{ division: 'd1', username: 'AnyGameAnyTime09', number: '' }, { division: 'd2', username: 'AnyGameAnyTime09', number: '84' }];

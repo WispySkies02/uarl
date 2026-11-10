@@ -210,7 +210,9 @@ const fullRaceCSV = `${resultsHeader}
 10,Dale,9,,,no,no`;
 function beforeRosterUpgrade() {
   const data = structuredClone(original);
-  delete data.drivers.rosterVersion;
+  const saved = data.drivers.previousRoster;
+  Object.assign(data.drivers, { teams: structuredClone(saved.teams), profiles: structuredClone(saved.profiles), freeAgents: structuredClone(saved.freeAgents), recentMoves: structuredClone(saved.recentMoves) });
+  delete data.drivers.previousRoster; delete data.drivers.assignmentVersion; delete data.drivers.rosterVersion;
   for (const profile of Object.values(data.drivers.profiles)) { delete profile.csvAliases; delete profile.csvDivisions; }
   data.drivers.profiles.Aokikoto.alias = 'Hailey'; data.drivers.profiles.UN88475544.alias = 'Haydon'; data.drivers.profiles.AnyGameAnyTime09.number = '';
   data.events = league().events; data.records = [];
@@ -243,7 +245,7 @@ test('the reported ten-driver CSV applies and publishes without race guests, pre
   expect((result.entries || []).length).toBe(0);
   expect(result.finishes[4]).toMatchObject({ username: 'AnyGameAnyTime09', number: '2', totalPoints: 43 });
   expect(published[0].drivers.profiles.AnyGameAnyTime09.csvDivisions).toEqual(['d1']);
-  expect(published[0].drivers.teams.flatMap(team => team.entries).some(entry => entry.user === 'AnyGameAnyTime09')).toBe(false);
+  expect(published[0].drivers.teams.find(team => team.id === 'sham').entries[0]).toMatchObject({ user: 'AnyGameAnyTime09', number: '2' });
   await page.goto('/race-center/');
   await expect(page.locator('[data-rc-standings-body] [data-driver-id="AnyGameAnyTime09"] .rc-pts')).toHaveText('43');
   await expect(page.locator('[data-rc-standings-body] [data-driver-id="Aokikoto"] .rc-driver-cell')).toHaveText('Hailey');

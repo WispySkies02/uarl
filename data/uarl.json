@@ -848,233 +848,276 @@
     "teams": [
       {
         "id": "dakota",
-        "name": "Dakota Sullivan Racing",
         "owner": "Dale",
-        "make": "Chevrolet",
         "note": "Dale-owned Chevrolet program with Max joining the #19 and Opt joining the #91.",
+        "name": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
         "entries": [
           {
             "number": "16",
             "user": "58bbwapache",
-            "status": "Full-Time"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
             "number": "19",
             "name": "Max",
-            "status": "Signed",
+            "status": "Full-Time",
             "signedAt": "2026-09-13",
-            "seatType": "Full-Time"
+            "seatType": "Full-Time",
+            "user": "FueledByMayonnaise",
+            "charterType": "FT"
           },
           {
             "number": "20",
             "user": "UN88475544",
-            "status": "Full-Time"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
             "number": "61",
             "user": "PlaneFan638",
-            "status": "Full-Time"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
             "number": "91",
             "name": "Opt",
-            "status": "Signed",
+            "status": "Full-Time",
             "signedAt": "2026-09-13",
-            "seatType": "Part-Time"
+            "seatType": "Full-Time",
+            "user": "OPTBlitzCC4589",
+            "charterType": "FT"
           }
-        ]
-      },
-      {
-        "id": "xdrive",
-        "name": "XDrive Motorsports",
-        "owner": "John",
-        "make": "Chevrolet",
-        "note": "John-owned Chevrolet program with four full-time seats currently available.",
-        "entries": [
-          {
-            "number": "21",
-            "name": "OPEN",
-            "status": "Open FT"
-          },
-          {
-            "number": "25",
-            "name": "OPEN",
-            "status": "Open FT"
-          },
-          {
-            "number": "44",
-            "name": "OPEN",
-            "status": "Open FT"
-          },
-          {
-            "number": "89",
-            "name": "OPEN",
-            "status": "Open FT"
-          }
-        ]
+        ],
+        "pendingDrivers": []
       },
       {
         "id": "avery",
-        "name": "Avery Motorsports",
         "owner": "Payson",
+        "note": "The league owner’s Ford stable, with Frog in the #5 and Payson in the #05.",
+        "name": "Avery Motorsports",
         "ownerNote": "UARL League Owner",
         "make": "Ford",
-        "note": "The league owner’s Ford stable. Frog joins the #73 after the D2 shutdown.",
         "entries": [
           {
             "number": "05",
             "user": "pa05",
-            "status": "Full-Time"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
-            "number": "58",
-            "user": "bowlingsham1",
-            "status": "Full-Time"
+            "number": "5",
+            "user": "Frogboy4783",
+            "status": "Full-Time",
+            "signedAt": "2026-09-13",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "6",
+            "name": "OPEN",
+            "status": "Open FT",
+            "numberPending": false,
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
             "number": "60",
             "user": "codydgoforth",
-            "status": "Full-Time"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
             "number": "72",
             "user": "TBDAN1E",
-            "status": "Full-Time"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
             "number": "73",
-            "user": "Frogboy4783",
-            "status": "Signed",
-            "recent": true,
-            "signedAt": "2026-09-13"
+            "name": "OPEN",
+            "status": "Open PT",
+            "numberPending": false,
+            "seatType": "Part-Time",
+            "charterType": "PT"
           }
-        ]
+        ],
+        "pendingDrivers": []
       },
       {
         "id": "whitlock",
-        "name": "Goat Whitlock Motorsports",
         "owner": "James",
+        "note": "James-owned Toyota team, fielding the #9, #24, #25, #28 and #84.",
+        "name": "Goat Whitlock Motorsports",
         "make": "Toyota",
-        "note": "James-owned Toyota team. Taylor moves up from the discontinued D2 series into the #48.",
         "entries": [
           {
+            "user": "Comodw",
             "number": "9",
-            "name": "OPEN",
-            "status": "Open FT"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
             "number": "24",
             "user": "John_Hunter38",
-            "status": "Full-Time"
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
           {
-            "number": "48",
-            "user": "TaylorKenseth17",
-            "status": "Signed",
-            "recent": true,
-            "signedAt": "2026-09-13"
+            "user": "JamesEklund",
+            "number": "25",
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
           },
-          {
-            "number": "84",
-            "user": "JJElliott2004",
-            "status": "Full-Time"
-          }
-        ]
-      },
-      {
-        "id": "goforth",
-        "name": "Goforth Motorsports",
-        "owner": "Cody",
-        "make": "Ford",
-        "note": "Cody’s Ford operation, home to the league’s all-time wins leader.",
-        "entries": [
-          {
-            "number": "1",
-            "name": "OPEN",
-            "status": "Open FT"
-          },
-          {
-            "number": "77",
-            "user": "Kingofgamez",
-            "status": "Full-Time"
-          },
-          {
-            "number": "80",
-            "user": "GuillermoChase",
-            "status": "Full-Time"
-          },
-          {
-            "number": "88",
-            "user": "lancejuly",
-            "status": "Full-Time"
-          },
-          {
-            "number": "97",
-            "name": "Part-Time Charter",
-            "status": "Part-Time Charter"
-          }
-        ]
-      },
-      {
-        "id": "aetherwing",
-        "name": "Aetherwing eMotorsports",
-        "owner": "Wispy",
-        "make": "Toyota",
-        "note": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
-        "entries": [
           {
             "number": "28",
             "user": "Aokikoto",
             "status": "Full-Time",
-            "charterType": "FT"
+            "charterType": "FT",
+            "seatType": "Full-Time",
+            "numberImage": "/assets/aetherwing/numbers/28.png"
           },
           {
-            "number": "32",
-            "user": "uhhbzb",
-            "status": "Signed",
-            "signedAt": "2026-09-13",
-            "charterType": "FT"
-          },
-          {
-            "number": "52",
-            "user": "sealsntags",
-            "status": "Signed",
-            "signedAt": "2026-09-14",
-            "charterType": "FT"
-          },
-          {
-            "number": "54",
-            "name": "OPEN",
-            "status": "Open FT",
-            "charterType": "FT"
-          },
-          {
-            "number": "92",
-            "user": "IIKyle5Larson",
+            "number": "84",
+            "user": "JJElliott2004",
             "status": "Full-Time",
+            "seatType": "Full-Time",
             "charterType": "FT"
-          },
-          {
-            "number": "62",
-            "name": "Part-Time Entry",
-            "status": "Part-Time Entry",
-            "seatType": "Shared 6th Open Charter",
-            "charterType": "OPEN"
-          },
-          {
-            "number": "82",
-            "name": "Development Entry",
-            "status": "Development Entry",
-            "seatType": "Shared 6th Open Charter",
-            "charterType": "OPEN"
           }
         ],
-        "founded": "Season 3",
-        "logo": "/assets/aetherwing/logo.webp",
-        "brandColor": "#ef1e23",
-        "brandColor2": "#ffffff",
+        "pendingDrivers": []
+      },
+      {
+        "id": "goforth",
+        "owner": "Cody",
+        "note": "Cody’s Ford operation, home to the league’s all-time wins leader.",
+        "name": "Goforth Motorsports",
+        "make": "Ford",
+        "entries": [
+          {
+            "number": "1",
+            "name": "OPEN",
+            "status": "Open FT",
+            "numberPending": false,
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "77",
+            "user": "Kingofgamez",
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "81",
+            "user": "GuillermoChase",
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "88",
+            "user": "lancejuly",
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "97",
+            "name": "OPEN",
+            "status": "Open PT",
+            "numberPending": false,
+            "seatType": "Part-Time",
+            "charterType": "PT"
+          }
+        ],
+        "pendingDrivers": []
+      },
+      {
+        "id": "penske",
+        "owner": "",
+        "note": "",
+        "name": "Team Penske",
+        "make": "Ford",
         "pendingDrivers": [],
-        "charterCount": 6
+        "entries": [
+          {
+            "number": "22",
+            "user": "IIKyle5Larson",
+            "status": "Full-Time",
+            "charterType": "FT",
+            "seatType": "Full-Time"
+          },
+          {
+            "number": "",
+            "name": "TBD",
+            "status": "Pending",
+            "numberPending": true,
+            "seatType": "",
+            "charterType": ""
+          }
+        ]
+      },
+      {
+        "id": "sham",
+        "owner": "",
+        "note": "",
+        "name": "Sham Motorsports",
+        "make": "Ford",
+        "pendingDrivers": [],
+        "entries": [
+          {
+            "user": "AnyGameAnyTime09",
+            "number": "2",
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "",
+            "name": "TBD",
+            "status": "Pending",
+            "numberPending": true,
+            "seatType": "",
+            "charterType": ""
+          }
+        ]
+      },
+      {
+        "id": "winston-hermonstyne",
+        "owner": "",
+        "note": "",
+        "name": "Winston-Hermonstyne Motorsports",
+        "make": "Toyota",
+        "pendingDrivers": [],
+        "entries": [
+          {
+            "user": "NoodlesLuv2011",
+            "number": "11",
+            "status": "Full-Time",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "",
+            "name": "TBD",
+            "status": "Pending",
+            "numberPending": true,
+            "seatType": "",
+            "charterType": ""
+          }
+        ]
       }
     ],
     "profiles": {
@@ -1085,8 +1128,15 @@
         "rank": 0,
         "csvAliases": [
           "Dale",
-          "Dale Apache"
-        ]
+          "Dale Apache",
+          "58bbwapache"
+        ],
+        "currentUsername": "58bbwapache",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "16"
       },
       "UN88475544": {
         "alias": "Nurtec",
@@ -1098,14 +1148,28 @@
         ],
         "csvAliases": [
           "Nurtec",
-          "Haydon Hildebrand"
-        ]
+          "Haydon Hildebrand",
+          "UN88475544"
+        ],
+        "currentUsername": "UN88475544",
+        "usernameAliases": [],
+        "number": "20"
       },
       "PlaneFan638": {
         "alias": "Plane",
         "wins": 1,
         "championships": 0,
-        "rank": 44
+        "rank": 44,
+        "currentUsername": "PlaneFan638",
+        "usernameAliases": [],
+        "csvAliases": [
+          "Plane",
+          "PlaneFan638"
+        ],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "61"
       },
       "pa05": {
         "alias": "Payson",
@@ -1114,14 +1178,24 @@
         "rank": 2,
         "csvAliases": [
           "Payson",
-          "Payson Avery"
-        ]
+          "Payson Avery",
+          "pa05"
+        ],
+        "currentUsername": "pa05",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "05"
       },
       "bowlingsham1": {
         "alias": "Shane",
         "wins": 3,
         "championships": 0,
-        "rank": 23
+        "rank": 23,
+        "csvDivisions": [
+          "d1"
+        ]
       },
       "codydgoforth": {
         "alias": "Cody",
@@ -1130,8 +1204,15 @@
         "rank": 9,
         "csvAliases": [
           "Cody",
-          "Cody Goforth"
-        ]
+          "Cody Goforth",
+          "codydgoforth"
+        ],
+        "currentUsername": "codydgoforth",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "60"
       },
       "TBDAN1E": {
         "alias": "Daniel",
@@ -1140,8 +1221,15 @@
         "rank": 37,
         "csvAliases": [
           "Daniel",
-          "Daniel Heale"
-        ]
+          "Daniel Heale",
+          "TBDAN1E"
+        ],
+        "currentUsername": "TBDAN1E",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "72"
       },
       "John_Hunter38": {
         "alias": "John",
@@ -1150,8 +1238,15 @@
         "rank": 19,
         "csvAliases": [
           "John",
-          "John Hunter"
-        ]
+          "John Hunter",
+          "John_Hunter38"
+        ],
+        "currentUsername": "John_Hunter38",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "24"
       },
       "JJElliott2004": {
         "alias": "James",
@@ -1160,14 +1255,34 @@
         "rank": 18,
         "csvAliases": [
           "James",
-          "JJ Whitlock"
-        ]
+          "JJ Whitlock",
+          "JJElliott2004"
+        ],
+        "currentUsername": "JJElliott2004",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "84"
       },
       "Kingofgamez": {
         "alias": "King",
         "wins": 3,
         "championships": 0,
-        "rank": 20
+        "rank": 20,
+        "currentUsername": "kingofgamez_YT",
+        "usernameAliases": [
+          "kingofgamez_yt"
+        ],
+        "csvAliases": [
+          "King",
+          "kingofgamez_YT",
+          "Kingofgamez"
+        ],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "77"
       },
       "GuillermoChase": {
         "alias": "Gman",
@@ -1176,8 +1291,15 @@
         "rank": 12,
         "csvAliases": [
           "Gman",
-          "Guillermo Chase"
-        ]
+          "Guillermo Chase",
+          "GuillermoChase"
+        ],
+        "currentUsername": "GuillermoChase",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "81"
       },
       "lancejuly": {
         "alias": "Lance",
@@ -1186,8 +1308,15 @@
         "rank": 1,
         "csvAliases": [
           "Lance",
-          "Lance July"
-        ]
+          "Lance July",
+          "lancejuly"
+        ],
+        "currentUsername": "lancejuly",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "88"
       },
       "Aokikoto": {
         "alias": "Hailey",
@@ -1197,8 +1326,16 @@
         "csvAliases": [
           "Wispy",
           "Hailey",
-          "Hailey Bell"
-        ]
+          "Hailey Bell",
+          "Hailey Waggonner",
+          "Aokikoto"
+        ],
+        "currentUsername": "Aokikoto",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "28"
       },
       "IIKyle5Larson": {
         "alias": "Rocky",
@@ -1207,35 +1344,67 @@
         "rank": 14,
         "csvAliases": [
           "Rocky",
-          "Regan Linney"
-        ]
+          "Regan Linney",
+          "IIKyle5Larson"
+        ],
+        "currentUsername": "IIKyle5Larson",
+        "usernameAliases": [],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "22"
       },
       "Frogboy4783": {
         "alias": "Frog",
         "wins": 2,
         "championships": 0,
-        "rank": 26
+        "rank": 26,
+        "currentUsername": "frogboy4783",
+        "usernameAliases": [],
+        "csvAliases": [
+          "Frog",
+          "frogboy4783"
+        ],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "5"
       },
       "uhhbzb": {
         "alias": "BurgerTown2Good",
         "wins": 0,
         "championships": 0,
-        "rank": 0
+        "rank": 0,
+        "csvDivisions": [
+          "d1"
+        ]
       },
       "TaylorKenseth17": {
         "alias": "Taylor",
         "wins": 0,
         "championships": 0,
-        "rank": 0
+        "rank": 0,
+        "csvDivisions": [
+          "d1"
+        ]
       },
       "FueledByMayonnaise": {
-        "alias": "FueledByMayo",
+        "alias": "Max",
         "wins": 1,
         "championships": 0,
         "rank": 40,
         "csvDivisions": [
           "d1"
-        ]
+        ],
+        "currentUsername": "FueledByMayonnaise",
+        "usernameAliases": [],
+        "csvAliases": [
+          "FueledByMayo",
+          "Max Stidham",
+          "Max",
+          "FueledByMayonnaise"
+        ],
+        "number": "19"
       },
       "daleapache88": {
         "alias": "Dale",
@@ -1259,11 +1428,15 @@
         "rank": 0,
         "csvAliases": [
           "Jay",
-          "Jay Vixen"
+          "Jay Vixen",
+          "ComoDW"
         ],
         "csvDivisions": [
           "d1"
-        ]
+        ],
+        "currentUsername": "ComoDW",
+        "usernameAliases": [],
+        "number": "9"
       },
       "JeremyFrey12": {
         "alias": "Jeremy",
@@ -1283,21 +1456,76 @@
           "d1"
         ],
         "csvAliases": [
-          "Muffin"
+          "Muffin",
+          "AnyGameAnyTime09"
         ],
-        "number": "2"
+        "number": "2",
+        "currentUsername": "Muffin",
+        "usernameAliases": [
+          "muffin"
+        ]
       },
       "sealsntags": {
         "alias": "Gk3r",
         "wins": 0,
         "championships": 0,
-        "rank": 0
+        "rank": 0,
+        "csvDivisions": [
+          "d1"
+        ]
       },
       "pxssis": {
         "alias": "Pxssis",
         "wins": 2,
         "championships": 0,
         "rank": 30
+      },
+      "OPTBlitzCC4589": {
+        "wins": 0,
+        "championships": 0,
+        "alias": "Opt",
+        "currentUsername": "OPTBlitzCC4589",
+        "usernameAliases": [],
+        "csvAliases": [
+          "Opt",
+          "OPTBlitzCC4589"
+        ],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "91",
+        "rank": 0
+      },
+      "JamesEklund": {
+        "wins": 0,
+        "championships": 0,
+        "alias": "James Eklund",
+        "currentUsername": "JamesEklund",
+        "usernameAliases": [],
+        "csvAliases": [
+          "James Eklund",
+          "JamesEklund"
+        ],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "25",
+        "rank": 0
+      },
+      "NoodlesLuv2011": {
+        "wins": 0,
+        "championships": 0,
+        "alias": "NoodlesLuv2011",
+        "currentUsername": "NoodlesLuv2011",
+        "usernameAliases": [],
+        "csvAliases": [
+          "NoodlesLuv2011"
+        ],
+        "csvDivisions": [
+          "d1"
+        ],
+        "number": "11",
+        "rank": 0
       }
     },
     "openEntries": [
@@ -1350,19 +1578,9 @@
     ],
     "freeAgents": [
       {
-        "name": "FueledByMayo",
-        "user": "FueledByMayonnaise",
-        "former": "#20 · Dakota Sullivan Racing · Chevrolet"
-      },
-      {
         "name": "Nick",
         "user": "Callsign_Hestia",
         "former": "#05 · Avery Motorsports · Ford"
-      },
-      {
-        "name": "Jay",
-        "user": "Comodw",
-        "former": "#9 · Goat Whitlock Motorsports · Toyota"
       },
       {
         "name": "Jeremy",
@@ -1370,40 +1588,27 @@
         "former": "#48 · Goat Whitlock Motorsports · Toyota"
       },
       {
-        "name": "Muffin",
-        "user": "AnyGameAnyTime09",
-        "former": "#84 · Goat Whitlock Motorsports · Toyota"
+        "user": "bowlingsham1",
+        "name": "Shane",
+        "former": "#58 · Avery Motorsports · Ford"
+      },
+      {
+        "user": "TaylorKenseth17",
+        "name": "Taylor",
+        "former": "#48 · Goat Whitlock Motorsports · Toyota"
+      },
+      {
+        "user": "uhhbzb",
+        "name": "BurgerTown2Good",
+        "former": "#32 · Aetherwing eMotorsports · Toyota"
+      },
+      {
+        "user": "sealsntags",
+        "name": "Gk3r",
+        "former": "#52 · Aetherwing eMotorsports · Toyota"
       }
     ],
     "recentMoves": [
-      {
-        "driver": "Taylor",
-        "team": "Goat Whitlock Motorsports",
-        "number": "48",
-        "make": "Toyota",
-        "signedAt": "2026-09-13"
-      },
-      {
-        "driver": "BurgerTown2Good",
-        "team": "Aetherwing eMotorsports",
-        "number": "32",
-        "make": "Toyota",
-        "signedAt": "2026-09-13"
-      },
-      {
-        "driver": "Frog",
-        "team": "Avery Motorsports",
-        "number": "73",
-        "make": "Ford",
-        "signedAt": "2026-09-13"
-      },
-      {
-        "driver": "Gk3r",
-        "team": "Aetherwing eMotorsports",
-        "number": "52",
-        "make": "Toyota",
-        "signedAt": "2026-09-14"
-      },
       {
         "driver": "Max",
         "team": "Dakota Sullivan Racing",
@@ -1419,7 +1624,647 @@
         "signedAt": "2026-09-13"
       }
     ],
-    "rosterVersion": 2
+    "rosterVersion": 2,
+    "previousRoster": {
+      "teams": [
+        {
+          "id": "dakota",
+          "name": "Dakota Sullivan Racing",
+          "owner": "Dale",
+          "make": "Chevrolet",
+          "note": "Dale-owned Chevrolet program with Max joining the #19 and Opt joining the #91.",
+          "entries": [
+            {
+              "number": "16",
+              "user": "58bbwapache",
+              "status": "Full-Time"
+            },
+            {
+              "number": "19",
+              "name": "Max",
+              "status": "Signed",
+              "signedAt": "2026-09-13",
+              "seatType": "Full-Time"
+            },
+            {
+              "number": "20",
+              "user": "UN88475544",
+              "status": "Full-Time"
+            },
+            {
+              "number": "61",
+              "user": "PlaneFan638",
+              "status": "Full-Time"
+            },
+            {
+              "number": "91",
+              "name": "Opt",
+              "status": "Signed",
+              "signedAt": "2026-09-13",
+              "seatType": "Part-Time"
+            }
+          ]
+        },
+        {
+          "id": "xdrive",
+          "name": "XDrive Motorsports",
+          "owner": "John",
+          "make": "Chevrolet",
+          "note": "John-owned Chevrolet program with four full-time seats currently available.",
+          "entries": [
+            {
+              "number": "21",
+              "name": "OPEN",
+              "status": "Open FT"
+            },
+            {
+              "number": "25",
+              "name": "OPEN",
+              "status": "Open FT"
+            },
+            {
+              "number": "44",
+              "name": "OPEN",
+              "status": "Open FT"
+            },
+            {
+              "number": "89",
+              "name": "OPEN",
+              "status": "Open FT"
+            }
+          ]
+        },
+        {
+          "id": "avery",
+          "name": "Avery Motorsports",
+          "owner": "Payson",
+          "ownerNote": "UARL League Owner",
+          "make": "Ford",
+          "note": "The league owner’s Ford stable. Frog joins the #73 after the D2 shutdown.",
+          "entries": [
+            {
+              "number": "05",
+              "user": "pa05",
+              "status": "Full-Time"
+            },
+            {
+              "number": "58",
+              "user": "bowlingsham1",
+              "status": "Full-Time"
+            },
+            {
+              "number": "60",
+              "user": "codydgoforth",
+              "status": "Full-Time"
+            },
+            {
+              "number": "72",
+              "user": "TBDAN1E",
+              "status": "Full-Time"
+            },
+            {
+              "number": "73",
+              "user": "Frogboy4783",
+              "status": "Signed",
+              "recent": true,
+              "signedAt": "2026-09-13"
+            }
+          ]
+        },
+        {
+          "id": "whitlock",
+          "name": "Goat Whitlock Motorsports",
+          "owner": "James",
+          "make": "Toyota",
+          "note": "James-owned Toyota team. Taylor moves up from the discontinued D2 series into the #48.",
+          "entries": [
+            {
+              "number": "9",
+              "name": "OPEN",
+              "status": "Open FT"
+            },
+            {
+              "number": "24",
+              "user": "John_Hunter38",
+              "status": "Full-Time"
+            },
+            {
+              "number": "48",
+              "user": "TaylorKenseth17",
+              "status": "Signed",
+              "recent": true,
+              "signedAt": "2026-09-13"
+            },
+            {
+              "number": "84",
+              "user": "JJElliott2004",
+              "status": "Full-Time"
+            }
+          ]
+        },
+        {
+          "id": "goforth",
+          "name": "Goforth Motorsports",
+          "owner": "Cody",
+          "make": "Ford",
+          "note": "Cody’s Ford operation, home to the league’s all-time wins leader.",
+          "entries": [
+            {
+              "number": "1",
+              "name": "OPEN",
+              "status": "Open FT"
+            },
+            {
+              "number": "77",
+              "user": "Kingofgamez",
+              "status": "Full-Time"
+            },
+            {
+              "number": "80",
+              "user": "GuillermoChase",
+              "status": "Full-Time"
+            },
+            {
+              "number": "88",
+              "user": "lancejuly",
+              "status": "Full-Time"
+            },
+            {
+              "number": "97",
+              "name": "Part-Time Charter",
+              "status": "Part-Time Charter"
+            }
+          ]
+        },
+        {
+          "id": "aetherwing",
+          "name": "Aetherwing eMotorsports",
+          "owner": "Wispy",
+          "make": "Toyota",
+          "note": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
+          "entries": [
+            {
+              "number": "28",
+              "user": "Aokikoto",
+              "status": "Full-Time",
+              "charterType": "FT"
+            },
+            {
+              "number": "32",
+              "user": "uhhbzb",
+              "status": "Signed",
+              "signedAt": "2026-09-13",
+              "charterType": "FT"
+            },
+            {
+              "number": "52",
+              "user": "sealsntags",
+              "status": "Signed",
+              "signedAt": "2026-09-14",
+              "charterType": "FT"
+            },
+            {
+              "number": "54",
+              "name": "OPEN",
+              "status": "Open FT",
+              "charterType": "FT"
+            },
+            {
+              "number": "92",
+              "user": "IIKyle5Larson",
+              "status": "Full-Time",
+              "charterType": "FT"
+            },
+            {
+              "number": "62",
+              "name": "Part-Time Entry",
+              "status": "Part-Time Entry",
+              "seatType": "Shared 6th Open Charter",
+              "charterType": "OPEN"
+            },
+            {
+              "number": "82",
+              "name": "Development Entry",
+              "status": "Development Entry",
+              "seatType": "Shared 6th Open Charter",
+              "charterType": "OPEN"
+            }
+          ],
+          "founded": "Season 3",
+          "logo": "/assets/aetherwing/logo.webp",
+          "brandColor": "#ef1e23",
+          "brandColor2": "#ffffff",
+          "pendingDrivers": [],
+          "charterCount": 6
+        }
+      ],
+      "profiles": {
+        "58bbwapache": {
+          "alias": "Dale",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0,
+          "csvAliases": [
+            "Dale",
+            "Dale Apache"
+          ]
+        },
+        "UN88475544": {
+          "alias": "Nurtec",
+          "wins": 5,
+          "championships": 0,
+          "rank": 13,
+          "csvDivisions": [
+            "d1"
+          ],
+          "csvAliases": [
+            "Nurtec",
+            "Haydon Hildebrand"
+          ]
+        },
+        "PlaneFan638": {
+          "alias": "Plane",
+          "wins": 1,
+          "championships": 0,
+          "rank": 44
+        },
+        "pa05": {
+          "alias": "Payson",
+          "wins": 18,
+          "championships": 1,
+          "rank": 2,
+          "csvAliases": [
+            "Payson",
+            "Payson Avery"
+          ]
+        },
+        "bowlingsham1": {
+          "alias": "Shane",
+          "wins": 3,
+          "championships": 0,
+          "rank": 23
+        },
+        "codydgoforth": {
+          "alias": "Cody",
+          "wins": 6,
+          "championships": 2,
+          "rank": 9,
+          "csvAliases": [
+            "Cody",
+            "Cody Goforth"
+          ]
+        },
+        "TBDAN1E": {
+          "alias": "Daniel",
+          "wins": 1,
+          "championships": 0,
+          "rank": 37,
+          "csvAliases": [
+            "Daniel",
+            "Daniel Heale"
+          ]
+        },
+        "John_Hunter38": {
+          "alias": "John",
+          "wins": 3,
+          "championships": 0,
+          "rank": 19,
+          "csvAliases": [
+            "John",
+            "John Hunter"
+          ]
+        },
+        "JJElliott2004": {
+          "alias": "James",
+          "wins": 3,
+          "championships": 1,
+          "rank": 18,
+          "csvAliases": [
+            "James",
+            "JJ Whitlock"
+          ]
+        },
+        "Kingofgamez": {
+          "alias": "King",
+          "wins": 3,
+          "championships": 0,
+          "rank": 20
+        },
+        "GuillermoChase": {
+          "alias": "Gman",
+          "wins": 5,
+          "championships": 0,
+          "rank": 12,
+          "csvAliases": [
+            "Gman",
+            "Guillermo Chase"
+          ]
+        },
+        "lancejuly": {
+          "alias": "Lance",
+          "wins": 25,
+          "championships": 0,
+          "rank": 1,
+          "csvAliases": [
+            "Lance",
+            "Lance July"
+          ]
+        },
+        "Aokikoto": {
+          "alias": "Hailey",
+          "wins": 1,
+          "championships": 0,
+          "rank": 47,
+          "csvAliases": [
+            "Wispy",
+            "Hailey",
+            "Hailey Bell"
+          ]
+        },
+        "IIKyle5Larson": {
+          "alias": "Rocky",
+          "wins": 5,
+          "championships": 0,
+          "rank": 14,
+          "csvAliases": [
+            "Rocky",
+            "Regan Linney"
+          ]
+        },
+        "Frogboy4783": {
+          "alias": "Frog",
+          "wins": 2,
+          "championships": 0,
+          "rank": 26
+        },
+        "uhhbzb": {
+          "alias": "BurgerTown2Good",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0
+        },
+        "TaylorKenseth17": {
+          "alias": "Taylor",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0
+        },
+        "FueledByMayonnaise": {
+          "alias": "FueledByMayo",
+          "wins": 1,
+          "championships": 0,
+          "rank": 40,
+          "csvDivisions": [
+            "d1"
+          ]
+        },
+        "daleapache88": {
+          "alias": "Dale",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0
+        },
+        "Callsign_Hestia": {
+          "alias": "Nick",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0,
+          "csvDivisions": [
+            "d1"
+          ]
+        },
+        "Comodw": {
+          "alias": "Jay",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0,
+          "csvAliases": [
+            "Jay",
+            "Jay Vixen"
+          ],
+          "csvDivisions": [
+            "d1"
+          ]
+        },
+        "JeremyFrey12": {
+          "alias": "Jeremy",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0,
+          "csvDivisions": [
+            "d1"
+          ]
+        },
+        "AnyGameAnyTime09": {
+          "alias": "Muffin",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0,
+          "csvDivisions": [
+            "d1"
+          ],
+          "csvAliases": [
+            "Muffin"
+          ],
+          "number": "2"
+        },
+        "sealsntags": {
+          "alias": "Gk3r",
+          "wins": 0,
+          "championships": 0,
+          "rank": 0
+        },
+        "pxssis": {
+          "alias": "Pxssis",
+          "wins": 2,
+          "championships": 0,
+          "rank": 30
+        }
+      },
+      "freeAgents": [
+        {
+          "name": "FueledByMayo",
+          "user": "FueledByMayonnaise",
+          "former": "#20 · Dakota Sullivan Racing · Chevrolet"
+        },
+        {
+          "name": "Nick",
+          "user": "Callsign_Hestia",
+          "former": "#05 · Avery Motorsports · Ford"
+        },
+        {
+          "name": "Jay",
+          "user": "Comodw",
+          "former": "#9 · Goat Whitlock Motorsports · Toyota"
+        },
+        {
+          "name": "Jeremy",
+          "user": "JeremyFrey12",
+          "former": "#48 · Goat Whitlock Motorsports · Toyota"
+        },
+        {
+          "name": "Muffin",
+          "user": "AnyGameAnyTime09",
+          "former": "#84 · Goat Whitlock Motorsports · Toyota"
+        }
+      ],
+      "recentMoves": [
+        {
+          "driver": "Taylor",
+          "team": "Goat Whitlock Motorsports",
+          "number": "48",
+          "make": "Toyota",
+          "signedAt": "2026-09-13"
+        },
+        {
+          "driver": "BurgerTown2Good",
+          "team": "Aetherwing eMotorsports",
+          "number": "32",
+          "make": "Toyota",
+          "signedAt": "2026-09-13"
+        },
+        {
+          "driver": "Frog",
+          "team": "Avery Motorsports",
+          "number": "73",
+          "make": "Ford",
+          "signedAt": "2026-09-13"
+        },
+        {
+          "driver": "Gk3r",
+          "team": "Aetherwing eMotorsports",
+          "number": "52",
+          "make": "Toyota",
+          "signedAt": "2026-09-14"
+        },
+        {
+          "driver": "Max",
+          "team": "Dakota Sullivan Racing",
+          "number": "19",
+          "make": "Chevrolet",
+          "signedAt": "2026-09-13"
+        },
+        {
+          "driver": "Opt",
+          "team": "Dakota Sullivan Racing",
+          "number": "91",
+          "make": "Chevrolet",
+          "signedAt": "2026-09-13"
+        }
+      ],
+      "standings": [],
+      "archivedDrivers": [
+        {
+          "id": "FueledByMayonnaise",
+          "name": "FueledByMayo",
+          "number": "20",
+          "division": "d2",
+          "team": "Dakota Sullivan Racing",
+          "make": "Chevrolet",
+          "careerWins": 1,
+          "careerTitles": 0,
+          "careerRank": 40,
+          "status": "FT"
+        },
+        {
+          "id": "Callsign_Hestia",
+          "name": "Nick",
+          "number": "05",
+          "division": "d2",
+          "team": "Avery Motorsports",
+          "make": "Ford",
+          "careerWins": 0,
+          "careerTitles": 0,
+          "careerRank": 0,
+          "status": "FT"
+        },
+        {
+          "id": "Frogboy4783",
+          "name": "Frog",
+          "number": "72",
+          "division": "d2",
+          "team": "Avery Motorsports",
+          "make": "Ford",
+          "careerWins": 2,
+          "careerTitles": 0,
+          "careerRank": 26,
+          "status": "FT"
+        },
+        {
+          "id": "Comodw",
+          "name": "Jay",
+          "number": "9",
+          "division": "d2",
+          "team": "Goat Whitlock Motorsports",
+          "make": "Toyota",
+          "careerWins": 0,
+          "careerTitles": 0,
+          "careerRank": 0,
+          "status": "FT"
+        },
+        {
+          "id": "TaylorKenseth17",
+          "name": "Taylor",
+          "number": "24",
+          "division": "d2",
+          "team": "Goat Whitlock Motorsports",
+          "make": "Toyota",
+          "careerWins": 0,
+          "careerTitles": 0,
+          "careerRank": 0,
+          "status": "FT"
+        },
+        {
+          "id": "JeremyFrey12",
+          "name": "Jeremy",
+          "number": "48",
+          "division": "d2",
+          "team": "Goat Whitlock Motorsports",
+          "make": "Toyota",
+          "careerWins": 0,
+          "careerTitles": 0,
+          "careerRank": 0,
+          "status": "FT"
+        },
+        {
+          "id": "AnyGameAnyTime09",
+          "name": "Muffin",
+          "number": "84",
+          "division": "d2",
+          "team": "Goat Whitlock Motorsports",
+          "make": "Toyota",
+          "careerWins": 0,
+          "careerTitles": 0,
+          "careerRank": 0,
+          "status": "FT"
+        },
+        {
+          "id": "uhhbzb",
+          "name": "BurgerTown2Good",
+          "number": "11",
+          "division": "d2",
+          "team": "Aetherwing eMotorsports",
+          "make": "Toyota",
+          "careerWins": 0,
+          "careerTitles": 0,
+          "careerRank": 0,
+          "status": "FT"
+        },
+        {
+          "id": "sealsntags",
+          "name": "Gk3r",
+          "number": "19",
+          "division": "d2",
+          "team": "Aetherwing eMotorsports",
+          "make": "Toyota",
+          "careerWins": 0,
+          "careerTitles": 0,
+          "careerRank": 0,
+          "status": "FT"
+        }
+      ]
+    },
+    "assignmentVersion": 1
   },
   "history": {
     "updated": "2026-09-12",
@@ -2411,6 +3256,66 @@
   "race": {
     "drivers": [
       {
+        "id": "AnyGameAnyTime09",
+        "name": "Muffin",
+        "number": "2",
+        "division": "d1",
+        "team": "Sham Motorsports",
+        "make": "Ford",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "Full-Time"
+      },
+      {
+        "id": "pa05",
+        "name": "Payson",
+        "number": "05",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 18,
+        "careerTitles": 1,
+        "careerRank": 2,
+        "status": "Full-Time"
+      },
+      {
+        "id": "Frogboy4783",
+        "name": "Frog",
+        "number": "5",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 2,
+        "careerTitles": 0,
+        "careerRank": 26,
+        "status": "Full-Time"
+      },
+      {
+        "id": "Comodw",
+        "name": "Jay",
+        "number": "9",
+        "division": "d1",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "Full-Time"
+      },
+      {
+        "id": "NoodlesLuv2011",
+        "name": "NoodlesLuv2011",
+        "number": "11",
+        "division": "d1",
+        "team": "Winston-Hermonstyne Motorsports",
+        "make": "Toyota",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "Full-Time"
+      },
+      {
         "id": "58bbwapache",
         "name": "Dale",
         "number": "16",
@@ -2419,7 +3324,20 @@
         "make": "Chevrolet",
         "careerWins": 0,
         "careerTitles": 0,
-        "careerRank": 0
+        "careerRank": 0,
+        "status": "Full-Time"
+      },
+      {
+        "id": "FueledByMayonnaise",
+        "name": "Max",
+        "number": "19",
+        "division": "d1",
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 40,
+        "status": "Full-Time"
       },
       {
         "id": "UN88475544",
@@ -2430,62 +3348,20 @@
         "make": "Chevrolet",
         "careerWins": 5,
         "careerTitles": 0,
-        "careerRank": 13
+        "careerRank": 13,
+        "status": "Full-Time"
       },
       {
-        "id": "PlaneFan638",
-        "name": "Plane",
-        "number": "61",
+        "id": "IIKyle5Larson",
+        "name": "Rocky",
+        "number": "22",
         "division": "d1",
-        "team": "Dakota Sullivan Racing",
-        "make": "Chevrolet",
-        "careerWins": 1,
+        "team": "Team Penske",
+        "make": "Ford",
+        "careerWins": 5,
         "careerTitles": 0,
-        "careerRank": 44
-      },
-      {
-        "id": "pa05",
-        "name": "Payson",
-        "number": "05",
-        "division": "d1",
-        "team": "Avery Motorsports",
-        "make": "Ford",
-        "careerWins": 18,
-        "careerTitles": 1,
-        "careerRank": 2
-      },
-      {
-        "id": "bowlingsham1",
-        "name": "Shane",
-        "number": "58",
-        "division": "d1",
-        "team": "Avery Motorsports",
-        "make": "Ford",
-        "careerWins": 3,
-        "careerTitles": 0,
-        "careerRank": 23
-      },
-      {
-        "id": "codydgoforth",
-        "name": "Cody",
-        "number": "60",
-        "division": "d1",
-        "team": "Avery Motorsports",
-        "make": "Ford",
-        "careerWins": 6,
-        "careerTitles": 2,
-        "careerRank": 9
-      },
-      {
-        "id": "TBDAN1E",
-        "name": "Daniel",
-        "number": "72",
-        "division": "d1",
-        "team": "Avery Motorsports",
-        "make": "Ford",
-        "careerWins": 1,
-        "careerTitles": 0,
-        "careerRank": 37
+        "careerRank": 14,
+        "status": "Full-Time"
       },
       {
         "id": "John_Hunter38",
@@ -2496,18 +3372,68 @@
         "make": "Toyota",
         "careerWins": 3,
         "careerTitles": 0,
-        "careerRank": 19
+        "careerRank": 19,
+        "status": "Full-Time"
       },
       {
-        "id": "JJElliott2004",
-        "name": "James",
-        "number": "84",
+        "id": "JamesEklund",
+        "name": "James Eklund",
+        "number": "25",
         "division": "d1",
         "team": "Goat Whitlock Motorsports",
         "make": "Toyota",
-        "careerWins": 3,
-        "careerTitles": 1,
-        "careerRank": 18
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "Full-Time"
+      },
+      {
+        "id": "Aokikoto",
+        "name": "Hailey",
+        "number": "28",
+        "division": "d1",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 47,
+        "status": "Full-Time"
+      },
+      {
+        "id": "codydgoforth",
+        "name": "Cody",
+        "number": "60",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 6,
+        "careerTitles": 2,
+        "careerRank": 9,
+        "status": "Full-Time"
+      },
+      {
+        "id": "PlaneFan638",
+        "name": "Plane",
+        "number": "61",
+        "division": "d1",
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 44,
+        "status": "Full-Time"
+      },
+      {
+        "id": "TBDAN1E",
+        "name": "Daniel",
+        "number": "72",
+        "division": "d1",
+        "team": "Avery Motorsports",
+        "make": "Ford",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 37,
+        "status": "Full-Time"
       },
       {
         "id": "Kingofgamez",
@@ -2518,18 +3444,32 @@
         "make": "Ford",
         "careerWins": 3,
         "careerTitles": 0,
-        "careerRank": 20
+        "careerRank": 20,
+        "status": "Full-Time"
       },
       {
         "id": "GuillermoChase",
-        "name": "GuillermoChase",
+        "name": "Gman",
         "number": "81",
         "division": "d1",
         "team": "Goforth Motorsports",
         "make": "Ford",
-        "careerWins": 0,
+        "careerWins": 5,
         "careerTitles": 0,
-        "careerRank": 0
+        "careerRank": 12,
+        "status": "Full-Time"
+      },
+      {
+        "id": "JJElliott2004",
+        "name": "James",
+        "number": "84",
+        "division": "d1",
+        "team": "Goat Whitlock Motorsports",
+        "make": "Toyota",
+        "careerWins": 3,
+        "careerTitles": 1,
+        "careerRank": 18,
+        "status": "Full-Time"
       },
       {
         "id": "lancejuly",
@@ -2540,143 +3480,92 @@
         "make": "Ford",
         "careerWins": 25,
         "careerTitles": 0,
-        "careerRank": 1
+        "careerRank": 1,
+        "status": "Full-Time"
       },
       {
-        "id": "Aokikoto",
-        "name": "Wispy",
-        "number": "28",
+        "id": "OPTBlitzCC4589",
+        "name": "Opt",
+        "number": "91",
         "division": "d1",
-        "team": "Aetherwing eMotorsports",
-        "make": "Toyota",
-        "careerWins": 1,
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 0,
         "careerTitles": 0,
-        "careerRank": 47,
-        "status": "FT"
+        "careerRank": 0,
+        "status": "Full-Time"
       },
       {
-        "id": "IIKyle5Larson",
-        "name": "Rocky",
-        "number": "92",
+        "id": "uhhbzb",
+        "name": "BurgerTown2Good",
+        "number": "",
         "division": "d1",
-        "team": "Aetherwing eMotorsports",
-        "make": "Toyota",
-        "careerWins": 5,
+        "team": "Unassigned driver",
+        "make": "Unlisted",
+        "careerWins": 0,
         "careerTitles": 0,
-        "careerRank": 14,
-        "status": "FT"
+        "careerRank": 0,
+        "status": "Registered"
       },
       {
-        "id": "pa05",
-        "name": "Payson",
-        "number": "05",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Ford",
-        "careerWins": 18,
-        "careerTitles": 1,
-        "careerRank": 2
+        "id": "sealsntags",
+        "name": "Gk3r",
+        "number": "",
+        "division": "d1",
+        "team": "Unassigned driver",
+        "make": "Unlisted",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "Registered"
       },
       {
-        "id": "Aokikoto",
-        "name": "Wispy",
-        "number": "28",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Toyota",
-        "careerWins": 1,
+        "id": "JeremyFrey12",
+        "name": "Jeremy",
+        "number": "",
+        "division": "d1",
+        "team": "Unassigned driver",
+        "make": "Unlisted",
+        "careerWins": 0,
         "careerTitles": 0,
-        "careerRank": 47,
-        "status": "PT"
+        "careerRank": 0,
+        "status": "Registered"
+      },
+      {
+        "id": "Callsign_Hestia",
+        "name": "Nick",
+        "number": "",
+        "division": "d1",
+        "team": "Unassigned driver",
+        "make": "Unlisted",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "Registered"
       },
       {
         "id": "bowlingsham1",
         "name": "Shane",
-        "number": "44",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Ford",
+        "number": "",
+        "division": "d1",
+        "team": "Unassigned driver",
+        "make": "Unlisted",
         "careerWins": 3,
         "careerTitles": 0,
-        "careerRank": 23
+        "careerRank": 23,
+        "status": "Registered"
       },
       {
-        "id": "JJElliott2004",
-        "name": "James",
-        "number": "48",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Chevrolet",
-        "careerWins": 3,
-        "careerTitles": 1,
-        "careerRank": 18
-      },
-      {
-        "id": "pxssis",
-        "name": "Pxssis",
-        "number": "49",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Ford",
-        "careerWins": 2,
-        "careerTitles": 0,
-        "careerRank": 30
-      },
-      {
-        "id": "IIKyle5Larson",
-        "name": "Rocky",
-        "number": "57",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Ford",
-        "careerWins": 5,
-        "careerTitles": 0,
-        "careerRank": 14
-      },
-      {
-        "id": "codydgoforth",
-        "name": "Cody",
-        "number": "60",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Ford",
-        "careerWins": 6,
-        "careerTitles": 2,
-        "careerRank": 9
-      },
-      {
-        "id": "FueledByMayonnaise",
-        "name": "FueledByMayo",
-        "number": "87",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Generic",
-        "careerWins": 1,
-        "careerTitles": 0,
-        "careerRank": 40
-      },
-      {
-        "id": "daleapache88",
-        "name": "Dale",
-        "number": "88",
-        "division": "open",
-        "team": "Independent entry",
-        "make": "Generic",
+        "id": "TaylorKenseth17",
+        "name": "Taylor",
+        "number": "",
+        "division": "d1",
+        "team": "Unassigned driver",
+        "make": "Unlisted",
         "careerWins": 0,
         "careerTitles": 0,
-        "careerRank": 0
-      },
-      {
-        "id": "FueledByMayonnaise",
-        "name": "FueledByMayo",
-        "number": "20",
-        "division": "d2",
-        "team": "Dakota Sullivan Racing",
-        "make": "Chevrolet",
-        "careerWins": 1,
-        "careerTitles": 0,
-        "careerRank": 40,
-        "status": "FT"
+        "careerRank": 0,
+        "status": "Registered"
       },
       {
         "id": "Callsign_Hestia",
@@ -2691,57 +3580,9 @@
         "status": "FT"
       },
       {
-        "id": "Frogboy4783",
-        "name": "Frog",
-        "number": "72",
-        "division": "d2",
-        "team": "Avery Motorsports",
-        "make": "Ford",
-        "careerWins": 2,
-        "careerTitles": 0,
-        "careerRank": 26,
-        "status": "FT"
-      },
-      {
         "id": "Comodw",
         "name": "Jay",
         "number": "9",
-        "division": "d2",
-        "team": "Goat Whitlock Motorsports",
-        "make": "Toyota",
-        "careerWins": 0,
-        "careerTitles": 0,
-        "careerRank": 0,
-        "status": "FT"
-      },
-      {
-        "id": "TaylorKenseth17",
-        "name": "Taylor",
-        "number": "24",
-        "division": "d2",
-        "team": "Goat Whitlock Motorsports",
-        "make": "Toyota",
-        "careerWins": 0,
-        "careerTitles": 0,
-        "careerRank": 0,
-        "status": "FT"
-      },
-      {
-        "id": "JeremyFrey12",
-        "name": "Jeremy",
-        "number": "48",
-        "division": "d2",
-        "team": "Goat Whitlock Motorsports",
-        "make": "Toyota",
-        "careerWins": 0,
-        "careerTitles": 0,
-        "careerRank": 0,
-        "status": "FT"
-      },
-      {
-        "id": "AnyGameAnyTime09",
-        "name": "Muffin",
-        "number": "84",
         "division": "d2",
         "team": "Goat Whitlock Motorsports",
         "make": "Toyota",
@@ -2775,52 +3616,172 @@
         "status": "FT"
       },
       {
+        "id": "FueledByMayonnaise",
+        "name": "FueledByMayo",
+        "number": "20",
+        "division": "d2",
+        "team": "Dakota Sullivan Racing",
+        "make": "Chevrolet",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 40,
+        "status": "FT"
+      },
+      {
         "id": "TaylorKenseth17",
         "name": "Taylor",
-        "number": "48",
-        "division": "d1",
+        "number": "24",
+        "division": "d2",
         "team": "Goat Whitlock Motorsports",
         "make": "Toyota",
         "careerWins": 0,
         "careerTitles": 0,
         "careerRank": 0,
-        "status": "SIGNED"
+        "status": "FT"
       },
       {
-        "id": "uhhbzb",
-        "name": "BurgerTown2Good",
-        "number": "32",
-        "division": "d1",
-        "team": "Aetherwing eMotorsports",
+        "id": "JeremyFrey12",
+        "name": "Jeremy",
+        "number": "48",
+        "division": "d2",
+        "team": "Goat Whitlock Motorsports",
         "make": "Toyota",
         "careerWins": 0,
         "careerTitles": 0,
         "careerRank": 0,
-        "status": "SIGNED"
+        "status": "FT"
       },
       {
         "id": "Frogboy4783",
         "name": "Frog",
-        "number": "73",
-        "division": "d1",
+        "number": "72",
+        "division": "d2",
         "team": "Avery Motorsports",
         "make": "Ford",
         "careerWins": 2,
         "careerTitles": 0,
         "careerRank": 26,
-        "status": "SIGNED"
+        "status": "FT"
       },
       {
-        "id": "sealsntags",
-        "name": "Gk3r",
-        "number": "52",
-        "division": "d1",
-        "team": "Aetherwing eMotorsports",
+        "id": "AnyGameAnyTime09",
+        "name": "Muffin",
+        "number": "84",
+        "division": "d2",
+        "team": "Goat Whitlock Motorsports",
         "make": "Toyota",
         "careerWins": 0,
         "careerTitles": 0,
         "careerRank": 0,
-        "status": "SIGNED"
+        "status": "FT"
+      },
+      {
+        "id": "pa05",
+        "name": "Payson",
+        "number": "05",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 18,
+        "careerTitles": 1,
+        "careerRank": 2,
+        "status": "FT"
+      },
+      {
+        "id": "Aokikoto",
+        "name": "Hailey",
+        "number": "28",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Toyota",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 47,
+        "status": "Part-Time"
+      },
+      {
+        "id": "bowlingsham1",
+        "name": "Shane",
+        "number": "44",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 3,
+        "careerTitles": 0,
+        "careerRank": 23,
+        "status": "FT"
+      },
+      {
+        "id": "JJElliott2004",
+        "name": "James",
+        "number": "48",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Chevrolet",
+        "careerWins": 3,
+        "careerTitles": 1,
+        "careerRank": 18,
+        "status": "FT"
+      },
+      {
+        "id": "pxssis",
+        "name": "Pxssis",
+        "number": "49",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 2,
+        "careerTitles": 0,
+        "careerRank": 30,
+        "status": "FT"
+      },
+      {
+        "id": "IIKyle5Larson",
+        "name": "Rocky",
+        "number": "57",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 5,
+        "careerTitles": 0,
+        "careerRank": 14,
+        "status": "FT"
+      },
+      {
+        "id": "codydgoforth",
+        "name": "Cody",
+        "number": "60",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Ford",
+        "careerWins": 6,
+        "careerTitles": 2,
+        "careerRank": 9,
+        "status": "FT"
+      },
+      {
+        "id": "FueledByMayonnaise",
+        "name": "Max",
+        "number": "87",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Generic",
+        "careerWins": 1,
+        "careerTitles": 0,
+        "careerRank": 40,
+        "status": "FT"
+      },
+      {
+        "id": "daleapache88",
+        "name": "Dale",
+        "number": "88",
+        "division": "open",
+        "team": "Independent entry",
+        "make": "Generic",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "FT"
       }
     ],
     "schedule": [

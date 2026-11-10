@@ -66,7 +66,7 @@
     drivers.rosterVersion = 1;
     return data;
   }
-  function register(data) {
+  function registerNumbers(data) {
     data = registerInitialRoster(data);
     var drivers = data.drivers;
     if (Number(drivers.rosterVersion) >= 2) return data;
@@ -84,6 +84,10 @@
     drivers.rosterVersion = 2;
     return data;
   }
+  function register(data) {
+    data = registerNumbers(data);
+    return root.UARLCurrentRoster ? root.UARLCurrentRoster.apply(data) : data;
+  }
   function profile(data, user) {
     var profiles = data.drivers && data.drivers.profiles || {};
     var key = Object.keys(profiles).find(function (key) { return identity(key) === identity(user); });
@@ -92,8 +96,15 @@
   function profileUser(data, name) {
     if (!nameIdentity(name)) return "";
     var profiles = data.drivers && data.drivers.profiles || {};
-    var matches = Object.keys(profiles).filter(function (user) { return [profiles[user].alias].concat(profiles[user].csvAliases || []).some(function (alias) { return nameIdentity(alias) === nameIdentity(name); }); });
+    var matches = Object.keys(profiles).filter(function (user) { return [profiles[user].alias, profiles[user].currentUsername].concat(profiles[user].csvAliases || []).some(function (alias) { return nameIdentity(alias) === nameIdentity(name); }); });
     return matches.length === 1 ? text(matches[0]).replace(/^@/, "") : "";
+  }
+  function canonicalUser(data, value) {
+    var profiles = data.drivers && data.drivers.profiles || {}, id = identity(value);
+    var exact = Object.keys(profiles).find(function (user) { return identity(user) === id; });
+    if (exact) return exact;
+    var renamed = Object.keys(profiles).filter(function (user) { return [profiles[user].currentUsername].concat(profiles[user].usernameAliases || []).some(function (alias) { return identity(alias) === id; }); });
+    return id && renamed.length === 1 ? renamed[0] : text(value).replace(/^@/, "");
   }
   function active(entry) {
     entry = entry || {};
@@ -106,6 +117,7 @@
   function driver(data, entry, team, source) {
     entry = entry || {};
     var user = text(entry.user || entry.username || entry.driverUsername || entry.driverId).replace(/^@/, "");
+    if (user) user = canonicalUser(data, user);
     var explicitName = text(entry.name || entry.driver);
     if (!user) user = profileUser(data, explicitName);
     var saved = profile(data, user);
@@ -114,7 +126,8 @@
       key: user ? "user:" + identity(user) : "name:" + nameIdentity(name),
       name: name, number: number(entry.number), user: user,
       team: text(team), source: source,
-      aliases: unique([nameIdentity(name), nameIdentity(explicitName), nameIdentity(saved.alias), identity(user)].concat((Array.isArray(saved.csvAliases) ? saved.csvAliases : []).map(nameIdentity), (Array.isArray(entry.csvAliases) ? entry.csvAliases : []).map(nameIdentity))),
+      aliases: unique([nameIdentity(name), nameIdentity(explicitName), nameIdentity(saved.alias), identity(user), identity(saved.currentUsername)].concat((Array.isArray(saved.csvAliases) ? saved.csvAliases : []).map(nameIdentity), (Array.isArray(entry.csvAliases) ? entry.csvAliases : []).map(nameIdentity), (Array.isArray(saved.usernameAliases) ? saved.usernameAliases : []).map(identity))),
+      usernameAliases: unique([saved.currentUsername].concat(saved.usernameAliases || []).map(identity)).filter(function (alias) { return alias !== identity(user); }),
       explicitName: Boolean(explicitName)
     };
   }
@@ -197,6 +210,8 @@
     if (id) {
       var exact = candidates.find(function (candidate) { return identity(candidate.user) === id; });
       if (exact) return exact;
+      var renamed = candidates.filter(function (candidate) { return (candidate.usernameAliases || []).includes(id); });
+      if (renamed.length === 1) return renamed[0];
       // Synthetic guest IDs represent legacy name-only rows, not verified
       // Roblox usernames. They may converge on one unambiguous current driver.
       if (/^guest:/i.test(id)) {
@@ -271,5 +286,5 @@
     return issues;
   }
 
-  root.UARLResultDrivers = { register: register, pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
+  root.UARLResultDrivers = { register: register, canonicalUser: canonicalUser, pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
 })(typeof window !== "undefined" ? window : globalThis);
