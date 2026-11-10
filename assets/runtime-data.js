@@ -14,6 +14,7 @@
     profiles = profiles || {};
     var key = String(user || "").trim().toLowerCase();
     var match = Object.keys(profiles).find(function (name) { return name.trim().toLowerCase() === key; });
+    if (!match && key) { var aliases = Object.keys(profiles).filter(function (name) { return [profiles[name].currentUsername].concat(profiles[name].usernameAliases || []).some(function (alias) { return String(alias || "").toLowerCase() === key; }); }); if (aliases.length === 1) match = aliases[0]; }
     return match ? profiles[match] : {};
   }
 
@@ -123,7 +124,7 @@
       var candidates=recordCandidates(record),id=identityKey(row[idField]||row.username||row.user||row.driverId),name=identityKey(row[nameField]),number=String(row.number||"");
       var match=id&&candidates.find(function(driver){return identityKey(driver.id)===id||identityKey(driver.user)===id;});
       if(!match&&(!id||/^guest:/.test(id))&&name){var named=candidates.filter(function(driver){return identityKey(driver.name)===name||identityKey(driver.user)===name||identityKey(driver.id)===name;});if(named.length===1)match=named[0];}
-      if(!match&&(!id||/^guest:/.test(id))&&name&&window.UARLResultDrivers){var resolved=window.UARLResultDrivers.resolve(window.UARLResultDrivers.pool(data,record),row[nameField],row[idField],row.number);if(resolved&&resolved.user)match=candidates.find(function(driver){return identityKey(driver.id)===identityKey(resolved.user);});}
+      if(!match&&window.UARLResultDrivers){var resolved=window.UARLResultDrivers.resolve(window.UARLResultDrivers.pool(data,record),row[nameField],row[idField],row.number);if(resolved&&resolved.user)match=candidates.find(function(driver){return identityKey(driver.id)===identityKey(resolved.user);});}
       if(!match&&!id&&!name&&number){var numbered=candidates.filter(function(driver){return driver.number===number;});if(numbered.length===1)match=numbered[0];}
       if(match){row[idField]=match.id;row[nameField]=match.name;row.number=row.numberManual===true?String(row.number==null?"":row.number):row.number||match.number;}
       else if(!row[idField]){var fallback=String(row[nameField]||row.number||"unknown").toLowerCase().replace(/[^a-z0-9]+/g,"-");row[idField]="guest:"+(record.division||"series")+":"+fallback;}

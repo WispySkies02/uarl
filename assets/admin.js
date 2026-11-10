@@ -330,7 +330,7 @@
     var next = {}; rows.forEach(function (row) { var user = row.username; var value = clone(row); delete value.username; if (user) next[user] = value; }); state.data.drivers.profiles = next;
   }
   function profileConfig() {
-    return { title:"Driver roster", kicker:"Permanent league drivers", description:"Manage driver identities, CSV names, series eligibility, and career profiles. A team assignment is optional.", path:"profiles", itemTitle:function(x){return x.alias||x.username||"Driver";}, itemMeta:function(x){return "@"+(x.username||"")+" · "+(x.csvDivisions||[]).join(" / ").toUpperCase();}, template:function(){return {username:"new_driver_"+Date.now(),alias:"New Driver",csvDivisions:["d1"],number:"",csvAliases:[],wins:0,championships:0,rank:0};}, fields:[["username","Roblox username"],["alias","Display name"],["csvDivisions","Permanent roster series","divisions"],["number","Car number (leave blank until assigned)"],["csvAliases","Other names accepted in CSV","tags","wide"],["wins","Career wins","number"],["championships","Championships","number"],["rank","All-time rank","number"],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]] };
+    return { title:"Driver roster", kicker:"Permanent league drivers", description:"Manage driver identities, CSV names, series eligibility, and career profiles. A team assignment is optional.", path:"profiles", itemTitle:function(x){return x.alias||x.username||"Driver";}, itemMeta:function(x){return "@"+(x.username||"")+" · "+(x.csvDivisions||[]).join(" / ").toUpperCase();}, template:function(){return {username:"new_driver_"+Date.now(),alias:"New Driver",csvDivisions:["d1"],number:"",csvAliases:[],wins:0,championships:0,rank:0};}, fields:[["username","Driver account (original username)"],["currentUsername","Current Roblox username (optional)"],["alias","Display name"],["csvDivisions","Permanent roster series","divisions"],["number","Car number (leave blank until assigned)"],["csvAliases","Other names accepted in CSV","tags","wide"],["wins","Career wins","number"],["championships","Championships","number"],["rank","All-time rank","number"],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]] };
   }
 
   function renderCollection(section) {
@@ -577,7 +577,7 @@
   }
 
   var editorGroups = {
-    profiles:[['Identity',['username','alias','csvDivisions','number','csvAliases']],['Career',['wins','championships','rank']],['Artwork',['numberImage','signatureImage']]],
+    profiles:[['Identity',['username','currentUsername','alias','csvDivisions','number','csvAliases']],['Career',['wins','championships','rank']],['Artwork',['numberImage','signatureImage']]],
     open:[['Driver',['number','user','name','make','status']],['Artwork',['numberImage','signatureImage']]],
     freeAgents:[['Driver',['name','user']],['Previous entry',['former']]],
     moves:[['Signing',['driver','team','number','make','signedAt']]],

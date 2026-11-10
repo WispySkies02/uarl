@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import { getStore } from "@netlify/blobs";
+import "../../assets/current-roster.js";
 import "../../assets/result-drivers.js";
 import "../../assets/standings.js";
 
@@ -114,6 +115,7 @@ export function raceControlChangeOnly(nextData, currentData) {
     delete copy.events;
     delete copy.records;
     delete copy.standings;
+    if (copy.drivers && copy.drivers.previousRoster) delete copy.drivers.previousRoster.standings;
     if (copy.race) {
       delete copy.race.schedule;
       if (Array.isArray(copy.race.drivers)) copy.race.drivers = copy.race.drivers.filter((driver) => driver.division === "d2");
@@ -270,6 +272,8 @@ export default async (request) => {
     }
 
     if (!validPayload(payload.data)) return json(422, { error: "The UARL dataset is incomplete or invalid." });
+    // Persist the same upgraded dataset used by the permission comparison.
+    globalThis.UARLResultDrivers.register(payload.data);
     const standingsIssues = validateStandings(payload.data);
     if (standingsIssues.length) return json(422, { error: standingsIssues[0] });
     const awardIssues = validateRaceBonuses(payload.data);

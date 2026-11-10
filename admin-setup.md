@@ -50,6 +50,12 @@ Drivers are registered permanently under **Driver roster**. Add their Roblox use
 
 Always include the correct Roblox username when registering a driver. Race Control uses that username as the permanent identity, so future display-name changes and saved CSV names contribute to the same standings row. Older results remain intact; verified drivers in former race-only entries are registered automatically when upgrading. Race-specific numbers in those saved records remain unchanged.
 
+For a renamed account, keep **Driver account (original username)** and edit **Current Roblox username** instead. Public roster cards show the current username, and CSV imports accept it while retaining the original account’s results and points. The supplied roster links King’s `kingofgamez_YT` and Muffin’s `Muffin` to their existing records. James Eklund (#25) and JJ Whitlock (#84) remain separate drivers.
+
+The current D1 roster follows the supplied league sheet: Dakota Sullivan Racing runs Chevrolet; Avery, Goforth, Team Penske, and Sham run Ford; Goat Whitlock and Winston-Hermonstyne run Toyota. Manufacturer logos appear beside occupied team entries, on driver cards, and in profiles. Open Series entries retain their separate manufacturer choices. Open cars, part-time vacancies, and TBD numbers do not create extra drivers.
+
+Existing published data and browser drafts receive this roster update once. Previous teams and profiles are retained in the downloadable backup, including retired branding and old number artwork. Saved signatures and career statistics follow the driver, while number artwork carries over only when the number still matches. Historical results and points stay attached to the original driver. Later manual roster edits are kept.
+
 Sessions remain active for up to 12 hours. **Sign out** ends the current session immediately.
 
 ## Import results from CSV
