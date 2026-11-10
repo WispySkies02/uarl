@@ -88,6 +88,7 @@ body section.page-section:has(#uarl-home),body section.page-section:has(#uarl-sc
 #uarl-race-center .rc-official-finish header small{color:var(--lime);font:900 .48rem/1 Inter;letter-spacing:.09em;text-transform:uppercase}
 #uarl-race-center .rc-official-finish header h4{margin-top:.3rem;font:italic 900 2rem/.85 "Barlow Condensed",Arial,sans-serif;text-transform:uppercase}
 #uarl-race-center .rc-official-finish header>span{color:rgba(255,255,255,.5);font:850 .5rem/1 Inter;letter-spacing:.08em;text-transform:uppercase}
+#uarl-race-center .rc-results-list>.rc-result-card{min-width:0}
 #uarl-race-center .rc-finish-shell{overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--lime) #161821}
 #uarl-race-center .rc-finish-table{width:100%;min-width:760px;border-collapse:collapse}
 #uarl-race-center .rc-finish-table th{padding:.65rem .7rem;background:#171a23;color:rgba(255,255,255,.5);font:850 .48rem/1 Inter;text-align:left;letter-spacing:.07em;text-transform:uppercase}
@@ -97,7 +98,7 @@ body section.page-section:has(#uarl-home),body section.page-section:has(#uarl-sc
 #uarl-race-center .rc-finish-table tr.is-winner td{background:linear-gradient(90deg,rgba(216,255,62,.1),rgba(216,255,62,.025))}
 #uarl-race-center .rc-finish-table td:first-child>b{color:var(--lime);font:italic 900 1.15rem/1 "Barlow Condensed",Arial,sans-serif}
 #uarl-race-center .rc-finish-number{font-weight:900}
-#uarl-race-center .rc-finish-table td:nth-child(3)>strong{font:800 1rem/1 "Barlow Condensed",Arial,sans-serif}
+#uarl-race-center .rc-finish-table td:nth-child(3) strong{font:800 1rem/1 "Barlow Condensed",Arial,sans-serif}
 #uarl-race-center .rc-finish-table em.no-points{display:inline-block;margin-left:.45rem;padding:.18rem .3rem;border:1px solid rgba(255,255,255,.24);color:#aeb3c3;font:900 .42rem/1 Inter;font-style:normal;letter-spacing:.06em;vertical-align:middle}
 #uarl-race-center .rc-finish-total{color:var(--lime);font-size:.85rem}
 #uarl-race-center .rc-result-note{margin-top:.8rem;color:rgba(255,255,255,.55)!important;font-size:.7rem!important}
