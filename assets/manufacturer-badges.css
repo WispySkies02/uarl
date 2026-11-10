@@ -14,3 +14,13 @@
   .driver-with-manufacturer .manufacturer-badge,
   #uarl-race-center .driver-with-manufacturer .manufacturer-badge { flex-basis: 36px; width: 36px; height: 19px; }
 }
+.driver-with-manufacturer .manufacturer-badge--toyota,
+#uarl-race-center .driver-with-manufacturer .manufacturer-badge--toyota {
+  flex-basis: 22px; width: 22px; height: 22px; border-radius: 0;
+}
+@media (max-width: 540px) {
+  .driver-with-manufacturer .manufacturer-badge--toyota,
+  #uarl-race-center .driver-with-manufacturer .manufacturer-badge--toyota {
+    flex-basis: 19px; width: 19px; height: 19px;
+  }
+}
