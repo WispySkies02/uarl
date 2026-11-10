@@ -1,0 +1,16 @@
+.driver-with-manufacturer { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 10px; min-width: 0; }
+.driver-with-manufacturer > strong { min-width: 0; overflow-wrap: anywhere; }
+.driver-with-manufacturer .manufacturer-badge,
+#uarl-race-center .driver-with-manufacturer .manufacturer-badge {
+  display: inline-flex; align-items: center; justify-content: center; flex: 0 0 44px;
+  width: 44px; height: 22px; margin: 0; vertical-align: middle; box-sizing: border-box;
+}
+.manufacturer-badge img { display: block; width: auto; height: auto; max-width: 100%; max-height: 100%; object-fit: contain; }
+.manufacturer-badge--toyota { padding: 3px; border-radius: 4px; background: #eb0a1e; }
+#uarl-race-center .manufacturer-badge--toyota { padding: 3px !important; border-radius: 4px; background: #eb0a1e !important; }
+.manufacturer-badge--pending { color: #a3aab8; font-weight: 700; }
+@media (max-width: 540px) {
+  .driver-with-manufacturer { gap: 5px 7px; }
+  .driver-with-manufacturer .manufacturer-badge,
+  #uarl-race-center .driver-with-manufacturer .manufacturer-badge { flex-basis: 36px; width: 36px; height: 19px; }
+}

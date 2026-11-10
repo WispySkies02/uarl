@@ -190,7 +190,7 @@ test('public standings keep distinct known and non-roster identities with the sa
   const row=rows.and(page.locator('[data-driver-id="'+user+'"]'));
   await expect(row).toHaveCount(1);await expect(row.locator('.rc-pts')).toHaveText(points);
  }
- await expect(rows.locator('.rc-driver-cell>strong').filter({hasText:/^Jordan$/})).toHaveCount(3);
+ await expect(rows.locator('.rc-driver-cell strong').filter({hasText:/^Jordan$/})).toHaveCount(3);
  await expect(page.locator('[data-rc-stat="lapsLed"]')).toHaveCount(0);
  const headings=await page.locator('[data-rc-panel="standings"] th').allTextContents();
  expect(headings.some(text=>/^LL$|laps led/i.test(text.trim()))).toBe(false);
