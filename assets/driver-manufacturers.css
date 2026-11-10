@@ -3,12 +3,10 @@
 #uarl-paddock-v2 .pp-mfg-logo.pp-mfg-toyota { background: #eb0a1e; border-radius: 5px; padding: 4px; }
 #uarl-paddock-v2 .pp-mfg-logo.pp-driver-mfg.pp-mfg-ford { width: 58px !important; }
 #uarl-paddock-v2 .pp-mfg-logo.pp-driver-mfg.pp-mfg-chevy { width: 56px !important; height: 26px !important; }
-#uarl-paddock-v2 .pp-entry-manufacturer { position: absolute; top: 16px; right: 16px; }
 #uarl-paddock-v2 .pp-dialog-entry .pp-driver-mfg { margin-top: 10px; }
 #uarl-paddock-v2 .pp-profile-affiliation { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 12px; }
 #uarl-paddock-v2 .pp-profile-affiliation p { margin: 0; color: #505762; line-height: 1.6; }
 #uarl-paddock-v2 .pp-stage-number .pp-number-pending { display: block; max-width: 110px; color: #b6bdc8; font: 700 14px/1.4 Inter,sans-serif; }
 @media (max-width: 470px) {
   #uarl-paddock-v2 .pp-driver-card-top { gap: 6px; }
-  #uarl-paddock-v2 .pp-entry-manufacturer { top: 14px; right: 14px; }
 }

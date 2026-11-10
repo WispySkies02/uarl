@@ -348,7 +348,7 @@
       var isOpen=/^Open/.test(e.status);
       var art=teamNumberArt(t,e);
       return '<div class="pp-stage-entry'+(isOpen?' is-open':'')+'">'+
-        '<div class="pp-stage-number">'+art+'</div>'+(isSignedEntry(e)?'<div class="pp-entry-manufacturer">'+manufacturerMark(t.make,true)+'</div>':'')+
+        '<div class="pp-stage-number">'+art+'</div>'+
         '<div class="pp-stage-person"><strong>'+driverLabel(e)+'</strong>'+
         (e.user?'<small>'+esc(profile(e.user).currentUsername||e.user)+'</small>':'')+
         '<span>'+esc(statusLabel(e))+'</span></div>'+
@@ -419,12 +419,12 @@
     var logo=t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'';
     var founded=t.founded?'<div><small>Founded</small><b>'+esc(t.founded)+'</b></div>':'';
     var charterMeta=t.charterCount?'<div><small>Charter structure</small><b>'+t.charterCount+' charter slots</b></div>':'';
-    var pending=(t.pendingDrivers||[]).map(function(e){var p=profile(e.user);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing pp-dialog-entry-pending"><div class="pp-dialog-entry-top"><div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(handleEntry(e))+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span>'+(isSignedEntry(e)?manufacturerMark(t.make,true):'')+'</div></div></article>';}).join('');
+    var pending=(t.pendingDrivers||[]).map(function(e){var p=profile(e.user);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing pp-dialog-entry-pending"><div class="pp-dialog-entry-top"><div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(handleEntry(e))+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span>'+'</div></div></article>';}).join('');
     var entriesHtml;
     if(t.id==='aetherwing'){
-      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing"><div class="pp-dialog-entry-top">'+numberArt(t,e,'dialog')+'<div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span>'+(isSignedEntry(e)?manufacturerMark(t.make,true):'')+'</div></div></article>';}).join('');
+      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry pp-dialog-entry-aetherwing"><div class="pp-dialog-entry-top">'+numberArt(t,e,'dialog')+'<div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span>'+'</div></div></article>';}).join('');
     }else{
-      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry"><div class="pp-dialog-entry-top"><span class="num">'+(e.numberPending?'—':'#'+esc(e.number))+'</span><div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span>'+(isSignedEntry(e)?manufacturerMark(t.make,true):'')+'</div></div></article>';}).join('');
+      entriesHtml=t.entries.map(function(e){var name=displayEntry(e),user=handleEntry(e);return '<article class="pp-dialog-entry"><div class="pp-dialog-entry-top"><span class="num">'+(e.numberPending?'—':'#'+esc(e.number))+'</span><div><h4>'+driverLabel(e)+'</h4>'+'<p>'+esc(user)+'</p><span class="tag'+(isRecent(e)?' recent':'')+'">'+esc(statusLabel(e))+'</span>'+'</div></div></article>';}).join('');
     }
     return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Team HQ // D1</div><h2 id="pp-dialog-title">'+esc(t.name)+'</h2>'+logo+'</div><div class="pp-dialog-body"><div class="pp-team-meta"><div><small>Owner</small><b>'+esc(t.owner||'Not listed')+(t.ownerNote?' · '+esc(t.ownerNote):'')+'</b></div><div><small>Manufacturer</small><b>'+manufacturerMark(t.make)+'</b></div>'+founded+'<div><small>Current roster</small><b>'+teamSignedCount(t)+' signed</b></div>'+charterMeta+'</div><p class="pp-team-description">'+esc(t.note)+'</p><div class="pp-dialog-grid">'+entriesHtml+pending+'</div><button class="pp-dialog-close-inline" type="button" data-close-modal>Close Team HQ ×</button></div>';
   }

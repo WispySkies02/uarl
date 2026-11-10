@@ -16,7 +16,7 @@
     "tbdan1e": ["Daniel", "Daniel Heale"],
     "comodw": ["Jay", "Jay Vixen"],
     "john_hunter38": ["John", "John Hunter"],
-    "jjelliott2004": ["James", "JJ Whitlock"],
+    "jjelliott2004": ["James", "JJ", "JJ Whitlock"],
     "aokikoto": ["Wispy", "Hailey", "Hailey Bell"],
     "guillermochase": ["Gman", "Guillermo Chase"],
     "lancejuly": ["Lance", "Lance July"],

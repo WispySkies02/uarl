@@ -212,7 +212,7 @@ function beforeRosterUpgrade() {
   const data = structuredClone(original);
   const saved = data.drivers.previousRoster;
   Object.assign(data.drivers, { teams: structuredClone(saved.teams), profiles: structuredClone(saved.profiles), freeAgents: structuredClone(saved.freeAgents), recentMoves: structuredClone(saved.recentMoves) });
-  delete data.drivers.previousRoster; delete data.drivers.assignmentVersion; delete data.drivers.rosterVersion;
+  delete data.drivers.previousRoster; delete data.drivers.assignmentVersion; delete data.drivers.rosterVersion; delete data.drivers.displayNameVersion;
   for (const profile of Object.values(data.drivers.profiles)) { delete profile.csvAliases; delete profile.csvDivisions; }
   data.drivers.profiles.Aokikoto.alias = 'Hailey'; data.drivers.profiles.UN88475544.alias = 'Haydon'; data.drivers.profiles.AnyGameAnyTime09.number = '';
   data.events = league().events; data.records = [];

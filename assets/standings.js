@@ -5,6 +5,7 @@
   function identity(value) { return text(value).replace(/^@/, "").toLowerCase(); }
   function array(value) { return Array.isArray(value) ? value : []; }
   function number(value) { var n = Number(value); return Number.isFinite(n) ? n : 0; }
+  function hasName(value) { return typeof value === "string" && text(value) && !/^(undefined|null)$/i.test(text(value)); }
   function key(division, username) { return division + ":" + identity(username); }
   function matchingDriver(rows, entry) {
     var id = identity(entry.username || entry.user || entry.driverId || entry.id), name = identity(entry.name), car = text(entry.number);
@@ -50,7 +51,7 @@
   function score(data, division, records) {
     var corrections = array(data.standings).filter(function (row) { return row.division === division; });
     var rows = roster(data, division, scoredRecords(data, division)).map(function (driver) {
-      return Object.assign({}, driver, { rawPoints: 0, points: 0, stagePoints: 0, starts: 0, wins: 0, top5: 0, top10: 0, poles: 0, stageWins: 0, finishTotal: 0, averageFinish: null, pointsPending: false });
+      return Object.assign({}, driver, { name: hasName(driver.name) ? driver.name : text(driver.id) || "Driver pending", rawPoints: 0, points: 0, stagePoints: 0, starts: 0, wins: 0, top5: 0, top10: 0, poles: 0, stageWins: 0, finishTotal: 0, averageFinish: null, pointsPending: false });
     });
     records.forEach(function (record) {
       array(record.finishes).forEach(function (finish) {
@@ -74,7 +75,7 @@
       var saved = corrections.find(function (entry) { return identity(entry.username) === identity(row.id); });
       row.correction = saved || null;
       row.points = row.rawPoints + number(saved && saved.pointsAdjustment);
-      if (saved && saved.nameManual) row.name = saved.name;
+      if (saved && saved.nameManual && hasName(saved.name)) row.name = saved.name;
       if (saved && saved.numberManual) row.number = saved.number;
     });
     rows.sort(function (a, b) {

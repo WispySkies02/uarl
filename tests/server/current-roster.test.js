@@ -13,7 +13,7 @@ const roster = globalThis.UARLResultDrivers, current = globalThis.UARLCurrentRos
 function previous() {
   const data = structuredClone(original), saved = data.drivers.previousRoster;
   Object.assign(data.drivers, { teams: structuredClone(saved.teams), profiles: structuredClone(saved.profiles), freeAgents: structuredClone(saved.freeAgents), recentMoves: structuredClone(saved.recentMoves) });
-  data.standings = structuredClone(saved.standings); delete data.drivers.previousRoster; delete data.drivers.assignmentVersion;
+  data.standings = structuredClone(saved.standings); delete data.drivers.previousRoster; delete data.drivers.assignmentVersion; delete data.drivers.displayNameVersion;
   data.records = [];
   return data;
 }

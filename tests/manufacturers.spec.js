@@ -15,13 +15,14 @@ async function boot(page, data = original, path = '/drivers/') {
 }
 const driver = (page, user, scope = '[data-driver-grid]') => page.locator(scope + ' .pp-driver').filter({ has: page.locator('[data-driver="' + user + '"]') });
 
-test('the supplied roster shows the correct manufacturer for every occupied seat and driver card', async ({ page }) => {
+test('grouped team rosters show one manufacturer in the header while individual driver cards keep their badges', async ({ page }) => {
   await boot(page);
   await expect(page.locator('.pp-stats .pp-stat b')).toHaveText(['7', '20', '2', String(original.drivers.freeAgents.length)]);
   for (const [name, make, count] of expected) {
     const team = page.locator('.pp-team-stage').filter({ has: page.locator('h3', { hasText: name }) });
-    await expect(team.locator('.pp-entry-manufacturer')).toHaveCount(count);
-    await expect(team.getByRole('img', { name: make + ' manufacturer', exact: true })).toHaveCount(count + 1);
+    await expect(team.locator('.pp-stage-person small')).toHaveCount(count);
+    await expect(team.locator('.pp-stage-entry .pp-driver-mfg')).toHaveCount(0);
+    await expect(team.getByRole('img', { name: make + ' manufacturer', exact: true })).toHaveCount(1);
   }
   await expect(page.locator('.pp-stage-entry.is-open')).toHaveCount(4);
   await expect(page.locator('.pp-stage-entry.is-open .pp-entry-manufacturer')).toHaveCount(0);
@@ -32,6 +33,8 @@ test('the supplied roster shows the correct manufacturer for every occupied seat
   for (const user of ['IIKyle5Larson', 'AnyGameAnyTime09', 'Kingofgamez']) await expect(driver(page, user).getByRole('img', { name: 'Ford manufacturer' })).toHaveCount(1);
   await expect(driver(page, 'JamesEklund').locator('.pp-driver-number')).toHaveText('#25');
   await expect(driver(page, 'JJElliott2004').locator('.pp-driver-number')).toHaveText('#84');
+  await expect(driver(page, 'JJElliott2004').locator('h3')).toHaveText('JJ');
+  await expect(driver(page, 'JamesEklund').locator('h3')).toHaveText('James Eklund');
   await expect(driver(page, 'pa05').locator('.pp-driver-number')).toHaveText('#05');
   await expect(driver(page, 'Frogboy4783').locator('.pp-driver-number')).toHaveText('#5');
   const cards = page.locator('[data-driver-grid]');
@@ -70,7 +73,8 @@ test('current usernames and full names find the same profiles, while Open Series
   await expect(driver(page, 'FueledByMayonnaise', '[data-open-grid]').locator('.pp-mfg-generic')).toHaveText('Generic');
   await page.goto('/drivers/?team=sham');
   await expect(page.locator('#pp-dialog-title')).toHaveText('Sham Motorsports');
-  await expect(page.locator('.pp-dialog-entry .pp-driver-mfg')).toHaveCount(1);
+  await expect(page.locator('.pp-dialog-entry .pp-driver-mfg')).toHaveCount(0);
+  await expect(page.locator('.pp-team-meta').getByRole('img', { name: 'Ford manufacturer', exact: true })).toHaveCount(1);
   await expect(page.locator('.pp-dialog-entry').first()).toContainText('@Muffin');
   await expect(page.locator('.pp-dialog-entry').last().locator('.num')).toHaveText('—');
 });
@@ -79,6 +83,7 @@ test('the roster upgrades saved data once, keeps signatures, and its badges fit 
   const data = structuredClone(original), saved = data.drivers.previousRoster;
   Object.assign(data.drivers, { teams: saved.teams, profiles: saved.profiles, freeAgents: saved.freeAgents, recentMoves: saved.recentMoves });
   delete data.drivers.assignmentVersion; delete data.drivers.previousRoster;
+  delete data.drivers.displayNameVersion;
   data.drivers.profiles.Aokikoto.signatureImage = '/assets/aetherwing/logo.webp';
   await boot(page, data);
   const hailey = page.locator('.pp-team-stage').filter({ has: page.locator('h3', { hasText: 'Goat Whitlock Motorsports' }) }).locator('.pp-stage-entry').filter({ hasText: 'Aokikoto' });
@@ -87,11 +92,8 @@ test('the roster upgrades saved data once, keeps signatures, and its badges fit 
     await page.setViewportSize({ width, height: 900 });
     await hailey.scrollIntoViewIfNeeded();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    const boxes = await hailey.evaluate(row => {
-      const number = row.querySelector('.pp-stage-number').getBoundingClientRect(), badge = row.querySelector('.pp-entry-manufacturer').getBoundingClientRect(), artwork = row.querySelector('.pp-upload-number').getBoundingClientRect();
-      return { inside: badge.left >= row.getBoundingClientRect().left && badge.right <= row.getBoundingClientRect().right, apart: artwork.right < badge.left || number.bottom < badge.top || number.top > badge.bottom };
-    });
-    expect(boxes.inside).toBe(true); expect(boxes.apart).toBe(true);
+    const inside = await hailey.evaluate(row => { const frame = row.getBoundingClientRect(), art = row.querySelector('.pp-upload-number').getBoundingClientRect(); return art.left >= frame.left && art.right <= frame.right; });
+    expect(inside).toBe(true);
     if (width === 390) await page.screenshot({ path: 'test-results/manufacturer-roster-mobile.png' });
     await page.locator('[data-view="drivers"]').click();
     await driver(page, 'Aokikoto').scrollIntoViewIfNeeded();
