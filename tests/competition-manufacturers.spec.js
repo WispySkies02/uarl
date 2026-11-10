@@ -86,6 +86,9 @@ test('badges stay readable and proportional in phone and desktop standings and f
     await page.setViewportSize({ width, height: 900 });
     await standingsRow(page, 'Aokikoto').scrollIntoViewIfNeeded();
     const image = badge(standingsRow(page, 'Aokikoto'), 'Toyota').locator('img');
+    const badgeSize = await badge(standingsRow(page, 'Aokikoto'), 'Toyota').boundingBox();
+    expect(badgeSize.width).toBe(badgeSize.height);
+    await expect(badge(standingsRow(page, 'Aokikoto'), 'Toyota')).toHaveCSS('border-radius', '0px');
     await expect.poll(() => image.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
     const sizes = await image.evaluate(img => ({ w: img.width, h: img.height, nw: img.naturalWidth, nh: img.naturalHeight }));
     expect(sizes.w).toBeLessThanOrEqual(44); expect(sizes.h).toBeLessThanOrEqual(22);
@@ -97,6 +100,8 @@ test('badges stay readable and proportional in phone and desktop standings and f
   await page.goto('/race-center/?event=manufacturer-cup');
   await page.locator('#event-manufacturer-cup .rc-finish-shell').scrollIntoViewIfNeeded();
   await expect(badge(page.locator('#event-manufacturer-cup .rc-finish-table tbody tr').first(), 'Toyota')).toBeVisible();
+  const finishBadgeSize = await badge(page.locator('#event-manufacturer-cup .rc-finish-table tbody tr').first(), 'Toyota').boundingBox();
+  expect(finishBadgeSize.width).toBe(finishBadgeSize.height);
   for (const img of await page.locator('#event-manufacturer-cup .manufacturer-badge img').all()) await expect.poll(() => img.evaluate(node => node.complete && node.naturalWidth > 0)).toBe(true);
   await expect(badge(page.locator('#event-manufacturer-cup .rc-finish-table tbody tr').first(), 'Toyota')).toHaveCSS('background-color', 'rgb(235, 10, 30)');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
