@@ -185,10 +185,10 @@ test('public standings keep distinct known and non-roster identities with the sa
  ]})];
  await page.route('**/.netlify/functions/admin-publish**',route=>route.fulfill({json:{data}}));
  await page.goto('/race-center/');
- const rows=page.locator('[data-rc-standings-body] tr');
+ const rows=page.locator('[data-rc-standings-body] tr[data-driver-id]');
  for(const [user,points] of [['JordanA','50'],['JordanB','45'],['JordanOutside','42']]){
   const row=rows.and(page.locator('[data-driver-id="'+user+'"]'));
-  await expect(row).toHaveCount(1);await expect(row.locator('.rc-pts')).toHaveText(points);
+  await expect(row).toHaveCount(1);await expect(row.locator('.rc-points-value')).toHaveText(points);
  }
  await expect(rows.locator('.rc-driver-cell strong').filter({hasText:/^Jordan$/})).toHaveCount(3);
  await expect(page.locator('[data-rc-stat="lapsLed"]')).toHaveCount(0);

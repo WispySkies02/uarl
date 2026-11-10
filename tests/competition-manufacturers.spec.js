@@ -29,9 +29,9 @@ test('public standings show badges before the first race and throughout every se
   await boot(page, league({ empty: true }));
   for (const [user, make] of [['Aokikoto', 'Toyota'], ['AnyGameAnyTime09', 'Ford'], ['58bbwapache', 'Chevrolet']]) {
     await expect(badge(standingsRow(page, user), make)).toBeVisible();
-    await expect(standingsRow(page, user).locator('.rc-pts')).toHaveText('0');
+    await expect(standingsRow(page, user).locator('.rc-points-value')).toHaveText('0');
   }
-  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points']);
+  await expect(page.locator('[data-rc-panel="standings"] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind']);
   await expect(standingsRow(page, 'Callsign_Hestia').getByRole('img', { name: 'Manufacturer not assigned' })).toBeVisible();
   await page.locator('[data-rc-division="open"]').click();
   await expect(badge(standingsRow(page, 'JJElliott2004'), 'Chevrolet')).toBeVisible();
@@ -77,7 +77,7 @@ test('CSV standings preview, manual points editing and the public points preview
   const popup = page.waitForEvent('popup'); await page.locator('[data-action="preview"]').first().click();
   const previewPage = await popup;
   await expect(badge(standingsRow(previewPage, 'AnyGameAnyTime09'), 'Ford')).toBeVisible();
-  await expect(standingsRow(previewPage, 'AnyGameAnyTime09').locator('.rc-pts')).toHaveText('125');
+  await expect(standingsRow(previewPage, 'AnyGameAnyTime09').locator('.rc-points-value')).toHaveText('125');
 });
 
 test('badges stay readable and proportional in phone and desktop standings and finish tables', async ({ page }) => {

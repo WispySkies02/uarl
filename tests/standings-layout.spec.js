@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { baseline, brokenStandings } from './fixtures/standings-roster.js';
 
-const rowSelector = '[data-rc-standings-body] tr';
+const rowSelector = '[data-rc-standings-body] tr[data-driver-id]';
 const expectedDrivers = baseline.map(([id, name, number, points], index) => ({
   id, name: id === 'JJElliott2004' ? 'JJ' : name, number,
   position: String(index + 1), points: String(points)
@@ -28,7 +28,7 @@ async function expectNoOverflow(page) {
   expect(sizes.table).toBeLessThanOrEqual(sizes.available + 1);
 }
 
-for (const width of [320, 390, 541, 720, 1440, 1920]) {
+for (const width of [320, 390, 541, 720, 721, 1440, 1920]) {
   test(`standings retain their data and aligned columns at ${width}px`, async ({ page }) => {
     let data = brokenStandings();
     await page.setViewportSize({ width, height: 900 });
@@ -36,13 +36,13 @@ for (const width of [320, 390, 541, 720, 1440, 1920]) {
     await page.goto('/race-center/');
     const rows = page.locator(rowSelector);
     await expect(rows.first().locator('.rc-driver-cell strong')).toHaveText('Lance');
-    await expect(page.locator('.rc-standings-table th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points']);
+    await expect(page.locator('.rc-standings-table th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points', 'Behind']);
     const drivers = await rows.evaluateAll(entries => entries.slice(0, 17).map(row => ({
       id: row.dataset.driverId,
       name: row.querySelector('.rc-driver-cell strong').textContent.trim(),
       number: row.querySelector('.rc-number').textContent.trim(),
-      position: row.querySelector('.rc-rank').textContent.trim(),
-      points: row.querySelector('.rc-pts').textContent.trim()
+      position: row.querySelector('.rc-position-value').textContent.trim(),
+      points: row.querySelector('.rc-points-value').textContent.trim()
     })));
     expect(drivers).toEqual(expectedDrivers);
 
@@ -65,7 +65,8 @@ for (const width of [320, 390, 541, 720, 1440, 1920]) {
         const tools = document.querySelector('.rc-standings-tools').getBoundingClientRect();
         return { width: rect.width, tableCenter: rect.x + rect.width / 2, panelCenter: panel.x + panel.width / 2, toolsLeft: tools.x, tableLeft: rect.x, toolsWidth: tools.width };
       });
-      expect(layout.width).toBeLessThanOrEqual(800);
+      expect(layout.width).toBeLessThanOrEqual(1152);
+      if (width >= 1440) expect(layout.width).toBeGreaterThan(1000);
       expect(Math.abs(layout.tableCenter - layout.panelCenter)).toBeLessThanOrEqual(1);
       expect(Math.abs(layout.toolsLeft - layout.tableLeft)).toBeLessThanOrEqual(1);
       expect(Math.abs(layout.toolsWidth - layout.width)).toBeLessThanOrEqual(1);
@@ -90,6 +91,12 @@ for (const width of [320, 390, 541, 720, 1440, 1920]) {
       }));
       await expect.poll(() => page.locator('.rc-table-shell').evaluate(shell => Math.abs(shell.getBoundingClientRect().top - 220))).toBeLessThan(5);
       await page.screenshot({ path: `test-results/standings-layout-${width}.png` });
+      if (width === 390 || width === 1920) {
+        await page.locator('.rc-chase-cutoff').evaluate(divider => window.scrollTo({
+          top: divider.getBoundingClientRect().top + scrollY - 450, behavior: 'instant'
+        }));
+        await page.screenshot({ path: `test-results/standings-chase-cutoff-${width}.png` });
+      }
     }
 
     data = brokenStandings();

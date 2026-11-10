@@ -1054,7 +1054,7 @@ body:has(#uarl-race-center) .fe-block:has(#uarl-race-center),body:has(#uarl-race
 
   <main class="rc-dashboard"><div class="rc-overview" aria-label="Current championship overview"><div><strong data-rc-leader>NO LEADER</strong><small>Championship leader</small></div><div><strong data-rc-points>0</strong><small>Leader points</small></div><div><strong data-rc-round>0 / 18</strong><small>Points races completed</small></div><div><strong data-rc-drivers>16</strong><small>Confirmed drivers</small></div></div>
 
-    <section class="rc-section" data-rc-panel="standings"><div class="rc-section-heading"><div><div class="rc-kicker">The championship picture</div><h2>Points standings.</h2></div><p class="rc-section-note">Official Season 6 totals. D2 is now an archive: Daytona remains preserved as the division’s only completed round, and all former D2 rostered drivers have moved to D1 free agency.</p></div><div class="rc-standings-tools"><input class="rc-search" type="search" placeholder="Search a driver, number, or team…" aria-label="Search the points standings"><span class="rc-preseason-note" data-rc-preseason>Season 6 has not started</span></div><div class="rc-table-shell"><table class="rc-table rc-standings-table"><colgroup><col class="rc-col-position"><col class="rc-col-change"><col class="rc-col-number"><col><col class="rc-col-points"></colgroup><thead><tr><th scope="col">Position</th><th scope="col">Change</th><th scope="col">Driver#</th><th scope="col">DriverName</th><th scope="col">Points</th></tr></thead><tbody data-rc-standings-body></tbody></table></div><div class="rc-empty" data-rc-standings-empty hidden><h3>No confirmed grid yet.</h3><p>This series will populate as soon as its driver roster or first official race results are available.</p></div></section>
+    <section class="rc-section" data-rc-panel="standings"><div class="rc-section-heading"><div><div class="rc-kicker">The championship picture</div><h2>Points standings.</h2></div><p class="rc-section-note">Official Season 6 totals. D2 is now an archive: Daytona remains preserved as the division’s only completed round, and all former D2 rostered drivers have moved to D1 free agency.</p></div><div class="rc-standings-tools"><input class="rc-search" type="search" placeholder="Search a driver, number, or team…" aria-label="Search the points standings"><span class="rc-preseason-note" data-rc-preseason>Season 6 has not started</span></div><div class="rc-table-shell"><table class="rc-table rc-standings-table"><colgroup><col class="rc-col-position"><col class="rc-col-change"><col class="rc-col-number"><col><col class="rc-col-points"><col class="rc-col-gap"></colgroup><thead><tr><th scope="col">Position</th><th scope="col">Change</th><th scope="col">Driver#</th><th scope="col">DriverName</th><th scope="col">Points</th><th scope="col">Behind</th></tr></thead><tbody data-rc-standings-body></tbody></table></div><div class="rc-empty" data-rc-standings-empty hidden><h3>No confirmed grid yet.</h3><p>This series will populate as soon as its driver roster or first official race results are available.</p></div></section>
 
     <section class="rc-section" data-rc-panel="stats" hidden><div class="rc-section-heading"><div><div class="rc-kicker">Season 6 by the numbers</div><h2>The stats lab.</h2></div><p class="rc-section-note">Switch categories to see who is leading every major statistical battle once the season begins.</p></div><div class="rc-stat-pills"><button class="is-active" type="button" data-rc-stat="wins">Wins</button><button type="button" data-rc-stat="top5">Top 5s</button><button type="button" data-rc-stat="top10">Top 10s</button><button type="button" data-rc-stat="poles">Poles</button><button type="button" data-rc-stat="stageWins">Stage wins</button><button type="button" data-rc-stat="averageFinish">Avg. finish</button></div><div class="rc-stat-board" data-rc-stat-board></div></section>
 
@@ -1161,11 +1161,26 @@ window.UARL_RACE_CENTER_RESULTS = [{
   }
 
   function carNo(v){return v?'#'+safe(v):'NO. PENDING';}
+  var compactStandings=window.matchMedia('(max-width:720px)');
+  compactStandings.addEventListener('change',function(){
+    var divider=root.querySelector('.rc-chase-cutoff td');
+    if(divider)divider.colSpan=compactStandings.matches?4:6;
+  });
+  function standingsGap(rows,row,started,mobile){
+    var gap=started?window.UARLStandings.gapToLeader(rows,row):null;
+    var leader=gap!==null&&row.position===1;
+    var value=gap===null?'—':leader?'Leader':gap===0?'0':'-'+gap;
+    var label=gap===null?'Gap unavailable':leader?'Championship leader':gap+' points behind the leader';
+    return '<span class="'+(mobile?'rc-mobile-gap':'rc-gap-value')+'" data-gap-kind="'+(gap===null?'pending':leader?'leader':'behind')+'" role="img" aria-label="'+label+'">'+value+'</span>';
+  }
   function renderStandings(rows){
     var hasPending=rows.some(function(row){return row.pointsPending;});
+    var started=Boolean(seriesResults().some(function(record){return !record.exhibition;})||(liveData&&liveData.standings||[]).some(function(row){return row.division===state.division;}));
     var filtered=rows.filter(function(row){return !state.query||[row.name,row.id,row.number,'#'+row.number,row.team,row.make].join(' ').toLowerCase().indexOf(state.query)>=0;});
+    var cutoff=started&&state.division==='d1'&&filtered.some(function(row){return row.position===10;})&&filtered.some(function(row){return row.position===11;});
     root.querySelector('[data-rc-standings-body]').innerHTML=filtered.map(function(row){
-      return '<tr data-driver-id="'+safe(row.id)+'"><td class="rc-rank">'+row.position+'</td><td class="rc-movement">'+window.UARLStandings.movementHTML(row.movement)+'</td><td class="rc-number">'+safe(row.number||'—')+'</td><td class="rc-driver-cell"><div class="driver-with-manufacturer"><strong>'+safe(row.name)+'</strong>'+window.UARLManufacturerBadges.badge(row.make)+'</div></td><td class="rc-pts">'+row.points+(row.pointsPending?'+':'')+'</td></tr>';
+      var divider=cutoff&&row.position===11?'<tr class="rc-chase-cutoff"><td colspan="'+(compactStandings.matches?4:6)+'"><span>Chase cutoff · Top 10</span></td></tr>':'';
+      return divider+'<tr data-driver-id="'+safe(row.id)+'"><td class="rc-rank"><span class="rc-position-value">'+row.position+'</span><span class="rc-mobile-movement">'+window.UARLStandings.movementHTML(row.movement)+'</span></td><td class="rc-movement">'+window.UARLStandings.movementHTML(row.movement)+'</td><td class="rc-number">'+safe(row.number||'—')+'</td><td class="rc-driver-cell"><div class="driver-with-manufacturer"><strong>'+safe(row.name)+'</strong>'+window.UARLManufacturerBadges.badge(row.make)+'</div></td><td class="rc-pts"><span class="rc-points-value">'+row.points+(row.pointsPending?'+':'')+'</span>'+standingsGap(rows,row,started,true)+'</td><td class="rc-gap">'+standingsGap(rows,row,started,false)+'</td></tr>';
     }).join('');
     root.querySelector('[data-rc-standings-empty]').hidden=Boolean(filtered.length);
     root.querySelector('.rc-table-shell').hidden=!filtered.length;
