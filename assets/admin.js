@@ -16,7 +16,7 @@
   var undoSnapshots=[],redoSnapshots=[],historyAnchor=null,editSession=null,historyRestoring=false;
   var artworkOpen=Object.create(null);
   var sectionNames={dashboard:'Home',schedule:'Schedule',results:'Results',standings:'Standings',teams:'Teams & rosters',profiles:'Driver roster',open:'Open Series',freeAgents:'Free agents',moves:'Signings',paints:'Paint Booth',history:'History',guide:'Rules & FAQ',conduct:'Conduct',advanced:'Advanced JSON',accounts:'Staff accounts'};
-  var imports=window.UARLAdminImports({data:function(){return state.data;},esc:esc,header:renderHeader,commit:commitPendingEdit,render:render,recalculate:recalculateResult,toast:toast,applied:function(){changed();render();}});
+  var imports=window.UARLAdminImports({data:function(){return state.data;},esc:esc,header:renderHeader,commit:commitPendingEdit,render:render,recalculate:recalculateResult,toast:toast,applied:function(){changed();render();},canEditArtwork:canEditStandingsArtwork,editArtwork:editStandingsArtwork});
 
   var configs = {
     schedule: {
@@ -252,6 +252,24 @@
   function goToEntry(section,index,step){
     if(section==='standings'){var entry=(state.data.standings||[])[index];if(entry)imports.selectDivision(entry.division);}
     commitPendingEdit();state.section=section;state.selected=Math.max(0,Number(index)||0);state.step=step==null?(section==='teams'?2:0):step;state.query='';render();
+  }
+  function canEditStandingsArtwork(){return Boolean(state.user&&['owner','admin'].includes(state.user.role));}
+  function editStandingsArtwork(division,user){
+    if(!canEditStandingsArtwork())return;
+    commitPendingEdit();
+    var data=window.UARLData.normalize(clone(state.data));
+    var row=window.UARLStandings.calculate(data,division).find(function(entry){return entry.id===user;});
+    var target=row&&window.UARLStandingsArtwork.resolve(state.data,division,row).target;
+    if(!target){toast('This driver has no matching current roster entry for number art.',true);return;}
+    var step=target.section==='open'?1:target.section==='teams'&&target.field==='pendingDrivers'?3:2;
+    if(target.field)artworkOpen[target.section+':'+target.index+':'+target.field+':'+target.row]=true;
+    goToEntry(target.section,target.index,step);
+    var selector='[data-image-upload][data-image-key="numberImage"]'+(target.field?'[data-image-field="'+target.field+'"][data-image-row="'+target.row+'"]':'');
+    var input=view.querySelector(selector);
+    if(input){
+      for(var ancestor=input.parentElement;ancestor&&ancestor!==view;ancestor=ancestor.parentElement)if(ancestor.tagName==='DETAILS')ancestor.open=true;
+      input.focus({preventScroll:true});input.closest('.image-upload').scrollIntoView({block:'nearest'});
+    }
   }
   function openWorkspaceSearch(){if(!state.data)return;commitPendingEdit();var dialog=document.querySelector('[data-workspace-search-dialog]');dialog.showModal();var input=dialog.querySelector('[data-workspace-search]');input.value='';renderWorkspaceSearch('');input.focus();}
   function renderWorkspaceSearch(query){
@@ -497,7 +515,8 @@
   function renderDriverArtwork(entry,field,row){var key=state.section+':'+state.selected+':'+field+':'+row;return '<details class="roster-artwork" data-artwork-key="'+esc(key)+'" '+(artworkOpen[key]?'open':'')+'><summary>Number art & signature</summary><div class="builder-grid">'+renderImageControl('numberImage','Number art',entry,field,row)+renderImageControl('signatureImage','Signature logo',entry,field,row)+'</div></details>';}
   function renderImageControl(key, label, entry, field, row) {
     var attrs=' data-image-key="'+esc(key)+'"'+(field?' data-image-field="'+esc(field)+'" data-image-row="'+row+'"':'');
-    return '<div class="field wide image-upload"><span>'+esc(label)+'</span>'+(entry[key]?'<img src="'+esc(entry[key])+'" alt="'+esc(label)+' preview"><button type="button" class="button ghost" data-image-clear'+attrs+'>Remove image</button>':'')+'<label class="button ghost">Upload '+esc(label.toLowerCase())+'<input type="file" accept="image/png,image/jpeg,image/webp" data-image-upload'+attrs+'></label><small>PNG, JPEG or WebP. Large images resize automatically; transparent backgrounds are preserved. Publish the draft to show this on the site.</small><span data-image-status role="status"></span></div>';
+    var help=key==='numberImage'?'Optional PNG, JPEG or WebP. Standings fit number art into matching sizes on desktop and mobile; without an image, the car number stays as text. Large originals resize automatically, preserving transparency. Publish the draft to show it on the site.':'PNG, JPEG or WebP. Large images resize automatically; transparent backgrounds are preserved. Publish the draft to show this on the site.';
+    return '<div class="field wide image-upload"><span>'+esc(label)+'</span>'+(entry[key]?'<img src="'+esc(entry[key])+'" alt="'+esc(label)+' preview"><button type="button" class="button ghost" data-image-clear'+attrs+'>Remove image</button>':'')+'<label class="button ghost">Upload '+esc(label.toLowerCase())+'<input type="file" accept="image/png,image/jpeg,image/webp" data-image-upload'+attrs+'></label><small>'+help+'</small><span data-image-status role="status"></span></div>';
   }
   async function prepareDriverImage(file) {
     if (!['image/png','image/jpeg','image/webp'].includes(file.type)) throw new Error('Choose a PNG, JPEG or WebP image.');

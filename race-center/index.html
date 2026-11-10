@@ -1075,6 +1075,7 @@ body:has(#uarl-race-center) .fe-block:has(#uarl-race-center),body:has(#uarl-race
 <script src="/assets/result-drivers.js"></script>
 <script src="/assets/runtime-data.js"></script>
 <script src="/assets/standings.js"></script>
+<script src="/assets/standings-artwork.js"></script>
 <script src="/assets/manufacturer-badges.js"></script>
 <script src="/assets/uarl-events.js"></script>
 <script>
@@ -1189,7 +1190,7 @@ window.UARL_RACE_CENTER_RESULTS = [{
     var cutoff=started&&state.division==='d1'&&filtered.some(function(row){return row.position===10;})&&filtered.some(function(row){return row.position===11;});
     root.querySelector('[data-rc-standings-body]').innerHTML=filtered.map(function(row){
       var divider=cutoff&&row.position===11?'<tr class="rc-chase-cutoff"><td colspan="'+(compactStandings.matches?4:7)+'"><span>Chase cutoff · Top 10</span></td></tr>':'';
-      return divider+'<tr data-driver-id="'+safe(row.id)+'"><td class="rc-rank"><span class="rc-position-value">'+row.position+'</span><span class="rc-mobile-movement">'+window.UARLStandings.movementHTML(row.movement)+'</span></td><td class="rc-movement">'+window.UARLStandings.movementHTML(row.movement)+'</td><td class="rc-number">'+safe(row.number||'—')+'</td><td class="rc-driver-cell"><div class="driver-with-manufacturer"><strong>'+safe(row.name)+'</strong>'+window.UARLManufacturerBadges.badge(row.make)+'</div></td><td class="rc-pts"><span class="rc-points-value">'+row.points+(row.pointsPending?'+':'')+'</span>'+standingsGap(rows,row,started,true)+standingsCutoff(rows,row,started,true)+'</td><td class="rc-gap">'+standingsGap(rows,row,started,false)+'</td><td class="rc-cutoff">'+standingsCutoff(rows,row,started,false)+'</td></tr>';
+      return divider+'<tr data-driver-id="'+safe(row.id)+'"><td class="rc-rank"><span class="rc-position-value">'+row.position+'</span><span class="rc-mobile-movement">'+window.UARLStandings.movementHTML(row.movement)+'</span></td><td class="rc-movement">'+window.UARLStandings.movementHTML(row.movement)+'</td><td class="rc-number">'+window.UARLStandingsArtwork.html(liveData||{race:data},state.division,row)+'</td><td class="rc-driver-cell"><div class="driver-with-manufacturer"><strong>'+safe(row.name)+'</strong>'+window.UARLManufacturerBadges.badge(row.make)+'</div></td><td class="rc-pts"><span class="rc-points-value">'+row.points+(row.pointsPending?'+':'')+'</span>'+standingsGap(rows,row,started,true)+standingsCutoff(rows,row,started,true)+'</td><td class="rc-gap">'+standingsGap(rows,row,started,false)+'</td><td class="rc-cutoff">'+standingsCutoff(rows,row,started,false)+'</td></tr>';
     }).join('');
     root.querySelector('[data-rc-standings-empty]').hidden=Boolean(filtered.length);
     root.querySelector('.rc-table-shell').hidden=!filtered.length;

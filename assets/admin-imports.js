@@ -37,7 +37,8 @@
           return cells([row.position, row.driver.name + (row.driver.user ? " · @" + row.driver.user : ""), finish.number || "—", row.qualifying, row.stage1, row.stage2, row.fastestLap ? "Yes" : "No", row.mostLapsLed ? "Yes" : "No", finish.totalPoints]);
         }), "Results CSV preview");
       } else {
-        content = table(standingsLabels, preview.rows.map(function (row) { return '<tr><td>' + esc(row.position) + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + esc(row.number) + '</td><td>' + standingsDriver(row) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
+        var data = normalized();
+        content = table(standingsLabels, preview.rows.map(function (row) { return '<tr><td>' + esc(row.position) + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
       }
       return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + (kind === "results" ? preview.rows.length + ' finishers' : preview.entries.length + ' updated drivers') + '</h4>' + content + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.') + '</p><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div>';
     }
@@ -49,19 +50,22 @@
     }
     function results(record) { return widget("results", record); }
     function renderStandings() {
-      var rows = standings.calculate(normalized(), division);
+      var data = normalized(), rows = standings.calculate(data, division);
       var body = rows.map(function (row) {
         var correction = row.correction && row.correction.pointsAdjustment || 0;
         var details = correction ? '<details class="standings-correction"><summary>Correction ' + (correction > 0 ? '+' : '') + correction + '</summary><p>Race points: ' + row.rawPoints + '</p><button type="button" class="standings-reset" data-reset-points>Use race points</button></details>' : '';
-        return '<tr data-standings-driver="' + esc(row.id) + '"><td>' + row.position + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + esc(row.number || "—") + '</td><td>' + standingsDriver(row) + '</td><td><div class="standings-points-control"><input type="number" step="1" data-standings-points data-before="' + row.points + '" value="' + row.points + '" aria-label="Points for ' + esc(row.name) + '"><button type="button" class="button ghost" data-save-points hidden disabled>Save</button></div>' + details + '</td></tr>';
+        var editable = bridge.canEditArtwork && bridge.canEditArtwork() && root.UARLStandingsArtwork.resolve(bridge.data(), division, row).target;
+        var artwork = editable ? '<button type="button" class="button ghost standings-artwork-button" data-standings-artwork="' + esc(row.id) + '" aria-label="Number art for ' + esc(row.name) + '">Number art</button>' : '';
+        return '<tr data-standings-driver="' + esc(row.id) + '" data-standings-search-text="' + esc([row.name, row.id, row.number].join(' ')) + '"><td>' + row.position + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row) + artwork + '</td><td><div class="standings-points-control"><input type="number" step="1" data-standings-points data-before="' + row.points + '" value="' + row.points + '" aria-label="Points for ' + esc(row.name) + '"><button type="button" class="button ghost" data-save-points hidden disabled>Save</button></div>' + details + '</td></tr>';
       });
       return bridge.header({ title: "Standings", kicker: "Race Center", description: "Import a points table or correct a driver’s total. Race results continue to update these totals automatically." }) + '<div class="standings-editor"><nav class="standings-divisions" aria-label="Standings division">' + [["d1", "D1 · Cup"], ["open", "Open Series"], ["d2", "D2 · Archive"]].map(function (pair) { return '<button class="button ' + (pair[0] === division ? '' : 'ghost') + '" type="button" data-standings-division="' + pair[0] + '" ' + (pair[0] === division ? 'aria-current="page"' : '') + '>' + pair[1] + '</button>'; }).join("") + '</nav>' + widget("standings") + '<section class="standings-manual"><header><div><h2>Points table</h2><p>Change a total and press Save. It stays in your draft until you publish.</p></div><label>Find a driver<input type="search" data-standings-search placeholder="Name or car number"></label></header>' + (rows.length ? table(standingsLabels, body, "Edit standings points") : '<p class="editor-empty">Add drivers to this division or enter its first race results to start the standings.</p>') + '</section></div>';
     }
     function click(event) {
-      var button = event.target.closest("[data-csv-preview-button],[data-csv-apply],[data-standings-division],[data-save-points],[data-reset-points]");
+      var button = event.target.closest("[data-csv-preview-button],[data-csv-apply],[data-standings-division],[data-save-points],[data-reset-points],[data-standings-artwork]");
       if (!button) return false;
       if (button.dataset.standingsDivision) { division = button.dataset.standingsDivision; bridge.render(); return true; }
       bridge.commit();
+      if (button.dataset.standingsArtwork) { if (bridge.editArtwork) bridge.editArtwork(division, button.dataset.standingsArtwork); return true; }
       if (button.matches("[data-save-points],[data-reset-points]")) {
         var tr = button.closest("[data-standings-driver]"), input = tr.querySelector("[data-standings-points]");
         var row = standings.calculate(normalized(), division).find(function (row) { return row.id === tr.dataset.standingsDriver; });
@@ -99,7 +103,7 @@
       }
       if (target.matches("[data-standings-search]")) {
         var query = target.value.trim().toLowerCase();
-        document.querySelectorAll("[data-standings-driver]").forEach(function (row) { row.hidden = !row.textContent.toLowerCase().includes(query) && !row.dataset.standingsDriver.toLowerCase().includes(query); }); return true;
+        document.querySelectorAll("[data-standings-driver]").forEach(function (row) { row.hidden = !(row.dataset.standingsSearchText || row.textContent).toLowerCase().includes(query) && !row.dataset.standingsDriver.toLowerCase().includes(query); }); return true;
       }
       if (target.matches("[data-standings-points]")) {
         var save = target.closest("tr").querySelector("[data-save-points]");
