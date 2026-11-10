@@ -176,6 +176,10 @@ When a signature logo is available, public roster and driver headings display th
 
 Roster number artwork uses the same 72-pixel row slot as text numbers, with artwork capped at 110 × 68 pixels. Signatures replace names within a 160 × 36 pixel area so uploaded and text-only entries remain proportionate on mobile. Empty transparent margins are trimmed for new uploads and when displaying existing same-origin artwork, so previously uploaded images also fit their visible content without re-uploading. The original stored artwork is preserved.
 
+Standings also support optional number artwork. Owners and Admins can choose **Number art** beside a driver in Admin → Standings to open that driver's existing artwork editor. Publish the draft after uploading or removing an image. Public standings, admin standings, and standings CSV previews use consistent image frames, preserving proportions and trimming transparent margins. Missing or failed images fall back to the normal number text, including leading zeros. Artwork must match the driver's current number and selected series; a D1 image is not borrowed for a different Open Series or archived number.
+
+There is no source-file byte cutoff in the uploader. Large PNG originals are optimized automatically before sending; the existing 2 MiB limit applies to the processed upload, not the selected original file.
+
 ### Faster race entry
 
 The admin dashboard has a **Record a race** action. Pick the scheduled event, select the participants together, and use the finish-order arrows to arrange the classification. Positions, automatic winner selection and points update together. Guests, qualifying, stages and notes remain available under the expandable race details. Awards and a summary are the final step.

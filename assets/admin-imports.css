@@ -34,6 +34,7 @@
 .standings-manual input { background: #0e1510; border: 1px solid #4a5944; border-radius: 6px; color: #fff; padding: 10px; font: inherit; }
 .standings-points-control input { width: 96px; min-height: 42px; }
 .standings-points-control .button { min-height: 42px; }
+.standings-manual .standings-artwork-button { min-height: 40px; margin-top: 8px; padding: 6px 10px; font-size: 12px; }
 .standings-reset { display: block; padding: 6px 0; color: #d5edae; border: 0; background: none; cursor: pointer; font-size: 12px; }
 .standings-correction { font-size: 11px; color: #c5d4bb; }
 .standings-correction summary { padding: 4px 0; cursor: pointer; }
