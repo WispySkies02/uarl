@@ -1249,14 +1249,15 @@
         "number": "24"
       },
       "JJElliott2004": {
-        "alias": "James",
+        "alias": "JJ",
         "wins": 3,
         "championships": 1,
         "rank": 18,
         "csvAliases": [
           "James",
           "JJ Whitlock",
-          "JJElliott2004"
+          "JJElliott2004",
+          "JJ"
         ],
         "currentUsername": "JJElliott2004",
         "usernameAliases": [],
@@ -2264,7 +2265,8 @@
         }
       ]
     },
-    "assignmentVersion": 1
+    "assignmentVersion": 1,
+    "displayNameVersion": 1
   },
   "history": {
     "updated": "2026-09-12",
@@ -3461,7 +3463,7 @@
       },
       {
         "id": "JJElliott2004",
-        "name": "James",
+        "name": "JJ",
         "number": "84",
         "division": "d1",
         "team": "Goat Whitlock Motorsports",
@@ -3713,7 +3715,7 @@
       },
       {
         "id": "JJElliott2004",
-        "name": "James",
+        "name": "JJ",
         "number": "48",
         "division": "open",
         "team": "Independent entry",

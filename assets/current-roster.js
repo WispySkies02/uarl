@@ -8,6 +8,40 @@
   function unique(values) { return Array.from(new Set(values.filter(Boolean))); }
   function teamKey(value) { return identity(value).replace(/[^a-z0-9]/g, ""); }
   function set(object, key, value) { Object.defineProperty(object, key, { value: value, enumerable: true, configurable: true, writable: true }); }
+  function hasName(value) { return typeof value === "string" && text(value) && !/^(undefined|null)$/i.test(text(value)); }
+  function presentation(data) {
+    var drivers = data.drivers, profiles = drivers.profiles || {};
+    function canonical(user) { return identity(root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, user) : user); }
+    var entries = array(drivers.teams).flatMap(function (team) { return array(team.entries).concat(array(team.pendingDrivers)); }).concat(array(drivers.openEntries));
+    if (!(Number(drivers.displayNameVersion) >= 1)) {
+      var jj = Object.keys(profiles).find(function (user) { return identity(user) === "jjelliott2004"; });
+      if (jj) {
+        var saved = profiles[jj], names = [saved.alias, "James", "JJ Whitlock", "JJ"];
+        entries.forEach(function (entry) { if (canonical(entry.user) === identity(jj)) { names.push(entry.name); delete entry.name; } });
+        saved.csvAliases = unique(array(saved.csvAliases).concat(names));
+        saved.alias = "JJ";
+        array(data.standings).forEach(function (row) { if (canonical(row.username) === identity(jj)) row.name = "JJ"; });
+        array(data.race && data.race.drivers).forEach(function (driver) { if (canonical(driver.id) === identity(jj)) driver.name = "JJ"; });
+      }
+      drivers.displayNameVersion = 1;
+    }
+    // Earlier roster updates could omit a CSV name when an entry relied on its
+    // profile name. Repair saved data and drafts without rebuilding the roster
+    // or changing any points, car numbers, position changes or manual ordering.
+    array(data.standings).forEach(function (row) {
+      if (hasName(row.name)) return;
+      var user = canonical(row.username);
+      if (!user) return;
+      var previous = array(drivers.previousRoster && drivers.previousRoster.standings).find(function (saved) { return saved.division === row.division && canonical(saved.username) === user && hasName(saved.name); });
+      var source = row.division === "d1" ? array(drivers.teams).flatMap(function (team) { return array(team.entries).concat(array(team.pendingDrivers)); }) : row.division === "open" ? array(drivers.openEntries) : [];
+      var entry = source.find(function (entry) { return canonical(entry.user) === user; });
+      var profileKey = Object.keys(profiles).find(function (key) { return canonical(key) === user; });
+      var archived = array(data.race && data.race.drivers).find(function (driver) { return driver.division === row.division && canonical(driver.id) === user && hasName(driver.name); });
+      var names = [previous && previous.name, entry && entry.name, row.division === "d2" && archived && archived.name, profileKey && profiles[profileKey].alias, archived && archived.name, text(row.username)];
+      row.name = names.find(hasName) || text(row.username);
+    });
+    return data;
+  }
 
   // The league's supplied D1 roster. Open Series and historical race numbers are
   // independent of this list. Missing owners and TBD numbers remain unassigned.
@@ -32,7 +66,7 @@
       ["24", "John_Hunter38", "John Hunter", "John"],
       ["25", "JamesEklund", "James Eklund", "James Eklund"],
       ["28", "Aokikoto", "Hailey Waggonner", "Hailey"],
-      ["84", "JJElliott2004", "JJ Whitlock", "James"]
+      ["84", "JJElliott2004", "JJ Whitlock", "JJ"]
     ] },
     { id: "goforth", name: "Goforth Motorsports", make: "Ford", entries: [
       ["1", "", "", "", "Open FT"],
@@ -53,7 +87,8 @@
   ];
 
   function apply(data) {
-    if (!data || !data.drivers || Number(data.drivers.assignmentVersion) >= 1) return data;
+    if (!data || !data.drivers) return data;
+    if (Number(data.drivers.assignmentVersion) >= 1) return presentation(data);
     var drivers = data.drivers, profiles = drivers.profiles || (drivers.profiles = {});
     var oldTeams = clone(array(drivers.teams)), oldProfiles = clone(profiles), oldFreeAgents = clone(array(drivers.freeAgents));
     var userMap = {}, members = {}, active = new Set(), activeNames = new Map();
@@ -158,12 +193,15 @@
       row.id = row.division + ":" + identity(row.username);
       var team = row.division === "d1" && drivers.teams.find(function (team) { return team.entries.some(function (entry) { return identity(entry.user) === identity(row.username); }); });
       var entry = team && team.entries.find(function (entry) { return identity(entry.user) === identity(row.username); });
-      if (entry) { row.name = entry.name; row.number = entry.number; }
+      if (entry) {
+        if (!row.nameManual || !hasName(row.name)) row.name = text(entry.name) || text((profiles[entry.user] || {}).alias) || text(row.name) || entry.user;
+        row.number = entry.number;
+      }
       if (!correctionMap.has(row.id) || wasCanonical) correctionMap.set(row.id, row);
     });
     if (Array.isArray(data.standings)) data.standings = Array.from(correctionMap.values());
     drivers.assignmentVersion = 1;
-    return data;
+    return presentation(data);
   }
 
   root.UARLCurrentRoster = { apply: apply };
