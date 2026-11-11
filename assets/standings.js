@@ -6,6 +6,11 @@
   function array(value) { return Array.isArray(value) ? value : []; }
   function number(value) { var n = Number(value); return Number.isFinite(n) ? n : 0; }
   function hasName(value) { return typeof value === "string" && text(value) && !/^(undefined|null)$/i.test(text(value)); }
+  function account(data, user) { return root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, user) : user; }
+  function lookup(data, entry) {
+    var user = entry && (entry.username || entry.user || entry.driverId || entry.id);
+    return user ? Object.assign({}, entry, { username: account(data, user) }) : entry;
+  }
   function username(data, row) {
     data = data || {}; row = row || {};
     var user = text(row.username || row.user || row.driverId || row.id);
@@ -38,7 +43,7 @@
     return array(data.records).filter(function (record) { return record.division === division && record.pointsEvent !== false && !record.exhibition; });
   }
   function roster(data, division, records) {
-    var all = array(data.race && data.race.drivers), rows = [];
+    var all = array(data.race && data.race.drivers).map(function (driver) { return Object.assign({}, driver, { id: account(data, driver.id) }); }), rows = [];
     if (root.UARLResultDrivers && division !== "d2") root.UARLResultDrivers.pool(data, { division: division }).forEach(function (entry) {
       if (!entry.user) return;
       if (all.some(function (driver) { return driver.division === division && identity(driver.id) === identity(entry.user); })) {
@@ -50,14 +55,14 @@
     });
     if (division !== "d2") records.forEach(function (record) {
       array(record.finishes).forEach(function (finish) {
-        if (matchingDriver(rows, finish)) return;
-        var known = matchingDriver(all, finish), id = finish.username || finish.user || finish.driverId || (known && known.id) || ("guest:" + division + ":" + identity(finish.name || finish.number));
+        if (matchingDriver(rows, lookup(data, finish))) return;
+        var known = matchingDriver(all, lookup(data, finish)), id = account(data, finish.username || finish.user || finish.driverId || (known && known.id)) || ("guest:" + division + ":" + identity(finish.name || finish.number));
         rows.push({ id: id, name: finish.name || (known && known.name) || id, number: text(finish.number || (known && known.number)), division: division, team: finish.team || (known && known.team) || "Independent entry", make: finish.make || (known && known.make) || "Unlisted", careerWins: known ? known.careerWins : 0, careerTitles: known ? known.careerTitles : 0, careerRank: known ? known.careerRank : 0 });
       });
     });
     // Keep imported totals for former entrants, even if their roster seat changes.
     if (division !== "d2") array(data.standings).filter(function (row) { return row.division === division; }).forEach(function (saved) {
-      if (!matchingDriver(rows, saved)) rows.push({ id: saved.username, name: saved.name, number: saved.number, division: division, team: "Independent entry", make: "Unlisted", careerWins: 0, careerTitles: 0, careerRank: 0 });
+      if (!matchingDriver(rows, lookup(data, saved))) rows.push({ id: account(data, saved.username), name: saved.name, number: saved.number, division: division, team: "Independent entry", make: "Unlisted", careerWins: 0, careerTitles: 0, careerRank: 0 });
     });
     return rows;
   }
@@ -68,7 +73,7 @@
     });
     records.forEach(function (record) {
       array(record.finishes).forEach(function (finish) {
-        var row = matchingDriver(rows, finish);
+        var row = matchingDriver(rows, lookup(data, finish));
         if (!row) return;
         var position = number(finish.finish || finish.position);
         row.rawPoints += number(finish.points) + number(finish.stagePoints);
@@ -85,7 +90,7 @@
       });
     });
     rows.forEach(function (row) {
-      var saved = corrections.find(function (entry) { return identity(entry.username) === identity(row.id); });
+      var saved = corrections.find(function (entry) { return identity(entry.username) === identity(row.id); }) || corrections.find(function (entry) { return identity(account(data, entry.username)) === identity(row.id); });
       row.correction = saved || null;
       row.points = row.rawPoints + number(saved && saved.pointsAdjustment);
       if (saved && saved.nameManual && hasName(saved.name)) row.name = saved.name;
