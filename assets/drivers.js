@@ -89,9 +89,8 @@
     }
 
     return '<article class="pp-team pp-team-stage'+brand+'" data-make="'+esc(t.make)+'">'+
-      '<div class="pp-stage-head"><div class="pp-stage-copy"><h3>'+esc(t.name)+'</h3><div class="pp-stage-meta">'+manufacturerMark(t.make)+'<span>'+esc(t.owner?'Owner · '+t.owner:'Owner not listed')+'</span></div></div>'+logo+'</div>'+
+      '<div class="pp-stage-head"><div class="pp-stage-copy"><h3>'+esc(t.name)+'</h3><div class="pp-stage-meta">'+manufacturerMark(t.make)+'<span>'+esc(t.owner?'Owner · '+t.owner:'Owner not listed')+'</span></div><div class="pp-stage-status"><b>'+signed+' signed</b>'+(open?'<b class="has-open">'+open+' open FT</b>':'')+'</div></div>'+logo+'</div>'+
       '<div class="pp-stage-roster">'+regular.map(stageEntry).join('')+'</div>'+
-      '<div class="pp-stage-actions"><div class="pp-stage-status"><b>'+signed+' signed</b>'+(open?'<b class="has-open">'+open+' open FT</b>':'')+'</div><button class="pp-action" type="button" data-team="'+esc(t.id)+'" aria-label="Open '+esc(t.name)+' team details">Team details <span aria-hidden="true">↗</span></button></div>'+
     '</article>';
   }
   function driverRecord(t,e){var p=e.user?profile(e.user):{alias:e.name,wins:0,championships:0,rank:0};return {team:t,entry:rosterEntry(e),name:displayEntry(e),user:e.user||'',profile:p,make:t.make};}
