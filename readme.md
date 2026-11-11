@@ -168,6 +168,8 @@ Admin entry forms now use sections and expandable row cards. Adding a result sel
 
 ### Driver names and artwork
 
+Aetherwing eMotorsports returns as a Chevrolet team with Will (`Raceartstudios`) in #33 and open #42/#43 seats. The additive return also applies to previously published data and browser drafts once, retaining the team's official branding and existing drivers' points, artwork, and histories. Later admin roster edits are preserved.
+
 Roster entries use Public display name first, then the name saved under Driver Profiles, and finally the Roblox username. The Roblox username stays separate for results and career statistics. Names entered while adding a driver to a new team are preserved when switching fields.
 
 Owners and Admins can upload Number art and Signature logo under each team entry (including pending drivers), Open Series entry, or Driver Profile. Profile artwork is reused across team moves; an individual roster upload overrides it. Uploads accept PNG, JPEG and WebP, resize to a maximum 1600 pixels on the longest side, preserve transparency and reduce the encoded image below 2 MiB before sending it. This works within Netlify's request limits rather than removing provider limits. Uploaded images use persistent Netlify Blobs and become attached to public rosters when the draft is published. Removing an image from a draft does not delete files still referenced by published data.

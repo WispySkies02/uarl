@@ -1118,6 +1118,39 @@
             "charterType": ""
           }
         ]
+      },
+      {
+        "id": "aetherwing",
+        "name": "Aetherwing eMotorsports",
+        "owner": "Wispy",
+        "make": "Chevrolet",
+        "note": "A multi-series online racing organization built around sharp identity, clean execution, sponsor-first presentation, and a growing 2026 competition footprint.",
+        "logo": "/assets/aetherwing/logo.webp",
+        "brandColor": "#ef1e23",
+        "brandColor2": "#ffffff",
+        "entries": [
+          {
+            "number": "33",
+            "user": "Raceartstudios",
+            "status": "Signed"
+          },
+          {
+            "number": "42",
+            "name": "OPEN",
+            "status": "Open FT",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          },
+          {
+            "number": "43",
+            "name": "OPEN",
+            "status": "Open FT",
+            "seatType": "Full-Time",
+            "charterType": "FT"
+          }
+        ],
+        "pendingDrivers": [],
+        "founded": "Season 3"
       }
     ],
     "profiles": {
@@ -1527,6 +1560,21 @@
         ],
         "number": "11",
         "rank": 0
+      },
+      "Raceartstudios": {
+        "alias": "Will",
+        "csvAliases": [
+          "Will",
+          "Raceartstudios"
+        ],
+        "csvDivisions": [
+          "d1"
+        ],
+        "currentUsername": "Raceartstudios",
+        "wins": 0,
+        "championships": 0,
+        "rank": 0,
+        "number": "33"
       }
     },
     "openEntries": [
@@ -2266,7 +2314,8 @@
       ]
     },
     "assignmentVersion": 1,
-    "displayNameVersion": 1
+    "displayNameVersion": 1,
+    "aetherwingReturnVersion": 1
   },
   "history": {
     "updated": "2026-09-12",
@@ -3568,6 +3617,18 @@
         "careerTitles": 0,
         "careerRank": 0,
         "status": "Registered"
+      },
+      {
+        "id": "Raceartstudios",
+        "name": "Will",
+        "number": "33",
+        "division": "d1",
+        "team": "Aetherwing eMotorsports",
+        "make": "Chevrolet",
+        "careerWins": 0,
+        "careerTitles": 0,
+        "careerRank": 0,
+        "status": "Signed"
       },
       {
         "id": "Callsign_Hestia",

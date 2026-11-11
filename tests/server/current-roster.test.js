@@ -13,7 +13,7 @@ const roster = globalThis.UARLResultDrivers, current = globalThis.UARLCurrentRos
 function previous() {
   const data = structuredClone(original), saved = data.drivers.previousRoster;
   Object.assign(data.drivers, { teams: structuredClone(saved.teams), profiles: structuredClone(saved.profiles), freeAgents: structuredClone(saved.freeAgents), recentMoves: structuredClone(saved.recentMoves) });
-  data.standings = structuredClone(saved.standings); delete data.drivers.previousRoster; delete data.drivers.assignmentVersion; delete data.drivers.displayNameVersion;
+  data.standings = structuredClone(saved.standings); delete data.drivers.previousRoster; delete data.drivers.assignmentVersion; delete data.drivers.displayNameVersion; delete data.drivers.aetherwingReturnVersion;
   data.records = [];
   return data;
 }
@@ -23,13 +23,13 @@ function normalize(data, helpers = roster) {
   return context.window.UARLData.normalize(data);
 }
 
-test('the seven teams and twenty drivers match the supplied current roster and manufacturers', () => {
+test('the eight teams and twenty-one drivers match the supplied current roster and manufacturers', () => {
   const data = previous(); current.apply(data);
   assert.deepEqual(data.drivers.teams.map(team => [team.name, team.make]), [
-    ['Dakota Sullivan Racing', 'Chevrolet'], ['Avery Motorsports', 'Ford'], ['Goat Whitlock Motorsports', 'Toyota'], ['Goforth Motorsports', 'Ford'], ['Team Penske', 'Ford'], ['Sham Motorsports', 'Ford'], ['Winston-Hermonstyne Motorsports', 'Toyota']
+    ['Dakota Sullivan Racing', 'Chevrolet'], ['Avery Motorsports', 'Ford'], ['Goat Whitlock Motorsports', 'Toyota'], ['Goforth Motorsports', 'Ford'], ['Team Penske', 'Ford'], ['Sham Motorsports', 'Ford'], ['Winston-Hermonstyne Motorsports', 'Toyota'], ['Aetherwing eMotorsports', 'Chevrolet']
   ]);
   const entries = data.drivers.teams.flatMap(team => team.entries.filter(entry => entry.user).map(entry => ({ ...entry, team: team.name })));
-  assert.equal(entries.length, 20); assert.equal(new Set(entries.map(entry => entry.user.toLowerCase())).size, 20);
+  assert.equal(entries.length, 21); assert.equal(new Set(entries.map(entry => entry.user.toLowerCase())).size, 21);
   for (const [user, number, team] of [['Frogboy4783', '5', 'Avery Motorsports'], ['pa05', '05', 'Avery Motorsports'], ['GuillermoChase', '81', 'Goforth Motorsports'], ['IIKyle5Larson', '22', 'Team Penske'], ['AnyGameAnyTime09', '2', 'Sham Motorsports'], ['Aokikoto', '28', 'Goat Whitlock Motorsports'], ['JamesEklund', '25', 'Goat Whitlock Motorsports'], ['JJElliott2004', '84', 'Goat Whitlock Motorsports'], ['OPTBlitzCC4589', '91', 'Dakota Sullivan Racing'], ['NoodlesLuv2011', '11', 'Winston-Hermonstyne Motorsports']]) assert.equal(entries.find(entry => entry.user === user)?.team + ':' + entries.find(entry => entry.user === user)?.number, team + ':' + number);
   assert.equal(data.drivers.teams.flatMap(team => team.entries).filter(entry => entry.status === 'Pending').length, 3);
   assert.ok(roster.pool(data, { division: 'd1' }).every(driver => !/^(TBD|OPEN|PART TIME)$/i.test(driver.name)));

@@ -9,7 +9,83 @@
   function teamKey(value) { return identity(value).replace(/[^a-z0-9]/g, ""); }
   function set(object, key, value) { Object.defineProperty(object, key, { value: value, enumerable: true, configurable: true, writable: true }); }
   function hasName(value) { return typeof value === "string" && text(value) && !/^(undefined|null)$/i.test(text(value)); }
+  function returnAetherwing(data) {
+    var drivers = data.drivers;
+    if (Number(drivers.aetherwingReturnVersion) >= 1) return;
+    var profiles = drivers.profiles || (drivers.profiles = {});
+    var current = drivers.teams || (drivers.teams = []);
+    function canonical(user) { return identity(root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, user) : user); }
+    var team = current.find(function (team) { return team.id === "aetherwing" || teamKey(team.name) === "aetherwingemotorsports"; });
+    if (!team) {
+      var previous = array(drivers.previousRoster && drivers.previousRoster.teams).find(function (team) { return team.id === "aetherwing"; }) || {};
+      team = { id: "aetherwing", name: "Aetherwing eMotorsports", owner: "", make: "Chevrolet", note: "", logo: "/assets/aetherwing/logo.webp", brandColor: "#ef1e23", brandColor2: "#ffffff", entries: [], pendingDrivers: [] };
+      // Restore the identity, not the retired Toyota lineup or charter counts.
+      ["owner", "ownerNote", "note", "founded", "logo", "brandColor", "brandColor2"].forEach(function (key) { if (Object.hasOwn(previous, key)) team[key] = previous[key]; });
+      current.push(team);
+    }
+    team.make = "Chevrolet";
+    if (!Array.isArray(team.entries)) team.entries = [];
+    function open(number) { return { number: number, name: "OPEN", status: "Open FT", seatType: "Full-Time", charterType: "FT" }; }
+    var user = root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, "Raceartstudios") : "Raceartstudios";
+    var key = Object.keys(profiles).find(function (key) { return identity(key) === identity(user); }) || user;
+    var existing = [];
+    current.forEach(function (owner) { ["entries", "pendingDrivers"].forEach(function (field) {
+      array(owner[field]).forEach(function (entry, index) { if (entry.user && canonical(entry.user) === identity(key)) existing.push({ team: owner, field: field, index: index, entry: entry }); });
+    }); });
+    var member = existing.find(function (record) { return record.team === team; });
+    var slot = team.entries.find(function (entry) { return text(entry.number) === "33"; });
+    // A live team may already have been edited. Keep its occupied seats and any
+    // existing assignment for this account instead of replacing a modern roster.
+    var available = !member && (!slot || !slot.user && (!text(slot.name) || /^(open|tbd|vacant)$/i.test(text(slot.name))));
+    if (member || available) {
+      var saved = profiles[key] || {};
+      if (!text(saved.alias) || canonical(saved.alias) === identity(key)) saved.alias = "Will";
+      saved.csvAliases = unique(array(saved.csvAliases).concat("Will", "Raceartstudios"));
+      saved.csvDivisions = unique(array(saved.csvDivisions).concat("d1"));
+      if (text(saved.currentUsername) && identity(saved.currentUsername) !== "raceartstudios") saved.usernameAliases = unique(array(saved.usernameAliases).concat(saved.currentUsername));
+      saved.currentUsername = "Raceartstudios";
+      ["wins", "championships", "rank"].forEach(function (field) { if (saved[field] == null) saved[field] = 0; });
+      if (available) {
+        var prior = existing[0], entry = { number: "33", user: key, status: "Signed" };
+        if (prior) {
+          ["name", "signatureImage"].forEach(function (field) { if (Object.hasOwn(prior.entry, field)) entry[field] = prior.entry[field]; });
+          if (text(prior.entry.number) === "33" && prior.entry.numberImage) entry.numberImage = prior.entry.numberImage;
+        }
+        if (prior || saved.numberImage && text(saved.number) !== "33") {
+          drivers.aetherwingReturnBackup = { profile: clone(saved), entries: existing.map(function (record) { return { team: record.team.id, field: record.field, entry: clone(record.entry) }; }) };
+        }
+        if (saved.numberImage && text(saved.number) !== "33") {
+          // An Open Series entry may still use the old number and its artwork.
+          array(drivers.openEntries).forEach(function (openEntry) { if (canonical(openEntry.user) === identity(key) && text(openEntry.number) === text(saved.number) && !openEntry.numberImage) openEntry.numberImage = saved.numberImage; });
+          delete saved.numberImage;
+        }
+        existing.forEach(function (record) {
+          if (record.field === "pendingDrivers") record.team.pendingDrivers = record.team.pendingDrivers.filter(function (candidate) { return candidate !== record.entry; });
+          else {
+            var seatType = text(record.entry.seatType || record.entry.charterType || record.entry.status);
+            var status = /part|^pt$/i.test(seatType) ? "Open PT" : /development|^dev$/i.test(seatType) ? "Open Development" : /shared/i.test(seatType) ? "Open Shared" : "Open FT";
+            var vacant = Object.assign({}, record.entry, { name: "OPEN", status: status });
+            ["user", "username", "driverId", "numberImage", "signatureImage", "signedAt", "recent", "numberPending"].forEach(function (field) { delete vacant[field]; });
+            record.team.entries[record.index] = vacant;
+          }
+        });
+        if (slot) {
+          var seat = Object.assign({}, slot);
+          ["user", "username", "driverId", "name", "numberImage", "signatureImage", "signedAt", "recent", "numberPending"].forEach(function (field) { delete seat[field]; });
+          team.entries[team.entries.indexOf(slot)] = Object.assign(seat, entry);
+        }
+        else team.entries.push(entry);
+        saved.number = "33";
+      }
+      if (member && !text(saved.number)) saved.number = text(member.entry.number);
+      set(profiles, key, saved);
+      drivers.freeAgents = array(drivers.freeAgents).filter(function (entry) { return canonical(entry.user || entry.username) !== identity(key); });
+    }
+    ["33", "42", "43"].forEach(function (number) { if (!team.entries.some(function (entry) { return text(entry.number) === number; })) team.entries.push(open(number)); });
+    drivers.aetherwingReturnVersion = 1;
+  }
   function presentation(data) {
+    returnAetherwing(data);
     var drivers = data.drivers, profiles = drivers.profiles || {};
     function canonical(user) { return identity(root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, user) : user); }
     var entries = array(drivers.teams).flatMap(function (team) { return array(team.entries).concat(array(team.pendingDrivers)); }).concat(array(drivers.openEntries));

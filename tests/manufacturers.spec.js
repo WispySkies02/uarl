@@ -6,30 +6,30 @@ const expected = [
   ['Dakota Sullivan Racing', 'Chevrolet', 5], ['Avery Motorsports', 'Ford', 4],
   ['Goat Whitlock Motorsports', 'Toyota', 5], ['Goforth Motorsports', 'Ford', 3],
   ['Team Penske', 'Ford', 1], ['Sham Motorsports', 'Ford', 1],
-  ['Winston-Hermonstyne Motorsports', 'Toyota', 1]
+  ['Winston-Hermonstyne Motorsports', 'Toyota', 1], ['Aetherwing eMotorsports', 'Chevrolet', 1]
 ];
 async function boot(page, data = original, path = '/drivers/') {
   await page.route('**/.netlify/functions/admin-publish**', route => route.fulfill({ json: { data } }));
   await page.goto(path);
-  await expect(page.locator('[data-team-grid] .pp-team-stage')).toHaveCount(7);
+  await expect(page.locator('[data-team-grid] .pp-team-stage')).toHaveCount(8);
 }
 const driver = (page, user, scope = '[data-driver-grid]') => page.locator(scope + ' .pp-driver').filter({ has: page.locator('[data-driver="' + user + '"]') });
 
 test('grouped team rosters show one manufacturer in the header while individual driver cards keep their badges', async ({ page }) => {
   await boot(page);
-  await expect(page.locator('.pp-stats .pp-stat b')).toHaveText(['7', '20', '2', String(original.drivers.freeAgents.length)]);
+  await expect(page.locator('.pp-stats .pp-stat b')).toHaveText(['8', '21', '4', String(original.drivers.freeAgents.length)]);
   for (const [name, make, count] of expected) {
     const team = page.locator('.pp-team-stage').filter({ has: page.locator('h3', { hasText: name }) });
     await expect(team.locator('.pp-stage-person small')).toHaveCount(count);
     await expect(team.locator('.pp-stage-entry .pp-driver-mfg')).toHaveCount(0);
     await expect(team.getByRole('img', { name: make + ' manufacturer', exact: true })).toHaveCount(1);
   }
-  await expect(page.locator('.pp-stage-entry.is-open')).toHaveCount(4);
+  await expect(page.locator('.pp-stage-entry.is-open')).toHaveCount(6);
   await expect(page.locator('.pp-stage-entry.is-open .pp-entry-manufacturer')).toHaveCount(0);
   await expect(page.locator('.pp-number-pending')).toHaveCount(3);
   await page.locator('[data-view="drivers"]').click();
-  await expect(page.locator('[data-driver-grid] .pp-driver')).toHaveCount(20);
-  await expect(page.locator('[data-driver-grid] .pp-driver-mfg')).toHaveCount(20);
+  await expect(page.locator('[data-driver-grid] .pp-driver')).toHaveCount(21);
+  await expect(page.locator('[data-driver-grid] .pp-driver-mfg')).toHaveCount(21);
   for (const user of ['IIKyle5Larson', 'AnyGameAnyTime09', 'Kingofgamez']) await expect(driver(page, user).getByRole('img', { name: 'Ford manufacturer' })).toHaveCount(1);
   await expect(driver(page, 'JamesEklund').locator('.pp-driver-number')).toHaveText('#25');
   await expect(driver(page, 'JJElliott2004').locator('.pp-driver-number')).toHaveText('#84');
@@ -84,6 +84,7 @@ test('the roster upgrades saved data once, keeps signatures, and its badges fit 
   Object.assign(data.drivers, { teams: saved.teams, profiles: saved.profiles, freeAgents: saved.freeAgents, recentMoves: saved.recentMoves });
   delete data.drivers.assignmentVersion; delete data.drivers.previousRoster;
   delete data.drivers.displayNameVersion;
+  delete data.drivers.aetherwingReturnVersion;
   data.drivers.profiles.Aokikoto.signatureImage = '/assets/aetherwing/logo.webp';
   await boot(page, data);
   const hailey = page.locator('.pp-team-stage').filter({ has: page.locator('h3', { hasText: 'Goat Whitlock Motorsports' }) }).locator('.pp-stage-entry').filter({ hasText: 'Aokikoto' });
