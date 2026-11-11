@@ -46,6 +46,26 @@ for (const width of [320, 390, 541, 720, 721, 1440, 1920]) {
     })));
     expect(drivers).toEqual(expectedDrivers);
 
+    for (const [user, username] of [['AnyGameAnyTime09', 'Muffin'], ['Kingofgamez', 'kingofgamez_YT']]) {
+      const row = page.locator('[data-rc-standings-body] [data-driver-id="' + user + '"]');
+      const handle = row.locator('.standings-username');
+      await expect(handle).toBeVisible();
+      await expect(handle).toHaveText('@' + username);
+      const placement = await row.locator('.standings-driver-label').evaluate(label => {
+        const name = label.querySelector('strong'), username = label.querySelector('.standings-username');
+        return {
+          nameBottom: name.getBoundingClientRect().bottom,
+          usernameTop: username.getBoundingClientRect().top,
+          nameFont: parseFloat(getComputedStyle(name).fontSize),
+          usernameFont: parseFloat(getComputedStyle(username).fontSize),
+          content: username.scrollWidth, available: username.clientWidth
+        };
+      });
+      expect(placement.usernameTop).toBeGreaterThanOrEqual(placement.nameBottom - 0.5);
+      expect(placement.usernameFont).toBeLessThan(placement.nameFont);
+      expect(placement.content).toBeLessThanOrEqual(placement.available + 1);
+    }
+
     const geometry = await rows.evaluateAll(entries => entries.map(row => {
       const badge = row.querySelector('.manufacturer-badge').getBoundingClientRect();
       return { height: row.getBoundingClientRect().height, badgeCenter: badge.x + badge.width / 2 };
@@ -73,6 +93,11 @@ for (const width of [320, 390, 541, 720, 721, 1440, 1920]) {
     }
 
     const beforeSearch = await columnSizes(page);
+    await page.locator('.rc-search').fill('@kingofgamez_YT');
+    await expect(rows).toHaveCount(1);
+    await expect(rows.first()).toHaveAttribute('data-driver-id', 'Kingofgamez');
+    await expect(rows.first().locator('.rc-position-value')).toHaveText('8');
+    await expect(rows.first().locator('.rc-points-value')).toHaveText('92');
     await page.locator('.rc-search').fill('JJ');
     await expect(rows).toHaveCount(1);
     const afterSearch = await columnSizes(page);
@@ -103,6 +128,7 @@ for (const width of [320, 390, 541, 720, 721, 1440, 1920]) {
     const longName = 'LongUnbrokenDriverName'.repeat(8);
     data.standings[0].name = longName;
     data.standings[0].number = '00000005';
+    data.drivers.profiles.lancejuly.currentUsername = 'ABCDEFGHIJKLMNOPQRST';
     await page.reload();
     const leader = rows.first();
     await expect(leader.locator('.rc-driver-cell strong')).toHaveText(longName);
@@ -115,6 +141,11 @@ for (const width of [320, 390, 541, 720, 721, 1440, 1920]) {
     }));
     expect(nameSize.height).toBeGreaterThan(nameSize.fontSize * 1.5);
     expect(nameSize.content).toBeLessThanOrEqual(nameSize.available + 1);
+    const username = leader.locator('.standings-username');
+    await expect(username).toHaveText('@ABCDEFGHIJKLMNOPQRST');
+    const usernameSize = await username.evaluate(name => ({ height: name.getBoundingClientRect().height, line: parseFloat(getComputedStyle(name).lineHeight), content: name.scrollWidth, available: name.clientWidth }));
+    expect(usernameSize.content).toBeLessThanOrEqual(usernameSize.available + 1);
+    if (width <= 390) expect(usernameSize.height).toBeGreaterThan(usernameSize.line * 1.5);
     await expectNoOverflow(page);
   });
 }

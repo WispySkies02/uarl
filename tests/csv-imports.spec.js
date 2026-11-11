@@ -88,7 +88,7 @@ test('standings CSV previews exact five-column totals, preserves other divisions
   await page.locator('[data-standings-division="d1"]').click(); const before = await draft(page);
   const node = await previewCSV(page, 'standings', standingsHeader + '\n1,+2,019,Max,150\n2,-1,020,Hayden,140');
   await expect(node.locator('th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points']);
-  await expect(node.locator('tbody tr').first()).toHaveText('1▲ 2019Max150');
+  await expect(node.locator('tbody tr').first().locator('td')).toHaveText(['1', '▲ 2', '019', 'Max@MaxUser', '150']);
   expect(await draft(page)).toEqual(before);
   await node.locator('[data-csv-apply]').click();
   await expect(pointsRow(page, 'MaxUser').locator('[data-standings-points]')).toHaveValue('150');
@@ -263,7 +263,7 @@ test('the reported ten-driver CSV applies and publishes without race guests, pre
   expect(published[0].drivers.teams.find(team => team.id === 'sham').entries[0]).toMatchObject({ user: 'AnyGameAnyTime09', number: '2' });
   await page.goto('/race-center/');
   await expect(page.locator('[data-rc-standings-body] [data-driver-id="AnyGameAnyTime09"] .rc-points-value')).toHaveText('43');
-  await expect(page.locator('[data-rc-standings-body] [data-driver-id="Aokikoto"] .rc-driver-cell')).toHaveText('Hailey');
+  await expect(page.locator('[data-rc-standings-body] [data-driver-id="Aokikoto"] .rc-driver-cell strong')).toHaveText('Hailey');
   expect(errors).toEqual([]);
 });
 

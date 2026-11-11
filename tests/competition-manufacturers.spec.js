@@ -37,6 +37,7 @@ test('public standings show badges before the first race and throughout every se
   await expect(badge(standingsRow(page, 'JJElliott2004'), 'Chevrolet')).toBeVisible();
   await page.locator('[data-rc-division="d2"]').click();
   await expect(badge(standingsRow(page, 'AnyGameAnyTime09'), 'Toyota')).toBeVisible();
+  await expect(standingsRow(page, 'AnyGameAnyTime09').locator('.standings-username')).toHaveText('@Muffin');
 });
 
 test('official finish tables show the correct badges without altering numbers, points or archived manufacturers', async ({ page }) => {
@@ -63,13 +64,21 @@ test('CSV standings preview, manual points editing and the public points preview
   await page.locator('.admin-sidebar [data-section="standings"]').click();
   const row = page.locator('[data-standings-driver="AnyGameAnyTime09"]');
   await expect(badge(row, 'Ford')).toBeVisible();
+  await expect(row.locator('.standings-username')).toHaveText('@Muffin');
+  await page.locator('[data-standings-search]').fill('@kingofgamez_YT');
+  await expect(page.locator('[data-standings-driver]:visible')).toHaveCount(1);
+  await expect(page.locator('[data-standings-driver="Kingofgamez"] .standings-username')).toHaveText('@kingofgamez_YT');
+  await page.locator('[data-standings-search]').clear();
   const widget = page.locator('[data-csv-kind="standings"]');
   await widget.locator('[data-csv-input]').fill('Position,+/-,Driver#,DriverName,Points\n1,0,2,Muffin,100\n2,0,28,Hailey,90\n3,0,16,Dale,80');
   await widget.locator('[data-csv-preview-button]').click();
   await expect(widget.locator('.csv-errors')).toHaveCount(0);
   const preview = widget.locator('[data-csv-preview] tbody tr');
+  await expect(widget.locator('[data-csv-preview] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points']);
   await expect(badge(preview.first(), 'Ford')).toBeVisible();
   await expect(badge(preview.nth(1), 'Toyota')).toBeVisible();
+  await expect(preview.first().locator('.standings-username')).toHaveText('@Muffin');
+  await expect(preview.nth(1).locator('.standings-username')).toHaveText('@Aokikoto');
   await widget.locator('[data-csv-apply]').click();
   await expect(row.locator('[data-standings-points]')).toHaveValue('100');
   await row.locator('[data-standings-points]').fill('125'); await row.locator('[data-save-points]').click();
@@ -78,6 +87,7 @@ test('CSV standings preview, manual points editing and the public points preview
   const previewPage = await popup;
   await expect(badge(standingsRow(previewPage, 'AnyGameAnyTime09'), 'Ford')).toBeVisible();
   await expect(standingsRow(previewPage, 'AnyGameAnyTime09').locator('.rc-points-value')).toHaveText('125');
+  await expect(standingsRow(previewPage, 'AnyGameAnyTime09').locator('.standings-username')).toHaveText('@Muffin');
 });
 
 test('badges stay readable and proportional in phone and desktop standings and finish tables', async ({ page }) => {

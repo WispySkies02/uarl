@@ -6,6 +6,19 @@
   function array(value) { return Array.isArray(value) ? value : []; }
   function number(value) { var n = Number(value); return Number.isFinite(n) ? n : 0; }
   function hasName(value) { return typeof value === "string" && text(value) && !/^(undefined|null)$/i.test(text(value)); }
+  function username(data, row) {
+    data = data || {}; row = row || {};
+    var user = text(row.username || row.user || row.driverId || row.id);
+    if (!user) return "";
+    var canonical = root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, user) : user;
+    var profiles = data.drivers && data.drivers.profiles || {};
+    var key = Object.keys(profiles).find(function (key) { return identity(key) === identity(canonical); });
+    var current = text(key && profiles[key].currentUsername).replace(/^@/, "");
+    var valid = function (value) { return /^[A-Za-z0-9_]{3,20}$/.test(value) && !/^(undefined|null)$/i.test(value); };
+    if (valid(current)) return current;
+    canonical = text(canonical).replace(/^@/, "");
+    return valid(canonical) ? canonical : "";
+  }
   function key(division, username) { return division + ":" + identity(username); }
   function matchingDriver(rows, entry) {
     var id = identity(entry.username || entry.user || entry.driverId || entry.id), name = identity(entry.name), car = text(entry.number);
@@ -141,5 +154,5 @@
     });
     return errors;
   }
-  root.UARLStandings = { calculate: calculate, matchingDriver: matchingDriver, gapToLeader: gapToLeader, gapToCutoff: gapToCutoff, movement: movement, movementHTML: movementHTML, correction: correction, merge: merge, validate: validate };
+  root.UARLStandings = { calculate: calculate, username: username, matchingDriver: matchingDriver, gapToLeader: gapToLeader, gapToCutoff: gapToCutoff, movement: movement, movementHTML: movementHTML, correction: correction, merge: merge, validate: validate };
 })(typeof window !== "undefined" ? window : globalThis);
