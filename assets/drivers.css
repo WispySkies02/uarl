@@ -331,7 +331,7 @@
 #uarl-paddock-v2 .pp-stage-person strong {
   display: block;
   color: var(--pp-text);
-  font: 400 22px/1.15 "Smile Moon", "Barlow Condensed", Arial, sans-serif;
+  font: 700 22px/1.15 "Barlow Condensed", Arial, sans-serif;
   overflow-wrap: anywhere;
 }
 #uarl-paddock-v2 .pp-stage-person small {
@@ -470,7 +470,7 @@
 #uarl-paddock-v2 .pp-fa h3 {
   margin: 12px 0 0;
   color: var(--pp-text);
-  font: 400 25px/1.15 "Smile Moon", "Barlow Condensed", Arial, sans-serif;
+  font: 700 25px/1.15 "Barlow Condensed", Arial, sans-serif;
   overflow-wrap: anywhere;
 }
 #uarl-paddock-v2 .pp-driver .user,
@@ -555,7 +555,7 @@
 #uarl-paddock-v2 .pp-dialog-entry-top > div { min-width: 0; }
 #uarl-paddock-v2 .pp-dialog-entry .num,
 #uarl-paddock-v2 .pp-dialog-entry .pp-number-text-dialog { display: flex; align-items: center; justify-content: center; flex: 0 0 64px; width: 64px; min-height: 64px; font: italic 800 38px/1 "Barlow Condensed", Arial, sans-serif; }
-#uarl-paddock-v2 .pp-dialog-entry h4 { margin: 0; color: var(--pp-text); font: 400 23px/1.2 "Smile Moon", "Barlow Condensed", Arial, sans-serif; overflow-wrap: anywhere; }
+#uarl-paddock-v2 .pp-dialog-entry h4 { margin: 0; color: var(--pp-text); font: 700 23px/1.2 "Barlow Condensed", Arial, sans-serif; overflow-wrap: anywhere; }
 #uarl-paddock-v2 .pp-dialog-entry p { margin: 6px 0 0; color: var(--pp-muted); font-size: 11px; line-height: 1.5; overflow-wrap: anywhere; }
 #uarl-paddock-v2 .pp-dialog-entry .tag { display: inline-block; margin-top: 8px; padding: 4px 6px; border: 1px solid #3b4655; border-radius: 3px; color: #b6c2d0; font-size: 8px; font-weight: 700; line-height: 1.4; letter-spacing: .04em; text-transform: uppercase; }
 #uarl-paddock-v2 .pp-dialog-entry .tag.recent { border-color: #37617c; color: var(--pp-blue); }
@@ -569,7 +569,7 @@
 #uarl-paddock-v2 .pp-number-text-profile { display: flex; align-items: center; justify-content: center; min-height: 120px; color: var(--pp-blue); font: italic 800 76px/1 "Barlow Condensed", Arial, sans-serif; letter-spacing: -.04em; }
 #uarl-paddock-v2 .pp-upload-number-profile,
 #uarl-paddock-v2 .pp-aem-num-profile { width: 150px; height: 120px; }
-#uarl-paddock-v2 .pp-profile-name { margin: 0; color: var(--pp-text); font: 400 clamp(30px, 4vw, 42px)/1.15 "Smile Moon", "Barlow Condensed", Arial, sans-serif; overflow-wrap: anywhere; }
+#uarl-paddock-v2 .pp-profile-name { margin: 0; color: var(--pp-text); font: 700 clamp(30px, 4vw, 42px)/1.15 "Barlow Condensed", Arial, sans-serif; overflow-wrap: anywhere; }
 #uarl-paddock-v2 .pp-profile-user { margin: 10px 0 0; color: var(--pp-muted); font-size: 13px; line-height: 1.5; overflow-wrap: anywhere; }
 #uarl-paddock-v2 .pp-profile-affiliation { margin-top: 15px; }
 #uarl-paddock-v2 .pp-profile-affiliation p { margin: 0; color: #bec9d7; font-size: 12px; line-height: 1.6; }
