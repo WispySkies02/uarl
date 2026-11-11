@@ -24,7 +24,9 @@ test('grouped team rosters show one manufacturer in the header while individual 
     await expect(team.locator('.pp-stage-entry .pp-driver-mfg')).toHaveCount(0);
     await expect(team.getByRole('img', { name: make + ' manufacturer', exact: true })).toHaveCount(1);
   }
-  await expect(page.locator('.pp-stage-entry.is-open')).toHaveCount(6);
+  // The directory now marks the three unnumbered vacancies as open seats too.
+  await expect(page.locator('.pp-stage-entry.is-open')).toHaveCount(9);
+  await expect(page.locator('.pp-stage-entry.is-open .pp-stage-entry-link')).toHaveCount(0);
   await expect(page.locator('.pp-stage-entry.is-open .pp-entry-manufacturer')).toHaveCount(0);
   await expect(page.locator('.pp-number-pending')).toHaveCount(3);
   await page.locator('[data-view="drivers"]').click();
