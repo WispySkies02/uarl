@@ -19,8 +19,9 @@ async function boot(page, path = '/drivers/', configure) {
   return fixture;
 }
 
-test('the actual roster is visible near the first fold and stays within the screen on phones, tablets and desktop', async ({ page }) => {
+test('team lineups arrange drivers horizontally without extra team buttons or page overflow', async ({ page }) => {
   await boot(page);
+  await expect(page.locator('[data-team]')).toHaveCount(0);
   for (const width of [320, 390, 768, 1440]) {
     await page.setViewportSize({ width, height: 900 });
     await page.evaluate(() => window.scrollTo(0, 0));
@@ -34,11 +35,19 @@ test('the actual roster is visible near the first fold and stays within the scre
       expect(rowBounds.y + rowBounds.height).toBeLessThanOrEqual(navBounds.y);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
-    const positions = await teams(page).evaluateAll(nodes => nodes.slice(0, 2).map(node => ({ x: node.getBoundingClientRect().x, y: node.getBoundingClientRect().y })));
-    if (width === 1440) {
-      expect(positions[1].x).toBeGreaterThan(positions[0].x);
-      expect(Math.abs(positions[1].y - positions[0].y)).toBeLessThan(2);
-    }
+    const positions = await teams(page).evaluateAll(nodes => nodes.slice(0, 2).map(node => {
+      const bounds = node.getBoundingClientRect();
+      return { x: bounds.x, y: bounds.y, bottom: bounds.bottom };
+    }));
+    expect(Math.abs(positions[1].x - positions[0].x)).toBeLessThan(2);
+    expect(positions[1].y).toBeGreaterThanOrEqual(positions[0].bottom);
+    const lineup = teams(page).first().locator('.pp-stage-entry');
+    const first = await lineup.nth(0).boundingBox(), second = await lineup.nth(1).boundingBox();
+    expect(second.x).toBeGreaterThan(first.x);
+    expect(Math.abs(second.y - first.y)).toBeLessThan(2);
+    const number = await lineup.first().locator('.pp-stage-number').boundingBox();
+    const person = await lineup.first().locator('.pp-stage-person').boundingBox();
+    expect(person.y).toBeGreaterThanOrEqual(number.y + number.height);
     if (width === 390 || width === 1440) await page.screenshot({ path: 'test-results/roster-redesign-' + width + '.png' });
   }
   for (const team of await teams(page).all()) {
@@ -76,14 +85,18 @@ test('current usernames, manufacturer filters, result counts and resets work tog
   expect(after).toBe(before);
 });
 
-test('team and grouped-driver controls open their profiles by keyboard and dialogs contain focus until dismissed', async ({ page }) => {
+test('grouped-driver controls open profiles by keyboard and dialogs contain focus until dismissed', async ({ page }) => {
   await boot(page);
-  const teamButton = avery(page).locator('[data-team]').first();
-  await teamButton.focus();
+  const profileButton = avery(page).locator('.pp-stage-entry-link[data-driver="pa05"]');
+  await expect(profileButton).toHaveAttribute('data-number', '05');
+  await expect(avery(page).locator('.pp-stage-entry-link[data-driver="Frogboy4783"]')).toHaveAttribute('data-number', '5');
+  await profileButton.focus();
   await page.keyboard.press('Enter');
   const dialog = page.getByRole('dialog');
   await expect(dialog).toBeVisible();
-  await expect(page.locator('#pp-dialog-title')).toHaveText('Avery Motorsports');
+  await expect(page.locator('#pp-dialog-title')).toHaveText('Payson');
+  await expect(page.locator('.pp-profile-user')).toHaveText('@' + currentUsername);
+  await expect(page.locator('.pp-profile-number')).toHaveText('#05');
   expect(await page.locator('.pp-search').evaluate(node => Boolean(node.closest('[inert]')))).toBe(true);
   const controls = await dialog.locator('button, a[href], input, select, textarea, [tabindex="0"]').count();
   for (let i = 0; i < controls + 1; i++) {
@@ -94,19 +107,8 @@ test('team and grouped-driver controls open their profiles by keyboard and dialo
   expect(await page.evaluate(() => Boolean(document.activeElement.closest('[role="dialog"]')))).toBe(true);
   await page.keyboard.press('Escape');
   await expect(dialog).not.toBeVisible();
-  await expect(teamButton).toBeFocused();
-  expect(await page.locator('.pp-search').evaluate(node => Boolean(node.closest('[inert]')))).toBe(false);
-  const profileButton = avery(page).locator('.pp-stage-entry-link[data-driver="pa05"]');
-  await expect(profileButton).toHaveAttribute('data-number', '05');
-  await expect(avery(page).locator('.pp-stage-entry-link[data-driver="Frogboy4783"]')).toHaveAttribute('data-number', '5');
-  await profileButton.focus();
-  await page.keyboard.press('Enter');
-  await expect(dialog).toBeVisible();
-  await expect(page.locator('#pp-dialog-title')).toHaveText('Payson');
-  await expect(page.locator('.pp-profile-user')).toHaveText('@' + currentUsername);
-  await expect(page.locator('.pp-profile-number')).toHaveText('#05');
-  await page.keyboard.press('Escape');
   await expect(profileButton).toBeFocused();
+  expect(await page.locator('.pp-search').evaluate(node => Boolean(node.closest('[inert]')))).toBe(false);
 });
 
 test('mobile dialogs stay above site navigation and their visible close control remains clickable', async ({ page }) => {
