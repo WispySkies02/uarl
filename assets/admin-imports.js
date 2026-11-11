@@ -25,7 +25,10 @@
       return '<div class="csv-table-scroll" role="region" aria-label="' + esc(label) + '" tabindex="0"><table class="csv-table"><thead><tr>' + headers.map(function (header) { return '<th scope="col">' + esc(header) + '</th>'; }).join("") + '</tr></thead><tbody>' + rows.join("") + '</tbody></table></div>';
     }
     function cells(values) { return '<tr>' + values.map(function (value) { return '<td>' + esc(value == null ? "—" : value) + '</td>'; }).join("") + '</tr>'; }
-    function standingsDriver(row) { return '<div class="driver-with-manufacturer"><strong>' + esc(row.name) + '</strong>' + root.UARLManufacturerBadges.badge(row.make) + '</div>'; }
+    function standingsDriver(row, data) {
+      var username = standings.username(data, row);
+      return '<div class="driver-with-manufacturer"><div class="standings-driver-label"><strong>' + esc(row.name) + '</strong>' + (username ? '<small class="standings-username">@' + esc(username) + '</small>' : '') + '</div>' + root.UARLManufacturerBadges.badge(row.make) + '</div>';
+    }
     function previewHTML(kind, state) {
       var preview = state.preview;
       if (!preview) return '<p class="csv-message" role="status">' + esc(state.message) + '</p>';
@@ -38,7 +41,7 @@
         }), "Results CSV preview");
       } else {
         var data = normalized();
-        content = table(standingsLabels, preview.rows.map(function (row) { return '<tr><td>' + esc(row.position) + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
+        content = table(standingsLabels, preview.rows.map(function (row) { return '<tr><td>' + esc(row.position) + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row, data) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
       }
       return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + (kind === "results" ? preview.rows.length + ' finishers' : preview.entries.length + ' updated drivers') + '</h4>' + content + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.') + '</p><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div>';
     }
@@ -56,7 +59,8 @@
         var details = correction ? '<details class="standings-correction"><summary>Correction ' + (correction > 0 ? '+' : '') + correction + '</summary><p>Race points: ' + row.rawPoints + '</p><button type="button" class="standings-reset" data-reset-points>Use race points</button></details>' : '';
         var editable = bridge.canEditArtwork && bridge.canEditArtwork() && root.UARLStandingsArtwork.resolve(bridge.data(), division, row).target;
         var artwork = editable ? '<button type="button" class="button ghost standings-artwork-button" data-standings-artwork="' + esc(row.id) + '" aria-label="Number art for ' + esc(row.name) + '">Number art</button>' : '';
-        return '<tr data-standings-driver="' + esc(row.id) + '" data-standings-search-text="' + esc([row.name, row.id, row.number].join(' ')) + '"><td>' + row.position + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row) + artwork + '</td><td><div class="standings-points-control"><input type="number" step="1" data-standings-points data-before="' + row.points + '" value="' + row.points + '" aria-label="Points for ' + esc(row.name) + '"><button type="button" class="button ghost" data-save-points hidden disabled>Save</button></div>' + details + '</td></tr>';
+        var username = standings.username(data, row);
+        return '<tr data-standings-driver="' + esc(row.id) + '" data-standings-search-text="' + esc([row.name, row.id, row.number, username, '@' + username].join(' ')) + '"><td>' + row.position + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row, data) + artwork + '</td><td><div class="standings-points-control"><input type="number" step="1" data-standings-points data-before="' + row.points + '" value="' + row.points + '" aria-label="Points for ' + esc(row.name) + '"><button type="button" class="button ghost" data-save-points hidden disabled>Save</button></div>' + details + '</td></tr>';
       });
       return bridge.header({ title: "Standings", kicker: "Race Center", description: "Import a points table or correct a driver’s total. Race results continue to update these totals automatically." }) + '<div class="standings-editor"><nav class="standings-divisions" aria-label="Standings division">' + [["d1", "D1 · Cup"], ["open", "Open Series"], ["d2", "D2 · Archive"]].map(function (pair) { return '<button class="button ' + (pair[0] === division ? '' : 'ghost') + '" type="button" data-standings-division="' + pair[0] + '" ' + (pair[0] === division ? 'aria-current="page"' : '') + '>' + pair[1] + '</button>'; }).join("") + '</nav>' + widget("standings") + '<section class="standings-manual"><header><div><h2>Points table</h2><p>Change a total and press Save. It stays in your draft until you publish.</p></div><label>Find a driver<input type="search" data-standings-search placeholder="Name or car number"></label></header>' + (rows.length ? table(standingsLabels, body, "Edit standings points") : '<p class="editor-empty">Add drivers to this division or enter its first race results to start the standings.</p>') + '</section></div>';
     }

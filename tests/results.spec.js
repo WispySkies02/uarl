@@ -178,6 +178,8 @@ test('quick race entry adds participants together, reorders finishes, and keeps 
 
 test('public standings keep distinct known and non-roster identities with the same name separate, without laps-led tracking', async ({page})=>{
  const data=league();
+ data.drivers.profiles.JordanA.currentUsername='JordanRed';
+ data.drivers.profiles.JordanB.currentUsername='JordanBlue';
  data.records=[result({status:'complete',finishes:[
   {position:1,name:'Jordan',username:'JordanA',number:'23',points:50,stagePoints:0},
   {position:2,name:'Jordan',username:'JordanB',number:'24',points:45,stagePoints:0},
@@ -186,15 +188,41 @@ test('public standings keep distinct known and non-roster identities with the sa
  await page.route('**/.netlify/functions/admin-publish**',route=>route.fulfill({json:{data}}));
  await page.goto('/race-center/');
  const rows=page.locator('[data-rc-standings-body] tr[data-driver-id]');
- for(const [user,points] of [['JordanA','50'],['JordanB','45'],['JordanOutside','42']]){
+ for(const [user,points,username] of [['JordanA','50','JordanRed'],['JordanB','45','JordanBlue'],['JordanOutside','42','JordanOutside']]){
   const row=rows.and(page.locator('[data-driver-id="'+user+'"]'));
   await expect(row).toHaveCount(1);await expect(row.locator('.rc-points-value')).toHaveText(points);
+  await expect(row.locator('.standings-username')).toHaveText('@'+username);
  }
  await expect(rows.locator('.rc-driver-cell strong').filter({hasText:/^Jordan$/})).toHaveCount(3);
  await expect(page.locator('[data-rc-stat="lapsLed"]')).toHaveCount(0);
  const headings=await page.locator('[data-rc-panel="standings"] th').allTextContents();
  expect(headings.some(text=>/^LL$|laps led/i.test(text.trim()))).toBe(false);
  await expect(page.locator('[data-rc-compare-rows]')).not.toContainText('Laps led');
+ await page.locator('.rc-search').fill('@JordanBlue');
+ await expect(rows).toHaveCount(1);
+ await expect(rows.first()).toHaveAttribute('data-driver-id','JordanB');
+ await expect(rows.first().locator('.rc-position-value')).toHaveText('2');
+ await expect(rows.first().locator('.rc-points-value')).toHaveText('45');
+});
+
+test('point standings hide generated guest identities instead of guessing usernames from names or car numbers', async ({page})=>{
+ const data=league();
+ data.records=[result({status:'complete',finishes:[
+  {position:1,name:'Jordan',username:'JordanA',number:'23',points:50,stagePoints:0},
+  {position:2,name:'Guest Driver',number:'23',points:45,stagePoints:0},
+  {position:3,name:'Legacy Guest',username:'guest:d1:opaque',number:'24',points:40,stagePoints:0}
+ ]})];
+ await page.route('**/.netlify/functions/admin-publish**',route=>route.fulfill({json:{data}}));
+ await page.goto('/race-center/');
+ const rows=page.locator('[data-rc-standings-body] tr[data-driver-id]');
+ await expect(rows.filter({has:page.locator('.rc-driver-cell strong',{hasText:/^Jordan$/})}).first().locator('.standings-username')).toHaveText('@JordanA');
+ for(const [name,points] of [['Guest Driver','45'],['Legacy Guest','40']]){
+  const guest=rows.filter({has:page.locator('.rc-driver-cell strong',{hasText:new RegExp('^'+name+'$')})});
+  await expect(guest).toHaveCount(1);
+  await expect(guest.locator('.standings-username')).toHaveCount(0);
+  await expect(guest.locator('.rc-points-value')).toHaveText(points);
+  await expect(guest.locator('.rc-driver-cell')).not.toContainText('guest:');
+ }
 });
 
 test('name-only drivers can earn a bonus and an intentionally blank manual number stays blank after recovery', async ({page})=>{
