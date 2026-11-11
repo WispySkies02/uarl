@@ -86,7 +86,44 @@
   }
   function register(data) {
     data = registerNumbers(data);
-    return root.UARLCurrentRoster ? root.UARLCurrentRoster.apply(data) : data;
+    data = root.UARLCurrentRoster ? root.UARLCurrentRoster.apply(data) : data;
+    repairJJUsername(data);
+    // Roster membership uses the permanent account, while currentUsername is a label.
+    var drivers = data.drivers;
+    (drivers.teams || []).forEach(function (team) { (team.entries || []).concat(team.pendingDrivers || []).forEach(function (entry) { if (entry.user) entry.user = canonicalUser(data, entry.user); }); });
+    (drivers.openEntries || []).forEach(function (entry) { if (entry.user) entry.user = canonicalUser(data, entry.user); });
+    return data;
+  }
+  function repairJJUsername(data) {
+    var drivers = data.drivers, profiles = drivers.profiles || {};
+    if (Number(drivers.jjUsernameVersion) >= 1) return;
+    // The user confirmed these two handles belong to JJ. Never infer account
+    // changes from a shared display name, car number or manufacturer.
+    var original = "JJElliott2004", current = "JamesRacer22", keys = Object.keys(profiles);
+    var oldKey = keys.find(function (key) { return identity(key) === identity(original); });
+    var newKey = keys.find(function (key) { return identity(key) === identity(current); });
+    var stable = oldKey || original;
+    var sources = unique([oldKey, newKey]);
+    var roster = (drivers.teams || []).flatMap(function (team) { return (team.entries || []).concat(team.pendingDrivers || []); }).concat(drivers.openEntries || []);
+    if (!sources.length && !roster.some(function (entry) { return [identity(original), identity(current)].includes(identity(entry.user)); })) return;
+    var merged = {};
+    sources.forEach(function (key) { Object.assign(merged, profiles[key]); });
+    ["numberImage", "signatureImage"].forEach(function (field) {
+      var artwork = sources.map(function (key) { return profiles[key][field]; }).filter(function (value) { return text(value); });
+      if (artwork.length) merged[field] = artwork[artwork.length - 1];
+    });
+    if (sources.some(function (key) { return key !== stable; })) drivers.jjUsernameBackup = sources.map(function (key) { return { user: key, profile: JSON.parse(JSON.stringify(profiles[key])) }; });
+    ["wins", "championships"].forEach(function (field) { merged[field] = Math.max(0, ...sources.map(function (key) { return Number(profiles[key][field]) || 0; })); });
+    if (!(Number(merged.rank) > 0)) { var ranks = sources.map(function (key) { return Number(profiles[key].rank) || 0; }).filter(function (rank) { return rank > 0; }); merged.rank = ranks[0] || 0; }
+    if (!text(merged.alias)) merged.alias = "JJ";
+    if (!text(merged.number)) merged.number = "84";
+    merged.usernameAliases = unique(sources.flatMap(function (key) { return [key, profiles[key].currentUsername].concat(profiles[key].usernameAliases || []); }).concat(original, current).map(text));
+    merged.csvAliases = unique(sources.flatMap(function (key) { return profiles[key].csvAliases || []; }).concat("JJ", "JJ Whitlock", original, current));
+    merged.csvDivisions = unique(sources.flatMap(function (key) { return profiles[key].csvDivisions || []; }).concat("d1"));
+    merged.currentUsername = current;
+    sources.forEach(function (key) { if (key !== stable) delete profiles[key]; });
+    Object.defineProperty(profiles, stable, { value: merged, enumerable: true, configurable: true, writable: true });
+    drivers.jjUsernameVersion = 1;
   }
   function profile(data, user) {
     var profiles = data.drivers && data.drivers.profiles || {};
@@ -105,6 +142,20 @@
     if (exact) return exact;
     var renamed = Object.keys(profiles).filter(function (user) { return [profiles[user].currentUsername].concat(profiles[user].usernameAliases || []).some(function (alias) { return identity(alias) === id; }); });
     return id && renamed.length === 1 ? renamed[0] : text(value).replace(/^@/, "");
+  }
+  function updateUsername(data, user, value) {
+    var profiles = data.drivers && data.drivers.profiles || {};
+    var key = canonicalUser(data, user), saved = profiles[key];
+    if (!Object.hasOwn(profiles, key) || !saved || typeof saved !== "object") throw new Error("This driver no longer exists. Reload the roster before editing.");
+    var next = text(value).replace(/^@/, "");
+    if (next && !/^[A-Za-z0-9_]{3,20}$/.test(next)) throw new Error("Enter a Roblox username with 3–20 letters, numbers or underscores.");
+    var conflict = next && Object.keys(profiles).some(function (other) {
+      return other !== key && [other, profiles[other].currentUsername].concat(profiles[other].usernameAliases || []).some(function (name) { return identity(name) === identity(next); });
+    });
+    if (conflict) throw new Error("That username already belongs to another driver. Their records have not been combined.");
+    saved.usernameAliases = unique((saved.usernameAliases || []).concat(saved.currentUsername || "", key).map(function (name) { return text(name).replace(/^@/, ""); }));
+    saved.currentUsername = next;
+    return key;
   }
   function active(entry) {
     entry = entry || {};
@@ -286,5 +337,5 @@
     return issues;
   }
 
-  root.UARLResultDrivers = { register: register, canonicalUser: canonicalUser, pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
+  root.UARLResultDrivers = { register: register, canonicalUser: canonicalUser, updateUsername: updateUsername, pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
 })(typeof window !== "undefined" ? window : globalThis);

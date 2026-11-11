@@ -342,10 +342,71 @@
   function updateWorkspacePreview(){if(!state.data||!configs[state.section]&&state.section!=='profiles')return;var node=view.querySelector('.workspace-preview');if(node){var pair=currentConfigAndItems(),item=pair.items[state.selected];if(item)node.outerHTML=renderWorkspacePreview(state.section,item);}}
 
   function profileRows() {
-    return Object.keys(state.data.drivers.profiles).map(function (user) { return Object.assign({ username:user }, state.data.drivers.profiles[user]); });
+    return Object.keys(state.data.drivers.profiles).map(function (user) { return Object.assign({}, state.data.drivers.profiles[user], { username:user }); });
+  }
+  function pendingDriverAccount(user) { return String(user||'').length>20&&/^new_driver_\d+$/.test(String(user)); }
+  function driverProfileKey(user) {
+    if(!state.data||!user)return '';
+    var canonical=window.UARLResultDrivers.canonicalUser(state.data,user);
+    return Object.keys(state.data.drivers.profiles).find(function(key){return identityText(key)===identityText(canonical);})||'';
+  }
+  function driverAccountCaption(user) {
+    var key=driverProfileKey(user),profile=state.data.drivers.profiles[key];
+    return profile&&profile.currentUsername||key||user||'';
+  }
+  function canEditDriverIdentity(){return Boolean(state.user&&['owner','admin'].includes(state.user.role));}
+  function driverIdentityShortcut(user) {
+    var key=driverProfileKey(user);
+    return key&&!pendingDriverAccount(key)&&canEditDriverIdentity()?'<button type="button" class="button ghost" data-edit-driver-profile="'+esc(key)+'">Edit name or username</button>':'';
+  }
+  function openDriverIdentity(user) {
+    if(!canEditDriverIdentity())return;
+    var key=driverProfileKey(user),index=Object.keys(state.data.drivers.profiles).indexOf(key);
+    if(index<0)return;
+    goToEntry('profiles',index,0);
+    var input=view.querySelector('[data-field="currentUsername"]');
+    if(input){input.focus({preventScroll:true});input.closest('.field').scrollIntoView({block:'nearest'});}
+  }
+  function commitProfileAccount(input) {
+    if(state.section!=='profiles'||!canEditDriverIdentity())return;
+    var user=input.dataset.profileAccountKey,field=input.dataset.field;
+    var rows=profileRows(),index=rows.findIndex(function(row){return row.username===user;});
+    if(index<0)return;
+    var profile=state.data.drivers.profiles[user],requested=String(input.value||'').trim().replace(/^@/,'');
+    if(input.readOnly){if(field==='username')input.value=user;return;}
+    input.setCustomValidity('');
+    try {
+      if(field==='username') {
+        if(!pendingDriverAccount(user)){input.value=user;return;}
+        if(!requested)return;
+        if(pendingImageUploads)throw new Error('Wait for image uploads to finish before setting this account.');
+        var draft=clone(state.data);
+        window.UARLResultDrivers.updateUsername(draft,user,requested);
+        var registered=clone(draft.drivers.profiles[user]);
+        if(Array.isArray(registered.usernameAliases))registered.usernameAliases=registered.usernameAliases.filter(function(alias){return identityText(alias)!==identityText(user);});
+        rows[index]=Object.assign({},registered,{username:requested});
+        saveProfiles(rows);
+        view.querySelectorAll('[data-profile-account]').forEach(function(node){
+          if(node.dataset.profileAccountKey!==user)return;
+          node.dataset.profileAccountKey=requested;
+          node.readOnly=node.dataset.field==='username';
+          node.value=node.dataset.field==='username'?requested:registered.currentUsername||'';
+        });
+        changed();
+        return;
+      }
+      if(requested===String(profile.currentUsername||''))return;
+      var before=JSON.stringify(profile);
+      window.UARLResultDrivers.updateUsername(state.data,user,requested);
+      input.value=state.data.drivers.profiles[user].currentUsername||'';
+      if(JSON.stringify(state.data.drivers.profiles[user])!==before)changed();
+    } catch(error) {
+      input.value=field==='username'?'':profile.currentUsername||'';
+      input.setCustomValidity(error.message);toast(error.message,true);
+    }
   }
   function saveProfiles(rows) {
-    var next = {}; rows.forEach(function (row) { var user = row.username; var value = clone(row); delete value.username; if (user) next[user] = value; }); state.data.drivers.profiles = next;
+    var next = {}; rows.forEach(function (row) { var user = row.username; var value = clone(row); delete value.username; if (user) Object.defineProperty(next,user,{value:value,enumerable:true,writable:true,configurable:true}); }); state.data.drivers.profiles = next;
   }
   function profileConfig() {
     return { title:"Driver roster", kicker:"Permanent league drivers", description:"Manage driver identities, CSV names, series eligibility, and career profiles. A team assignment is optional.", path:"profiles", itemTitle:function(x){return x.alias||x.username||"Driver";}, itemMeta:function(x){return "@"+(x.username||"")+" · "+(x.csvDivisions||[]).join(" / ").toUpperCase();}, template:function(){return {username:"new_driver_"+Date.now(),alias:"New Driver",csvDivisions:["d1"],number:"",csvAliases:[],wins:0,championships:0,rank:0};}, fields:[["username","Driver account (original username)"],["currentUsername","Current Roblox username (optional)"],["alias","Display name"],["csvDivisions","Permanent roster series","divisions"],["number","Car number (leave blank until assigned)"],["csvAliases","Other names accepted in CSV","tags","wide"],["wins","Career wins","number"],["championships","Championships","number"],["rank","All-time rank","number"],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]] };
@@ -488,11 +549,14 @@
     var value=Array.isArray(item[key])?item[key]:[],listId='driver-list-'+key+'-'+state.selected;
     var suggestions='<datalist id="'+listId+'">'+driverSuggestions().map(function(name){return '<option value="'+esc(name)+'">';}).join("")+'</datalist>',rows="",addLabel="Add row",help="";
     if(type==="roster"){
-      help="Enter the driver's username and public name, then check the car number. Charter details and artwork are available when you need them.";
+      help="Enter an account for a new entry. For an assigned driver, use Edit name or username; use Move or sign a driver to change the person in a seat. Charter details and artwork remain available below.";
       addLabel="Add charter / entry";
       rows=value.map(function(entry,index){
+        var known=driverProfileKey(entry.user),locked=known&&!pendingDriverAccount(known);
+        var account=dataInput(key,index,"user",locked?driverAccountCaption(entry.user):entry.user,"text",null,null,listId);
+        if(locked)account=account.replace('<input ','<input readonly data-assigned-driver-account="'+esc(known)+'" ');
         return '<div class="builder-row roster-row">'+driverMini(entry)+'<div class="builder-grid roster-grid">'+
-          '<label>Car #'+dataInput(key,index,"number",entry.number)+'</label><label>Roblox username'+dataInput(key,index,"user",entry.user,"text",null,null,listId)+'</label><label>Public display name'+dataInput(key,index,"name",entry.name,"text",null,null,listId)+'</label><label>Status<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="status" data-stype="text">'+optionList(["","Full-Time","Signed","Open FT","Part-Time","Development","Inactive"],entry.status)+'</select></label>'+
+          '<label>Car #'+dataInput(key,index,"number",entry.number)+'</label><div class="field"><label>Roblox username'+account+'</label>'+driverIdentityShortcut(entry.user)+'</div><label>Public display name'+dataInput(key,index,"name",entry.name,"text",null,null,listId)+'</label><label>Status<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="status" data-stype="text">'+optionList(["","Full-Time","Signed","Open FT","Part-Time","Development","Inactive"],entry.status)+'</select></label>'+
           '<details class="seat-details"><summary>Charter details & signing date</summary><div class="builder-grid">'+
           '<label>Seat type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="seatType" data-stype="text">'+optionList(["","Full-Time","Part-Time","Development","Shared"],entry.seatType)+'</select></label><label>Charter type<select data-sfield="'+esc(key)+'" data-srow="'+index+'" data-skey="charterType" data-stype="text">'+optionList(["","FT","PT","DEV","FLEX"],entry.charterType)+'</select></label><label>Signed date'+dataInput(key,index,"signedAt",entry.signedAt,"date")+'</label><label class="builder-check">'+dataInput(key,index,"recent",entry.recent,"bool")+' Recent move</label></div></details>'+renderDriverArtwork(entry,key,index)+'</div>'+removeButton(key,index)+'</div>';
       }).join('');
@@ -563,6 +627,16 @@
 
   function renderField(field, item) {
     var key=field[0],label=field[1],type=field[2]||"text",options=Array.isArray(field[3])?field[3]:null,wide=field[3]==="wide"||field[4]==="wide",value=item[key];
+    if(state.section==='profiles'&&(key==='username'||key==='currentUsername')) {
+      var pending=pendingDriverAccount(item.username),readOnly=key==='username'?!pending:pending;
+      var displayed=key==='username'&&pending?'':value||'';
+      var help=key==='username'?(pending?'Enter the Roblox account for this new driver.':'Keep this account link. Use Current Roblox username below when the same person changes their username.'):'Changing this username keeps the same driver, results and team assignment. Leave it blank to display the original account name.';
+      return '<label class="field"><span>'+esc(label)+'</span><input type="text" data-field="'+esc(key)+'" data-type="text" data-profile-account data-profile-account-key="'+esc(item.username)+'" aria-label="'+esc(label)+'" maxlength="20" '+(readOnly?'readonly ':'')+'value="'+esc(displayed)+'"'+(pending&&key==='username'?' placeholder="Enter Roblox username"':'')+'><small>'+help+'</small></label>';
+    }
+    if(state.section==='open'&&key==='user') {
+      var known=driverProfileKey(value),locked=known&&!pendingDriverAccount(known);
+      return '<div class="field"><label><span>'+esc(label)+'</span><input type="text" data-field="user" data-type="text" '+(locked?'readonly data-assigned-driver-account="'+esc(known)+'" ':'')+'value="'+esc(locked?driverAccountCaption(value):value||'')+'"></label>'+driverIdentityShortcut(value)+'</div>';
+    }
     if (["roster","classification","finishes","stages","bonuses","tags","winnerTotals","seasons"].includes(type)) return renderStructuredField(key,label,type,item);
     if(key==='id')return '<details class="field wide internal-id"><summary>Advanced: reference ID</summary><label>'+esc(label)+'<input type="text" data-field="id" data-type="text" value="'+esc(value||'')+'"></label></details>';
     if (type === "image") return renderImageControl(key,label,item);
@@ -795,6 +869,7 @@
   function addNestedStructured(button) { var item=structuredItem(),root=item[button.dataset.snadd],parent=root[Number(button.dataset.sparent)],collection=button.dataset.scollection;if(!Array.isArray(parent[collection]))parent[collection]=[];parent[collection].push(structuredTemplate(button.dataset.stype,parent[collection]));state.openNewRow={field:button.dataset.snadd,parent:Number(button.dataset.sparent),row:parent[collection].length-1};if(state.section==="results")recalculateResult(item);changed();render(); }
   function removeStructured(button) { if(!confirm("Remove this row?"))return;var item=structuredItem(),root=item[button.dataset.sremove],row=Number(button.dataset.srow);if(button.dataset.sparent!=null)root=root[Number(button.dataset.sparent)][button.dataset.scollection];root.splice(row,1);if(state.section==="results")recalculateResult(item);changed();render(); }
   function updateStructured(input) {
+    if(input.hasAttribute('data-assigned-driver-account'))return;
     var item=structuredItem(),root=item[input.dataset.sfield],row=Number(input.dataset.srow),target;
     if(input.dataset.sparent!=null)target=root[Number(input.dataset.sparent)][input.dataset.scollection][row];else target=root[row];
     var value=input.dataset.stype==='bool'?input.checked:input.dataset.stype==='number'?(input.value===''?null:Number(input.value)):input.value;
@@ -818,7 +893,7 @@
 
   function addItem() { var pair=currentConfigAndItems(); var item=pair.config.template(); if(state.section==="results"){var next=nextUnrecordedRace();if(next)applyScheduledRace(item,next);} state.step=0; pair.items.push(item); commitItems(pair.items); state.selected=pair.items.length-1; state.query=""; changed(); render(); }
   function deleteItem() { var pair=currentConfigAndItems(); if(!pair.items[state.selected]||!confirm("Delete this entry? This can be undone by reloading the published data."))return; pair.items.splice(state.selected,1); commitItems(pair.items); state.selected=Math.max(0,state.selected-1); changed(); render(); }
-  function duplicateItem() { var pair=currentConfigAndItems(); var copy=clone(pair.items[state.selected]); if(copy.id)copy.id=copy.id+"-copy-"+Date.now();if(state.section==="results")delete copy.scheduleEventId; pair.items.splice(state.selected+1,0,copy); commitItems(pair.items); state.selected+=1; changed(); render(); }
+  function duplicateItem() { var pair=currentConfigAndItems(); var copy=clone(pair.items[state.selected]); if(copy.id)copy.id=copy.id+"-copy-"+Date.now();if(state.section==="results")delete copy.scheduleEventId;if(state.section==='profiles'){copy.username='new_driver_'+Date.now();copy.currentUsername='';copy.usernameAliases=[];} pair.items.splice(state.selected+1,0,copy); commitItems(pair.items); state.selected+=1; changed(); render(); }
   function shiftEvent(days) { var event=getPath("events")[state.selected],amount=Number(days)*86400000; ["start","originalStart"].forEach(function(k){if(event[k])event[k]=new Date(new Date(event[k]).getTime()+amount).toISOString();}); ["date","originalDate"].forEach(function(k){if(event[k])event[k]=dateOnly(new Date(new Date(event[k]+"T12:00:00").getTime()+amount));}); changed(); render(); }
 
   async function reloadPublished() {
@@ -860,6 +935,7 @@
     if(event.target.closest('[data-workspace-redo]')){restoreHistory(true);return;}
     if(event.target.closest('[data-review-changes]')){openChanges();return;}
     if(event.target.closest('[data-open-transfer]')){openTransfer();return;}
+    var editDriver=event.target.closest('[data-edit-driver-profile]');if(editDriver){openDriverIdentity(editDriver.dataset.editDriverProfile);return;}
     if(event.target.closest('[data-workspace-publish]')){document.querySelector('[data-workspace-changes-dialog]').close();openPublish();return;}
     var task=event.target.closest('[data-workspace-task]');if(task){workspaceTask(task.dataset.workspaceTask);return;}
     var search=event.target.closest('[data-search-section]');if(search){document.querySelector('[data-workspace-search-dialog]').close();goToEntry(search.dataset.searchSection,search.dataset.searchIndex,Number(search.dataset.searchStep));return;}
@@ -886,6 +962,8 @@
   });
   document.addEventListener("input",function(event){
     if(imports.input(event))return;
+    if(event.target.matches('[data-profile-account]')){event.target.setCustomValidity('');return;}
+    if(event.target.matches('[data-assigned-driver-account]')){event.target.value=driverAccountCaption(event.target.dataset.assignedDriverAccount);return;}
     if(event.target.matches('[data-workspace-search]')){renderWorkspaceSearch(event.target.value);return;}
     if(event.target.matches('[data-transfer-number]')){updateTransferPreview();return;}
     if(event.target.matches('[data-finish-search]')){var query=event.target.value.trim().toLowerCase();view.querySelectorAll('[data-participant]').forEach(function(label){label.hidden=!label.textContent.toLowerCase().includes(query);});return;}
@@ -897,9 +975,10 @@
     item[field]=value;commitItems(pair.items);if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();if(state.section==="results"&&field==="division")render();
   });
   document.addEventListener("change",function(event){if(event.target.matches('[data-paint-driver]')){commitPendingEdit();prefillPaint(event.target);return;}if(event.target.matches('[data-transfer-team],[data-transfer-person]')){updateTransferSeats();return;}if(event.target.matches('[data-transfer-seat]')){var dialog=document.querySelector('[data-transfer-dialog]'),team=state.data.drivers.teams.find(function(team){return team.id===dialog.querySelector('[data-transfer-team]').value;});if(team&&event.target.value!=='new')dialog.querySelector('[data-transfer-number]').value=team.entries[Number(event.target.value)].number;else{var person=window.UARLWorkspace.people(state.data).find(function(person){return person.key===dialog.querySelector('[data-transfer-person]').value;});dialog.querySelector('[data-transfer-number]').value=person&&!team.entries.some(function(entry){return String(entry.number)===person.number;})?person.number:'';}updateTransferPreview();return;}if(event.target.matches("[data-image-upload]")){uploadDriverImage(event.target);return;}if(event.target.matches('[data-schedule-race]')){var record=structuredItem(),id=event.target.value;if(!id){delete record.scheduleEventId;record.id='result-'+Date.now();changed();return;}var scheduled=state.data.events.find(function(e){return e.id===id;});if(!scheduled)return;if(['entries','qualifying','stages','finishes','bonuses'].some(function(key){return (record[key]||[]).length;})&&!confirm('Change the linked race and clear its classifications? This prevents carrying results into another race.')){render();return;}['entries','qualifying','stages','finishes','bonuses'].forEach(function(key){record[key]=[];});['winner','winnerUsername','pole','poleUsername'].forEach(function(key){delete record[key];});applyScheduledRace(record,scheduled);changed();render();return;}if(event.target.matches("[data-mobile-section]")){state.section=event.target.value;state.step=0;state.selected=0;state.query="";render();}if(event.target.matches("[data-import]")){var file=event.target.files[0];if(!file)return;file.text().then(function(text){state.data=window.UARLData.normalize(JSON.parse(text));changed();render();toast("Backup imported into the draft.");}).catch(function(error){toast("Could not import: "+error.message,true);});}});
+  document.addEventListener('change',function(event){if(event.target.matches('[data-profile-account]'))commitProfileAccount(event.target);});
   document.addEventListener('toggle',function(event){if(event.target.matches('[data-artwork-key]'))artworkOpen[event.target.dataset.artworkKey]=event.target.open;},true);
   document.addEventListener('focusin',function(event){if(state.data&&event.target.matches('[data-field],[data-sfield],[data-advanced-json]')){commitPendingEdit();editSession={node:event.target};}});
-  document.addEventListener('focusout',function(event){if(editSession&&event.target===editSession.node)commitPendingEdit();});
+  document.addEventListener('focusout',function(event){if(event.target.matches('[data-profile-account]'))commitProfileAccount(event.target);if(editSession&&event.target===editSession.node)commitPendingEdit();});
   document.addEventListener('keydown',function(event){if((event.ctrlKey||event.metaKey)&&event.key.toLowerCase()==='k'&&state.user){if(!document.querySelector('dialog[open]')||document.querySelector('[data-workspace-search-dialog]').open){event.preventDefault();if(!document.querySelector('[data-workspace-search-dialog]').open)openWorkspaceSearch();}}});
   document.querySelector('[data-transfer-form]').addEventListener('submit',saveTransfer);
   document.addEventListener("submit",function(event){var form=event.target.closest("[data-account-create-form]");if(form){event.preventDefault();createAccount(form);}});

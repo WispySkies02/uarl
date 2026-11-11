@@ -22,7 +22,9 @@
     });
     var eventDriver = root.UARLStandings.matchingDriver(eventEntries, lookup);
     if (eventDriver && text(eventDriver.make)) return make(eventDriver.make);
-    var drivers = array(data.race && data.race.drivers).filter(function (driver) { return driver.division === division; });
+    var drivers = array(data.race && data.race.drivers).filter(function (driver) { return driver.division === division; }).map(function (driver) {
+      return Object.assign({}, driver, { id: root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, driver.id) : driver.id });
+    });
     var found = root.UARLStandings.matchingDriver(drivers, lookup);
     if (!found && root.UARLResultDrivers) {
       var resolved = root.UARLResultDrivers.resolve(root.UARLResultDrivers.pool(data, { division: division }), entry.name, user, entry.number);
