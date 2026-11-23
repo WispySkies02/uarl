@@ -3,11 +3,14 @@
 
   root.UARLAdminImports = function (bridge) {
     var resultForms = new WeakMap(), standingForms = {}, division = "d1";
+    var driverForm = { text: "", preview: null, open: true, message: "", reading: false, readVersion: 0 };
     var esc = bridge.esc, csv = root.UARLRaceCSV, standings = root.UARLStandings;
     var standingsLabels = csv.headers.standings.map(function (label, index) { return index === 1 ? "Change" : label; });
     function normalized() { return root.UARLData.normalize(JSON.parse(JSON.stringify(bridge.data()))); }
     function signature() { return JSON.stringify(bridge.data()); }
+    function canEditDrivers() { return Boolean(bridge.canEditDrivers && bridge.canEditDrivers()); }
     function form(kind, record) {
+      if (kind === "drivers") return driverForm;
       if (kind === "results") {
         if (!resultForms.has(record)) resultForms.set(record, { text: "", preview: null, open: !(record.finishes || []).length, message: "" });
         return resultForms.get(record);
@@ -16,7 +19,8 @@
       return standingForms[division];
     }
     function context(node) {
-      var widget = node.closest("[data-csv-kind]"), kind = widget.dataset.csvKind;
+      var widget = node.closest("[data-csv-kind]"); if (!widget) return null;
+      var kind = widget.dataset.csvKind;
       var record = kind === "results" ? bridge.data().records[Number(widget.dataset.record)] : null;
       if (kind === "results" && !record) return null;
       return { widget: widget, kind: kind, record: record, form: form(kind, record) };
@@ -39,19 +43,35 @@
           var finish = preview.record.finishes[index];
           return cells([row.position, row.driver.name + (row.driver.user ? " · @" + row.driver.user : ""), finish.number || "—", row.qualifying, row.stage1, row.stage2, row.fastestLap ? "Yes" : "No", row.mostLapsLed ? "Yes" : "No", finish.totalPoints]);
         }), "Results CSV preview");
+      } else if (kind === "drivers") {
+        var actions = { add: "New driver", update: "Update existing driver", move: "Move existing driver" };
+        content = table(["DriverName", "Username", "Driver#", "Team", "Action"], preview.rows.map(function (row) {
+          return cells([row.name, "@" + row.username, row.number || "Number pending", row.teamName || "No team", actions[row.action] || row.action]);
+        }), "Driver roster CSV preview");
       } else {
         var data = normalized();
         content = table(standingsLabels, preview.rows.map(function (row) { return '<tr><td>' + esc(row.position) + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row, data) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
       }
-      return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + (kind === "results" ? preview.rows.length + ' finishers' : preview.entries.length + ' updated drivers') + '</h4>' + content + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.') + '</p><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div>';
+      var warnings = (preview.warnings || []).length ? '<div class="csv-warnings"><b>Review before applying</b><ul>' + preview.warnings.map(function (warning) { return '<li>' + esc(warning) + '</li>'; }).join("") + '</ul></div>' : '';
+      var label = kind === "results" ? preview.rows.length + ' finishers' : kind === "drivers" ? preview.rows.length + (preview.rows.length === 1 ? ' driver' : ' drivers') : preview.entries.length + ' updated drivers';
+      var ready = kind === "drivers" ? 'Nothing applied yet. Check the drivers, numbers, and teams, then save this preview to your draft.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.';
+      return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + label + '</h4>' + content + warnings + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : ready) + '</p><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div>';
     }
     function widget(kind, record) {
       var state = form(kind, record), index = kind === "results" ? bridge.data().records.indexOf(record) : "";
       var instructions = kind === "results" ? 'Use a Roblox username, roster display name, or saved CSV name. Driver roster includes permanent drivers without a team. Qualifying and stage positions can be blank; both awards need Yes or No.' : 'Use the roster display name, saved CSV name, or username. Enter +/- as +2, -1, 0, or - for unknown. Car numbers keep leading zeros.';
       var replacement = kind === "results" ? 'Apply replaces this race’s finish order, qualifying, stages, and Yes/No awards. Manual car numbers and points eligibility are kept. Review DNFs or DNQs in manual entry afterward.' : 'Apply sets the listed drivers’ totals for this division; other drivers keep their current totals. Later race results continue adding points. Movement uses the previous positions supplied by this import.';
-      return '<details class="csv-import" data-csv-kind="' + kind + '" data-record="' + index + '" ' + (state.open ? 'open' : '') + '><summary><span>Import ' + kind + ' from CSV</span><small>Paste → Preview → Apply</small></summary><div class="csv-import-body"><p>' + instructions + '</p><label>CSV data<textarea data-csv-input rows="5" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="' + esc(csv.headers[kind].join(",")) + '">' + esc(state.text) + '</textarea></label><p class="csv-header-hint">Header: <code>' + esc(csv.headers[kind].join(",")) + '</code></p><p>' + replacement + '</p><button type="button" class="button" data-csv-preview-button>Preview CSV</button><div data-csv-output aria-live="polite">' + previewHTML(kind, state) + '</div></div></details>';
+      var upload = "", teams = "";
+      if (kind === "drivers") {
+        instructions = 'Paste rows or upload a CSV to add D1 drivers and update existing accounts. Usernames identify drivers; saved former usernames work too. Car numbers keep leading zeros.';
+        replacement = 'Team must match an existing team name or ID. A blank Team keeps an existing assignment or registers a driver without a team. A blank Driver# keeps an existing number or leaves it pending. Occupied seats are never overwritten. Changes stay in your draft until you publish.';
+        upload = '<label class="csv-file-picker">Upload a CSV file<input type="file" accept=".csv,text/csv" data-csv-file></label>';
+        teams = '<details class="csv-team-reference"><summary>Available teams</summary><ul>' + (bridge.data().drivers.teams || []).map(function (team) { return '<li>' + esc(team.name) + (team.id ? ' · <code>' + esc(team.id) + '</code>' : '') + '</li>'; }).join("") + '</ul></details>';
+      }
+      return '<details class="csv-import" data-csv-kind="' + kind + '" data-record="' + index + '" ' + (state.open ? 'open' : '') + '><summary><span>Import ' + kind + ' from CSV</span><small>Paste → Preview → Apply</small></summary><div class="csv-import-body"><p>' + instructions + '</p>' + upload + '<label>CSV data<textarea data-csv-input rows="5" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="' + esc(csv.headers[kind].join(",")) + '">' + esc(state.text) + '</textarea></label><p class="csv-header-hint">Header: <code>' + esc(csv.headers[kind].join(",")) + '</code></p><p>' + replacement + '</p>' + teams + '<button type="button" class="button" data-csv-preview-button>Preview CSV</button><div data-csv-output aria-live="polite">' + previewHTML(kind, state) + '</div></div></details>';
     }
     function results(record) { return widget("results", record); }
+    function renderDrivers() { return canEditDrivers() ? widget("drivers") : ""; }
     function renderStandings() {
       var data = normalized(), rows = standings.calculate(data, division);
       var body = rows.map(function (row) {
@@ -67,6 +87,8 @@
     function click(event) {
       var button = event.target.closest("[data-csv-preview-button],[data-csv-apply],[data-standings-division],[data-save-points],[data-reset-points],[data-standings-artwork]");
       if (!button) return false;
+      var driverWidget = button.closest('[data-csv-kind="drivers"]');
+      if (driverWidget && !canEditDrivers()) { bridge.toast("Only Owners and Admins can import drivers.", true); return true; }
       if (button.dataset.standingsDivision) { division = button.dataset.standingsDivision; bridge.render(); return true; }
       bridge.commit();
       if (button.dataset.standingsArtwork) { if (bridge.editArtwork) bridge.editArtwork(division, button.dataset.standingsArtwork); return true; }
@@ -82,26 +104,52 @@
       }
       var ctx = context(button); if (!ctx) return true;
       var state = ctx.form;
+      if (state.reading) { bridge.toast("Wait for the CSV file to finish loading.", true); return true; }
       if (button.matches("[data-csv-preview-button]")) {
         var data = normalized();
-        state.preview = ctx.kind === "results" ? csv.results(state.text, data, ctx.record) : csv.standings(state.text, data, division);
+        state.preview = ctx.kind === "results" ? csv.results(state.text, data, ctx.record) : ctx.kind === "drivers" ? root.UARLDriverCSV.preview(state.text, data) : csv.standings(state.text, data, division);
         if (!state.preview.errors.length && ctx.kind === "results") bridge.recalculate(state.preview.record);
         state.preview.signature = signature();
         ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, state);
       } else {
         var preview = state.preview;
         if (!preview || preview.errors.length || preview.signature !== signature()) { state.preview = null; state.message = "The draft changed. Preview the CSV again before applying."; ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, state); return true; }
+        if (ctx.kind === "drivers") {
+          try { bridge.replaceDrivers(preview.drivers, preview.rows); }
+          catch (error) { bridge.toast(error.message, true); return true; }
+        }
         state.preview = null; state.message = "CSV applied to your draft. You can still edit entries manually."; state.open = false;
         if (ctx.kind === "results") { var index = bridge.data().records.indexOf(ctx.record); bridge.data().records[index] = preview.record; resultForms.set(preview.record, state); }
-        else bridge.data().standings = preview.standings;
+        else if (ctx.kind === "standings") bridge.data().standings = preview.standings;
         bridge.applied(); bridge.toast("CSV applied to draft. Review and publish when ready.");
       }
       return true;
     }
     function input(event) {
       var target = event.target;
+      if (target.matches("[data-csv-file]")) {
+        var fileContext = context(target); if (!fileContext || fileContext.kind !== "drivers" || !canEditDrivers()) return true;
+        var file = target.files[0]; if (!file) return true;
+        var state = fileContext.form, version = ++state.readVersion;
+        state.reading = true; state.preview = null; state.message = "Loading CSV file…";
+        fileContext.widget.querySelector("[data-csv-output]").innerHTML = previewHTML("drivers", state);
+        file.text().then(function (source) {
+          if (state.readVersion !== version) return;
+          state.text = source; state.reading = false; state.message = "Loaded " + file.name + ". Preview the CSV before applying.";
+          var current = document.querySelector('[data-csv-kind="drivers"]');
+          if (current && canEditDrivers()) { current.querySelector("[data-csv-input]").value = source; current.querySelector("[data-csv-output]").innerHTML = previewHTML("drivers", state); }
+        }).catch(function () {
+          if (state.readVersion !== version) return;
+          state.reading = false; state.message = "Could not read this CSV file. Try again or paste the data.";
+          var current = document.querySelector('[data-csv-kind="drivers"]');
+          if (current && canEditDrivers()) current.querySelector("[data-csv-output]").innerHTML = previewHTML("drivers", state);
+        });
+        target.value = ""; return true;
+      }
       if (target.matches("[data-csv-input]")) {
         var ctx = context(target); if (!ctx) return true;
+        if (ctx.kind === "drivers" && !canEditDrivers()) return true;
+        if (ctx.kind === "drivers") { ctx.form.readVersion++; ctx.form.reading = false; }
         ctx.form.text = target.value; ctx.form.preview = null; ctx.form.message = "CSV changed. Preview it before applying.";
         ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, ctx.form); return true;
       }
@@ -123,6 +171,6 @@
       });
     }
     document.addEventListener("toggle", function (event) { if (event.target.isConnected && event.target.matches("[data-csv-kind]")) { var ctx = context(event.target); if (ctx) ctx.form.open = event.target.open; } }, true);
-    return { results: results, standings: renderStandings, click: click, input: input, dataChanged: dataChanged, selectDivision: function (value) { if (["d1", "d2", "open"].includes(value)) division = value; } };
+    return { results: results, drivers: renderDrivers, standings: renderStandings, click: click, input: input, dataChanged: dataChanged, selectDivision: function (value) { if (["d1", "d2", "open"].includes(value)) division = value; } };
   };
 })(typeof window !== "undefined" ? window : globalThis);
