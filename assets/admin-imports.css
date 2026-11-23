@@ -10,6 +10,12 @@
 .csv-import textarea { width: 100%; min-height: 135px; resize: vertical; font: 13px/1.6 monospace; background: #0d1410; color: #f5faf2; border: 1px solid #4a5944; border-radius: 8px; padding: 12px; }
 .csv-header-hint { overflow-wrap: anywhere; }
 .csv-header-hint code { color: #d8edbe; }
+.csv-file-picker { margin: 16px 0; min-width: 0; }
+.csv-file-picker input { width: 100%; min-width: 0; max-width: 100%; padding: 10px; border: 1px solid #4a5944; border-radius: 8px; color: #f5faf2; background: #0d1410; font: inherit; }
+.csv-team-reference { margin: 0 0 16px; color: #bac6b8; font-size: 13px; }
+.csv-team-reference summary { padding: 8px 0; cursor: pointer; }
+.csv-team-reference li, .csv-warnings li { margin: 5px 0; overflow-wrap: anywhere; }
+.csv-warnings { margin-top: 16px; padding: 14px 16px; border: 1px solid #8b7540; border-radius: 8px; background: #2c281a; color: #f0dcaa; font-size: 13px; line-height: 1.6; }
 .csv-errors { margin-top: 16px; padding: 16px; background: #321c1b; border: 1px solid #ce7269; border-radius: 8px; font-size: 13px; line-height: 1.6; }
 .csv-errors ul { padding-left: 20px; margin-bottom: 0; }
 .csv-preview { border-top: 1px solid #455927; margin-top: 18px; padding-top: 12px; }

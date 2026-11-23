@@ -1,7 +1,7 @@
 (function (root) {
   "use strict";
 
-  var headers = { results: ["FinishingPosition", "Driver", "Qualifying", "Stage1", "Stage2", "FastestLap", "MostLapsLed"], standings: ["Position", "+/-", "Driver#", "DriverName", "Points"] };
+  var headers = { results: ["FinishingPosition", "Driver", "Qualifying", "Stage1", "Stage2", "FastestLap", "MostLapsLed"], standings: ["Position", "+/-", "Driver#", "DriverName", "Points"], drivers: ["DriverName", "Username", "Driver#", "Team"] };
   function text(value) { return String(value == null ? "" : value).trim(); }
   function identity(value) { return text(value).replace(/^@/, "").toLowerCase(); }
   function clone(value) { return JSON.parse(JSON.stringify(value)); }

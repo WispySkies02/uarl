@@ -16,7 +16,7 @@
   var undoSnapshots=[],redoSnapshots=[],historyAnchor=null,editSession=null,historyRestoring=false;
   var artworkOpen=Object.create(null);
   var sectionNames={dashboard:'Home',schedule:'Schedule',results:'Results',standings:'Standings',teams:'Teams & rosters',profiles:'Driver roster',open:'Open Series',freeAgents:'Free agents',moves:'Signings',paints:'Paint Booth',history:'History',guide:'Rules & FAQ',conduct:'Conduct',advanced:'Advanced JSON',accounts:'Staff accounts'};
-  var imports=window.UARLAdminImports({data:function(){return state.data;},esc:esc,header:renderHeader,commit:commitPendingEdit,render:render,recalculate:recalculateResult,toast:toast,applied:function(){changed();render();},canEditArtwork:canEditStandingsArtwork,editArtwork:editStandingsArtwork});
+  var imports=window.UARLAdminImports({data:function(){return state.data;},esc:esc,header:renderHeader,commit:commitPendingEdit,render:render,recalculate:recalculateResult,toast:toast,applied:function(){changed();render();},canEditArtwork:canEditStandingsArtwork,editArtwork:editStandingsArtwork,canEditDrivers:canEditDriverIdentity,replaceDrivers:replaceImportedDrivers});
 
   var configs = {
     schedule: {
@@ -226,7 +226,7 @@
     var full=state.user&&state.user.role!=='race_control',changes=workspaceChanges();
     function task(key,icon,title,copy){return '<button type="button" class="workspace-task" data-workspace-task="'+key+'"><span class="task-icon" aria-hidden="true">'+icon+'</span><span class="task-title">'+title+'</span><span class="task-copy">'+copy+'</span></button>';}
     view.innerHTML='<div class="workspace-home"><header class="workspace-greeting"><span class="eyebrow">Your paddock</span><h1>What are we updating?</h1><p>'+esc(state.user&&state.user.displayName||'Welcome')+', jump straight to the job. Your work saves as a draft while you edit.</p></header>'+draftTools()+
-      '<div class="workspace-home-grid"><section class="workspace-task-grid" aria-label="Common tasks">'+task('race','⚑','Record a race','Choose the race, paste a CSV, preview and apply.')+task('standings','≡','Update standings','Import a points CSV or correct a driver’s total.')+task('schedule','▦','Adjust an event','Go straight to the next event’s date and status.')+(full?task('roster','▰','Update a roster','Choose a team and edit its drivers.')+task('transfer','⇄','Move or sign a driver','Update the roster and announcement together.')+task('paint','◆','Add a paint scheme','Use saved driver details instead of retyping them.')+task('search','⌕','Find & edit anything','Search drivers, races, teams and site content.'):'')+'</section>'+
+      '<div class="workspace-home-grid"><section class="workspace-task-grid" aria-label="Common tasks">'+task('race','⚑','Record a race','Choose the race, paste a CSV, preview and apply.')+task('standings','≡','Update standings','Import a points CSV or correct a driver’s total.')+task('schedule','▦','Adjust an event','Go straight to the next event’s date and status.')+(full?task('driver-csv','+','Add drivers from CSV','Paste a roster and preview team assignments.')+task('roster','▰','Update a roster','Choose a team and edit its drivers.')+task('transfer','⇄','Move or sign a driver','Update the roster and announcement together.')+task('paint','◆','Add a paint scheme','Use saved driver details instead of retyping them.')+task('search','⌕','Find & edit anything','Search drivers, races, teams and site content.'):'')+'</section>'+
       '<article class="workspace-next-event"><span class="eyebrow">Next on the calendar</span>'+(upcoming?'<h2>'+esc(upcoming.name)+'</h2><p>'+esc(upcoming.date)+' · '+esc(upcoming.track)+'</p><span class="workspace-chip">'+esc(String(upcoming.division||'').toUpperCase())+'</span><button type="button" class="button ghost" data-workspace-task="schedule">Edit this event →</button>':'<h2>Calendar up to date</h2><p>Add the next event whenever you’re ready.</p><button class="button ghost" data-section="schedule">Open schedule</button>')+(state.data.events.length?'<button class="button ghost" type="button" data-start-race>Start a new race entry →</button>':'')+'</article></div>'+
       '<section class="workspace-draft-panel"><header><div><span class="eyebrow">Pick up where you left off</span><h2>'+ (changes.length?'Your unpublished work':'A clear desk')+'</h2></div><button class="button ghost" data-review-changes>Review all changes</button></header>'+(changes.length?'<div class="draft-entry-list">'+renderDraftEntries(changes)+'</div>':'<p>No unfinished edits. Choose a task above to get started.</p>')+'</section></div>';
   }
@@ -282,6 +282,13 @@
     dialog.showModal();
   }
   function workspaceTask(task){
+    if(task==='driver-csv'){
+      if(!canEditDriverIdentity())return;
+      goToEntry('profiles',0,0);
+      var widget=view.querySelector('[data-csv-kind="drivers"]');
+      if(widget){widget.open=true;widget.querySelector('[data-csv-input]').focus({preventScroll:true});widget.scrollIntoView({block:'start'});}
+      return;
+    }
     if(task==='search')return openWorkspaceSearch();
     if(task==='transfer')return openTransfer();
     if(task==='race'){
@@ -355,6 +362,14 @@
     return profile&&profile.currentUsername||key||user||'';
   }
   function canEditDriverIdentity(){return Boolean(state.user&&['owner','admin'].includes(state.user.role));}
+  function replaceImportedDrivers(drivers, rows){
+    if(!canEditDriverIdentity())throw new Error('Only Owners and Admins can import drivers.');
+    if(pendingImageUploads)throw new Error('Wait for image uploads to finish, then preview the CSV again.');
+    state.data.drivers=clone(drivers);
+    var keys=Object.keys(state.data.drivers.profiles),first=rows&&rows.length?keys.indexOf(rows[0].user):-1;
+    if(first>=0)state.selected=first;
+    state.step=0;state.query='';
+  }
   function driverIdentityShortcut(user) {
     var key=driverProfileKey(user);
     return key&&!pendingDriverAccount(key)&&canEditDriverIdentity()?'<button type="button" class="button ghost" data-edit-driver-profile="'+esc(key)+'">Edit name or username</button>':'';
@@ -426,7 +441,7 @@
     }).join('');
     var current = items[state.selected];
     if(section==="results"&&current)recalculateResult(current);
-    view.innerHTML = renderHeader(config) + '<div class="editor-layout"><details class="item-list item-picker workspace-records" '+(window.matchMedia('(min-width:761px)').matches||state.query?'open':'')+'><summary>Switch entry · '+esc(current?config.itemTitle(current):'Choose an entry')+'</summary><div class="list-tools"><input type="search" data-list-search value="' + esc(state.query) + '" placeholder="Search this section"><button type="button" data-action="add" aria-label="Add new">+</button></div><div class="list-scroll">' + (rows || '<div class="editor-empty">No entries yet.<br>Add the first one.</div>') + '</div></details><section class="editor-panel">' + (current ? renderEditor(config,current,state.selected) : '<div class="editor-empty">Select or add an entry.</div>') + '</section></div>';
+    view.innerHTML = renderHeader(config) + (section==='profiles'?imports.drivers():'') + '<div class="editor-layout"><details class="item-list item-picker workspace-records" '+(window.matchMedia('(min-width:761px)').matches||state.query?'open':'')+'><summary>Switch entry · '+esc(current?config.itemTitle(current):'Choose an entry')+'</summary><div class="list-tools"><input type="search" data-list-search value="' + esc(state.query) + '" placeholder="Search this section"><button type="button" data-action="add" aria-label="Add new">+</button></div><div class="list-scroll">' + (rows || '<div class="editor-empty">No entries yet.<br>Add the first one.</div>') + '</div></details><section class="editor-panel">' + (current ? renderEditor(config,current,state.selected) : '<div class="editor-empty">Select or add an entry.</div>') + '</section></div>';
     enhanceRows();
   }
 
