@@ -22,6 +22,10 @@
 .csv-errors ul { padding-left: 20px; margin-bottom: 0; }
 .csv-preview { border-top: 1px solid #455927; margin-top: 18px; padding-top: 12px; }
 .csv-preview h4 { margin: 4px 0 14px; }
+.csv-preview-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.csv-edit-input { width: 100%; min-width: 64px; min-height: 44px; border: 1px solid #4a5944; border-radius: 6px; background: #0d1410; color: #f5faf2; padding: 10px; font: inherit; }
+.csv-edit-table td:nth-child(4) { min-width: 180px; }
+.csv-edit-manufacturer { margin-top: 6px; }
 .csv-table-scroll { overflow-x: auto; max-width: 100%; border: 1px solid #354136; border-radius: 8px; }
 .csv-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
 .csv-table th { background: #202b23; color: #c7d9bc; white-space: nowrap; font-size: 11px; }
@@ -58,6 +62,14 @@
   .csv-import textarea { font-size: 16px; }
   .csv-series-picker select { font-size: 16px; }
   .csv-table th, .csv-table td { padding: 10px 8px; }
+  .csv-edit-table, .csv-edit-table tbody { display: block; width: 100%; }
+  .csv-edit-table thead { display: none; }
+  .csv-edit-table tr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 14px 10px; border-bottom: 1px solid #354136; }
+  .csv-edit-table tr:last-child { border-bottom: 0; }
+  .csv-edit-table td, .csv-edit-table td:nth-child(4) { display: block; min-width: 0; padding: 0; border: 0; }
+  .csv-edit-table td:nth-child(4) { grid-row: 1; grid-column: 1 / -1; }
+  .csv-edit-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; color: #c7d9bc; font-size: 12px; font-weight: 700; }
+  .csv-edit-input { min-width: 0; font-size: 16px; }
   .standings-manual { padding: 12px; }
   .standings-manual > header label, .standings-manual > header input { width: 100%; }
   .standings-points-control { flex-wrap: wrap; }
