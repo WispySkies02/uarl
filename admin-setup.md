@@ -62,7 +62,7 @@ Sessions remain active for up to 12 hours. **Sign out** ends the current session
 
 ## Add or update drivers from CSV
 
-Owners and Admins can choose **Add drivers from CSV** on the dashboard, or open **Driver roster → Import drivers from CSV**. Paste the data or upload a `.csv` file using this exact header:
+Owners and Admins can choose **Add drivers from CSV** on the dashboard, or open **Driver roster → Import drivers from CSV**. Select **D1 · Cup** or **Open Series** under **Import into**, then paste the data or upload a `.csv` file using this exact header:
 
 ```csv
 DriverName,Username,Driver#,Team
@@ -70,9 +70,13 @@ DriverName,Username,Driver#,Team
 
 Select **Preview CSV** to check names, account matches, car numbers, teams, and whether each row adds, updates, or moves a driver. Then select **Apply preview to draft**. Applying the batch is one **Undo** action and supports browser draft recovery. Use **Publish website** after reviewing the draft.
 
-This import registers D1 drivers. `DriverName` and a Roblox `Username` are required; current usernames and saved former usernames match the same permanent identity. Existing points, career statistics, artwork, Open Series entries, and historical records remain attached to that driver. Different accounts are never combined because they share a name or number.
+The import registers drivers for the selected series. `DriverName` and a Roblox `Username` are required; current usernames and saved former usernames match the same permanent identity. Existing points, career statistics, artwork, and historical records remain attached to that driver. Different accounts are never combined because they share a name or number. Switching series keeps the pasted CSV but requires a fresh preview before applying.
 
-`Team` accepts an existing D1 team name or ID; **Available teams** lists both. Leave it blank to keep an existing team assignment or register a driver without a team. A blank `Driver#` keeps an existing number or leaves it pending. Leading zeros are preserved, so `05` and `5` remain different numbers. The importer fills vacant seats or adds entries and rejects occupied seats, duplicate accounts, and unknown teams before applying anything. Create a new team in **Teams + charters** before importing drivers for it. If an imported number changes while number artwork exists, review the artwork shown in the preview notice.
+For **D1**, `Team` accepts an existing team name or ID; **Available teams** lists both. Leave it blank to keep an existing D1 assignment or register a driver without a team. Create a new D1 team in **Teams + charters** before importing drivers for it. Open Series entries are preserved.
+
+For **Open Series**, `Team` is an independent entry label. Leave it blank to keep the entry’s existing label. Applying the import opens the first imported Open entry for review, where its team label, car number and manufacturer can be edited. Existing Open manufacturers stay unchanged; a new entry starts unassigned. D1 seats, numbers and number artwork are preserved. A new Open entry never borrows a driver’s D1 number or number artwork.
+
+A blank `Driver#` keeps an existing number in the selected series or leaves it pending. Leading zeros are preserved, so `05` and `5` remain different numbers. Occupied numbers, duplicate accounts, and invalid rows block the whole batch. If an imported number changes while number artwork exists, review the artwork shown in the preview notice.
 
 Race Control accounts cannot import driver rosters.
 

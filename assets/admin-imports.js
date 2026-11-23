@@ -3,12 +3,14 @@
 
   root.UARLAdminImports = function (bridge) {
     var resultForms = new WeakMap(), standingForms = {}, division = "d1";
-    var driverForm = { text: "", preview: null, open: true, message: "", reading: false, readVersion: 0 };
+    var driverForm = { text: "", preview: null, open: true, message: "", reading: false, readVersion: 0, division: "d1" };
     var esc = bridge.esc, csv = root.UARLRaceCSV, standings = root.UARLStandings;
     var standingsLabels = csv.headers.standings.map(function (label, index) { return index === 1 ? "Change" : label; });
     function normalized() { return root.UARLData.normalize(JSON.parse(JSON.stringify(bridge.data()))); }
     function signature() { return JSON.stringify(bridge.data()); }
     function canEditDrivers() { return Boolean(bridge.canEditDrivers && bridge.canEditDrivers()); }
+    function seriesLabel(value) { return value === "open" ? "Open Series" : "D1 · Cup"; }
+    function previewStale(kind, state) { return state.preview && (state.preview.signature !== signature() || kind === "drivers" && state.preview.division !== state.division); }
     function form(kind, record) {
       if (kind === "drivers") return driverForm;
       if (kind === "results") {
@@ -37,14 +39,14 @@
       var preview = state.preview;
       if (!preview) return '<p class="csv-message" role="status">' + esc(state.message) + '</p>';
       if (preview.errors.length) return '<div class="csv-errors" role="alert"><b>Fix these before applying. Your draft has not changed.</b><ul>' + preview.errors.map(function (error) { return '<li>' + esc(error) + '</li>'; }).join("") + '</ul></div>';
-      var stale = preview.signature !== signature(), content;
+      var stale = previewStale(kind, state), content;
       if (kind === "results") {
         content = table(["Finish", "Driver", "Car #", "Qual.", "Stage 1", "Stage 2", "Fastest lap", "Most led", "Points"], preview.rows.map(function (row, index) {
           var finish = preview.record.finishes[index];
           return cells([row.position, row.driver.name + (row.driver.user ? " · @" + row.driver.user : ""), finish.number || "—", row.qualifying, row.stage1, row.stage2, row.fastestLap ? "Yes" : "No", row.mostLapsLed ? "Yes" : "No", finish.totalPoints]);
         }), "Results CSV preview");
       } else if (kind === "drivers") {
-        var actions = { add: "New driver", update: "Update existing driver", move: "Move existing driver" };
+        var actions = { add: state.division === "open" ? "Add to Open Series" : "New driver", update: "Update existing driver", move: "Move existing driver" };
         content = table(["DriverName", "Username", "Driver#", "Team", "Action"], preview.rows.map(function (row) {
           return cells([row.name, "@" + row.username, row.number || "Number pending", row.teamName || "No team", actions[row.action] || row.action]);
         }), "Driver roster CSV preview");
@@ -55,20 +57,21 @@
       var warnings = (preview.warnings || []).length ? '<div class="csv-warnings"><b>Review before applying</b><ul>' + preview.warnings.map(function (warning) { return '<li>' + esc(warning) + '</li>'; }).join("") + '</ul></div>' : '';
       var label = kind === "results" ? preview.rows.length + ' finishers' : kind === "drivers" ? preview.rows.length + (preview.rows.length === 1 ? ' driver' : ' drivers') : preview.entries.length + ' updated drivers';
       var ready = kind === "drivers" ? 'Nothing applied yet. Check the drivers, numbers, and teams, then save this preview to your draft.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.';
-      return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + label + '</h4>' + content + warnings + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : ready) + '</p><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div>';
+      return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + label + (kind === "drivers" ? ' · ' + seriesLabel(state.division) : '') + '</h4>' + content + warnings + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : ready) + '</p><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div>';
     }
     function widget(kind, record) {
       var state = form(kind, record), index = kind === "results" ? bridge.data().records.indexOf(record) : "";
       var instructions = kind === "results" ? 'Use a Roblox username, roster display name, or saved CSV name. Driver roster includes permanent drivers without a team. Qualifying and stage positions can be blank; both awards need Yes or No.' : 'Use the roster display name, saved CSV name, or username. Enter +/- as +2, -1, 0, or - for unknown. Car numbers keep leading zeros.';
       var replacement = kind === "results" ? 'Apply replaces this race’s finish order, qualifying, stages, and Yes/No awards. Manual car numbers and points eligibility are kept. Review DNFs or DNQs in manual entry afterward.' : 'Apply sets the listed drivers’ totals for this division; other drivers keep their current totals. Later race results continue adding points. Movement uses the previous positions supplied by this import.';
-      var upload = "", teams = "";
+      var upload = "", teams = "", selector = "";
       if (kind === "drivers") {
-        instructions = 'Paste rows or upload a CSV to add D1 drivers and update existing accounts. Usernames identify drivers; saved former usernames work too. Car numbers keep leading zeros.';
-        replacement = 'Team must match an existing team name or ID. A blank Team keeps an existing assignment or registers a driver without a team. A blank Driver# keeps an existing number or leaves it pending. Occupied seats are never overwritten. Changes stay in your draft until you publish.';
+        instructions = 'Choose the series, then paste rows or upload a CSV. Usernames identify drivers; saved former usernames work too. Car numbers keep leading zeros.';
+        selector = '<label class="csv-series-picker">Import into<select data-driver-csv-division aria-label="Import drivers into series"><option value="d1" ' + (state.division === "d1" ? 'selected' : '') + '>D1 · Cup</option><option value="open" ' + (state.division === "open" ? 'selected' : '') + '>Open Series</option></select></label>';
+        replacement = state.division === "open" ? 'Team is an independent Open Series label; leave it blank to keep the current label. A blank Driver# keeps an existing Open number or leaves it pending. D1 assignments stay intact. Existing Open manufacturers are kept; set a new entry’s manufacturer in the Open Series editor after import.' : 'Team must match an existing team name or ID. A blank Team keeps an existing assignment or registers a driver without a team. A blank Driver# keeps an existing D1 number or leaves it pending. Occupied seats are never overwritten. Changes stay in your draft until you publish.';
         upload = '<label class="csv-file-picker">Upload a CSV file<input type="file" accept=".csv,text/csv" data-csv-file></label>';
-        teams = '<details class="csv-team-reference"><summary>Available teams</summary><ul>' + (bridge.data().drivers.teams || []).map(function (team) { return '<li>' + esc(team.name) + (team.id ? ' · <code>' + esc(team.id) + '</code>' : '') + '</li>'; }).join("") + '</ul></details>';
+        if (state.division === "d1") teams = '<details class="csv-team-reference"><summary>Available teams</summary><ul>' + (bridge.data().drivers.teams || []).map(function (team) { return '<li>' + esc(team.name) + (team.id ? ' · <code>' + esc(team.id) + '</code>' : '') + '</li>'; }).join("") + '</ul></details>';
       }
-      return '<details class="csv-import" data-csv-kind="' + kind + '" data-record="' + index + '" ' + (state.open ? 'open' : '') + '><summary><span>Import ' + kind + ' from CSV</span><small>Paste → Preview → Apply</small></summary><div class="csv-import-body"><p>' + instructions + '</p>' + upload + '<label>CSV data<textarea data-csv-input rows="5" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="' + esc(csv.headers[kind].join(",")) + '">' + esc(state.text) + '</textarea></label><p class="csv-header-hint">Header: <code>' + esc(csv.headers[kind].join(",")) + '</code></p><p>' + replacement + '</p>' + teams + '<button type="button" class="button" data-csv-preview-button>Preview CSV</button><div data-csv-output aria-live="polite">' + previewHTML(kind, state) + '</div></div></details>';
+      return '<details class="csv-import" data-csv-kind="' + kind + '" data-record="' + index + '" ' + (state.open ? 'open' : '') + '><summary><span>Import ' + kind + ' from CSV</span><small>Paste → Preview → Apply</small></summary><div class="csv-import-body"><p>' + instructions + '</p>' + selector + upload + '<label>CSV data<textarea data-csv-input rows="5" wrap="off" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="' + esc(csv.headers[kind].join(",")) + '">' + esc(state.text) + '</textarea></label><p class="csv-header-hint">Header: <code>' + esc(csv.headers[kind].join(",")) + '</code></p><p>' + replacement + '</p>' + teams + '<button type="button" class="button" data-csv-preview-button>Preview CSV</button><div data-csv-output aria-live="polite">' + previewHTML(kind, state) + '</div></div></details>';
     }
     function results(record) { return widget("results", record); }
     function renderDrivers() { return canEditDrivers() ? widget("drivers") : ""; }
@@ -107,15 +110,15 @@
       if (state.reading) { bridge.toast("Wait for the CSV file to finish loading.", true); return true; }
       if (button.matches("[data-csv-preview-button]")) {
         var data = normalized();
-        state.preview = ctx.kind === "results" ? csv.results(state.text, data, ctx.record) : ctx.kind === "drivers" ? root.UARLDriverCSV.preview(state.text, data) : csv.standings(state.text, data, division);
+        state.preview = ctx.kind === "results" ? csv.results(state.text, data, ctx.record) : ctx.kind === "drivers" ? root.UARLDriverCSV.preview(state.text, data, state.division) : csv.standings(state.text, data, division);
         if (!state.preview.errors.length && ctx.kind === "results") bridge.recalculate(state.preview.record);
         state.preview.signature = signature();
         ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, state);
       } else {
         var preview = state.preview;
-        if (!preview || preview.errors.length || preview.signature !== signature()) { state.preview = null; state.message = "The draft changed. Preview the CSV again before applying."; ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, state); return true; }
+        if (!preview || preview.errors.length || previewStale(ctx.kind, state)) { state.preview = null; state.message = "The draft or selected series changed. Preview the CSV again before applying."; ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, state); return true; }
         if (ctx.kind === "drivers") {
-          try { bridge.replaceDrivers(preview.drivers, preview.rows); }
+          try { bridge.replaceDrivers(preview.drivers, preview.rows, preview.division); }
           catch (error) { bridge.toast(error.message, true); return true; }
         }
         state.preview = null; state.message = "CSV applied to your draft. You can still edit entries manually."; state.open = false;
@@ -127,6 +130,15 @@
     }
     function input(event) {
       var target = event.target;
+      if (target.matches("[data-driver-csv-division]")) {
+        if (!canEditDrivers()) return true;
+        if (!["d1", "open"].includes(target.value)) { target.value = driverForm.division; return true; }
+        bridge.commit();
+        driverForm.division = target.value; driverForm.preview = null; driverForm.message = 'Series changed to ' + seriesLabel(target.value) + '. Preview the CSV before applying.';
+        bridge.render();
+        var selector = document.querySelector('[data-driver-csv-division]'); if (selector) selector.focus({ preventScroll: true });
+        return true;
+      }
       if (target.matches("[data-csv-file]")) {
         var fileContext = context(target); if (!fileContext || fileContext.kind !== "drivers" || !canEditDrivers()) return true;
         var file = target.files[0]; if (!file) return true;
@@ -167,7 +179,7 @@
     function dataChanged() {
       document.querySelectorAll("[data-csv-kind]").forEach(function (widget) {
         var ctx = context(widget);
-        if (ctx && ctx.form.preview && ctx.form.preview.signature !== signature()) widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, ctx.form);
+        if (ctx && previewStale(ctx.kind, ctx.form)) widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, ctx.form);
       });
     }
     document.addEventListener("toggle", function (event) { if (event.target.isConnected && event.target.matches("[data-csv-kind]")) { var ctx = context(event.target); if (ctx) ctx.form.open = event.target.open; } }, true);

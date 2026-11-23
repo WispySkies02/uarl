@@ -24,7 +24,12 @@
   function searchText(value){return String(value||'').trim().toLowerCase().replace(/(^|\s)[@#]/g,'$1');}
   function currentMatches(text,make){var terms=searchText(state.query).split(/\s+/).filter(Boolean),haystack=searchText(text);return terms.every(function(term){return haystack.indexOf(term)>-1;})&&(state.make==='all'||make===state.make);}
   function entryClass(e){if(/^Open/.test(e.status))return 'open';if(/Part-Time|Development/.test(e.status)||/Part-Time|Development/.test(e.name||''))return 'special';return '';}
-  function driverImage(e,key){return e[key]||profile(e.user)[key]||'';}
+  function driverImage(e,key){
+    if(e[key])return e[key];
+    var saved=profile(e.user),profileNumber=String(saved.number==null?'':saved.number).trim(),entryNumber=String(e.number==null?'':e.number).trim();
+    if(key==='numberImage'&&profileNumber&&profileNumber!==entryNumber)return '';
+    return saved[key]||'';
+  }
   function signature(e){var src=driverImage(e,'signatureImage');return src?'<img class="pp-driver-signature" src="'+esc(src)+'" alt="" aria-hidden="true" loading="lazy">':'';}
   function driverLabel(e){var image=signature(e);return '<span class="pp-name-text'+(image?' pp-visually-hidden':'')+'">'+esc(displayEntry(e))+'</span>'+image;}
   var fittedArtwork=new Map();
@@ -105,7 +110,7 @@
   function freeAgentCard(f){return '<article class="pp-fa"><span class="pp-driver-status">D1 Free Agent</span><h3>'+esc(f.name)+'</h3><div class="user">'+esc(handleEntry(f))+'</div><div class="meta">Former '+esc(f.former)+'</div></article>';}
   function openEntryCard(e){
     var p=profile(e.user);
-    var r={team:{name:'Independent Open Series',id:'open',make:e.make},entry:Object.assign({},e,{status:e.status||'Open Series'}),name:displayEntry(e),user:e.user,profile:p,make:e.make};
+    var r={team:{name:e.team||'Independent Open Series',id:'open',make:e.make},entry:Object.assign({},e,{status:e.status||'Open Series'}),name:displayEntry(e),user:e.user,profile:p,make:e.make};
     var card=driverCard(r);
     if(String(e.number)==='28' && String(e.user).toLowerCase()==='aokikoto'&&!driverImage(e,'numberImage')){
       card=card.replace(/<span class="pp-driver-number[^"]*">.*?<\/span>/,
@@ -135,7 +140,7 @@
     var faGrid=root.querySelector('[data-fa-grid]');if(faGrid)faGrid.innerHTML=fas.map(freeAgentCard).join('');
     var emptyFa=root.querySelector('[data-empty-fa]');if(emptyFa)emptyFa.hidden=fas.length>0;
 
-    var opens=data.openEntries.filter(function(e){var s=[entrySearch(e),e.make].join(' ').toLowerCase();return currentMatches(s,e.make);}).sort(function(a,b){var an=parseInt(a.number,10),bn=parseInt(b.number,10);return (Number.isFinite(an)?an:9999)-(Number.isFinite(bn)?bn:9999)||String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true});});
+    var opens=data.openEntries.filter(function(e){var s=[entrySearch(e),e.team,e.make].join(' ').toLowerCase();return currentMatches(s,e.make);}).sort(function(a,b){var an=parseInt(a.number,10),bn=parseInt(b.number,10);return (Number.isFinite(an)?an:9999)-(Number.isFinite(bn)?bn:9999)||String(a.number||'').localeCompare(String(b.number||''),undefined,{numeric:true});});
     var openGrid=root.querySelector('[data-open-grid]');if(openGrid)openGrid.innerHTML=opens.map(openEntryCard).join('');
     var emptyOpen=root.querySelector('[data-empty-open]');if(emptyOpen)emptyOpen.hidden=opens.length>0;
 
@@ -166,7 +171,7 @@
       else e=t.entries.concat(t.pendingDrivers||[]).find(function(x){return String(x.number)===String(number)&&(user?x.user===user:displayEntry(x)===nameOverride);});
       if(e&&numberPending)e=Object.assign({},e,{numberPending:true});
     }
-    if(!t||!e){var oe=data.openEntries.find(function(x){return x.user===user&&String(x.number)===String(number);});if(oe){t={name:'Independent Open Series',make:oe.make,id:'open'};e=Object.assign({},oe,{status:oe.status||'Open Series'});}else return '';}
+    if(!t||!e){var oe=data.openEntries.find(function(x){return x.user===user&&String(x.number)===String(number);});if(oe){t={name:oe.team||'Independent Open Series',make:oe.make,id:'open'};e=Object.assign({},oe,{status:oe.status||'Open Series'});}else return '';}
     var p=e.user?profile(e.user):{alias:e.name,wins:0,championships:0,rank:0};var handle=e.user?'@'+(p.currentUsername||e.user):'Username not listed';var numberBlock=e.numberPending?'':(t.id==='aetherwing'||driverImage(e,'numberImage')?numberArt(t,e,'profile'):'<div class="pp-profile-number">#'+esc(number)+'</div>');
     return '<div class="pp-dialog-head'+(t.id==='aetherwing'?' pp-dialog-head-aetherwing':'')+'"><div class="pp-kicker">Driver profile</div><h2 id="pp-dialog-title">'+driverLabel(e)+'</h2>'+(t.id==='aetherwing'&&t.logo?'<img class="pp-dialog-team-logo" src="'+esc(t.logo)+'" alt="'+esc(t.name)+' logo">':'')+'</div><div class="pp-dialog-body"><div class="pp-driver-profile'+(e.numberPending?' no-number':'')+'">'+numberBlock+'<div><h3 class="pp-profile-name">'+driverLabel(e)+'</h3>'+'<p class="pp-profile-user">'+esc(handle)+'</p><div class="pp-profile-affiliation">'+manufacturerMark(t.make,true)+'<p>'+esc(t.name)+' · '+esc(statusLabel(e))+'</p></div><div class="pp-profile-stats"><div><b>'+p.wins+'</b><small>Career wins</small></div><div><b>'+p.championships+'</b><small>Championships</small></div><div><b>'+(p.rank?'#'+p.rank:'—')+'</b><small>Win-list rank</small></div></div></div></div></div>';
   }

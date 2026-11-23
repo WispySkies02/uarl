@@ -41,9 +41,9 @@
     },
     open: {
       title: "Open Series", kicker: "Independent entries", description: "Every active Open Series entry, including part-time status and manufacturer.", path: "drivers.openEntries",
-      itemTitle: function (x) { return "#" + (x.number || "—") + " " + (x.name || profileName(x.user) || "Entry"); }, itemMeta: function (x) { return [x.user && "@" + x.user, x.make, x.status].filter(Boolean).join(" · "); },
+      itemTitle: function (x) { return "#" + (x.number || "—") + " " + (x.name || profileName(x.user) || "Entry"); }, itemMeta: function (x) { return [x.user && "@" + x.user, x.team, x.make, x.status].filter(Boolean).join(" · "); },
       template: function () { return { number: "", user: "", make: "Toyota", status: "" }; },
-      fields: [["number","Car number"],["user","Roblox username"],["name","Display name override"],["make","Manufacturer","select",["Toyota","Ford","Chevrolet","Generic"]],["status","Status","select",["","Full-Time","Part-Time","Development"]],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]]
+      fields: [["number","Car number"],["user","Roblox username"],["team","Entry team (optional)"],["name","Display name override"],["make","Manufacturer","select",["Toyota","Ford","Chevrolet","Generic"]],["status","Status","select",["","Full-Time","Part-Time","Development"]],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]]
     },
     freeAgents: {
       title: "Free Agents", kicker: "Driver market", description: "Available drivers and their most recent team or charter history.", path: "drivers.freeAgents",
@@ -342,7 +342,7 @@
     else if(section==='paints'){title=item.title||'New paint scheme';meta=[item.number&&'#'+item.number,item.name,item.team].filter(Boolean).join(' · ');image=item.image;}
     else if(section==='profiles'){title=item.alias||item.username;meta='@'+item.username;image=item.signatureImage;}
     else if(section==='schedule'){title=item.name;meta=[item.date,item.track,item.scheduleStatus||'Scheduled'].filter(Boolean).join(' · ');}
-    else if(section==='open'){title=window.UARLData.driverName(item,state.data.drivers.profiles);meta=[item.number&&'#'+item.number,item.make,item.status].filter(Boolean).join(' · ');image=item.signatureImage;}
+    else if(section==='open'){title=window.UARLData.driverName(item,state.data.drivers.profiles);meta=[item.number&&'#'+item.number,item.team,item.make,item.status].filter(Boolean).join(' · ');image=item.signatureImage;}
     if(!title)return '';
     return '<aside class="workspace-preview" aria-label="Entry preview">'+(image?'<img src="'+esc(image)+'" alt="" loading="lazy">':'')+'<div><span class="eyebrow">At a glance</span><h3>'+esc(title)+'</h3><p>'+esc(meta)+'</p></div></aside>';
   }
@@ -362,12 +362,18 @@
     return profile&&profile.currentUsername||key||user||'';
   }
   function canEditDriverIdentity(){return Boolean(state.user&&['owner','admin'].includes(state.user.role));}
-  function replaceImportedDrivers(drivers, rows){
+  function replaceImportedDrivers(drivers, rows, division){
     if(!canEditDriverIdentity())throw new Error('Only Owners and Admins can import drivers.');
     if(pendingImageUploads)throw new Error('Wait for image uploads to finish, then preview the CSV again.');
     state.data.drivers=clone(drivers);
-    var keys=Object.keys(state.data.drivers.profiles),first=rows&&rows.length?keys.indexOf(rows[0].user):-1;
-    if(first>=0)state.selected=first;
+    if(division==='open'){
+      state.section='open';
+      var user=rows&&rows.length&&rows[0].user,index=(state.data.drivers.openEntries||[]).findIndex(function(entry){return identityText(entry.user)===identityText(user);});
+      state.selected=Math.max(0,index);
+    }else{
+      var keys=Object.keys(state.data.drivers.profiles),first=rows&&rows.length?keys.indexOf(rows[0].user):-1;
+      if(first>=0)state.selected=first;
+    }
     state.step=0;state.query='';
   }
   function driverIdentityShortcut(user) {
@@ -686,7 +692,7 @@
 
   var editorGroups = {
     profiles:[['Identity',['username','currentUsername','alias','csvDivisions','number','csvAliases']],['Career',['wins','championships','rank']],['Artwork',['numberImage','signatureImage']]],
-    open:[['Driver',['number','user','name','make','status']],['Artwork',['numberImage','signatureImage']]],
+    open:[['Driver',['number','user','team','name','make','status']],['Artwork',['numberImage','signatureImage']]],
     freeAgents:[['Driver',['name','user']],['Previous entry',['former']]],
     moves:[['Signing',['driver','team','number','make','signedAt']]],
     paints:[['Driver',['division','series','number','name','handle','team','make']],['Scheme',['id','title','subtitle','image','body','scrAffiliate']],['Tags & search',['extra','search']]],
