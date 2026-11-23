@@ -12,8 +12,8 @@ function league() {
   data.drivers.teams.push({
     id: 'csv-racing', name: 'CSV Racing', owner: 'CSV Owner', make: 'Ford',
     entries: [
-      { number: '05', name: 'OPEN', status: 'Open FT', charterType: 'FT' },
-      { number: '5', name: 'OPEN', status: 'Open PT', charterType: 'PT' }
+      { number: '005', name: 'OPEN', status: 'Open FT', charterType: 'FT' },
+      { number: '95', name: 'OPEN', status: 'Open PT', charterType: 'PT' }
     ]
   });
   Object.assign(data.drivers.profiles.JJElliott2004, {
@@ -62,24 +62,28 @@ async function preview(page, source) {
   return node;
 }
 
-test('driver CSV previews without editing, applies as one undo action, recovers, and publishes stable identities with team badges', async ({ page }) => {
-  const { published, data } = await boot(page);
+test('D1 CSV skips existing and repeated accounts, applies new drivers once, and preserves manual data through recovery and publishing', async ({ page }) => {
+  const { published } = await boot(page);
+  const data = await page.evaluate(async () => await window.UARLData.load());
   await page.locator('[data-workspace-task="driver-csv"]').click();
   await expect(widget(page)).toBeVisible();
-  const source = header + '\nCSV First,CsvFirst22,05,CSV Racing\nCSV Second,CsvSecond22,5,csv-racing\nJJ CSV,JamesRacer22,84,whitlock';
+  const source = header + '\nCSV First,CsvFirst22,005,CSV Racing\nStale duplicate,csvfirst22,006,Missing Team\nCSV Second,CsvSecond22,95,csv-racing\nJJ CSV,JamesRacer22,7,Missing Team\nIgnored JJ alias,JJElliott2004,invalid,Missing Team';
   const before = await stored(page), node = await preview(page, source);
   await expect(node.locator('.csv-errors')).toHaveCount(0);
-  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(3);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(5);
   await expect(node.locator('[data-csv-preview]')).toContainText('CSV First');
   await expect(node.locator('[data-csv-preview]')).toContainText('JamesRacer22');
+  await expect(node.locator('[data-csv-preview]')).toContainText(/Skip .*driver/);
+  await expect(node.locator('[data-csv-preview]')).toContainText('3 skipped');
   expect(await stored(page)).toEqual(before);
   await node.locator('[data-csv-apply]').click();
   let draft = await stored(page);
   const csvTeam = draft.drivers.teams.find(team => team.id === 'csv-racing');
-  expect(csvTeam.entries.map(entry => [entry.user, entry.number])).toEqual([['CsvFirst22', '05'], ['CsvSecond22', '5']]);
+  expect(csvTeam.entries.map(entry => [entry.user, entry.number])).toEqual([['CsvFirst22', '005'], ['CsvSecond22', '95']]);
   expect(draft.drivers.profiles.CsvFirst22.alias).toBe('CSV First');
   expect(draft.drivers.profiles.CsvSecond22.alias).toBe('CSV Second');
-  expect(draft.drivers.profiles.JJElliott2004).toMatchObject({ alias: 'JJ CSV', currentUsername: 'JamesRacer22', wins: 13, championships: 2, rank: 5, signatureImage: data.drivers.profiles.JJElliott2004.signatureImage });
+  expect(draft.drivers.profiles.JJElliott2004).toEqual(data.drivers.profiles.JJElliott2004);
+  expect(draft.drivers.teams.find(team => team.id === 'whitlock')).toEqual(data.drivers.teams.find(team => team.id === 'whitlock'));
   expect(draft.drivers.profiles.JamesRacer22).toBeUndefined();
   expect(draft.drivers.profiles.JamesEklund).toEqual(data.drivers.profiles.JamesEklund);
   expect(draft.standings[0].pointsAdjustment).toBe(234);
@@ -93,7 +97,16 @@ test('driver CSV previews without editing, applies as one undo action, recovers,
   await page.locator('[data-workspace-redo]').first().click();
   await page.reload();
   await expect(page.locator('[data-save-status]')).toContainText('Recovered');
-  expect((await stored(page)).drivers.profiles.JJElliott2004.alias).toBe('JJ CSV');
+  expect((await stored(page)).drivers.profiles.JJElliott2004.alias).toBe('JJ');
+  const beforeReimport = await stored(page);
+  await openRoster(page);
+  await preview(page, source);
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview]')).toContainText('5 skipped');
+  await expect(node.locator('[data-csv-status]')).toContainText('No new drivers to add');
+  await expect(node.locator('[data-csv-apply]')).toBeDisabled();
+  await node.locator('[data-csv-apply]').dispatchEvent('click');
+  expect(await stored(page)).toEqual(beforeReimport);
   await page.locator('[data-action="publish"]').first().click();
   await page.locator('[data-confirm-publish]').click();
   await expect.poll(() => published.length).toBe(1);
@@ -114,11 +127,11 @@ test('invalid rows and stale previews never apply roster edits or overwrite anot
   await boot(page, { role: 'admin' });
   await openRoster(page);
   const before = await stored(page);
-  let node = await preview(page, header + '\nNew Driver,FreshCsv22,05,Missing Racing');
+  let node = await preview(page, header + '\nNew Driver,FreshCsv22,005,Missing Racing');
   await expect(node.locator('.csv-errors')).toBeVisible();
   await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
   expect(await stored(page)).toEqual(before);
-  node = await preview(page, header + '\nNew Driver,FreshCsv22,84,whitlock');
+  node = await preview(page, header + '\nNew Driver,FreshCsv22,84,csv-racing');
   await expect(node.locator('.csv-errors')).toBeVisible();
   await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
   expect(await stored(page)).toEqual(before);
@@ -135,7 +148,9 @@ test('invalid rows and stale previews never apply roster edits or overwrite anot
   await node.locator('[data-csv-input]').fill(header + '\nDuplicate,JamesRacer22,84,whitlock\nDuplicate,JJElliott2004,84,whitlock');
   await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
   await node.locator('[data-csv-preview-button]').click();
-  await expect(node.locator('.csv-errors')).toBeVisible();
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview]')).toContainText('2 skipped');
+  await expect(node.locator('[data-csv-apply]')).toBeDisabled();
   expect(await stored(page)).toEqual(manuallyEdited);
 });
 
@@ -174,7 +189,7 @@ test('a blank Team blocks D1 imports atomically but imports an independent Open 
   await expect(node.locator('.csv-errors')).toContainText(/D1.*team|team.*D1/i);
   await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
   expect(await stored(page)).toEqual(before);
-  await preview(page, header + '\nAssigned Driver,AssignedCsv22,05,csv-racing\nIndependent Driver,IndependentCsv22,005,');
+  await preview(page, header + '\nAssigned Driver,AssignedCsv22,005,csv-racing\nIndependent Driver,IndependentCsv22,095,');
   await expect(node.locator('.csv-errors')).toContainText('Line 3');
   await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
   expect(await stored(page)).toEqual(before);
@@ -228,7 +243,7 @@ test('Race Control cannot access driver CSV import while its results and standin
   await expect(widget(page)).toHaveCount(0);
 });
 
-test('Open CSV imports preserve the same driver and independent series numbers, artwork, manufacturers and points', async ({ page }) => {
+test('Open CSV allows shared numbers while skipping saved and repeated drivers without changing independent manufacturers, artwork or points', async ({ page }) => {
   const data = league();
   Object.assign(data.drivers.profiles.JJElliott2004, { number: '84', numberImage: '/assets/aetherwing/numbers/28.png' });
   const initialOpenJJ = data.drivers.openEntries.find(entry => entry.user === 'JJElliott2004');
@@ -239,30 +254,33 @@ test('Open CSV imports preserve the same driver and independent series numbers, 
   const baseline = await page.evaluate(async () => await window.UARLData.load());
   const node = await openRoster(page);
   await node.locator('[data-driver-csv-division]').selectOption('open');
-  const source = header + '\nJJ Open,JamesRacer22,,Independent Open Racing\nOpen Rookie,OpenRookie22,005,New Open Racing\nFrog Open,frogboy4783,,Another Open Team';
+  const source = header + '\nJJ Open,JamesRacer22,,Independent Open Racing\nOpen Rookie,OpenRookie22,48,New Open Racing\nOpen Twin,OpenTwin22,48,\nIgnored rookie,openrookie22,9,Ignored Racing\nFrog Open,frogboy4783,,Another Open Team';
   const before = await stored(page);
   await preview(page, source);
   await expect(node.locator('.csv-errors')).toHaveCount(0);
-  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(3);
-  await expect(node.locator('[data-csv-preview]')).toContainText('Independent Open Racing');
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(5);
+  await expect(node.locator('[data-csv-preview]')).toContainText('Original Open Racing');
+  await expect(node.locator('[data-csv-preview]')).toContainText('2 skipped');
   await expect(node.locator('.csv-header-hint code')).toHaveText(header);
   expect(await stored(page)).toEqual(before);
   await node.locator('[data-csv-apply]').click();
   await expect(page.locator('[data-field="number"]')).toHaveValue('48');
-  await expect(page.locator('[data-field="team"]')).toHaveValue('Independent Open Racing');
-  await expect(page.locator('[data-field="make"]')).toHaveValue('Chevrolet');
+  await expect(page.locator('[data-field="team"]')).toHaveValue('New Open Racing');
+  await expect(page.locator('[data-field="make"]')).toHaveValue('Generic');
   let draft = await stored(page);
   expect(draft.drivers.teams).toEqual(baseline.drivers.teams);
   expect(draft.drivers.freeAgents).toEqual(baseline.drivers.freeAgents);
   expect(draft.drivers.recentMoves).toEqual(baseline.drivers.recentMoves);
-  expect(draft.drivers.profiles.JJElliott2004).toMatchObject({ alias: 'JJ Open', currentUsername: 'JamesRacer22', number: '84', numberImage: baseline.drivers.profiles.JJElliott2004.numberImage, signatureImage: baseline.drivers.profiles.JJElliott2004.signatureImage, wins: 13, championships: 2, rank: 5 });
+  expect(draft.drivers.profiles.JJElliott2004).toEqual(baseline.drivers.profiles.JJElliott2004);
   expect(draft.drivers.profiles.JamesRacer22).toBeUndefined();
   expect(draft.drivers.profiles.OpenRookie22.csvDivisions).toEqual(['open']);
   expect(draft.drivers.profiles.Frogboy4783.number).toBe(baseline.drivers.profiles.Frogboy4783.number);
   const openJJ = draft.drivers.openEntries.filter(entry => entry.user === 'JJElliott2004');
   expect(openJJ).toHaveLength(1);
-  expect(openJJ[0]).toMatchObject({ number: '48', make: 'Chevrolet', team: 'Independent Open Racing' });
-  expect(draft.drivers.openEntries.find(entry => entry.user === 'OpenRookie22')).toMatchObject({ number: '005', make: 'Generic', team: 'New Open Racing' });
+  expect(openJJ[0]).toEqual(baseline.drivers.openEntries.find(entry => entry.user === 'JJElliott2004'));
+  expect(draft.drivers.openEntries.find(entry => entry.user === 'OpenRookie22')).toMatchObject({ name: 'Open Rookie', number: '48', make: 'Generic', team: 'New Open Racing' });
+  expect(draft.drivers.openEntries.find(entry => entry.user === 'OpenTwin22')).toMatchObject({ number: '48', make: 'Generic' });
+  expect(draft.drivers.openEntries.filter(entry => entry.number === '48')).toHaveLength(3);
   const openFrog = draft.drivers.openEntries.find(entry => entry.user === 'Frogboy4783');
   expect(openFrog.number || '').toBe('');
   expect(openFrog.numberPending).toBe(true);
@@ -274,7 +292,19 @@ test('Open CSV imports preserve the same driver and independent series numbers, 
   await page.locator('[data-workspace-redo]').first().click();
   await page.reload();
   await expect(page.locator('[data-save-status]')).toContainText('Recovered');
-  expect((await stored(page)).drivers.openEntries.find(entry => entry.user === 'JJElliott2004').team).toBe('Independent Open Racing');
+  expect((await stored(page)).drivers.openEntries.find(entry => entry.user === 'JJElliott2004').team).toBe('Original Open Racing');
+  await page.locator('.admin-sidebar [data-section="open"]').click();
+  await page.locator('.item-row').filter({ has: page.locator('strong', { hasText: /Open Rookie/ }) }).click();
+  await page.locator('[data-field="make"]').selectOption('Ford');
+  const beforeReimport = await stored(page);
+  await openRoster(page);
+  await node.locator('[data-driver-csv-division]').selectOption('open');
+  await preview(page, source);
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview]')).toContainText('5 skipped');
+  await expect(node.locator('[data-csv-status]')).toContainText('No new drivers to add');
+  await expect(node.locator('[data-csv-apply]')).toBeDisabled();
+  expect(await stored(page)).toEqual(beforeReimport);
   await page.locator('[data-action="publish"]').first().click();
   await page.locator('[data-confirm-publish]').click();
   await expect.poll(() => published.length).toBe(1);
@@ -284,10 +314,14 @@ test('Open CSV imports preserve the same driver and independent series numbers, 
   const openCard = page.locator('[data-open-grid] .pp-driver').filter({ has: page.locator('[data-driver="JJElliott2004"]') });
   await expect(openCard.locator('.pp-driver-number')).toHaveText('#48');
   await expect(openCard.locator('.pp-upload-number-driver')).toHaveCount(0);
-  await expect(openCard.locator('.meta')).toContainText('Independent Open Racing');
+  await expect(openCard.locator('.meta')).toContainText('Original Open Racing');
   await expect(openCard.getByRole('img', { name: 'Chevrolet manufacturer', exact: true })).toHaveCount(1);
   const newCard = page.locator('[data-open-grid] .pp-driver').filter({ has: page.locator('[data-driver="OpenRookie22"]') });
-  await expect(newCard.locator('.pp-mfg-generic')).toBeVisible();
+  await expect(newCard.locator('.pp-driver-number')).toHaveText('#48');
+  await expect(newCard.getByRole('img', { name: 'Ford manufacturer', exact: true })).toBeVisible();
+  const twinCard = page.locator('[data-open-grid] .pp-driver').filter({ has: page.locator('[data-driver="OpenTwin22"]') });
+  await expect(twinCard.locator('.pp-driver-number')).toHaveText('#48');
+  await expect(twinCard.locator('.pp-mfg-generic')).toBeVisible();
   await page.locator('[data-view="drivers"]').click();
   const d1Card = page.locator('[data-driver-grid] .pp-driver').filter({ has: page.locator('[data-driver="JJElliott2004"]') });
   await expect(d1Card.locator('[data-driver]')).toHaveAttribute('data-number', '84');
@@ -302,7 +336,15 @@ test('Open CSV imports preserve the same driver and independent series numbers, 
   await expect(jjRow.locator('.rc-number')).toHaveText('48');
   await expect(jjRow.getByRole('img', { name: 'Chevrolet manufacturer', exact: true })).toHaveCount(1);
   const newcomer = page.locator('[data-rc-standings-body] tr[data-driver-id="OpenRookie22"]');
-  await expect(newcomer.getByRole('img', { name: 'Manufacturer not assigned', exact: true })).toHaveCount(1);
+  await expect(newcomer).toHaveCount(1);
+  await expect(newcomer.locator('.rc-number')).toHaveText('48');
+  await expect(newcomer.locator('.rc-points-value')).toHaveText('0');
+  await expect(newcomer.getByRole('img', { name: 'Ford manufacturer', exact: true })).toHaveCount(1);
+  const twinRow = page.locator('[data-rc-standings-body] tr[data-driver-id="OpenTwin22"]');
+  await expect(twinRow).toHaveCount(1);
+  await expect(twinRow.locator('.rc-number')).toHaveText('48');
+  await expect(twinRow.locator('.rc-points-value')).toHaveText('0');
+  await expect(twinRow.getByRole('img', { name: 'Manufacturer not assigned', exact: true })).toHaveCount(1);
 });
 
 test('switching the driver CSV series invalidates its preview while keeping the same four-column source', async ({ page }) => {
@@ -312,7 +354,7 @@ test('switching the driver CSV series invalidates its preview while keeping the 
   const select = node.locator('[data-driver-csv-division]');
   await expect(select).toHaveValue('d1');
   expect(await select.locator('option').evaluateAll(options => options.map(option => option.value))).toEqual(['d1', 'open']);
-  const source = header + '\nJJ Series,JamesRacer22,84,whitlock';
+  const source = header + '\nSeries Driver,SeriesSwitch22,95,csv-racing';
   await preview(page, source);
   await expect(node.locator('[data-csv-apply]')).toBeEnabled();
   await select.selectOption('open');
@@ -326,7 +368,8 @@ test('switching the driver CSV series invalidates its preview while keeping the 
   await node.locator('[data-csv-apply]').click();
   const draft = await stored(page);
   expect(draft.drivers.teams).toEqual(baseline.drivers.teams);
-  expect(draft.drivers.openEntries.find(entry => entry.user === 'JJElliott2004')).toMatchObject({ number: '84', make: 'Chevrolet', team: 'whitlock' });
+  expect(draft.drivers.openEntries.find(entry => entry.user === 'SeriesSwitch22')).toMatchObject({ number: '95', make: 'Generic', team: 'csv-racing' });
+  expect(draft.drivers.profiles.SeriesSwitch22.csvDivisions).toEqual(['open']);
 });
 
 test('mobile Open CSV file uploads create only Open eligibility and retain leading-zero numbers after recovery', async ({ page }) => {

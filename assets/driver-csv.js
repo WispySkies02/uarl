@@ -19,10 +19,8 @@
     if (!["d1", "open"].includes(division)) errors.unshift("Choose D1 or Open Series before importing drivers.");
     if (errors.length) return { errors: errors, rows: rows, warnings: warnings, division: division };
     var drivers = clone(data && data.drivers || {});
-    if (!drivers.profiles || typeof drivers.profiles !== "object" || Array.isArray(drivers.profiles)) drivers.profiles = {};
-    if (division === "d1" && !Array.isArray(drivers.teams)) drivers.teams = [];
-    if (division === "open" && !Array.isArray(drivers.openEntries)) drivers.openEntries = [];
-    var profiles = drivers.profiles, seenAccounts = new Set(), seenSeats = new Set();
+    var profiles = drivers.profiles && typeof drivers.profiles === "object" && !Array.isArray(drivers.profiles) ? drivers.profiles : {};
+    var seenAccounts = new Set(), seenSeats = new Set();
 
     function resolve(value) {
       var id = identity(value);
@@ -60,14 +58,6 @@
       array(drivers.openEntries).concat(array(drivers.freeAgents)).forEach(function (entry) { if (!result && identity(account(entry)) === identity(value)) result = text(account(entry)).replace(/^@/, ""); });
       return result;
     }
-    function vacant(entry) {
-      var next = Object.assign({}, entry, { name: "OPEN" });
-      var type = text(entry.seatType || entry.charterType || entry.status);
-      next.status = /part|^pt$/i.test(type) ? "Open PT" : /development|^dev$/i.test(type) ? "Open Development" : /shared/i.test(type) ? "Open Shared" : "Open FT";
-      ["user", "username", "driverId", "numberImage", "signatureImage", "signedAt", "recent"].forEach(function (key) { delete next[key]; });
-      if (!hasNumber(entry)) next.numberPending = true; else delete next.numberPending;
-      return next;
-    }
     function updateProfile(saved, user, username, name, number, previousName) {
       var profile = saved || { alias: name, currentUsername: username, usernameAliases: [], csvAliases: [], csvDivisions: [], number: "", wins: 0, championships: 0, rank: 0 };
       profile.csvAliases = unique(array(profile.csvAliases).concat([profile.alias, previousName, name].filter(function (alias) { return text(alias) && !placeholder(alias); })));
@@ -77,6 +67,7 @@
       // An Open entry owns its number independently of the driver's D1 profile.
       if (division === "d1" || !saved) profile.number = number;
       Object.defineProperty(profiles, user, { value: profile, enumerable: true, configurable: true, writable: true });
+      drivers.profiles = profiles;
       return profile;
     }
     function preserveOpenArtwork(saved, user, number, line) {
@@ -97,63 +88,59 @@
       delete saved.numberImage;
       return true;
     }
-    function importOpen(line, name, username, suppliedNumber, teamText, user, current, saved, countBefore) {
-      var number = suppliedNumber || (current && hasNumber(current.entry) ? text(current.entry.number) : "");
-      var target = current && current.entry, targetIndex = current ? current.index : -1;
-      if (number) {
-        var numbered = drivers.openEntries.map(function (entry, index) { return { entry: entry, index: index }; }).filter(function (item) { return hasNumber(item.entry) && text(item.entry.number) === number; });
-        if (numbered.length > 1) errors.push(line + "Open Series has duplicate #" + number + " entries. Resolve them before importing.");
-        if (numbered.length === 1) {
-          target = numbered[0].entry; targetIndex = numbered[0].index;
-          if (occupied(target) && !sameAccount(account(target), user)) errors.push(line + "#" + number + " in Open Series already has another driver. This import cannot replace them.");
-        }
-        if (seenSeats.has(number)) errors.push(line + "Duplicate #" + number + " assignment in Open Series.");
-        seenSeats.add(number);
-      }
-      if (errors.length !== countBefore) return;
-
-      var profile = updateProfile(saved, user, username, name, number, current && current.entry.name);
-      var next = Object.assign({}, current ? current.entry : target || {}, { user: user, name: name, number: number });
+    function importOpen(name, username, number, teamText, user, saved) {
+      if (!Array.isArray(drivers.openEntries)) drivers.openEntries = [];
+      // Open numbers are shared by drivers. Reuse only a genuinely vacant row,
+      // never a different driver's entry with the same car number.
+      var targetIndex = number ? drivers.openEntries.findIndex(function (entry) { return hasNumber(entry) && text(entry.number) === number && !occupied(entry); }) : -1;
+      var target = targetIndex >= 0 ? drivers.openEntries[targetIndex] : null;
+      var profile = updateProfile(saved, user, username, name, number);
+      var next = Object.assign({}, target || {}, { user: user, name: name, number: number, make: "Generic", status: "Open Series" });
       ["username", "driverId"].forEach(function (key) { delete next[key]; });
       if (number) delete next.numberPending; else next.numberPending = true;
-      if (teamText) next.team = teamText;
-      else if (!current) delete next.team;
-      if (!current) {
-        ["numberImage", "signatureImage", "signedAt", "recent"].forEach(function (key) { delete next[key]; });
-        next.make = "Generic";
-        next.status = "Open Series";
-      }
-      if (current && number !== text(current.entry.number) && current.entry.numberImage) warnings.push(line + "The Open Series car number changes to " + (number ? "#" + number : "pending") + ". Review this entry’s number artwork; the uploaded image is preserved.");
+      if (teamText) next.team = teamText; else delete next.team;
+      ["numberImage", "signatureImage", "signedAt", "recent"].forEach(function (key) { delete next[key]; });
       if (targetIndex >= 0) drivers.openEntries[targetIndex] = next; else drivers.openEntries.push(next);
-      if (current && targetIndex !== current.index) drivers.openEntries.splice(current.index, 1);
-      rows.push({ name: name, user: user, username: text(profile.currentUsername) || user, number: number, team: text(next.team), teamName: text(next.team) || "Independent entry", action: current ? "update" : "add" });
+      rows.push({ name: name, user: user, username: text(profile.currentUsername) || user, number: number, team: text(next.team), teamName: text(next.team) || "Independent entry", action: "add" });
+      seenAccounts.add(identity(user));
+    }
+    function skip(user, username, current, saved) {
+      var entry = current.entry, team = current.team, repeated = seenAccounts.has(identity(user));
+      var name = text(entry.name) || text(saved && saved.alias) || user;
+      rows.push({ name: name, user: user, username: text(saved && saved.currentUsername) || username || user, number: hasNumber(entry) ? text(entry.number) : "", team: division === "d1" ? text(team.id) : text(entry.team), teamName: division === "d1" ? text(team.name) : text(entry.team) || "Independent entry", action: "skip", reason: repeated ? "Repeated CSV driver" : "Already on " + (division === "open" ? "Open Series" : "D1") + " roster" });
+      seenAccounts.add(identity(user));
     }
 
     parsed.rows.forEach(function (row) {
       var line = "Line " + row.line + ": ", cells = row.cells, name = text(cells[0]), username = text(cells[1]).replace(/^@/, ""), suppliedNumber = text(cells[2]), teamText = text(cells[3]);
       var countBefore = errors.length;
-      if (!name || placeholder(name)) errors.push(line + "DriverName must name a driver, not an open or vacant seat.");
       if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) errors.push(line + "Username must contain 3–20 letters, numbers or underscores.");
-      if (suppliedNumber && !/^\d{1,3}$/.test(suppliedNumber)) errors.push(line + "Driver# must contain one to three digits or be blank. Leading zeros are kept.");
       var resolved = resolve(username);
       if (resolved.ambiguous) errors.push(line + "That username matches more than one registered driver. Resolve their account aliases before importing.");
       var existingHandle = resolved.key || knownHandle(username), user = existingHandle || username;
-      if (seenAccounts.has(identity(user))) errors.push(line + "Duplicate driver account “" + username + "”. List each driver once, including former usernames.");
-      seenAccounts.add(identity(user));
       var existing = division === "open" ? openAssignments(user) : assignments(user);
       if (existing.length > 1) errors.push(line + "This account already has multiple " + (division === "open" ? "Open Series" : "D1") + " entries. Resolve the duplicate roster entries before importing.");
       var current = existing[0], saved = Object.hasOwn(profiles, user) && profiles[user] || null;
       if (saved && (typeof saved !== "object" || Array.isArray(saved))) errors.push(line + "The existing driver profile is invalid. Repair it before importing.");
-      if (division === "open") { importOpen(line, name, username, suppliedNumber, teamText, user, current, saved, countBefore); return; }
-      var destination = current && current.team;
+      if (errors.length !== countBefore) return;
+      if (current) { skip(user, username, current, saved); return; }
+      if (!name || placeholder(name)) errors.push(line + "DriverName must name a driver, not an open or vacant seat.");
+      if (suppliedNumber && !/^\d{1,3}$/.test(suppliedNumber)) errors.push(line + "Driver# must contain one to three digits or be blank. Leading zeros are kept.");
+      if (division === "open") { if (errors.length === countBefore) importOpen(name, username, suppliedNumber, teamText, user, saved); return; }
+      var destination;
       if (teamText) {
-        var matches = drivers.teams.filter(function (team) { return identity(team.id) === identity(teamText) || identity(team.name) === identity(teamText); });
+        var matches = array(drivers.teams).filter(function (team) { return identity(team.id) === identity(teamText) || identity(team.name) === identity(teamText); });
         if (matches.length !== 1) errors.push(line + (matches.length ? "Team is ambiguous. Use a unique existing D1 team name or ID." : "Unknown team “" + teamText + "”. Use an existing D1 team name or ID, or leave Team blank only to keep an existing assignment."));
         destination = matches.length === 1 ? matches[0] : null;
       }
       if (!destination && !teamText) errors.push(line + "Team is required for D1. Enter an existing D1 team name or ID; leave it blank only for a driver already assigned to a team.");
       var savedD1Number = saved && (!Array.isArray(saved.csvDivisions) || saved.csvDivisions.includes("d1")) && hasNumber(saved) ? text(saved.number) : "";
-      var number = suppliedNumber || (current ? hasNumber(current.entry) ? text(current.entry.number) : "" : savedD1Number);
+      var number = suppliedNumber || savedD1Number;
+      if (number && array(drivers.teams).some(function (team) {
+        return array(team.entries).concat(array(team.pendingDrivers)).some(function (entry) {
+          return occupied(entry) && hasNumber(entry) && text(entry.number) === number && !sameAccount(account(entry), user);
+        });
+      })) errors.push(line + "#" + number + " is already assigned to another D1 driver. D1 driver numbers must be unique across teams.");
       var target = null, targetIndex = -1, targetField = number ? "entries" : "pendingDrivers";
       if (destination) {
         if (number) {
@@ -161,39 +148,31 @@
           if (numbered.length > 1) errors.push(line + "This team has duplicate #" + number + " entries. Resolve them before importing.");
           if (numbered.length === 1) { target = numbered[0].entry; targetIndex = numbered[0].index; }
           if (target && occupied(target) && !sameAccount(account(target), user)) errors.push(line + "#" + number + " on " + destination.name + " already has another driver. This import cannot replace them.");
-          if (!target && current && current.team === destination && current.field === "entries") { target = current.entry; targetIndex = current.index; }
           var seat = drivers.teams.indexOf(destination) + ":" + number;
           if (seenSeats.has(seat)) errors.push(line + "Duplicate #" + number + " assignment for " + destination.name + ".");
           seenSeats.add(seat);
-        } else if (current && current.team === destination) { target = current.entry; targetIndex = current.index; targetField = current.field; }
+        }
       }
       if (errors.length !== countBefore) return;
       if (!preserveOpenArtwork(saved, user, number, line)) return;
 
-      var oldNumber = current && hasNumber(current.entry) ? text(current.entry.number) : text(saved && saved.number);
-      var profile = updateProfile(saved, user, username, name, number, current && current.entry.name);
-      if (number !== oldNumber && oldNumber && (profile.numberImage || current && current.entry.numberImage)) warnings.push(line + "The car number changes from #" + oldNumber + " to " + (number ? "#" + number : "pending") + ". Review this driver’s number artwork; the uploaded image is preserved.");
+      var oldNumber = text(saved && saved.number);
+      var profile = updateProfile(saved, user, username, name, number);
+      if (number !== oldNumber && oldNumber && profile.numberImage) warnings.push(line + "The car number changes from #" + oldNumber + " to " + (number ? "#" + number : "pending") + ". Review this driver’s number artwork; the uploaded image is preserved.");
 
       if (destination) {
-        var sameSeat = current && target === current.entry;
-        var next = Object.assign({}, target || {}, { user: user, name: name, number: number, status: target && target.status || current && current.entry.status || "Signed" });
+        var next = Object.assign({}, target || {}, { user: user, name: name, number: number, status: target && target.status || "Signed" });
         if (/^(?:open|vacant|inactive|disabled|retired|released|unsigned)\b/i.test(text(next.status))) next.status = "Signed";
         ["username", "driverId"].forEach(function (key) { delete next[key]; });
         if (number) delete next.numberPending; else next.numberPending = true;
-        if (!sameSeat) {
-          ["numberImage", "signatureImage", "signedAt", "recent"].forEach(function (key) { delete next[key]; });
-          ["numberImage", "signatureImage"].forEach(function (key) { var image = current && current.entry[key] || profile[key]; if (image) next[key] = image; });
-          if (current) ["signedAt", "recent"].forEach(function (key) { if (Object.hasOwn(current.entry, key)) next[key] = current.entry[key]; });
-        }
-        if (current && !sameSeat) {
-          if (current.field === "entries") current.team.entries[current.index] = vacant(current.entry);
-          else current.team.pendingDrivers.splice(current.index, 1);
-        }
+        ["numberImage", "signatureImage", "signedAt", "recent"].forEach(function (key) { delete next[key]; });
+        ["numberImage", "signatureImage"].forEach(function (key) { if (profile[key]) next[key] = profile[key]; });
         if (!Array.isArray(destination[targetField])) destination[targetField] = [];
         if (targetIndex >= 0) destination[targetField][targetIndex] = next; else destination[targetField].push(next);
         if (Array.isArray(drivers.freeAgents)) drivers.freeAgents = drivers.freeAgents.filter(function (entry) { return !sameAccount(account(entry), user); });
-      } else if (Array.isArray(drivers.freeAgents)) drivers.freeAgents.forEach(function (entry) { if (sameAccount(account(entry), user)) entry.name = name; });
-      rows.push({ name: name, user: user, username: text(profile.currentUsername) || user, number: number, team: destination && text(destination.id) || "", teamName: destination && text(destination.name) || "Unassigned", action: !existingHandle ? "add" : current && destination && current.team !== destination ? "move" : "update" });
+      }
+      rows.push({ name: name, user: user, username: text(profile.currentUsername) || user, number: number, team: destination && text(destination.id) || "", teamName: destination && text(destination.name) || "Unassigned", action: "add" });
+      seenAccounts.add(identity(user));
     });
     if (errors.length) return { errors: errors, rows: rows, warnings: warnings, division: division };
     return { errors: errors, rows: rows, drivers: drivers, warnings: warnings, division: division };

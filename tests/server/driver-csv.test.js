@@ -116,6 +116,7 @@ test('Open drivers can register with a blank Team without adding D1 assignments 
   assert.deepEqual(result.drivers.openEntries.filter(row => row.user !== 'NewDriver22'), before.drivers.openEntries);
   assert.deepEqual(data.records, before.records);
   assert.deepEqual(data.standings, before.standings);
+  assert.equal(raceControlChangeOnly({ ...data, drivers: result.drivers }, data), false);
 });
 
 test('legacy placeholder numbers remain pending when a blank-number CSV assigns a team', () => {
@@ -147,26 +148,25 @@ test('filling a vacancy retains charter metadata and uses only the incoming driv
   assert.equal(own.recent, undefined);
 });
 
-test('JJ current-username imports keep his original identity, career, artwork, points and independent Open entry', () => {
+test('JJ current-username imports skip his existing D1 entry and preserve identity, career, artwork and points', () => {
   const data = structuredClone(original);
   Object.assign(data.drivers.profiles.JJElliott2004, { alias: 'JJ Before Import', numberImage: '/jj84.png', signatureImage: '/jj-signature.png' });
-  const otherJames = structuredClone(data.drivers.profiles.JamesEklund);
+  const beforeDrivers = structuredClone(data.drivers);
   const previousPoints = globalThis.UARLStandings.calculate(data, 'd1').find(row => row.id === 'JJElliott2004').points;
   const result = accepted(csv(['JJ Updated,@jamesracer22,84,Goat Whitlock Motorsports']), data);
   const profile = result.drivers.profiles.JJElliott2004;
-  assert.equal(profile.alias, 'JJ Updated');
+  assert.equal(result.rows[0].action, 'skip');
+  assert.equal(profile.alias, 'JJ Before Import');
   assert.equal(profile.currentUsername, 'JamesRacer22');
   assert.equal(result.drivers.profiles.JamesRacer22, undefined);
   assert.equal(profile.wins, data.drivers.profiles.JJElliott2004.wins);
   assert.equal(profile.championships, data.drivers.profiles.JJElliott2004.championships);
   assert.equal(profile.numberImage, '/jj84.png');
   assert.equal(profile.signatureImage, '/jj-signature.png');
-  assert.ok(profile.csvAliases.includes('JJ Before Import'));
   for (const alias of data.drivers.profiles.JJElliott2004.usernameAliases) {
     assert.ok(profile.usernameAliases.some(saved => saved.toLowerCase() === alias.toLowerCase()));
   }
-  assert.deepEqual(result.drivers.profiles.JamesEklund, otherJames);
-  assert.deepEqual(result.drivers.openEntries, data.drivers.openEntries);
+  assert.deepEqual(result.drivers, beforeDrivers);
   const jj = team(result.drivers, 'whitlock').entries.filter(row => row.user === 'JJElliott2004');
   assert.equal(jj.length, 1);
   assert.equal(jj[0].number, '84');
@@ -174,43 +174,43 @@ test('JJ current-username imports keep his original identity, career, artwork, p
   assert.equal(globalThis.UARLStandings.calculate(next, 'd1').find(row => row.id === 'JJElliott2004').points, previousPoints);
 });
 
-test('blank team and number fields update an existing profile without moving or renumbering its assignment', () => {
+test('blank team and number fields skip an existing profile without moving or renumbering its assignment', () => {
   const data = league();
   const result = accepted(csv(['Renamed Display,formeruser22,,']), data);
   const entry = team(result.drivers, 'source').entries[0];
   assert.equal(entry.user, 'ExistingUser');
   assert.equal(entry.number, '19');
-  assert.equal(entry.name, 'Renamed Display');
+  assert.equal(entry.name, 'Existing Display');
+  assert.equal(result.rows[0].action, 'skip');
   assert.equal(result.drivers.profiles.ExistingUser.currentUsername, 'CurrentUser22');
-  assert.ok(result.drivers.profiles.ExistingUser.csvAliases.includes('Existing Display'));
-  assert.deepEqual(team(result.drivers, 'csv'), team(data.drivers, 'csv'));
+  assert.deepEqual(result.drivers, data.drivers);
 });
 
-test('transferring a known account fills an open charter and preserves the driver and unrelated series', () => {
+test('a stale CSV transfer for an existing D1 driver is skipped without taking a vacant charter', () => {
   const data = league();
   const result = accepted(csv(['Moved Display,CurrentUser22,05,csv']), data);
   const source = team(result.drivers, 'source').entries[0], target = team(result.drivers, 'csv').entries[0];
-  assert.equal(source.user, undefined);
+  assert.equal(result.rows[0].action, 'skip');
+  assert.equal(result.rows[0].number, '19');
+  assert.equal(source.user, 'ExistingUser');
   assert.equal(source.number, '19');
-  assert.equal(source.name, 'OPEN');
-  assert.match(source.status, /^Open/);
+  assert.equal(source.name, 'Existing Display');
   assert.equal(source.charterType, 'FT');
-  assert.equal(target.user, 'ExistingUser');
+  assert.equal(target.user, undefined);
   assert.equal(target.number, '05');
-  assert.equal(target.name, 'Moved Display');
+  assert.equal(target.name, 'OPEN');
   assert.equal(target.customCharterFlag, true);
   assert.equal(target.charterType, 'FT');
-  assert.equal(target.numberImage, '/19.png');
-  assert.equal(target.signatureImage, '/entry-signature.png');
+  assert.equal(target.numberImage, undefined);
+  assert.equal(target.signatureImage, undefined);
   assert.equal(result.drivers.profiles.ExistingUser.wins, 7);
   assert.equal(result.drivers.profiles.ExistingUser.championships, 2);
   assert.equal(result.drivers.profiles.ExistingUser.numberImage, '/profile-19.png');
   assert.deepEqual(result.drivers.openEntries, data.drivers.openEntries);
   assert.deepEqual(result.drivers.recentMoves, data.drivers.recentMoves);
-  assert.equal(result.drivers.freeAgents.some(row => row.user === 'ExistingUser'), false);
-  assert.ok((result.warnings || []).some(warning => /art/i.test(warning)));
+  assert.deepEqual(result.drivers, data.drivers);
   assert.equal(raceControlChangeOnly(data, data), true);
-  assert.equal(raceControlChangeOnly({ ...data, drivers: result.drivers }, data), false);
+  assert.equal(raceControlChangeOnly({ ...data, drivers: result.drivers }, data), true);
 });
 
 test('invalid rows, unknown teams, occupied seats and malformed headers reject the entire CSV atomically', () => {
@@ -227,8 +227,7 @@ test('invalid rows, unknown teams, occupied seats and malformed headers reject t
   for (const source of cases) rejected(source, league());
 });
 
-test('duplicate accounts, alias collisions and duplicate team numbers cannot combine drivers or overwrite a row', () => {
-  rejected(csv(['Same Driver,ExistingUser,19,source', 'Same Driver,CurrentUser22,19,source']), league());
+test('alias collisions and duplicate D1 team numbers cannot combine drivers or overwrite a row', () => {
   rejected(csv(['First,FirstCsv22,05,csv', 'Second,SecondCsv22,05,csv']), league());
   const ambiguous = league();
   ambiguous.drivers.profiles.OtherUser.usernameAliases = ['CurrentUser22'];
@@ -238,14 +237,75 @@ test('duplicate accounts, alias collisions and duplicate team numbers cannot com
   rejected(csv(['New Driver,NewDriver22,11,CSV Racing']), duplicateTeam);
 });
 
-test('matching display names and car numbers never merge distinct verified accounts', () => {
+test('matching display names and shared Open numbers never merge distinct verified accounts', () => {
   const data = league();
-  const result = accepted(csv(['Existing Display,SeparateUser22,19,csv']), data);
+  const result = accepted(csv(['Existing Display,SeparateUser22,99,']), data, 'open');
   assert.equal(result.drivers.profiles.SeparateUser22.alias, 'Existing Display');
-  assert.equal(result.drivers.profiles.SeparateUser22.number, '19');
+  assert.equal(result.drivers.profiles.SeparateUser22.number, '99');
   assert.equal(result.drivers.profiles.ExistingUser.currentUsername, 'CurrentUser22');
   assert.equal(result.drivers.profiles.ExistingUser.wins, 7);
   assert.equal(team(result.drivers, 'source').entries[0].user, 'ExistingUser');
+  assert.deepEqual(result.drivers.openEntries.map(entry => [entry.user, entry.number]), [['ExistingUser', '99'], ['SeparateUser22', '99']]);
+});
+
+test('D1 occupied numbers remain unique across teams and across rows while vacancies and leading zeros stay distinct', () => {
+  const data = league();
+  rejected(csv(['New Driver,NewNumber22,19,csv']), data, 'd1');
+  rejected(csv(['First Driver,GlobalFirst22,17,source', 'Second Driver,GlobalSecond22,17,csv']), data, 'd1');
+  const result = accepted(csv(['First Driver,GlobalFirst22,05,source', 'Second Driver,GlobalSecond22,5,csv']), data, 'd1');
+  assert.equal(team(result.drivers, 'source').entries.find(entry => entry.user === 'GlobalFirst22').number, '05');
+  assert.equal(team(result.drivers, 'csv').entries.find(entry => entry.user === 'GlobalSecond22').number, '5');
+  assert.equal(team(result.drivers, 'csv').entries.find(entry => entry.number === '05').user, undefined);
+});
+
+test('both roster imports skip existing accounts and repeated CSV accounts using stable usernames and aliases', () => {
+  for (const division of ['d1', 'open']) {
+    const data = league();
+    const existing = accepted(csv([',@FORMERUSER22,not-a-number,Missing Team', 'OPEN,CurrentUser22,999,Another Team']), data, division);
+    assert.deepEqual(existing.rows.map(row => row.action), ['skip', 'skip']);
+    assert.ok(existing.rows.every(row => row.reason));
+    assert.deepEqual(existing.drivers, data.drivers);
+
+    const firstTeam = division === 'd1' ? 'csv' : '';
+    const first = accepted(csv([
+      'First Display,RepeatedCsv22,05,' + firstTeam,
+      'Ignored Later Display,REPEATEDCSV22,0005,Missing Team'
+    ]), data, division);
+    assert.deepEqual(first.rows.map(row => row.action), ['add', 'skip']);
+    assert.equal(first.drivers.profiles.RepeatedCsv22.alias, 'First Display');
+    assert.equal(first.drivers.profiles.RepeatedCsv22.number, '05');
+    assert.equal(first.drivers.profiles.REPEATEDCSV22, undefined);
+    const entries = division === 'd1' ? team(first.drivers, 'csv').entries : first.drivers.openEntries;
+    assert.equal(entries.filter(entry => entry.user === 'RepeatedCsv22').length, 1);
+    const repeat = accepted(csv(['Changed Again,RepeatedCsv22,5,Missing Team']), { ...data, drivers: first.drivers }, division);
+    assert.equal(repeat.rows[0].action, 'skip');
+    assert.deepEqual(repeat.drivers, first.drivers);
+  }
+});
+
+test('ignoring already rostered accounts does not require or recreate a profile', () => {
+  for (const division of ['d1', 'open']) {
+    const data = league();
+    delete data.drivers.profiles.ExistingUser;
+    const result = accepted(csv([',existinguser,invalid,Unknown Team']), data, division);
+    assert.equal(result.rows[0].action, 'skip');
+    assert.deepEqual(result.drivers, data.drivers);
+    assert.equal(result.drivers.profiles.ExistingUser, undefined);
+  }
+});
+
+test('skipped accounts do not mask invalid new rows or return partially applied batches', () => {
+  for (const division of ['d1', 'open']) {
+    const data = league(), before = structuredClone(data);
+    const result = rejected(csv([
+      ',FormerUser22,invalid,Missing Team',
+      'Valid New Driver,ValidNew22,05,' + (division === 'd1' ? 'csv' : ''),
+      'Invalid New Driver,BrokenNew22,0005,' + (division === 'd1' ? 'csv' : '')
+    ]), data, division);
+    assert.equal(result.rows[0].action, 'skip');
+    assert.ok(result.errors.some(error => /Line 4/.test(error)));
+    assert.deepEqual(data, before);
+  }
 });
 
 test('an assigned team with no available number creates a pending driver rather than an undefined car', () => {
@@ -270,7 +330,7 @@ test('valid usernames that match object-prototype names become own profiles with
   assert.equal({}.alias, undefined);
 });
 
-test('Open imports update the same person and independent entry while preserving D1 assignments, number artwork and career data', () => {
+test('Open imports skip existing accounts and keep their manual team, manufacturer, artwork and career data', () => {
   const data = league();
   Object.assign(data.drivers.openEntries[0], {
     name: 'Original Open Display', team: 'Independent Original', status: 'Part-Time',
@@ -281,22 +341,21 @@ test('Open imports update the same person and independent entry while preserving
   assert.equal(result.division, 'open');
   assert.equal(result.rows[0].user, 'ExistingUser');
   assert.equal(result.drivers.openEntries.length, 1);
-  assert.deepEqual(result.drivers.openEntries[0], {
-    ...before.drivers.openEntries[0], user: 'ExistingUser', name: 'Open Display', team: 'Independent New Squad'
-  });
+  assert.equal(result.rows[0].action, 'skip');
+  assert.deepEqual(result.drivers.openEntries[0], before.drivers.openEntries[0]);
   assert.equal(result.drivers.profiles.CurrentUser22, undefined);
-  assert.equal(result.drivers.profiles.ExistingUser.alias, 'Open Display');
+  assert.equal(result.drivers.profiles.ExistingUser.alias, 'Existing Display');
   for (const field of ['number', 'numberImage', 'signatureImage', 'wins', 'championships', 'rank']) {
     assert.equal(result.drivers.profiles.ExistingUser[field], before.drivers.profiles.ExistingUser[field], field);
   }
-  assert.ok(result.drivers.profiles.ExistingUser.csvAliases.includes('Existing Display'));
   assert.deepEqual(result.drivers.teams, before.drivers.teams);
   assert.deepEqual(result.drivers.freeAgents, before.drivers.freeAgents);
   assert.deepEqual(result.drivers.recentMoves, before.drivers.recentMoves);
   assert.deepEqual(result.drivers.previousRoster, before.drivers.previousRoster);
   assert.deepEqual(data.records, before.records);
   assert.deepEqual(data.standings, before.standings);
-  assert.equal(raceControlChangeOnly({ ...data, drivers: result.drivers }, data), false);
+  assert.deepEqual(result.drivers, before.drivers);
+  assert.equal(raceControlChangeOnly({ ...data, drivers: result.drivers }, data), true);
 });
 
 test('adding a D1 driver to Open with no number does not borrow their D1 number, artwork or manufacturer', () => {
@@ -335,6 +394,38 @@ test('new Open-only accounts keep leading-zero numbers separate and never create
   assert.deepEqual(globalThis.UARLRaceCSV.headers.drivers, ['DriverName', 'Username', 'Driver#', 'Team']);
 });
 
+test('Open drivers can share occupied and same-batch numbers without sharing identities, results or standings points', () => {
+  const data = league(), before = structuredClone(data);
+  const result = accepted(csv([
+    'Shared Display,OpenFirst22,99,',
+    'Shared Display,OpenSecond22,99,',
+    'Leading Zero One,OpenThird22,05,',
+    'Leading Zero Two,OpenFourth22,05,',
+    'Plain Five,OpenFifth22,5,'
+  ]), data, 'open');
+  assert.deepEqual(result.rows.map(row => row.action), ['add', 'add', 'add', 'add', 'add']);
+  assert.deepEqual(result.drivers.openEntries.filter(entry => entry.number === '99').map(entry => entry.user), ['ExistingUser', 'OpenFirst22', 'OpenSecond22']);
+  assert.equal(result.drivers.openEntries.filter(entry => entry.number === '05').length, 2);
+  assert.equal(result.drivers.openEntries.filter(entry => entry.number === '5').length, 1);
+  assert.deepEqual(result.drivers.openEntries.find(entry => entry.user === 'ExistingUser'), before.drivers.openEntries[0]);
+  assert.deepEqual(result.drivers.profiles.ExistingUser, before.drivers.profiles.ExistingUser);
+  assert.deepEqual(result.drivers.teams, before.drivers.teams);
+  const rosterData = { ...data, drivers: result.drivers };
+  const race = globalThis.UARLRaceCSV.results(
+    'FinishingPosition,Driver,Qualifying,Stage1,Stage2,FastestLap,MostLapsLed\n1,OpenFirst22,,,,No,No\n2,OpenSecond22,,,,No,No',
+    rosterData, { division: 'open', finishes: [] }
+  );
+  assert.deepEqual(race.errors, []);
+  assert.deepEqual(race.record.finishes.map(entry => [entry.username, entry.number]), [['OpenFirst22', '99'], ['OpenSecond22', '99']]);
+  const standings = globalThis.UARLRaceCSV.standings(
+    'Position,+/-,Driver#,DriverName,Points\n1,0,99,OpenFirst22,100\n2,0,99,OpenSecond22,70', rosterData, 'open'
+  );
+  assert.deepEqual(standings.errors, []);
+  assert.equal(standings.rows.find(row => row.id === 'OpenFirst22').points, 100);
+  assert.equal(standings.rows.find(row => row.id === 'OpenSecond22').points, 70);
+  assert.equal(standings.rows.find(row => row.id === 'ExistingUser').points, 0);
+});
+
 test('blank Open fields retain the Open number, independent team and manufacturer instead of D1 values', () => {
   const data = league();
   data.drivers.openEntries[0].team = 'Independent Saved Team';
@@ -348,11 +439,7 @@ test('blank Open fields retain the Open number, independent team and manufacture
   assert.equal(result.rows[0].number, '99');
 });
 
-test('Open number conflicts, duplicate accounts and duplicate saved entries reject the batch atomically', () => {
-  const data = league();
-  rejected(csv(['Unknown Driver,OtherOpen22,99,Freeform Team']), data, 'open');
-  rejected(csv(['First,OpenFirst22,05,Team One', 'Second,OpenSecond22,05,Team Two']), data, 'open');
-  rejected(csv(['First,ExistingUser,99,', 'Second,CurrentUser22,99,']), data, 'open');
+test('multiple saved entries for one account and ambiguous aliases still reject Open CSVs atomically', () => {
   const duplicate = league();
   duplicate.drivers.openEntries.push({ user: 'FormerUser22', number: '88', make: 'Ford' });
   rejected(csv(['Existing Display,CurrentUser22,99,']), duplicate, 'open');
@@ -361,7 +448,7 @@ test('Open number conflicts, duplicate accounts and duplicate saved entries reje
   rejected(csv(['Unknown Driver,CurrentUser22,99,']), ambiguous, 'open');
 });
 
-test('filling an Open vacancy keeps the incoming account’s manufacturer and art without leaving a duplicate entry', () => {
+test('filling an Open vacancy strips its prior personal artwork while existing drivers stay untouched', () => {
   const data = league();
   data.drivers.openEntries[0].numberImage = '/own-open-99.png';
   data.drivers.openEntries.push({
@@ -369,21 +456,22 @@ test('filling an Open vacancy keeps the incoming account’s manufacturer and ar
     numberImage: '/previous-open-05.png', signatureImage: '/previous-open-signature.png'
   });
   const moved = accepted(csv(['Open Moved,CurrentUser22,05,Independent Destination']), data, 'open');
-  assert.equal(moved.drivers.openEntries.length, 1);
+  assert.equal(moved.drivers.openEntries.length, 2);
   const entry = moved.drivers.openEntries[0];
   assert.equal(entry.user, 'ExistingUser');
-  assert.equal(entry.number, '05');
+  assert.equal(entry.number, '99');
   assert.equal(entry.make, 'Chevrolet');
   assert.equal(entry.numberImage, '/own-open-99.png');
   assert.equal(entry.signatureImage, '/open-signature.png');
-  assert.ok(moved.warnings.some(warning => /art/i.test(warning)));
-  assert.deepEqual(moved.drivers.teams, data.drivers.teams);
+  assert.equal(moved.rows[0].action, 'skip');
+  assert.deepEqual(moved.drivers, data.drivers);
 
   const fresh = accepted(csv(['Open New,FreshOpen22,05,Independent Destination']), data, 'open');
   const newcomer = fresh.drivers.openEntries.find(row => row.user === 'FreshOpen22');
   assert.equal(newcomer.make, 'Generic');
   assert.equal(newcomer.numberImage, undefined);
   assert.equal(newcomer.signatureImage, undefined);
+  assert.equal(fresh.drivers.openEntries.length, 2);
   assert.equal(fresh.drivers.openEntries.filter(row => row.user === 'ExistingUser').length, 1);
 });
 
@@ -396,22 +484,22 @@ test('unsupported import series reject without applying drivers and the original
   assert.deepEqual(result.drivers.openEntries, data.drivers.openEntries);
 });
 
-test('JJ Open imports use his current handle without replacing his D1 team, primary number or Toyota badge source', () => {
+test('JJ Open imports skip his current handle without replacing either series or his primary artwork', () => {
   const data = structuredClone(original);
   Object.assign(data.drivers.profiles.JJElliott2004, { number: '84', numberImage: '/jj-84.png', signatureImage: '/jj-signature.png' });
-  const originalProfile = structuredClone(data.drivers.profiles.JJElliott2004);
-  const originalTeams = structuredClone(data.drivers.teams);
+  const originalDrivers = structuredClone(data.drivers);
   const result = accepted(csv(['JJ,JamesRacer22,48,Independent Chevrolet Squad']), data, 'open');
   const entry = result.drivers.openEntries.filter(row => row.user === 'JJElliott2004');
   assert.equal(entry.length, 1);
   assert.equal(entry[0].number, '48');
   assert.equal(entry[0].make, 'Chevrolet');
-  assert.equal(entry[0].team, 'Independent Chevrolet Squad');
+  assert.equal(entry[0].team, undefined);
   assert.equal(entry[0].numberImage, undefined);
   assert.equal(result.drivers.profiles.JamesRacer22, undefined);
-  assert.deepEqual(result.drivers.teams, originalTeams);
+  assert.equal(result.rows[0].action, 'skip');
+  assert.deepEqual(result.drivers, originalDrivers);
   for (const field of ['number', 'numberImage', 'signatureImage', 'wins', 'championships', 'rank']) {
-    assert.equal(result.drivers.profiles.JJElliott2004[field], originalProfile[field], field);
+    assert.equal(result.drivers.profiles.JJElliott2004[field], originalDrivers.profiles.JJElliott2004[field], field);
   }
 });
 

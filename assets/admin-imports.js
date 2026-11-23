@@ -46,18 +46,20 @@
           return cells([row.position, row.driver.name + (row.driver.user ? " · @" + row.driver.user : ""), finish.number || "—", row.qualifying, row.stage1, row.stage2, row.fastestLap ? "Yes" : "No", row.mostLapsLed ? "Yes" : "No", finish.totalPoints]);
         }), "Results CSV preview");
       } else if (kind === "drivers") {
-        var actions = { add: state.division === "open" ? "Add to Open Series" : "New driver", update: "Update existing driver", move: "Move existing driver" };
+        var actions = { add: state.division === "open" ? "Add to Open Series" : "Add to D1 roster", skip: "Skip existing driver" };
         content = table(["DriverName", "Username", "Driver#", "Team", "Action"], preview.rows.map(function (row) {
-          return cells([row.name, "@" + row.username, row.number || "Number pending", row.teamName || "No team", actions[row.action] || row.action]);
+          return cells([row.name, "@" + row.username, row.number || "Number pending", row.teamName || "No team", (actions[row.action] || row.action) + (row.reason ? " · " + row.reason : "")]);
         }), "Driver roster CSV preview");
       } else {
         var data = normalized();
         content = table(standingsLabels, preview.rows.map(function (row) { return '<tr><td>' + esc(row.position) + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row, data) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
       }
       var warnings = (preview.warnings || []).length ? '<div class="csv-warnings"><b>Review before applying</b><ul>' + preview.warnings.map(function (warning) { return '<li>' + esc(warning) + '</li>'; }).join("") + '</ul></div>' : '';
-      var label = kind === "results" ? preview.rows.length + ' finishers' : kind === "drivers" ? preview.rows.length + (preview.rows.length === 1 ? ' driver' : ' drivers') : preview.entries.length + ' updated drivers';
-      var ready = kind === "drivers" ? 'Nothing applied yet. Check the drivers, numbers, and teams, then save this preview to your draft.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.';
-      return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + label + (kind === "drivers" ? ' · ' + seriesLabel(state.division) : '') + '</h4>' + content + warnings + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : ready) + '</p><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div>';
+      var additions = kind === "drivers" ? preview.rows.filter(function (row) { return row.action !== "skip"; }).length : 0;
+      var noChanges = kind === "drivers" && additions === 0;
+      var label = kind === "results" ? preview.rows.length + ' finishers' : kind === "drivers" ? additions + ' to add · ' + (preview.rows.length - additions) + ' skipped' : preview.entries.length + ' updated drivers';
+      var ready = noChanges ? 'No new drivers to add. Existing roster entries were skipped.' : kind === "drivers" ? 'Nothing applied yet. Check the new drivers, numbers, and teams, then save this preview to your draft. Skipped drivers stay unchanged.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.';
+      return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + label + (kind === "drivers" ? ' · ' + seriesLabel(state.division) : '') + '</h4>' + content + warnings + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : ready) + '</p><button type="button" class="button publish" data-csv-apply ' + (stale || noChanges ? 'disabled' : '') + '>Apply preview to draft</button></div>';
     }
     function widget(kind, record) {
       var state = form(kind, record), index = kind === "results" ? bridge.data().records.indexOf(record) : "";
@@ -65,9 +67,9 @@
       var replacement = kind === "results" ? 'Apply replaces this race’s finish order, qualifying, stages, and Yes/No awards. Manual car numbers and points eligibility are kept. Review DNFs or DNQs in manual entry afterward.' : 'Apply sets the listed drivers’ totals for this division; other drivers keep their current totals. Later race results continue adding points. Movement uses the previous positions supplied by this import.';
       var upload = "", teams = "", selector = "";
       if (kind === "drivers") {
-        instructions = 'Choose the series, then paste rows or upload a CSV. Usernames identify drivers; saved former usernames work too. Car numbers keep leading zeros.';
+        instructions = 'Choose the series, then paste rows or upload a CSV. Usernames identify drivers; saved former usernames work too. Drivers already on this roster and repeated CSV accounts are skipped. Car numbers keep leading zeros.';
         selector = '<label class="csv-series-picker">Import into<select data-driver-csv-division aria-label="Import drivers into series"><option value="d1" ' + (state.division === "d1" ? 'selected' : '') + '>D1 · Cup</option><option value="open" ' + (state.division === "open" ? 'selected' : '') + '>Open Series</option></select></label>';
-        replacement = state.division === "open" ? 'Team is optional for Open Series. Leave it blank for an independent entry or to keep its current label. A blank Driver# keeps an existing Open number or leaves it pending. D1 assignments stay intact. Existing Open manufacturers are kept; set a new entry’s manufacturer in the Open Series editor after import.' : 'D1 drivers need a team. Enter an existing team name or ID. Leave Team blank only to keep a driver’s existing D1 assignment. A blank Driver# keeps an existing D1 number or leaves it pending. Occupied seats are never overwritten. Changes stay in your draft until you publish.';
+        replacement = state.division === "open" ? 'Team is optional for Open Series. Leave it blank for an independent entry. Different drivers may share the same car number; each keeps their own identity, points, and artwork. A blank Driver# leaves a new entry’s number pending. D1 assignments stay intact. Set a new entry’s manufacturer in the Open Series editor after import.' : 'New D1 roster drivers need a team and an available car number, or a pending number. Enter an existing team name or ID. Occupied numbers are never assigned to another D1 driver. Existing roster entries stay unchanged; use the entry editor or team transfer tools to change them. Changes stay in your draft until you publish.';
         upload = '<label class="csv-file-picker">Upload a CSV file<input type="file" accept=".csv,text/csv" data-csv-file></label>';
         if (state.division === "d1") teams = '<details class="csv-team-reference"><summary>Available teams</summary><ul>' + (bridge.data().drivers.teams || []).map(function (team) { return '<li>' + esc(team.name) + (team.id ? ' · <code>' + esc(team.id) + '</code>' : '') + '</li>'; }).join("") + '</ul></details>';
       }
@@ -118,7 +120,9 @@
         var preview = state.preview;
         if (!preview || preview.errors.length || previewStale(ctx.kind, state)) { state.preview = null; state.message = "The draft or selected series changed. Preview the CSV again before applying."; ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, state); return true; }
         if (ctx.kind === "drivers") {
-          try { bridge.replaceDrivers(preview.drivers, preview.rows, preview.division); }
+          var additions = preview.rows.filter(function (row) { return row.action !== "skip"; });
+          if (!additions.length) { bridge.toast("No new drivers to add. Existing roster entries were skipped."); return true; }
+          try { bridge.replaceDrivers(preview.drivers, additions, preview.division); }
           catch (error) { bridge.toast(error.message, true); return true; }
         }
         state.preview = null; state.message = "CSV applied to your draft. You can still edit entries manually."; state.open = false;
