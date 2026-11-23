@@ -54,6 +54,80 @@
     if (named.length > 1 && number) named = named.filter(function (driver) { return text(driver.number) === number; });
     return named.length === 1 ? named[0] : null;
   }
+  function standingsDriver(data, candidates, division, value, carNumber, pinned) {
+    var label = text(value).replace(/^@/, ""), id = identity(label), profiles = data.drivers && data.drivers.profiles || {};
+    if (!id || /^(?:undefined|null)$/i.test(label)) return { error: "DriverName must contain a driver name or username." };
+    function array(value) { return Array.isArray(value) ? value : []; }
+    function canonical(user) { return root.UARLResultDrivers ? root.UARLResultDrivers.canonicalUser(data, user) : user; }
+    function local(user) { return candidates.find(function (driver) { return identity(canonical(driver.id)) === identity(canonical(user)); }); }
+    function rosterDriver(driver) {
+      var user = canonical(driver.user);
+      return local(user) || { id: user, name: text(driver.name) || user, number: "", division: division, team: "Independent entry", make: "Unlisted", rawPoints: 0 };
+    }
+    function profileDriver(user) {
+      var saved = profiles[user] || {}, roster = globalRoster.find(function (driver) { return identity(canonical(driver.user)) === identity(canonical(user)); });
+      return local(user) || (roster ? rosterDriver(roster) : { id: user, name: text(saved.alias) || user, number: "", division: division, team: "Independent entry", make: "Unlisted", rawPoints: 0 });
+    }
+    function distinct(rows) {
+      var seen = new Set();
+      return rows.filter(function (driver) {
+        var key = identity(canonical(driver.id));
+        if (seen.has(key)) return false;
+        seen.add(key); return true;
+      });
+    }
+    var keys = Object.keys(profiles);
+    // Read both rosters without registering profiles or changing eligibility.
+    var globalRoster = division !== "d2" && root.UARLResultDrivers && root.UARLResultDrivers.pool ? root.UARLResultDrivers.pool(data, { division: "d1" }).concat(root.UARLResultDrivers.pool(data, { division: "open" })).filter(function (driver) { return Boolean(text(driver.user)); }) : [];
+    if (pinned != null) {
+      if (typeof pinned !== "string" || !identity(pinned)) return { error: "The saved preview identity is invalid. Preview the CSV again." };
+      var pinnedUser = canonical(pinned), pinnedDriver = local(pinnedUser), profileKey = keys.find(function (key) { return identity(key) === identity(pinnedUser); });
+      if (!pinnedDriver && division === "d2") return { error: "That preview identity is not an archived driver in this division." };
+      if (!pinnedDriver && profileKey) pinnedDriver = profileDriver(profileKey);
+      if (!pinnedDriver) {
+        if (!/^[A-Za-z0-9_]{3,20}$/.test(pinnedUser) && !identity(pinnedUser).startsWith("standings:" + division + ":")) return { error: "The saved preview identity is invalid. Preview the CSV again." };
+        pinnedDriver = { id: pinnedUser, name: label, number: "", division: division, team: "Independent entry", make: "Unlisted", rawPoints: 0 };
+      }
+      return { driver: pinnedDriver, usernameMatch: false, pinned: true };
+    }
+    if (division === "d2") return { driver: resolve(candidates, label, carNumber), usernameMatch: candidates.some(function (driver) { return identity(driver.id) === id; }) };
+    // A verified account takes priority over a different driver's display name.
+    var exact = distinct(candidates.filter(function (driver) { return identity(driver.id) === id; }).concat(globalRoster.filter(function (driver) { return identity(driver.user) === id; }).map(rosterDriver), keys.filter(function (key) { return identity(key) === id; }).map(profileDriver)));
+    if (exact.length === 1) return { driver: exact[0], usernameMatch: true };
+    var handles = distinct(globalRoster.filter(function (driver) {
+      return array(driver.usernameAliases).some(function (handle) { return identity(handle) === id; });
+    }).map(rosterDriver).concat(keys.filter(function (key) {
+      var saved = profiles[key] || {};
+      return [saved.currentUsername].concat(array(saved.usernameAliases)).some(function (handle) { return identity(handle) === id; });
+    }).map(profileDriver)));
+    if (exact.length > 1 || handles.length > 1) return { error: "That username matches more than one saved account. Use the driver's original username." };
+    if (handles.length === 1) return { driver: handles[0], usernameMatch: true };
+    var profileNames = keys.filter(function (key) {
+      var saved = profiles[key] || {};
+      return [saved.alias].concat(array(saved.csvAliases)).some(function (name) { return identity(name) === id; });
+    });
+    // Match the selected series before consulting profiles from other series.
+    // Two different drivers may use the same public name in D1 and Open.
+    var named = distinct(candidates.filter(function (driver) {
+      return identity(driver.name) === id || array(driver.aliases).includes(id);
+    }).concat(profileNames.filter(function (key) { return Boolean(local(key)); }).map(profileDriver)));
+    var hadNameMatches = named.length > 0;
+    // Number disambiguation is valid only against entries in this series. A
+    // number from a different series must not select a different account.
+    if (named.length > 1 && carNumber && named.every(function (driver) { return Boolean(local(driver.id)); })) named = named.filter(function (driver) { return text(driver.number) === carNumber; });
+    if (named.length === 1) return { driver: named[0], usernameMatch: false };
+    if (hadNameMatches) return { error: "That name matches more than one driver. Use their Roblox username to keep their points separate." };
+    var former = distinct(globalRoster.filter(function (driver) {
+      return identity(driver.name) === id || array(driver.aliases).includes(id);
+    }).map(rosterDriver).concat(profileNames.map(profileDriver)));
+    if (former.length === 1) return { driver: former[0], usernameMatch: false };
+    if (former.length > 1) return { error: "That name matches more than one driver. Use their Roblox username to keep their points separate." };
+    // Posted standings may include former drivers without any current profile.
+    // Name-only entries use their own namespace so a later roster name match
+    // cannot silently absorb another person's saved total.
+    var user = /^[A-Za-z0-9_]{3,20}$/.test(label) ? label : "standings:" + division + ":" + encodeURIComponent(id.replace(/\s+/g, " "));
+    return { driver: local(user) || { id: user, name: label, number: "", division: division, team: "Independent entry", make: "Unlisted", rawPoints: 0 }, usernameMatch: user === label };
+  }
   function results(source, data, record) {
     var parsed = parse(source, "results"), errors = parsed.errors, candidates = root.UARLResultDrivers.pool(data, record), seen = [new Set(), new Set(), new Set(), new Set()], drivers = new Set();
     var rows = parsed.rows.map(function (row) {
@@ -95,12 +169,14 @@
     next.winnerAutomatic = true; next.winner = next.finishes[0].name; next.winnerUsername = next.finishes[0].username;
     return { errors: [], rows: rows, record: next };
   }
-  function standings(source, data, division) {
-    var parsed = parse(source, "standings"), errors = parsed.errors, candidates = root.UARLStandings.calculate(data, division), positions = new Set(), drivers = new Set(), entries = [];
-    parsed.rows.forEach(function (row) {
-      var c = row.cells, position = positive(c[0], "Position", row.line, errors), driver = resolve(candidates, c[3], c[2]);
+  function standings(source, data, division, options) {
+    var parsed = parse(source, "standings"), errors = parsed.errors, candidates = root.UARLStandings.calculate(data, division), positions = new Set(), drivers = new Set(), entries = [], resolvedRows = [];
+    var identities = options && Array.isArray(options.identities) ? options.identities : [];
+    parsed.rows.forEach(function (row, index) {
+      var c = row.cells, position = positive(c[0], "Position", row.line, errors), match = standingsDriver(data, candidates, division, c[3], c[2], identities[index]), driver = match.driver;
+      resolvedRows.push(driver ? { id: driver.id, name: match.usernameMatch ? driver.name : c[3], number: match.pinned ? c[2] : c[2] || text(driver.number) } : null);
       unique(position, positions, "position", row.line, errors);
-      if (!driver) errors.push("Line " + row.line + ": “" + c[3] + "” does not identify one driver in this division. Use a saved name or username from Driver roster; same-name drivers need the matching car number.");
+      if (!driver) errors.push("Line " + row.line + ": " + (match.error || "“" + c[3] + "” does not identify one archived driver in this division. Use a saved archive name or username."));
       if (driver) unique(identity(driver.id), drivers, "driver", row.line, errors);
       if (c[2] && !/^\d{1,3}$/.test(c[2])) errors.push("Line " + row.line + ": Driver# must contain one to three digits, or be blank while the number is pending (leading zeros are kept).");
       var unknownMovement = /^(?:-|—)?$/.test(c[1]), delta = unknownMovement ? null : Number(c[1]);
@@ -109,17 +185,18 @@
       var points = Number(c[4]);
       if (!/^-?\d+$/.test(c[4]) || !Number.isSafeInteger(points)) errors.push("Line " + row.line + ": Points must be a whole number.");
       if (driver && position && Number.isSafeInteger(points)) {
-        try { entries.push(root.UARLStandings.correction(driver, points, { name: c[3].replace(/^@/, "").toLowerCase() === identity(driver.id) ? driver.name : c[3], number: c[2] || text(driver.number), previousPosition: delta == null ? null : position + delta, order: position })); }
+        try { entries.push(root.UARLStandings.correction(driver, points, { name: match.usernameMatch ? driver.name : c[3], number: match.pinned ? c[2] : c[2] || text(driver.number), previousPosition: delta == null ? null : position + delta, order: position })); }
         catch (error) { errors.push("Line " + row.line + ": " + error.message); }
       }
     });
-    if (errors.length) return { errors: errors, entries: [], rows: [] };
+    var inputRows = parsed.rows.map(function (row) { return row.cells.slice(); });
+    if (errors.length) return { errors: errors, entries: [], rows: [], inputRows: inputRows, resolvedRows: resolvedRows };
     var saved = root.UARLStandings.merge(data, entries), rows = root.UARLStandings.calculate(Object.assign({}, data, { standings: saved }), division);
     entries.forEach(function (entry) {
       var row = rows.find(function (row) { return identity(row.id) === identity(entry.username); });
-      if (row.position !== entry.order) errors.push(entry.name + ": Position " + entry.order + " would be " + row.position + " at these points. Check totals and include any drivers above them.");
+      if (!row || row.position !== entry.order) errors.push(entry.name + ": Position " + entry.order + " would be " + (row ? row.position : "unavailable") + " at these points. Check totals and include any drivers above them.");
     });
-    return { errors: errors, entries: entries, rows: rows, standings: saved };
+    return { errors: errors, entries: entries, rows: rows, standings: saved, inputRows: inputRows, resolvedRows: resolvedRows };
   }
   root.UARLRaceCSV = { headers: headers, parse: parse, results: results, standings: standings };
 })(typeof window !== "undefined" ? window : globalThis);

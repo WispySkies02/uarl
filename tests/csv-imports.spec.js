@@ -299,3 +299,154 @@ test('new drivers can be permanently registered once with CSV names and used in 
   await expect(pointsRow(page, 'PermanentUser').locator('[data-standings-points]')).toHaveValue('100');
   expect((await draft(page)).drivers.profiles.PermanentUser.csvAliases).toEqual(['Permanent Full Name']);
 });
+
+function formerStandingsLeague() {
+  const data = league();
+  data.drivers.teams.push({ id: 'gman-team', name: 'Gman D1 Team', make: 'Ford', entries: [{ user: 'GuillermoChase', number: '81', status: 'Full-Time' }] });
+  data.drivers.profiles = { GuillermoChase: { alias: 'Gman', currentUsername: 'GuillermoChase', csvDivisions: ['d1'], number: '81', wins: 5, championships: 0, rank: 12 } };
+  data.drivers.freeAgents = [];
+  data.drivers.openEntries = Array.from({ length: 8 }, (_, index) => ({ user: 'Leader0' + (index + 1), name: 'Leader ' + (index + 1), number: '0' + (index + 1), make: 'Toyota' })).concat([
+    { user: 'TaylorKenseth17', number: '17', make: 'Toyota' },
+    { user: 'pxssis', number: '49', make: 'Ford' },
+    { user: 'codydgoforth', number: '60', make: 'Ford' },
+    { user: 'FueledByMayonnaise', number: '87', make: 'Generic' }
+  ]);
+  data.standings = [{ id: 'd1:guillermochase', division: 'd1', username: 'GuillermoChase', name: 'Gman', number: '81', nameManual: false, numberManual: false, pointsAdjustment: 777, order: 1, previousPosition: null }];
+  return data;
+}
+
+test('former drivers import directly into standings without profiles or roster entries and retain totals through recovery and publishing', async ({ page }) => {
+  const published = await boot(page, { data: formerStandingsLeague() });
+  const baseline = await page.evaluate(async () => await window.UARLData.load());
+  await section(page, 'standings').click();
+  await page.locator('[data-standings-division="open"]').click();
+  const source = standingsHeader + '\n' + Array.from({ length: 8 }, (_, index) => `${index + 1},-,0${index + 1},Leader0${index + 1},${140 - index * 10}`).join('\n') + '\n9,-,,Kanevme,42\n10,-,,GuillermoChase,40\n11,-,17,TaylorKenseth17,0\n12,-,49,pxssis,0\n13,-,60,codydgoforth,0\n14,-,87,FueledByMayonnaise,0';
+  const before = await draft(page);
+  let node = await previewCSV(page, 'standings', source);
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('tbody tr')).toHaveCount(14);
+  await expect(node.locator('tbody tr').nth(8)).toContainText('Kanevme');
+  await expect(node.locator('tbody tr').nth(9)).toContainText('Gman');
+  expect(await draft(page)).toEqual(before);
+  await node.locator('[data-csv-apply]').click();
+  let saved = await draft(page);
+  expect(saved.drivers).toEqual(baseline.drivers);
+  expect(saved.records).toEqual(baseline.records);
+  expect(saved.drivers.profiles.Kanevme).toBeUndefined();
+  expect(saved.drivers.openEntries.some(entry => ['Kanevme', 'GuillermoChase'].includes(entry.user))).toBe(false);
+  expect(saved.standings.find(row => row.division === 'open' && row.username === 'Kanevme')).toMatchObject({ number: '', pointsAdjustment: 42, order: 9 });
+  expect(saved.standings.find(row => row.division === 'open' && row.username === 'GuillermoChase')).toMatchObject({ name: 'Gman', number: '', pointsAdjustment: 40, order: 10 });
+  expect(saved.standings.find(row => row.division === 'd1')).toEqual(baseline.standings[0]);
+  await page.locator('[data-workspace-undo]').first().click();
+  const undone = await draft(page);
+  expect(undone ? undone.standings : baseline.standings).toEqual(baseline.standings);
+  await page.locator('[data-workspace-redo]').first().click();
+  await page.reload();
+  await expect(page.locator('[data-save-status]')).toContainText('Recovered');
+  await section(page, 'standings').click();
+  await page.locator('[data-standings-division="open"]').click();
+  await expect(pointsRow(page, 'Kanevme').locator('[data-standings-points]')).toHaveValue('42');
+  await expect(pointsRow(page, 'GuillermoChase').locator('[data-standings-points]')).toHaveValue('40');
+  expect((await draft(page)).drivers).toEqual(baseline.drivers);
+  node = await previewCSV(page, 'standings', source.replace('Kanevme', 'kanevme'));
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await node.locator('[data-csv-apply]').click();
+  saved = await draft(page);
+  expect(saved.standings.filter(row => row.division === 'open')).toHaveLength(14);
+  expect(saved.standings.filter(row => row.division === 'open' && row.username.toLowerCase() === 'kanevme')).toHaveLength(1);
+  expect(saved.drivers).toEqual(baseline.drivers);
+  await page.locator('[data-action="publish"]').first().click();
+  await page.locator('[data-confirm-publish]').click();
+  await expect.poll(() => published.length).toBe(1);
+  expect(published[0].drivers).toEqual(baseline.drivers);
+  await page.goto('/race-center/');
+  await page.locator('[data-rc-division="open"]').click();
+  for (const [user, position, points] of [['Kanevme', '9', '42'], ['GuillermoChase', '10', '40']]) {
+    const row = page.locator('[data-rc-standings-body] tr[data-driver-id="' + user + '"]');
+    await expect(row).toHaveCount(1);
+    await expect(row.locator('.rc-position-value')).toHaveText(position);
+    await expect(row.locator('.rc-points-value')).toHaveText(points);
+    await expect(row.locator('.rc-number')).toHaveText('—');
+    await expect(row.getByRole('img', { name: 'Manufacturer not assigned', exact: true })).toHaveCount(1);
+  }
+  await page.locator('[data-rc-division="d1"]').click();
+  const d1 = page.locator('[data-rc-standings-body] tr[data-driver-id="GuillermoChase"]');
+  await expect(d1.locator('.rc-points-value')).toHaveText('777');
+  await expect(d1.locator('.rc-number')).toHaveText('81');
+  await expect(d1.getByRole('img', { name: 'Ford manufacturer', exact: true })).toHaveCount(1);
+});
+
+test('mobile Race Control can edit and recheck every standings preview field without creating driver profiles', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 });
+  const published = await boot(page, { role: 'race_control' });
+  const baseline = await page.evaluate(async () => await window.UARLData.load());
+  await page.locator('[data-admin-more]').click();
+  await page.locator('[data-admin-menu-items] [data-section="standings"]').click();
+  const before = await draft(page);
+  let node = await previewCSV(page, 'standings', standingsHeader + '\n1,0,,MaxUser,100\n2,-,,Former Racer,90');
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('tbody tr').first()).toContainText('Max');
+  await node.locator('[data-csv-edit-preview]').click();
+  const field = (row, column) => node.locator('[data-standings-csv-row="' + row + '"] [data-standings-csv-column="' + column + '"]');
+  await field(0, 0).fill('2');
+  await field(0, 1).fill('+1');
+  await field(0, 2).fill('019');
+  await field(0, 3).fill('Max Revised');
+  await field(0, 4).fill('90');
+  await field(1, 0).fill('1');
+  await field(1, 1).fill('+2');
+  await field(1, 2).fill('007');
+  await field(1, 3).fill('Retired Driver');
+  await field(1, 4).fill('1.5');
+  const editorBadge = node.locator('[data-standings-csv-row="0"]').getByRole('img', { name: 'Toyota manufacturer', exact: true });
+  await expect(editorBadge).toBeVisible();
+  const badgeBounds = await editorBadge.boundingBox();
+  expect(badgeBounds).not.toBeNull();
+  expect(badgeBounds.width).toBeGreaterThan(0);
+  expect(badgeBounds.width).toBeLessThanOrEqual(44);
+  expect(badgeBounds.height).toBeGreaterThan(0);
+  expect(badgeBounds.height).toBeLessThanOrEqual(22);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: 'test-results/standings-preview-editor-mobile.png' });
+  expect(await draft(page)).toEqual(before);
+  await node.locator('[data-csv-check-preview]').click();
+  await expect(node.locator('.csv-errors')).toContainText('Points must be a whole number');
+  expect(await draft(page)).toEqual(before);
+  await field(1, 4).fill('110');
+  await node.locator('[data-csv-check-preview]').click();
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  const firstPreviewRow = node.locator('tbody tr').first();
+  await expect(firstPreviewRow.locator('td').nth(0)).toHaveText('1');
+  await expect(firstPreviewRow.locator('td').nth(1)).toHaveText('▲ 2');
+  await expect(firstPreviewRow.locator('td').nth(2)).toHaveText('007');
+  await expect(firstPreviewRow.locator('strong')).toHaveText('Retired Driver');
+  await expect(firstPreviewRow.getByRole('img', { name: 'Manufacturer not assigned', exact: true })).toHaveCount(1);
+  await expect(firstPreviewRow.locator('td').nth(4)).toHaveText('110');
+  await expect(node.locator('tbody tr').nth(1)).toContainText('019');
+  await node.locator('[data-csv-preview-button]').click();
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('tbody tr')).toHaveCount(5);
+  await expect(node.locator('tbody tr').filter({ has: page.locator('strong', { hasText: /^Max Revised$/ }) })).toHaveCount(1);
+  expect(await draft(page)).toEqual(before);
+  await node.locator('[data-csv-edit-preview]').click();
+  await field(0, 4).fill('95');
+  await node.locator('[data-csv-apply]').click();
+  const saved = await draft(page);
+  expect(saved.drivers).toEqual(baseline.drivers);
+  expect(saved.drivers.profiles['Retired Driver']).toBeUndefined();
+  expect(saved.standings.find(row => row.username === 'MaxUser')).toMatchObject({ name: 'Max Revised', number: '019', pointsAdjustment: 95, order: 2, previousPosition: 3 });
+  const former = saved.standings.find(row => row.name === 'Retired Driver');
+  expect(former).toMatchObject({ number: '007', pointsAdjustment: 110, order: 1, previousPosition: 3 });
+  expect(former.username).toMatch(/^standings:d1:/);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.locator('[data-action="publish"]').first().click();
+  await page.locator('[data-confirm-publish]').click();
+  await expect.poll(() => published.length).toBe(1);
+  expect(published[0].drivers).toEqual(baseline.drivers);
+  await page.goto('/race-center/');
+  const formerRow = page.locator('[data-rc-standings-body] tr[data-driver-id="' + former.username + '"]');
+  await expect(formerRow.locator('.rc-driver-cell strong')).toHaveText('Retired Driver');
+  await expect(formerRow.locator('.rc-number')).toHaveText('007');
+  await expect(formerRow.locator('.rc-points-value')).toHaveText('110');
+  await expect(formerRow.locator('.standings-username')).toHaveCount(0);
+});
