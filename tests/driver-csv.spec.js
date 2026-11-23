@@ -122,7 +122,7 @@ test('invalid rows and stale previews never apply roster edits or overwrite anot
   await expect(node.locator('.csv-errors')).toBeVisible();
   await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
   expect(await stored(page)).toEqual(before);
-  node = await preview(page, header + '\nNew Driver,FreshCsv22,,');
+  node = await preview(page, header + '\nNew Driver,FreshCsv22,,csv-racing');
   await expect(node.locator('[data-csv-apply]')).toBeEnabled();
   await page.locator('[data-field="alias"]').fill('Edited existing display');
   await page.locator('.step-heading').click();
@@ -139,13 +139,13 @@ test('invalid rows and stale previews never apply roster edits or overwrite anot
   expect(await stored(page)).toEqual(manuallyEdited);
 });
 
-test('mobile admins can load a CSV file, preview it, and recover the applied permanent driver without a team', async ({ page }) => {
+test('mobile admins can load a D1 CSV file, preview its team assignment, and recover the applied permanent driver', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 });
   await boot(page, { role: 'admin' });
   const node = await openRoster(page, true);
-  const source = '\uFEFF' + header + '\r\n"Mobile, Driver",CsvMobile22,005,\r\n';
+  const source = '\uFEFF' + header + '\r\n"Mobile, Driver",CsvMobile22,005,CSV Racing\r\n';
   await node.locator('[data-csv-file]').setInputFiles({ name: 'drivers.csv', mimeType: 'text/csv', buffer: Buffer.from(source) });
-  await expect(node.locator('[data-csv-input]')).toHaveValue(/DriverName,Username,Driver#,Team[\r\n]+"Mobile, Driver",CsvMobile22,005,/);
+  await expect(node.locator('[data-csv-input]')).toHaveValue(/DriverName,Username,Driver#,Team[\r\n]+"Mobile, Driver",CsvMobile22,005,CSV Racing/);
   await expect(node.locator('[data-csv-preview]')).toHaveCount(0);
   await node.locator('[data-csv-preview-button]').click();
   await expect(node.locator('.csv-errors')).toHaveCount(0);
@@ -157,11 +157,58 @@ test('mobile admins can load a CSV file, preview it, and recover the applied per
   let draft = await stored(page);
   expect(draft.drivers.profiles.CsvMobile22).toMatchObject({ alias: 'Mobile, Driver', number: '005' });
   expect(draft.drivers.profiles.CsvMobile22.csvDivisions).toContain('d1');
-  expect(draft.drivers.teams.flatMap(team => team.entries).some(entry => entry.user === 'CsvMobile22')).toBe(false);
+  expect(draft.drivers.teams.find(team => team.id === 'csv-racing').entries.find(entry => entry.user === 'CsvMobile22')).toMatchObject({ number: '005' });
   await page.reload();
   await expect(page.locator('[data-save-status]')).toContainText('Recovered');
   draft = await stored(page);
   expect(draft.drivers.profiles.CsvMobile22.alias).toBe('Mobile, Driver');
+});
+
+test('a blank Team blocks D1 imports atomically but imports an independent Open driver through recovery and publishing', async ({ page }) => {
+  const { published } = await boot(page, { role: 'admin' });
+  const baseline = await page.evaluate(async () => await window.UARLData.load());
+  const node = await openRoster(page);
+  const source = header + '\nIndependent Driver,IndependentCsv22,005,';
+  const before = await stored(page);
+  await preview(page, source);
+  await expect(node.locator('.csv-errors')).toContainText(/D1.*team|team.*D1/i);
+  await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
+  expect(await stored(page)).toEqual(before);
+  await preview(page, header + '\nAssigned Driver,AssignedCsv22,05,csv-racing\nIndependent Driver,IndependentCsv22,005,');
+  await expect(node.locator('.csv-errors')).toContainText('Line 3');
+  await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
+  expect(await stored(page)).toEqual(before);
+  await preview(page, source);
+  await node.locator('[data-driver-csv-division]').selectOption('open');
+  await expect(node.locator('[data-csv-input]')).toHaveValue(source);
+  await node.locator('[data-csv-preview-button]').click();
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('.csv-header-hint code')).toHaveText(header);
+  await expect(node.locator('[data-csv-preview]')).toContainText('Independent entry');
+  await node.locator('[data-csv-apply]').click();
+  await expect(page.locator('[data-field="team"]')).toHaveValue('');
+  let draft = await stored(page);
+  const entry = draft.drivers.openEntries.find(row => row.user === 'IndependentCsv22');
+  expect(entry).toMatchObject({ number: '005', make: 'Generic' });
+  expect(entry.team || '').toBe('');
+  expect(draft.drivers.profiles.IndependentCsv22.csvDivisions).toEqual(['open']);
+  expect(draft.drivers.profiles.AssignedCsv22).toBeUndefined();
+  expect(draft.drivers.teams).toEqual(baseline.drivers.teams);
+  expect(draft.drivers.freeAgents).toEqual(baseline.drivers.freeAgents);
+  await page.reload();
+  await expect(page.locator('[data-save-status]')).toContainText('Recovered');
+  draft = await stored(page);
+  expect(draft.drivers.openEntries.find(row => row.user === 'IndependentCsv22').team || '').toBe('');
+  await page.locator('[data-action="publish"]').first().click();
+  await page.locator('[data-confirm-publish]').click();
+  await expect.poll(() => published.length).toBe(1);
+  expect(published[0].drivers.teams).toEqual(baseline.drivers.teams);
+  await page.goto('/drivers/');
+  await page.locator('[data-view="open"]').click();
+  const card = page.locator('[data-open-grid] .pp-driver').filter({ has: page.locator('[data-driver="IndependentCsv22"]') });
+  await expect(card.locator('.pp-driver-number')).toHaveText('#005');
+  await expect(card.locator('.meta')).toContainText('Independent Open Series');
+  await expect(card.locator('.pp-mfg-generic')).toBeVisible();
 });
 
 test('Race Control cannot access driver CSV import while its results and standings workflows remain available', async ({ page }) => {

@@ -148,9 +148,10 @@
       var destination = current && current.team;
       if (teamText) {
         var matches = drivers.teams.filter(function (team) { return identity(team.id) === identity(teamText) || identity(team.name) === identity(teamText); });
-        if (matches.length !== 1) errors.push(line + (matches.length ? "Team is ambiguous. Use a unique existing D1 team name or ID." : "Unknown team “" + teamText + "”. Use an existing D1 team name or ID, or leave Team blank."));
+        if (matches.length !== 1) errors.push(line + (matches.length ? "Team is ambiguous. Use a unique existing D1 team name or ID." : "Unknown team “" + teamText + "”. Use an existing D1 team name or ID, or leave Team blank only to keep an existing assignment."));
         destination = matches.length === 1 ? matches[0] : null;
       }
+      if (!destination && !teamText) errors.push(line + "Team is required for D1. Enter an existing D1 team name or ID; leave it blank only for a driver already assigned to a team.");
       var savedD1Number = saved && (!Array.isArray(saved.csvDivisions) || saved.csvDivisions.includes("d1")) && hasNumber(saved) ? text(saved.number) : "";
       var number = suppliedNumber || (current ? hasNumber(current.entry) ? text(current.entry.number) : "" : savedD1Number);
       var target = null, targetIndex = -1, targetField = number ? "entries" : "pendingDrivers";

@@ -81,16 +81,41 @@ test('driver CSV accepts BOM and quoted names while preserving distinct 05 and 5
   assert.deepEqual(globalThis.UARLRaceCSV.headers.standings, ['Position', '+/-', 'Driver#', 'DriverName', 'Points']);
 });
 
-test('an unassigned CSV driver becomes a permanent D1 profile without inventing a team or race record', () => {
+test('new and unassigned D1 drivers require a team and reject the entire batch without changing saved free agents', () => {
   const data = league();
-  const result = accepted(csv(['Standalone Driver,@NewDriver22,005,']), data);
+  data.drivers.profiles.Unassigned22 = { alias: 'Saved Free Agent', number: '005', csvDivisions: ['d1'], wins: 3, numberImage: '/free-agent-005.png' };
+  data.drivers.freeAgents.push({ user: 'Unassigned22', name: 'Saved Free Agent', former: 'Previous Team' });
+  const before = structuredClone(data);
+  for (const rows of [
+    ['Standalone Driver,@NewDriver22,005,'],
+    ['Standalone Driver,@NewDriver22,005,   '],
+    ['Updated Free Agent,Unassigned22,,'],
+    ['Valid Driver,ValidDriver22,05,csv', 'Standalone Driver,@NewDriver22,005,']
+  ]) {
+    const result = rejected(csv(rows), data, 'd1');
+    assert.ok(result.errors.some(error => /Team is required for D1/.test(error)));
+  }
+  assert.deepEqual(data, before);
+  assert.equal(data.drivers.profiles.NewDriver22, undefined);
+  assert.equal(data.drivers.profiles.ValidDriver22, undefined);
+});
+
+test('Open drivers can register with a blank Team without adding D1 assignments or inventing a team', () => {
+  const data = league(), before = structuredClone(data);
+  const result = accepted(csv(['Standalone Driver,@NewDriver22,005,']), data, 'open');
   const profile = result.drivers.profiles.NewDriver22;
+  const entry = result.drivers.openEntries.find(row => row.user === 'NewDriver22');
   assert.equal(profile.alias, 'Standalone Driver');
   assert.equal(profile.number, '005');
-  assert.ok(profile.csvDivisions.includes('d1'));
-  assert.deepEqual(result.drivers.teams, data.drivers.teams);
-  assert.deepEqual(result.drivers.openEntries, data.drivers.openEntries);
-  assert.deepEqual(data.records[0].finishes[0], { username: 'ExistingUser', name: 'Race Display', number: '019', position: 1, points: 42, make: 'Chevrolet' });
+  assert.deepEqual(profile.csvDivisions, ['open']);
+  assert.equal(entry.number, '005');
+  assert.equal(entry.team, undefined);
+  assert.equal(entry.make, 'Generic');
+  assert.deepEqual(result.drivers.teams, before.drivers.teams);
+  assert.deepEqual(result.drivers.freeAgents, before.drivers.freeAgents);
+  assert.deepEqual(result.drivers.openEntries.filter(row => row.user !== 'NewDriver22'), before.drivers.openEntries);
+  assert.deepEqual(data.records, before.records);
+  assert.deepEqual(data.standings, before.standings);
 });
 
 test('legacy placeholder numbers remain pending when a blank-number CSV assigns a team', () => {
@@ -191,13 +216,13 @@ test('transferring a known account fills an open charter and preserves the drive
 test('invalid rows, unknown teams, occupied seats and malformed headers reject the entire CSV atomically', () => {
   const cases = [
     csv(['New Driver,NewDriver22,11,Unknown Racing']),
-    csv(['New Driver,invalid username,11,']),
-    csv(['New Driver,xy,11,']),
-    csv(['New Driver,NewDriver22,0005,']),
+    csv(['New Driver,invalid username,11,csv']),
+    csv(['New Driver,xy,11,csv']),
+    csv(['New Driver,NewDriver22,0005,csv']),
     csv(['New Driver,NewDriver22,20,Source Racing']),
-    csv([',NewDriver22,11,']),
-    'DriverName,Username,DriverNumber,Team\nNew Driver,NewDriver22,11,',
-    csv(['New Driver,NewDriver22,11,', 'Bad Driver,OtherNew22,12,Unknown Racing'])
+    csv([',NewDriver22,11,csv']),
+    'DriverName,Username,DriverNumber,Team\nNew Driver,NewDriver22,11,csv',
+    csv(['New Driver,NewDriver22,11,csv', 'Bad Driver,OtherNew22,12,Unknown Racing'])
   ];
   for (const source of cases) rejected(source, league());
 });
@@ -207,7 +232,7 @@ test('duplicate accounts, alias collisions and duplicate team numbers cannot com
   rejected(csv(['First,FirstCsv22,05,csv', 'Second,SecondCsv22,05,csv']), league());
   const ambiguous = league();
   ambiguous.drivers.profiles.OtherUser.usernameAliases = ['CurrentUser22'];
-  rejected(csv(['Who Is This,CurrentUser22,,']), ambiguous);
+  rejected(csv(['Who Is This,CurrentUser22,,csv']), ambiguous);
   const duplicateTeam = league();
   duplicateTeam.drivers.teams.push({ id: 'other-csv', name: 'CSV Racing', make: 'Toyota', entries: [] });
   rejected(csv(['New Driver,NewDriver22,11,CSV Racing']), duplicateTeam);
@@ -215,7 +240,7 @@ test('duplicate accounts, alias collisions and duplicate team numbers cannot com
 
 test('matching display names and car numbers never merge distinct verified accounts', () => {
   const data = league();
-  const result = accepted(csv(['Existing Display,SeparateUser22,19,']), data);
+  const result = accepted(csv(['Existing Display,SeparateUser22,19,csv']), data);
   assert.equal(result.drivers.profiles.SeparateUser22.alias, 'Existing Display');
   assert.equal(result.drivers.profiles.SeparateUser22.number, '19');
   assert.equal(result.drivers.profiles.ExistingUser.currentUsername, 'CurrentUser22');
@@ -236,7 +261,7 @@ test('an assigned team with no available number creates a pending driver rather 
 });
 
 test('valid usernames that match object-prototype names become own profiles without prototype pollution', () => {
-  const result = accepted(csv(['Prototype Driver,__proto__,13,', 'Constructor Driver,constructor,14,']), league());
+  const result = accepted(csv(['Prototype Driver,__proto__,13,csv', 'Constructor Driver,constructor,14,csv']), league());
   assert.equal(Object.hasOwn(result.drivers.profiles, '__proto__'), true);
   assert.equal(Object.hasOwn(result.drivers.profiles, 'constructor'), true);
   assert.equal(result.drivers.profiles.__proto__.alias, 'Prototype Driver');
@@ -363,7 +388,7 @@ test('filling an Open vacancy keeps the incoming account’s manufacturer and ar
 });
 
 test('unsupported import series reject without applying drivers and the original two-argument call stays D1', () => {
-  const data = league(), source = csv(['New Driver,NewDriver22,11,']);
+  const data = league(), source = csv(['New Driver,NewDriver22,11,csv']);
   for (const division of ['d2', 'unknown', '']) rejected(source, data, division);
   const result = accepted(source, data);
   assert.equal(result.division, 'd1');
