@@ -11,6 +11,8 @@
 .csv-header-hint { overflow-wrap: anywhere; }
 .csv-header-hint code { color: #d8edbe; }
 .csv-file-picker { margin: 16px 0; min-width: 0; }
+.csv-series-picker { margin: 16px 0; max-width: 360px; }
+.csv-series-picker select { width: 100%; min-width: 0; min-height: 44px; padding: 10px; border: 1px solid #4a5944; border-radius: 8px; background: #0d1410; color: #f5faf2; font: inherit; }
 .csv-file-picker input { width: 100%; min-width: 0; max-width: 100%; padding: 10px; border: 1px solid #4a5944; border-radius: 8px; color: #f5faf2; background: #0d1410; font: inherit; }
 .csv-team-reference { margin: 0 0 16px; color: #bac6b8; font-size: 13px; }
 .csv-team-reference summary { padding: 8px 0; cursor: pointer; }
@@ -54,6 +56,7 @@
   .csv-import > summary small { width: 100%; margin-left: 20px; }
   .csv-import-body { padding: 0 12px 14px; }
   .csv-import textarea { font-size: 16px; }
+  .csv-series-picker select { font-size: 16px; }
   .csv-table th, .csv-table td { padding: 10px 8px; }
   .standings-manual { padding: 12px; }
   .standings-manual > header label, .standings-manual > header input { width: 100%; }

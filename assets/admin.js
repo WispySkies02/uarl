@@ -41,9 +41,9 @@
     },
     open: {
       title: "Open Series", kicker: "Independent entries", description: "Every active Open Series entry, including part-time status and manufacturer.", path: "drivers.openEntries",
-      itemTitle: function (x) { return "#" + (x.number || "—") + " " + (x.name || profileName(x.user) || "Entry"); }, itemMeta: function (x) { return [x.user && "@" + x.user, x.make, x.status].filter(Boolean).join(" · "); },
+      itemTitle: function (x) { return "#" + (x.number || "—") + " " + (x.name || profileName(x.user) || "Entry"); }, itemMeta: function (x) { return [x.user && "@" + x.user, x.team, x.make, x.status].filter(Boolean).join(" · "); },
       template: function () { return { number: "", user: "", make: "Toyota", status: "" }; },
-      fields: [["number","Car number"],["user","Roblox username"],["name","Display name override"],["make","Manufacturer","select",["Toyota","Ford","Chevrolet","Generic"]],["status","Status","select",["","Full-Time","Part-Time","Development"]],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]]
+      fields: [["number","Car number"],["user","Roblox username"],["team","Entry team (optional)"],["name","Display name override"],["make","Manufacturer","select",["Toyota","Ford","Chevrolet","Generic"]],["status","Status","select",["","Full-Time","Part-Time","Development"]],["numberImage","Number art","image"],["signatureImage","Signature logo","image"]]
     },
     freeAgents: {
       title: "Free Agents", kicker: "Driver market", description: "Available drivers and their most recent team or charter history.", path: "drivers.freeAgents",
@@ -342,7 +342,7 @@
     else if(section==='paints'){title=item.title||'New paint scheme';meta=[item.number&&'#'+item.number,item.name,item.team].filter(Boolean).join(' · ');image=item.image;}
     else if(section==='profiles'){title=item.alias||item.username;meta='@'+item.username;image=item.signatureImage;}
     else if(section==='schedule'){title=item.name;meta=[item.date,item.track,item.scheduleStatus||'Scheduled'].filter(Boolean).join(' · ');}
-    else if(section==='open'){title=window.UARLData.driverName(item,state.data.drivers.profiles);meta=[item.number&&'#'+item.number,item.make,item.status].filter(Boolean).join(' · ');image=item.signatureImage;}
+    else if(section==='open'){title=window.UARLData.driverName(item,state.data.drivers.profiles);meta=[item.number&&'#'+item.number,item.team,item.make,item.status].filter(Boolean).join(' · ');image=item.signatureImage;}
     if(!title)return '';
     return '<aside class="workspace-preview" aria-label="Entry preview">'+(image?'<img src="'+esc(image)+'" alt="" loading="lazy">':'')+'<div><span class="eyebrow">At a glance</span><h3>'+esc(title)+'</h3><p>'+esc(meta)+'</p></div></aside>';
   }
@@ -362,12 +362,18 @@
     return profile&&profile.currentUsername||key||user||'';
   }
   function canEditDriverIdentity(){return Boolean(state.user&&['owner','admin'].includes(state.user.role));}
-  function replaceImportedDrivers(drivers, rows){
+  function replaceImportedDrivers(drivers, rows, division){
     if(!canEditDriverIdentity())throw new Error('Only Owners and Admins can import drivers.');
     if(pendingImageUploads)throw new Error('Wait for image uploads to finish, then preview the CSV again.');
     state.data.drivers=clone(drivers);
-    var keys=Object.keys(state.data.drivers.profiles),first=rows&&rows.length?keys.indexOf(rows[0].user):-1;
-    if(first>=0)state.selected=first;
+    if(division==='open'){
+      state.section='open';
+      var user=rows&&rows.length&&rows[0].user,index=(state.data.drivers.openEntries||[]).findIndex(function(entry){return identityText(entry.user)===identityText(user);});
+      state.selected=Math.max(0,index);
+    }else{
+      var keys=Object.keys(state.data.drivers.profiles),first=rows&&rows.length?keys.indexOf(rows[0].user):-1;
+      if(first>=0)state.selected=first;
+    }
     state.step=0;state.query='';
   }
   function driverIdentityShortcut(user) {
@@ -686,7 +692,7 @@
 
   var editorGroups = {
     profiles:[['Identity',['username','currentUsername','alias','csvDivisions','number','csvAliases']],['Career',['wins','championships','rank']],['Artwork',['numberImage','signatureImage']]],
-    open:[['Driver',['number','user','name','make','status']],['Artwork',['numberImage','signatureImage']]],
+    open:[['Driver',['number','user','team','name','make','status']],['Artwork',['numberImage','signatureImage']]],
     freeAgents:[['Driver',['name','user']],['Previous entry',['former']]],
     moves:[['Signing',['driver','team','number','make','signedAt']]],
     paints:[['Driver',['division','series','number','name','handle','team','make']],['Scheme',['id','title','subtitle','image','body','scrAffiliate']],['Tags & search',['extra','search']]],
@@ -987,7 +993,12 @@
     if(!event.target.matches("[data-field]"))return;var pair=currentConfigAndItems(),item=pair.items[state.selected],field=event.target.dataset.field,type=event.target.dataset.type,value;
     if(type==="bool")value=event.target.checked;else if(type==="divisions")value=Array.from(view.querySelectorAll('[data-field="'+field+'"][data-type="divisions"]:checked')).map(function(input){return input.dataset.divisionValue;});else if(type==="number")value=event.target.value===""?null:Number(event.target.value);else if(type==="datetime")value=fromLocal(event.target.value);else if(type==="json"){try{value=JSON.parse(event.target.value);event.target.style.borderColor="";}catch(error){event.target.style.borderColor="var(--red)";return;}}else value=event.target.value;
     if(state.section==="results"&&(field==="winner"||field==="pole")){if(field==="winner")item.winnerAutomatic=false;var selected=event.target.options&&event.target.options[event.target.selectedIndex];item[field+"Username"]=selected&&selected.dataset.user||"";value=selected&&selected.dataset.name||value;}
-    item[field]=value;commitItems(pair.items);if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();if(state.section==="results"&&field==="division")render();
+    item[field]=value;
+    if(state.section==="open"&&field==="number"){
+      if(/^\d{1,3}$/.test(String(value).trim()))delete item.numberPending;
+      else item.numberPending=true;
+    }
+    commitItems(pair.items);if(state.section==="results"){recalculateResult(item);syncResultPoints(item);}changed();if(state.section==="results"&&field==="division")render();
   });
   document.addEventListener("change",function(event){if(event.target.matches('[data-paint-driver]')){commitPendingEdit();prefillPaint(event.target);return;}if(event.target.matches('[data-transfer-team],[data-transfer-person]')){updateTransferSeats();return;}if(event.target.matches('[data-transfer-seat]')){var dialog=document.querySelector('[data-transfer-dialog]'),team=state.data.drivers.teams.find(function(team){return team.id===dialog.querySelector('[data-transfer-team]').value;});if(team&&event.target.value!=='new')dialog.querySelector('[data-transfer-number]').value=team.entries[Number(event.target.value)].number;else{var person=window.UARLWorkspace.people(state.data).find(function(person){return person.key===dialog.querySelector('[data-transfer-person]').value;});dialog.querySelector('[data-transfer-number]').value=person&&!team.entries.some(function(entry){return String(entry.number)===person.number;})?person.number:'';}updateTransferPreview();return;}if(event.target.matches("[data-image-upload]")){uploadDriverImage(event.target);return;}if(event.target.matches('[data-schedule-race]')){var record=structuredItem(),id=event.target.value;if(!id){delete record.scheduleEventId;record.id='result-'+Date.now();changed();return;}var scheduled=state.data.events.find(function(e){return e.id===id;});if(!scheduled)return;if(['entries','qualifying','stages','finishes','bonuses'].some(function(key){return (record[key]||[]).length;})&&!confirm('Change the linked race and clear its classifications? This prevents carrying results into another race.')){render();return;}['entries','qualifying','stages','finishes','bonuses'].forEach(function(key){record[key]=[];});['winner','winnerUsername','pole','poleUsername'].forEach(function(key){delete record[key];});applyScheduledRace(record,scheduled);changed();render();return;}if(event.target.matches("[data-mobile-section]")){state.section=event.target.value;state.step=0;state.selected=0;state.query="";render();}if(event.target.matches("[data-import]")){var file=event.target.files[0];if(!file)return;file.text().then(function(text){state.data=window.UARLData.normalize(JSON.parse(text));changed();render();toast("Backup imported into the draft.");}).catch(function(error){toast("Could not import: "+error.message,true);});}});
   document.addEventListener('change',function(event){if(event.target.matches('[data-profile-account]'))commitProfileAccount(event.target);});
