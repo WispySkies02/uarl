@@ -42,7 +42,20 @@
   function scoredRecords(data, division) {
     return array(data.records).filter(function (record) { return record.division === division && record.pointsEvent !== false && !record.exhibition; });
   }
-  function roster(data, division, records) {
+  function postedTable(data, division) {
+    var tables = data.standingsTables;
+    return tables && typeof tables === "object" && !Array.isArray(tables) && Object.hasOwn(tables, division) ? tables[division] : null;
+  }
+  function eventKey(data, record) {
+    var id = text(record.id || record.scheduleEventId);
+    return id ? "id:" + id : "index:" + array(data.records).indexOf(record);
+  }
+  function finishIdentity(data, division, finish, rows) {
+    var known = matchingDriver(rows, lookup(data, finish));
+    return known ? account(data, known.id) : account(data, finish.username || finish.user || finish.driverId) || ("guest:" + division + ":" + identity(finish.name || finish.number));
+  }
+  function roster(data, division, records, options) {
+    var complete = Boolean(postedTable(data, division)) || Boolean(options && options.allDrivers);
     var all = array(data.race && data.race.drivers).map(function (driver) { return Object.assign({}, driver, { id: account(data, driver.id) }); }), rows = [];
     if (root.UARLResultDrivers && division !== "d2") root.UARLResultDrivers.pool(data, { division: division }).forEach(function (entry) {
       if (!entry.user) return;
@@ -50,10 +63,10 @@
         all = all.map(function (driver) { return driver.division === division && identity(driver.id) === identity(entry.user) ? Object.assign({}, driver, { aliases: entry.aliases }) : driver; });
       } else all = all.concat({ id: entry.user, name: entry.name, number: entry.number, division: division, team: entry.team, make: "Unlisted", aliases: entry.aliases, careerWins: 0, careerTitles: 0, careerRank: 0 });
     });
-    all.filter(function (driver) { return driver.division === division && (division !== "d2" || driver.status === "FT"); }).forEach(function (driver) {
+    all.filter(function (driver) { return driver.division === division && (division !== "d2" || complete || driver.status === "FT"); }).forEach(function (driver) {
       if (!matchingDriver(rows, driver)) rows.push(Object.assign({}, driver));
     });
-    if (division !== "d2") records.forEach(function (record) {
+    if (division !== "d2" || complete) records.forEach(function (record) {
       array(record.finishes).forEach(function (finish) {
         if (matchingDriver(rows, lookup(data, finish))) return;
         var known = matchingDriver(all, lookup(data, finish)), id = account(data, finish.username || finish.user || finish.driverId || (known && known.id)) || ("guest:" + division + ":" + identity(finish.name || finish.number));
@@ -61,14 +74,26 @@
       });
     });
     // Keep imported totals for former entrants, even if their roster seat changes.
-    if (division !== "d2") array(data.standings).filter(function (row) { return row.division === division; }).forEach(function (saved) {
+    if (division !== "d2" || complete) array(data.standings).filter(function (row) { return row.division === division; }).forEach(function (saved) {
       if (!matchingDriver(rows, lookup(data, saved))) rows.push({ id: account(data, saved.username), name: saved.name, number: saved.number, division: division, team: "Independent entry", make: "Unlisted", careerWins: 0, careerTitles: 0, careerRank: 0 });
     });
     return rows;
   }
-  function score(data, division, records) {
+  function snapshot(data, division, members) {
+    var records = scoredRecords(data, division), rows = roster(data, division, records, { allDrivers: true }), events = new Map(), seen = new Set();
+    records.forEach(function (record) {
+      var key = eventKey(data, record), drivers = events.get(key) || new Map();
+      array(record.finishes).forEach(function (finish) { var user = text(finishIdentity(data, division, finish, rows)); if (user) drivers.set(identity(user), user); });
+      events.set(key, drivers);
+    });
+    return {
+      members: array(members).map(function (user) { return text(account(data, user)); }).filter(function (user) { var key = identity(user); if (!key || seen.has(key)) return false; seen.add(key); return true; }),
+      baseline: Array.from(events, function (pair) { return { event: pair[0], drivers: Array.from(pair[1].values()) }; })
+    };
+  }
+  function score(data, division, records, options) {
     var corrections = array(data.standings).filter(function (row) { return row.division === division; });
-    var rows = roster(data, division, scoredRecords(data, division)).map(function (driver) {
+    var rows = roster(data, division, scoredRecords(data, division), options).map(function (driver) {
       return Object.assign({}, driver, { name: hasName(driver.name) ? driver.name : text(driver.id) || "Driver pending", rawPoints: 0, points: 0, stagePoints: 0, starts: 0, wins: 0, top5: 0, top10: 0, poles: 0, stageWins: 0, finishTotal: 0, averageFinish: null, pointsPending: false });
     });
     records.forEach(function (record) {
@@ -97,6 +122,19 @@
       if (saved && saved.nameManual && hasName(saved.name)) row.name = saved.name;
       if (saved && saved.numberManual) row.number = saved.number;
     });
+    var table = postedTable(data, division);
+    if (table && !(options && options.allDrivers)) {
+      var members = new Set(array(table.members).map(function (user) { return identity(account(data, user)); })), baseline = new Map();
+      array(table.baseline).forEach(function (event) { baseline.set(event.event, new Set(array(event.drivers).map(function (user) { return identity(account(data, user)); }))); });
+      records.forEach(function (record) {
+        var prior = baseline.get(eventKey(data, record));
+        array(record.finishes).forEach(function (finish) {
+          var user = identity(finishIdentity(data, division, finish, rows));
+          if (user && (!prior || !prior.has(user))) members.add(user);
+        });
+      });
+      rows = rows.filter(function (row) { return members.has(identity(account(data, row.id))); });
+    }
     rows.sort(function (a, b) {
       var orderA = a.correction && a.correction.orderManual ? a.correction.order : Number.MAX_SAFE_INTEGER, orderB = b.correction && b.correction.orderManual ? b.correction.order : Number.MAX_SAFE_INTEGER;
       return b.points - a.points || orderA - orderB || b.wins - a.wins || b.top5 - a.top5 || a.name.localeCompare(b.name);
@@ -104,10 +142,11 @@
     rows.forEach(function (row, index) { row.position = index + 1; });
     return rows;
   }
-  function calculate(data, division) {
-    var records = scoredRecords(data, division), rows = score(data, division, records);
+  function calculate(data, division, options) {
+    data = data || {};
+    var records = scoredRecords(data, division), rows = score(data, division, records, options);
     var chronological = records.slice().sort(function (a, b) { return new Date(a.start || a.date || 0) - new Date(b.start || b.date || 0); });
-    var previous = chronological.length > 1 ? score(data, division, chronological.slice(0, -1)) : [];
+    var previous = chronological.length > 1 ? score(data, division, chronological.slice(0, -1), options) : [];
     rows.forEach(function (row) {
       var before = row.correction ? row.correction.previousPosition : (matchingDriver(previous, row) || {}).position;
       row.movement = before == null ? null : before - row.position;
@@ -149,9 +188,23 @@
     return array(data.standings).filter(function (row) { return !incoming.has(row.id); }).concat(entries);
   }
   function validate(data) {
-    if (data.standings == null) return [];
-    if (!Array.isArray(data.standings)) return ["Standings corrections must be a list."];
     var seen = new Set(), errors = [];
+    if (data.standingsTables != null) {
+      var tables = data.standingsTables;
+      if (!tables || typeof tables !== "object" || Array.isArray(tables)) errors.push("Complete standings tables must be an object.");
+      else Object.keys(tables).forEach(function (division) {
+        var table = tables[division], memberIds = new Set(), eventIds = new Set();
+        if (!["d1", "d2", "open"].includes(division) || !table || typeof table !== "object" || Array.isArray(table) || !Array.isArray(table.members) || !Array.isArray(table.baseline)) { errors.push("A complete standings table has invalid membership or race history."); return; }
+        table.members.forEach(function (user) { var id = typeof user === "string" && identity(account(data, user)); if (!id || memberIds.has(id)) errors.push("A complete standings table has invalid or duplicate drivers."); else memberIds.add(id); });
+        table.baseline.forEach(function (event) {
+          if (!event || typeof event !== "object" || typeof event.event !== "string" || !text(event.event) || eventIds.has(event.event) || !Array.isArray(event.drivers)) { errors.push("A complete standings table has invalid race history."); return; }
+          eventIds.add(event.event); var drivers = new Set();
+          event.drivers.forEach(function (user) { var id = typeof user === "string" && identity(account(data, user)); if (!id || drivers.has(id)) errors.push("A complete standings table has invalid race participants."); else drivers.add(id); });
+        });
+      });
+    }
+    if (data.standings == null) return errors;
+    if (!Array.isArray(data.standings)) return errors.concat("Standings corrections must be a list.");
     data.standings.forEach(function (row) {
       if (!row || !["d1", "d2", "open"].includes(row.division) || typeof row.username !== "string" || !text(row.username) || row.id !== key(row.division, row.username) || typeof row.name !== "string" || !text(row.name) || typeof row.number !== "string" || !Number.isSafeInteger(row.pointsAdjustment) || !Number.isSafeInteger(row.order) || row.order < 1 || row.previousPosition !== null && (!Number.isSafeInteger(row.previousPosition) || row.previousPosition < 1)) {
         errors.push("A standings correction has an invalid driver, points, or position."); return;
@@ -162,5 +215,5 @@
     });
     return errors;
   }
-  root.UARLStandings = { calculate: calculate, username: username, matchingDriver: matchingDriver, gapToLeader: gapToLeader, gapToCutoff: gapToCutoff, movement: movement, movementHTML: movementHTML, correction: correction, merge: merge, validate: validate };
+  root.UARLStandings = { calculate: calculate, snapshot: snapshot, username: username, matchingDriver: matchingDriver, gapToLeader: gapToLeader, gapToCutoff: gapToCutoff, movement: movement, movementHTML: movementHTML, correction: correction, merge: merge, validate: validate };
 })(typeof window !== "undefined" ? window : globalThis);

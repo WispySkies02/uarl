@@ -50,7 +50,7 @@
         seen.add(String(user).toLowerCase()); rows.push(Object.assign({}, row, { id: user }));
       }
       (state.preview.rows || []).forEach(add);
-      standings.calculate(data, division).forEach(add);
+      standings.calculate(data, division, { allDrivers: true }).forEach(add);
       ['d1', 'open'].forEach(function (series) { root.UARLResultDrivers.pool(data, { division: series }).forEach(function (row) { if (row.user) add({ id: row.user, name: row.name, number: '', make: 'Unlisted' }); }); });
       (state.editRows || []).forEach(function (row, index) { if (state.editIdentities[index]) add({ id: state.editIdentities[index], name: row[3], number: row[2] }); });
       return rows.sort(function (a, b) { return String(a.name).localeCompare(String(b.name)) || String(a.id).localeCompare(String(b.id)); });
@@ -112,15 +112,14 @@
       var warnings = (preview.warnings || []).length ? '<div class="csv-warnings"><b>Review before applying</b><ul>' + preview.warnings.map(function (warning) { return '<li>' + esc(warning) + '</li>'; }).join("") + '</ul></div>' : '';
       var additions = kind === "drivers" ? preview.rows.filter(function (row) { return row.action !== "skip"; }).length : 0;
       var noChanges = kind === "drivers" && additions === 0;
-      var label = kind === "results" ? preview.rows.length + ' finishers' : kind === "drivers" ? additions + ' to add · ' + (preview.rows.length - additions) + ' skipped' : preview.entries.length + ' updated drivers';
-      var ready = noChanges ? 'No new drivers to add. Existing roster entries were skipped.' : kind === "drivers" ? 'Nothing applied yet. Check the new drivers, numbers, and teams, then save this preview to your draft. Skipped drivers stay unchanged.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.';
+      var label = kind === "results" ? preview.rows.length + ' finishers' : kind === "drivers" ? additions + ' to add · ' + (preview.rows.length - additions) + ' skipped' : preview.entries.length + ' drivers · Complete standings';
+      var ready = noChanges ? 'No new drivers to add. Existing roster entries were skipped.' : kind === "drivers" ? 'Nothing applied yet. Check the new drivers, numbers, and teams, then save this preview to your draft. Skipped drivers stay unchanged.' : kind === "standings" && !preview.entries.length ? 'No rows remain. Applying will clear this series’ posted standings. Drivers and race history are retained.' : kind === "standings" ? 'Nothing applied yet. These rows replace the complete standings for this series. Drivers outside this preview will not be added from the roster.' : 'Nothing applied yet. Check the drivers and totals, then save this preview to your draft.';
       return '<div class="csv-preview" data-csv-preview><h4>Preview · ' + label + (kind === "drivers" ? ' · ' + seriesLabel(state.division) : '') + '</h4>' + content + warnings + '<p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed after this preview. Preview the CSV again before applying.' : ready) + '</p><div class="csv-preview-actions">' + editButton + '<button type="button" class="button publish" data-csv-apply ' + (stale || noChanges ? 'disabled' : '') + '>Apply preview to draft</button></div></div>';
     }
     function widget(kind, record) {
       var state = form(kind, record), index = kind === "results" ? bridge.data().records.indexOf(record) : "";
       var instructions = kind === "results" ? 'Use a Roblox username, roster display name, or saved CSV name. Driver roster includes permanent drivers without a team. Qualifying and stage positions can be blank; both awards need Yes or No.' : 'Matching names or usernames use the saved driver identity. Other entries use the name or username you provide; no roster registration is needed. Choose Edit preview to change any field before applying. Enter +/- as +2, -1, 0, or - for unknown. Car numbers keep leading zeros.';
-      if (kind === "standings" && division === "d2") instructions = 'Use an archived driver name or username. Choose Edit preview to correct display names, numbers, positions, movement, and points. Enter +/- as +2, -1, 0, or - for unknown. Car numbers keep leading zeros.';
-      var replacement = kind === "results" ? 'Apply replaces this race’s finish order, qualifying, stages, and Yes/No awards. Manual car numbers and points eligibility are kept. Review DNFs or DNQs in manual entry afterward.' : 'Apply sets the listed drivers’ totals for this division; other drivers keep their current totals. Later race results continue adding points. Movement uses the previous positions supplied by this import.';
+      var replacement = kind === "results" ? 'Apply replaces this race’s finish order, qualifying, stages, and Yes/No awards. Manual car numbers and points eligibility are kept. Review DNFs or DNQs in manual entry afterward.' : 'This CSV is the complete standings for the selected series. Applying replaces its posted table with exactly the rows left in this preview. Every row can be edited or removed. Roster matches supply driver details without adding extra entries. Other series, driver profiles, and race history stay intact; later race points still add normally.';
       var upload = "", teams = "", selector = "";
       if (kind === "drivers") {
         instructions = 'Choose the series, then paste rows or upload a CSV. Usernames identify drivers; saved former usernames work too. Drivers already on this roster and repeated CSV accounts are skipped. Car numbers keep leading zeros.';
@@ -143,7 +142,7 @@
         var username = standings.username(data, row);
         return '<tr data-standings-driver="' + esc(row.id) + '" data-standings-search-text="' + esc([row.name, row.id, row.number, username, '@' + username].join(' ')) + '"><td>' + row.position + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row, data) + artwork + '</td><td><div class="standings-points-control"><input type="number" step="1" data-standings-points data-before="' + row.points + '" value="' + row.points + '" aria-label="Points for ' + esc(row.name) + '"><button type="button" class="button ghost" data-save-points hidden disabled>Save</button></div>' + details + '</td></tr>';
       });
-      return bridge.header({ title: "Standings", kicker: "Race Center", description: "Import a points table or correct a driver’s total. Race results continue to update these totals automatically." }) + '<div class="standings-editor"><nav class="standings-divisions" aria-label="Standings division">' + [["d1", "D1 · Cup"], ["open", "Open Series"], ["d2", "D2 · Archive"]].map(function (pair) { return '<button class="button ' + (pair[0] === division ? '' : 'ghost') + '" type="button" data-standings-division="' + pair[0] + '" ' + (pair[0] === division ? 'aria-current="page"' : '') + '>' + pair[1] + '</button>'; }).join("") + '</nav>' + widget("standings") + '<section class="standings-manual"><header><div><h2>Points table</h2><p>Change a total and press Save. It stays in your draft until you publish.</p></div><label>Find a driver<input type="search" data-standings-search placeholder="Name or car number"></label></header>' + (rows.length ? table(standingsLabels, body, "Edit standings points") : '<p class="editor-empty">Add drivers to this division or enter its first race results to start the standings.</p>') + '</section></div>';
+      return bridge.header({ title: "Standings", kicker: "Race Center", description: "Import a points table or correct a driver’s total. Race results continue to update these totals automatically." }) + '<div class="standings-editor"><nav class="standings-divisions" aria-label="Standings division">' + [["d1", "D1 · Cup"], ["open", "Open Series"], ["d2", "D2 · Archive"]].map(function (pair) { return '<button class="button ' + (pair[0] === division ? '' : 'ghost') + '" type="button" data-standings-division="' + pair[0] + '" ' + (pair[0] === division ? 'aria-current="page"' : '') + '>' + pair[1] + '</button>'; }).join("") + '</nav>' + widget("standings") + '<section class="standings-manual"><header><div><h2>Points table</h2><p>Change a total and press Save. It stays in your draft until you publish.</p></div><label>Find a driver<input type="search" data-standings-search placeholder="Name or car number"></label></header>' + (rows.length ? table(standingsLabels, body, "Edit standings points") : '<p class="editor-empty">No drivers in the posted standings. Import a complete standings CSV to replace this table.</p>') + '</section></div>';
     }
     function click(event) {
       var button = event.target.closest("[data-csv-preview-button],[data-csv-apply],[data-csv-edit-preview],[data-csv-check-preview],[data-csv-remove-row],[data-standings-division],[data-save-points],[data-reset-points],[data-standings-artwork]");
@@ -177,8 +176,9 @@
           if (state.editRows) state.editRows = remaining;
         }
         state.text = csvSource(remaining, ctx.kind); ctx.widget.querySelector('[data-csv-input]').value = state.text;
-        if (!remaining.length) { state.preview = null; state.editing = false; state.message = 'No rows left in this preview. Nothing has been applied.'; }
+        if (!remaining.length && ctx.kind === 'drivers') { state.preview = null; state.editing = false; state.message = 'No rows left in this preview. Nothing has been applied.'; }
         else {
+          if (!remaining.length) state.editing = false;
           var currentData = normalized();
           state.preview = ctx.kind === 'drivers' ? root.UARLDriverCSV.preview(state.text, currentData, state.division) : csv.standings(state.text, currentData, division, standingsOptions(state));
           if (ctx.kind === 'standings' && state.preview.rows.length && state.preview.errors.every(function (error) { return /: Position \d+ would be/.test(error); })) {
@@ -230,7 +230,7 @@
         }
         state.preview = null; state.message = "CSV applied to your draft. You can still edit entries manually."; state.open = false; state.editing = false;
         if (ctx.kind === "results") { var index = bridge.data().records.indexOf(ctx.record); bridge.data().records[index] = preview.record; resultForms.set(preview.record, state); }
-        else if (ctx.kind === "standings") bridge.data().standings = preview.standings;
+        else if (ctx.kind === "standings") { bridge.data().standings = preview.standings; bridge.data().standingsTables = preview.standingsTables; }
         bridge.applied(); bridge.toast("CSV applied to draft. Review and publish when ready.");
       }
       return true;

@@ -74,12 +74,14 @@ test('CSV standings preview, manual points editing and the public points preview
   await widget.locator('[data-csv-preview-button]').click();
   await expect(widget.locator('.csv-errors')).toHaveCount(0);
   const preview = widget.locator('[data-csv-preview] tbody tr');
+  await expect(preview).toHaveCount(3);
   await expect(widget.locator('[data-csv-preview] th')).toHaveText(['Position', 'Change', 'Driver#', 'DriverName', 'Points']);
   await expect(badge(preview.first(), 'Ford')).toBeVisible();
   await expect(badge(preview.nth(1), 'Toyota')).toBeVisible();
   await expect(preview.first().locator('.standings-username')).toHaveText('@Muffin');
   await expect(preview.nth(1).locator('.standings-username')).toHaveText('@Aokikoto');
   await widget.locator('[data-csv-apply]').click();
+  await expect(page.locator('[data-standings-driver]')).toHaveCount(3);
   await expect(row.locator('[data-standings-points]')).toHaveValue('100');
   await row.locator('[data-standings-points]').fill('125'); await row.locator('[data-save-points]').click();
   await expect(badge(row, 'Ford')).toBeVisible();

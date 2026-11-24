@@ -119,6 +119,9 @@
             Array.from(new Set(Object.keys(a).concat(Object.keys(b)))).forEach(function (user) { if (JSON.stringify(a[user]) !== JSON.stringify(b[user])) total++; });
           } else total += entryChanges(before[field], after[field]);
         });
+      } else if (key === "standingsTables") {
+        var beforeTables = state.original.standingsTables || {}, afterTables = state.data.standingsTables || {};
+        Array.from(new Set(Object.keys(beforeTables).concat(Object.keys(afterTables)))).forEach(function (division) { if (JSON.stringify(beforeTables[division]) !== JSON.stringify(afterTables[division])) total++; });
       } else if (key === "race") {
         var a=clone(state.original.race||{}), b=clone(state.data.race||{});
         delete a.drivers; delete b.drivers; delete a.schedule; delete b.schedule;

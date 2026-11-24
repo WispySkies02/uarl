@@ -425,7 +425,7 @@ test('mobile Race Control can edit and recheck every standings preview field wit
   await expect(node.locator('tbody tr').nth(1)).toContainText('019');
   await node.locator('[data-csv-preview-button]').click();
   await expect(node.locator('.csv-errors')).toHaveCount(0);
-  await expect(node.locator('tbody tr')).toHaveCount(5);
+  await expect(node.locator('tbody tr')).toHaveCount(2);
   await expect(node.locator('tbody tr').filter({ has: page.locator('strong', { hasText: /^Max Revised$/ }) })).toHaveCount(1);
   expect(await draft(page)).toEqual(before);
   await node.locator('[data-csv-edit-preview]').click();
@@ -469,8 +469,8 @@ test('choosing the correct driver in a standings preview replaces a mistaken sta
   const source = standingsHeader + '\n1,-,49,Pxss1s,40';
   const node = await previewCSV(page, 'standings', source);
   await expect(node.locator('.csv-errors')).toHaveCount(0);
-  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(2);
-  await expect(node.locator('[data-csv-preview] .standings-username')).toHaveText(['@Pxss1s', '@pxssis']);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(1);
+  await expect(node.locator('[data-csv-preview] .standings-username')).toHaveText('@Pxss1s');
   await node.locator('[data-csv-edit-preview]').click();
   const editedRow = node.locator('[data-standings-csv-row="0"]');
   await editedRow.locator('[data-standings-csv-identity]').selectOption('pxssis');
@@ -580,10 +580,14 @@ test('recovered drafts repair the confirmed Pxssls entry and publish a single to
   expect(published[0].drivers.profiles.pxssis).toMatchObject({ alias: 'Pxssis', wins: 2, championships: 0, rank: 30 });
 });
 
-test('standings preview Remove follows source rows after sorting and never deletes saved standings or driver history', async ({ page }) => {
+test('standings preview Remove follows source rows and can clear a complete board without deleting drivers or other series', async ({ page }) => {
   const data = league();
-  data.standings = [{ id: 'd1:maxuser', division: 'd1', username: 'MaxUser', name: 'Max', number: '19', nameManual: false, numberManual: false, pointsAdjustment: 50, order: 1, previousPosition: null }];
-  await boot(page, { data });
+  data.standings = [
+    { id: 'd1:maxuser', division: 'd1', username: 'MaxUser', name: 'Max', number: '19', nameManual: false, numberManual: false, pointsAdjustment: 50, order: 1, previousPosition: null },
+    { id: 'open:openuser', division: 'open', username: 'OpenUser', name: 'Open Racer', number: '05', nameManual: false, numberManual: false, pointsAdjustment: 75, order: 1, previousPosition: null }
+  ];
+  const published = await boot(page, { data, role: 'race_control' });
+  const baseline = await page.evaluate(async () => await window.UARLData.load());
   await section(page, 'standings').click();
   const before = await draft(page);
   const node = await previewCSV(page, 'standings', standingsHeader + '\n2,-,20,HaydenUser,90\n1,-,19,MaxUser,100');
@@ -595,19 +599,45 @@ test('standings preview Remove follows source rows after sorting and never delet
   await expect(node.locator('.csv-errors')).toHaveCount(0);
   await expect(node.locator('[data-csv-input]')).toHaveValue(standingsHeader + '\n1,-,20,HaydenUser,90');
   const recalculatedRows = node.locator('[data-csv-preview] tbody tr');
+  await expect(recalculatedRows).toHaveCount(1);
   await expect(recalculatedRows.first().locator('strong')).toHaveText('Hayden');
   await expect(recalculatedRows.first().locator('td').first()).toHaveText('1');
-  await expect(recalculatedRows.nth(1).locator('strong')).toHaveText('Max');
-  await expect(recalculatedRows.nth(1).locator('td').last()).toHaveText('50');
-  await expect(recalculatedRows.nth(1).locator('[data-csv-remove-row]')).toHaveCount(0);
   await expect(node.locator('[data-csv-remove-row]')).toHaveCount(1);
   expect(await draft(page)).toEqual(before);
   await node.locator('[data-csv-remove-row="0"]').click();
-  await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
-  await expect(node.locator('[data-csv-output]')).toContainText('No rows left in this preview. Nothing has been applied.');
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(0);
+  await expect(node.locator('[data-csv-apply]')).toBeEnabled();
+  await expect(node.locator('[data-csv-output]')).toContainText('Applying will clear this series');
   await expect(pointsRow(page, 'MaxUser').locator('[data-standings-points]')).toHaveValue('50');
   await expect(pointsRow(page, 'HaydenUser').locator('[data-standings-points]')).toHaveValue('0');
   expect(await draft(page)).toEqual(before);
+  await node.locator('[data-csv-apply]').click();
+  let saved = await draft(page);
+  expect(saved.standings.filter(row => row.division === 'd1')).toEqual([]);
+  expect(saved.standingsTables.d1.members).toEqual([]);
+  expect(saved.standings.find(row => row.division === 'open')).toEqual(baseline.standings.find(row => row.division === 'open'));
+  expect(saved.drivers).toEqual(baseline.drivers);
+  expect(saved.records).toEqual(baseline.records);
+  await expect(page.locator('[data-standings-driver]')).toHaveCount(0);
+  await page.locator('[data-workspace-undo]').first().click();
+  await expect(pointsRow(page, 'MaxUser').locator('[data-standings-points]')).toHaveValue('50');
+  const undone = await draft(page);
+  expect(undone ? undone.standings : baseline.standings).toEqual(baseline.standings);
+  await page.locator('[data-workspace-redo]').first().click();
+  await page.reload();
+  await expect(page.locator('[data-save-status]')).toContainText('Recovered');
+  await section(page, 'standings').click();
+  await expect(page.locator('[data-standings-driver]')).toHaveCount(0);
+  saved = await draft(page);
+  expect(saved.standingsTables.d1.members).toEqual([]);
+  await page.locator('[data-action="publish"]').first().click();
+  await page.locator('[data-confirm-publish]').click();
+  await expect.poll(() => published.length).toBe(1);
+  expect(published[0].drivers).toEqual(baseline.drivers);
+  await page.goto('/race-center/');
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id]')).toHaveCount(0);
+  await page.locator('[data-rc-division="open"]').click();
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id="OpenUser"] .rc-points-value')).toHaveText('75');
 });
 
 test('removing an invalid preview row reindexes remaining identities before an explicit driver correction', async ({ page }) => {
@@ -647,4 +677,139 @@ test('removing an invalid preview row reindexes remaining identities before an e
   await page.locator('[data-confirm-publish]').click();
   await expect.poll(() => published.length).toBe(1);
   expect(published[0].standings.filter(row => row.division === 'open')).toHaveLength(1);
+});
+
+function completeStandingsLeague() {
+  const data = league();
+  data.drivers.profiles = {
+    pxssis: { alias: 'Pxssis', currentUsername: 'pxssis', csvDivisions: ['open'], number: '49', wins: 2, championships: 0, rank: 30 },
+    OpenFirst22: { alias: 'Open Leader', currentUsername: 'OpenFirst22', csvDivisions: ['open'], number: '05', wins: 0, championships: 0, rank: 0 },
+    OpenSecond22: { alias: 'Open Second', currentUsername: 'OpenSecond22', csvDivisions: ['open'], number: '5', wins: 0, championships: 0, rank: 0 }
+  };
+  data.drivers.openEntries = [
+    { user: 'pxssis', number: '49', make: 'Ford' },
+    { user: 'OpenFirst22', number: '05', make: 'Toyota' },
+    { user: 'OpenSecond22', number: '5', make: 'Chevrolet' }
+  ];
+  data.records = [{
+    id: 'old-open-history', division: 'open', event: 'Earlier Open Race', date: '2026-10-01', pointsEvent: true,
+    entries: [], qualifying: [], stages: [], bonuses: [], finishes: [
+      { position: 1, username: 'pxssis', name: 'Pxssis', number: '49', points: 50, stagePoints: 0 },
+      { position: 2, username: 'RetiredHistory22', name: 'Former Racer', number: '99', points: 45, stagePoints: 0 }
+    ]
+  }];
+  data.records[0].finishes.forEach(finish => Object.assign(finish, {
+    basePoints: finish.points, bonusPoints: 0, mostLapsLed: false,
+    pole: false, stageWins: 0, totalPoints: finish.points + finish.stagePoints
+  }));
+  data.standings = [
+    { id: 'open:legacyposted22', division: 'open', username: 'LegacyPosted22', name: 'Previously Posted', number: '77', nameManual: true, numberManual: true, pointsAdjustment: 77, order: 1, previousPosition: null },
+    { id: 'd1:maxuser', division: 'd1', username: 'MaxUser', name: 'Max', number: '19', nameManual: false, numberManual: false, pointsAdjustment: 777, order: 1, previousPosition: null }
+  ];
+  return data;
+}
+
+test('a complete standings CSV replaces the series and every roster-matched row can be removed before recovery and publishing', async ({ page }) => {
+  const published = await boot(page, { data: completeStandingsLeague(), role: 'race_control' });
+  const baseline = await page.evaluate(async () => await window.UARLData.load());
+  await section(page, 'standings').click();
+  await page.locator('[data-standings-division="open"]').click();
+  await expect(pointsRow(page, 'pxssis')).toHaveCount(1);
+  await expect(pointsRow(page, 'RetiredHistory22')).toHaveCount(1);
+  await expect(pointsRow(page, 'LegacyPosted22')).toHaveCount(1);
+  const before = await draft(page);
+  const source = standingsHeader + '\n1,+1,05,OpenFirst22,200\n2,-1,5,OpenSecond22,100\n3,-,49,pxssis,0';
+  const node = await previewCSV(page, 'standings', source);
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(3);
+  await expect(node.locator('[data-csv-remove-row]')).toHaveCount(3);
+  await expect(node.locator('[data-csv-preview]')).not.toContainText('Previously Posted');
+  await expect(node.locator('[data-csv-preview]')).not.toContainText('Former Racer');
+  await expect(node.locator('[data-csv-preview] .standings-username')).toHaveText(['@OpenFirst22', '@OpenSecond22', '@pxssis']);
+  await node.locator('[data-csv-remove-row="2"]').click();
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(2);
+  await expect(node.locator('[data-csv-remove-row]')).toHaveCount(2);
+  await expect(node.locator('[data-csv-preview] .standings-username')).toHaveText(['@OpenFirst22', '@OpenSecond22']);
+  expect(await draft(page)).toEqual(before);
+  await node.locator('[data-csv-apply]').click();
+  let saved = await draft(page);
+  expect(saved.standings.filter(row => row.division === 'open').map(row => row.username)).toEqual(['OpenFirst22', 'OpenSecond22']);
+  expect(saved.standingsTables.open.members).toEqual(['OpenFirst22', 'OpenSecond22']);
+  expect(saved.standings.find(row => row.division === 'd1')).toEqual(baseline.standings.find(row => row.division === 'd1'));
+  expect(saved.drivers).toEqual(baseline.drivers);
+  expect(saved.records).toEqual(baseline.records);
+  await expect(page.locator('[data-standings-driver]')).toHaveCount(2);
+  await expect(pointsRow(page, 'pxssis')).toHaveCount(0);
+  await expect(pointsRow(page, 'RetiredHistory22')).toHaveCount(0);
+  await expect(pointsRow(page, 'LegacyPosted22')).toHaveCount(0);
+  await page.locator('[data-workspace-undo]').first().click();
+  await expect(pointsRow(page, 'pxssis')).toHaveCount(1);
+  await expect(pointsRow(page, 'LegacyPosted22')).toHaveCount(1);
+  await page.locator('[data-workspace-redo]').first().click();
+  await expect(pointsRow(page, 'pxssis')).toHaveCount(0);
+  await page.reload();
+  await expect(page.locator('[data-save-status]')).toContainText('Recovered');
+  await section(page, 'standings').click();
+  await page.locator('[data-standings-division="open"]').click();
+  await expect(page.locator('[data-standings-driver]')).toHaveCount(2);
+  saved = await draft(page);
+  expect(saved.standingsTables.open.members).toEqual(['OpenFirst22', 'OpenSecond22']);
+  expect(saved.records).toEqual(baseline.records);
+  await previewCSV(page, 'standings', standingsHeader + '\n1,-,5,OpenSecond22,110');
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(1);
+  await expect(node.locator('[data-csv-preview] .standings-username')).toHaveText('@OpenSecond22');
+  await node.locator('[data-csv-apply]').click();
+  saved = await draft(page);
+  expect(saved.standings.filter(row => row.division === 'open').map(row => row.username)).toEqual(['OpenSecond22']);
+  expect(saved.standingsTables.open.members).toEqual(['OpenSecond22']);
+  expect(saved.drivers).toEqual(baseline.drivers);
+  expect(saved.records).toEqual(baseline.records);
+  await page.locator('[data-action="publish"]').first().click();
+  await page.locator('[data-confirm-publish]').click();
+  await expect.poll(() => published.length).toBe(1);
+  expect(published[0].standingsTables.open.members).toEqual(['OpenSecond22']);
+  expect(published[0].drivers).toEqual(baseline.drivers);
+  expect(published[0].records).toEqual(baseline.records);
+  await page.goto('/race-center/');
+  await page.locator('[data-rc-division="open"]').click();
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id]')).toHaveCount(1);
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id="OpenSecond22"] .rc-points-value')).toHaveText('110');
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id="pxssis"]')).toHaveCount(0);
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id="RetiredHistory22"]')).toHaveCount(0);
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id="LegacyPosted22"]')).toHaveCount(0);
+  await page.reload();
+  await page.locator('[data-rc-division="open"]').click();
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id]')).toHaveCount(1);
+  await page.locator('[data-rc-division="d1"]').click();
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id="MaxUser"] .rc-points-value')).toHaveText('777');
+});
+
+test('new manual race points still add to a complete imported total without adding unraced roster entries', async ({ page }) => {
+  const published = await boot(page);
+  await section(page, 'standings').click();
+  await applyCSV(page, 'standings', standingsHeader + '\n1,-,19,MaxUser,100');
+  await expect(page.locator('[data-standings-driver]')).toHaveCount(1);
+  await expect(pointsRow(page, 'MaxUser').locator('[data-standings-points]')).toHaveValue('100');
+  expect((await draft(page)).standingsTables.d1.members).toEqual(['MaxUser']);
+  await createRace(page);
+  await page.locator('.editor-steps [data-step="4"]').click();
+  await page.locator('[data-sadd="finishes"]').click();
+  await chooseDriver(page.locator('[data-sfield="finishes"][data-skey="name"]').first(), 'MaxUser');
+  await section(page, 'standings').click();
+  await expect(page.locator('[data-standings-driver]')).toHaveCount(1);
+  await expect(pointsRow(page, 'MaxUser').locator('[data-standings-points]')).toHaveValue('150');
+  await expect(pointsRow(page, 'HaydenUser')).toHaveCount(0);
+  await expect(pointsRow(page, 'JordanA')).toHaveCount(0);
+  await expect(pointsRow(page, 'JordanB')).toHaveCount(0);
+  const saved = await draft(page);
+  expect(saved.standings.find(row => row.username === 'MaxUser').pointsAdjustment).toBe(100);
+  expect(saved.records[0].finishes[0]).toMatchObject({ username: 'MaxUser', totalPoints: 50 });
+  await page.locator('[data-action="publish"]').first().click();
+  await page.locator('[data-confirm-publish]').click();
+  await expect.poll(() => published.length).toBe(1);
+  await page.goto('/race-center/');
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id]')).toHaveCount(1);
+  await expect(page.locator('[data-rc-standings-body] tr[data-driver-id="MaxUser"] .rc-points-value')).toHaveText('150');
 });

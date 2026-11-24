@@ -11,6 +11,7 @@ function league() {
   return { drivers: { teams: [{ name: 'Test Team', entries }], profiles: { MaxUser: { alias: 'Old Max' } }, openEntries: [{ user: 'OpenUser', name: 'Open Racer', number: '05' }] }, race: { drivers: entries.map(entry => ({ id: entry.user, name: entry.name, number: entry.number, division: 'd1', team: 'Test Team' })).concat({ id: 'OpenUser', name: 'Open Racer', number: '05', division: 'open' }) }, records: [{ id: 'old', division: 'd1', date: '2026-11-01', pointsEvent: true, finishes: [{ position: 1, name: 'Max', username: 'MaxUser', number: '19', points: 50, stagePoints: 5 }, { position: 2, name: 'Hayden', username: 'HaydenUser', number: '20', points: 45, stagePoints: 0 }] }] };
 }
 function race(overrides = {}) { return { id: 'new', division: 'd1', event: 'Test Race', pointsEvent: true, entries: [], qualifying: [], stages: [], finishes: [], bonuses: [], ...overrides }; }
+function applyStandings(data, preview) { data.standings = preview.standings; data.standingsTables = preview.standingsTables; }
 
 test('CSV reads BOM, CRLF, quoted commas, escaped quotes and multiline fields', () => {
   const parsed = csv.parse('\uFEFF' + resultHeader + '\r\n1,"Driver, Jr.",1,1,,Yes,No\r\n2,"A ""quoted""\nname",,,,,Yes\r\n\r\n', 'results');
@@ -73,7 +74,10 @@ test('standings CSV previews exact totals, signed movement and zero-prefixed num
 test('standings CSV disambiguates same-name drivers by number and rejects ambiguous identities, ranks, totals and movement', () => {
   const data = league();
   assert.deepEqual(csv.standings(standingsHeader + '\n1,-,24,Jordan,100', data, 'd1').errors, []);
-  for (const rows of ['1,0,99,Jordan,100', '1,0,19,Max,100\n1,0,20,Hayden,90', '1,0,19,Max,100\n2,0,19,Max,90', '1,up,19,Max,100', '1,-2,19,Max,100', '1,0,19,Max,1.5', '1,0,19,Max,', '1,0,#19,Max,100', '2,0,19,Max,100', '1,0,19,Max,10']) assert.ok(csv.standings(standingsHeader + '\n' + rows, data, 'd1').errors.length, rows);
+  for (const rows of ['1,0,99,Jordan,100', '1,0,19,Max,100\n1,0,20,Hayden,90', '1,0,19,Max,100\n2,0,19,Max,90', '1,up,19,Max,100', '1,-2,19,Max,100', '1,0,19,Max,1.5', '1,0,19,Max,', '1,0,#19,Max,100', '2,0,19,Max,100']) assert.ok(csv.standings(standingsHeader + '\n' + rows, data, 'd1').errors.length, rows);
+  const lowerTotal = csv.standings(standingsHeader + '\n1,0,19,Max,10', data, 'd1');
+  assert.deepEqual(lowerTotal.errors, []);
+  assert.deepEqual(lowerTotal.rows.map(row => [row.id, row.points]), [['MaxUser', 10]], 'omitted historical totals cannot outrank a complete CSV table');
 });
 test('manual corrections and CSV totals remain offsets when later results are entered or corrected', () => {
   const data = league(), max = standings.calculate(data, 'd1').find(row => row.id === 'MaxUser');
@@ -84,17 +88,19 @@ test('manual corrections and CSV totals remain offsets when later results are en
   assert.equal(standings.calculate(data, 'd1').find(row => row.id === 'MaxUser').points, 139);
   data.records.pop();
   const imported = csv.standings(standingsHeader + '\n1,0,19,Max,200', data, 'd1');
-  assert.deepEqual(imported.errors, []); data.standings = imported.standings;
+  assert.deepEqual(imported.errors, []); applyStandings(data, imported);
   data.records.push({ division: 'd1', date: '2026-11-08', finishes: [{ username: 'MaxUser', name: 'Max', position: 1, points: 50, stagePoints: 0 }] });
   assert.equal(standings.calculate(data, 'd1').find(row => row.id === 'MaxUser').points, 250);
 });
-test('standings corrections preserve other divisions, omitted drivers and totals for former entrants', () => {
+test('complete standings imports replace omitted table entries while preserving other divisions and historical records', () => {
   const data = league(), open = standings.calculate(data, 'open')[0];
   data.standings = [standings.correction(open, 99)];
   const imported = csv.standings(standingsHeader + '\n1,-,19,Max,100', data, 'd1');
-  data.standings = imported.standings;
+  assert.deepEqual(imported.errors, []);
+  applyStandings(data, imported);
   assert.equal(standings.calculate(data, 'open')[0].points, 99);
-  assert.equal(standings.calculate(data, 'd1').find(row => row.id === 'HaydenUser').points, 45);
+  assert.deepEqual(standings.calculate(data, 'd1').map(row => [row.id, row.points]), [['MaxUser', 100]]);
+  assert.equal(data.records[0].finishes.find(row => row.username === 'HaydenUser').points, 45, 'omitting a standings entry must not delete its historical points');
   data.race.drivers = data.race.drivers.filter(row => row.id !== 'MaxUser'); data.records = [];
   assert.equal(standings.calculate(data, 'd1').find(row => row.id === 'MaxUser').points, 45);
 });
@@ -176,11 +182,11 @@ test('standings-only accounts reimport by case-insensitive username and preserve
   const data = formerOpenLeague();
   const initial = csv.standings(formerOpenCSV(), data, 'open');
   assert.deepEqual(initial.errors, []);
-  data.standings = initial.standings;
+  applyStandings(data, initial);
   const beforeDrivers = structuredClone(data.drivers);
   data.records.push({ id: 'later-open', division: 'open', date: '2026-11-08', finishes: [{ username: 'Kanevme', name: 'Kanevme', number: '012', position: 1, points: 8, stagePoints: 2 }] });
   assert.equal(standings.calculate(data, 'open').find(row => row.id === 'Kanevme').points, 52);
-  const updated = csv.standings(standingsHeader + '\n9,0,005,@kAnEvMe,52\n10,-,,FORMERGMAN22,40', data, 'open');
+  const updated = csv.standings(standingsHeader + '\n1,0,005,@kAnEvMe,52\n2,-,,FORMERGMAN22,40', data, 'open');
   assert.deepEqual(updated.errors, []);
   assert.equal(updated.standings.filter(row => row.division === 'open' && row.username.toLowerCase() === 'kanevme').length, 1);
   assert.equal(updated.standings.filter(row => row.division === 'open' && row.username === 'GuillermoChase').length, 1);
@@ -189,7 +195,7 @@ test('standings-only accounts reimport by case-insensitive username and preserve
   assert.equal(kane.rawPoints, 10);
   assert.equal(kane.number, '005');
   assert.deepEqual(data.drivers, beforeDrivers);
-  data.standings = updated.standings;
+  applyStandings(data, updated);
   data.records.push({ id: 'third-open', division: 'open', date: '2026-11-15', finishes: [{ username: 'kanevme', name: 'Kanevme', number: '005', position: 1, points: 5 }] });
   assert.equal(standings.calculate(data, 'open').find(row => row.id.toLowerCase() === 'kanevme').points, 57);
 });
@@ -203,7 +209,7 @@ test('unknown full names become stable standings-only identities without inventi
   assert.equal(first.rows[0].name, 'Former Driver Jr.');
   assert.equal(standings.username(data, first.rows[0]), '');
   assert.deepEqual(standings.validate({ standings: first.standings }), []);
-  data.standings = first.standings;
+  applyStandings(data, first);
   const repeated = csv.standings(standingsHeader + '\n1,-,5,former   driver jr.,26', data, 'open');
   assert.deepEqual(repeated.errors, []);
   assert.equal(repeated.entries[0].username, saved.username);
@@ -222,7 +228,7 @@ test('global username and former-handle matches keep stable identities without a
   assert.equal(imported.entries[0].username, 'OldVerified22');
   assert.equal(imported.rows.find(row => row.id === 'OldVerified22').number, '');
   assert.deepEqual(data, before);
-  data.standings = imported.standings;
+  applyStandings(data, imported);
   const byDisplayAlias = csv.standings(standingsHeader + '\n1,-,,Former Full Name,95', data, 'open');
   assert.deepEqual(byDisplayAlias.errors, []);
   assert.equal(byDisplayAlias.entries[0].username, 'OldVerified22');
@@ -381,7 +387,8 @@ test('capitalization matches one standings account while similar spellings remai
   const unchanged = csv.standings(standingsHeader + '\n1,-,49,Pxss1s,40', data, 'open');
   assert.deepEqual(unchanged.errors, []);
   assert.equal(unchanged.entries[0].username, 'Pxss1s');
-  assert.deepEqual(unchanged.rows.map(row => [row.id, row.points]), [['Pxss1s', 40], ['pxssis', 0]]);
+  assert.deepEqual(unchanged.rows.map(row => [row.id, row.points]), [['Pxss1s', 40]], 'a complete import cannot append the omitted roster account');
+  assert.equal(data.drivers.openEntries[0].user, 'pxssis', 'the omitted roster identity still exists outside the posted table');
   const caseOnly = structuredClone(data);
   caseOnly.standings = [];
   for (const spelling of ['Pxssis', 'PXSSIS', '@pXsSiS']) {
@@ -415,7 +422,7 @@ test('an explicit preview identity selection replaces an orphan standings entry 
   assert.deepEqual(imported.standings.find(row => row.division === 'd1'), before.standings.find(row => row.division === 'd1'));
   assert.deepEqual(standings.validate({ standings: imported.standings }), []);
   assert.deepEqual(data, before, 'identity correction remains a read-only preview');
-  const applied = { ...data, standings: imported.standings };
+  const applied = { ...data, standings: imported.standings, standingsTables: imported.standingsTables };
   const repeated = csv.standings(standingsHeader + '\n1,-,49,Pxssis,40', applied, 'open', options);
   assert.deepEqual(repeated.errors, []);
   assert.deepEqual(repeated.replacedIdentities, []);
@@ -430,7 +437,7 @@ test('an explicit preview identity selection replaces an orphan standings entry 
   assert.equal(bySavedAlias.entries[0].name, 'Pxssis', 'reimporting a corrected account alias must not restore its mistyped display name');
   assert.equal(bySavedAlias.rows[0].points, 40);
   assert.ok(bySavedAlias.entries[0].csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'));
-  const afterReimport = { ...applied, standings: bySavedAlias.standings };
+  const afterReimport = { ...applied, standings: bySavedAlias.standings, standingsTables: bySavedAlias.standingsTables };
   const corrected = standings.correction(bySavedAlias.rows[0], 45);
   assert.ok(corrected.csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'), 'a manual points correction keeps the saved identity match');
   afterReimport.standings = standings.merge(afterReimport, [corrected]);
@@ -451,7 +458,7 @@ test('a preview selection remembers a corrected account before the mistaken entr
   assert.deepEqual(selected.errors, []);
   assert.deepEqual(selected.replacedIdentities, []);
   assert.ok(selected.entries[0].csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'));
-  const reimported = csv.standings(standingsHeader + '\n1,-,49,Pxss1s,40', { ...data, standings: selected.standings }, 'open');
+  const reimported = csv.standings(standingsHeader + '\n1,-,49,Pxss1s,40', { ...data, standings: selected.standings, standingsTables: selected.standingsTables }, 'open');
   assert.deepEqual(reimported.errors, []);
   assert.equal(reimported.rows.length, 1);
   assert.equal(reimported.entries[0].username, 'pxssis');
@@ -464,16 +471,16 @@ test('a later verified account still takes priority over an earlier learned CSV 
   const data = duplicateOpenLeague();
   const selected = csv.standings(standingsHeader + '\n1,-,49,Pxssis,40', data, 'open', { identities: ['pxssis'], replacements: [{ from: 'Pxss1s', to: 'pxssis' }] });
   assert.deepEqual(selected.errors, []);
-  data.standings = selected.standings;
+  applyStandings(data, selected);
   data.drivers.profiles.Pxss1s = { alias: 'A Different Person', csvDivisions: ['open'], number: '49' };
   data.drivers.openEntries.push({ user: 'Pxss1s', name: 'A Different Person', number: '49', make: 'Chevrolet' });
   const before = structuredClone(data);
-  const imported = csv.standings(standingsHeader + '\n2,-,49,Pxss1s,30', data, 'open');
+  const imported = csv.standings(standingsHeader + '\n1,-,49,Pxss1s,30', data, 'open');
   assert.deepEqual(imported.errors, []);
   assert.equal(imported.entries[0].username, 'Pxss1s');
-  assert.equal(imported.rows.find(row => row.id === 'pxssis').points, 40);
   assert.equal(imported.rows.find(row => row.id === 'Pxss1s').points, 30);
-  assert.equal(imported.rows.length, 2);
+  assert.equal(imported.rows.length, 1, 'a verified account is not merged with another person and only the provided row is posted');
+  assert.equal(data.standings.find(row => row.username === 'pxssis').pointsAdjustment, 40, 'the read-only preview cannot edit the prior saved table');
   assert.deepEqual(data, before);
 });
 
@@ -496,8 +503,8 @@ test('explicit standings identity corrections never delete real profiles, roster
     const imported = csv.standings(standingsHeader + '\n1,-,49,Pxssis,100', data, 'open', { identities: ['pxssis'], replacements: [{ from: 'Pxss1s', to: 'pxssis' }] });
     assert.deepEqual(imported.errors, []);
     assert.deepEqual(imported.replacedIdentities, []);
-    assert.equal(imported.standings.filter(row => row.division === 'open').length, 2);
-    assert.ok(imported.standings.some(row => row.username === 'Pxss1s' && row.pointsAdjustment === 40));
+    assert.equal(imported.standings.filter(row => row.division === 'open').length, 1, 'omitted rows leave the complete standings snapshot even when the person has a real identity');
+    assert.ok(!imported.standings.some(row => row.division === 'open' && row.username === 'Pxss1s'));
     assert.equal(imported.rows.find(row => row.id === 'pxssis').points, 100);
     assert.ok(!(imported.entries[0].csvAliases || []).some(alias => alias.toLowerCase() === 'pxss1s'), 'a different real account must not become a CSV alias');
     assert.deepEqual(data, before);

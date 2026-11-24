@@ -139,12 +139,17 @@
       after.forEach(function (row, index) { if (!usedAfter.has(index)) output.push({ section: section, index: index, title: definitions[section].title(row), kind: "added", fields: fields({}, row) }); });
       before.forEach(function (row, index) { if (!usedBefore.has(index)) output.push({ section: section, index: index, title: definitions[section].title(row), kind: "removed", fields: fields(row, {}) }); });
     });
+    var beforeTables = original.standingsTables || {}, afterTables = draft.standingsTables || {};
+    Array.from(new Set(Object.keys(beforeTables).concat(Object.keys(afterTables)))).forEach(function (division) {
+      if (!equal(beforeTables[division], afterTables[division])) output.push({ section: "standings", index: 0, title: (division === "open" ? "Open Series" : division.toUpperCase()) + " complete standings", kind: "updated", fields: ["Posted table"] });
+    });
     // Canonical collections are accounted for above; only the remaining site settings
     // are compared here. Generated race rosters/schedules must never double-count work.
     function remainder(data) {
       var value = clone(data);
       Object.keys(definitions).forEach(function (section) { var path = definitions[section].path, owner = path.slice(0, -1).reduce(function (current, key) { return current && current[key]; }, value); if (owner) delete owner[path[path.length - 1]]; });
       if (value.race) { delete value.race.drivers; delete value.race.schedule; }
+      delete value.standingsTables;
       return value;
     }
     var beforeRest = remainder(original), afterRest = remainder(draft);
