@@ -423,7 +423,8 @@ test('Open drivers can share occupied and same-batch numbers without sharing ide
   assert.deepEqual(standings.errors, []);
   assert.equal(standings.rows.find(row => row.id === 'OpenFirst22').points, 100);
   assert.equal(standings.rows.find(row => row.id === 'OpenSecond22').points, 70);
-  assert.equal(standings.rows.find(row => row.id === 'ExistingUser').points, 0);
+  assert.ok(!standings.rows.some(row => row.id === 'ExistingUser'), 'the complete standings CSV must not append an unlisted roster driver');
+  assert.deepEqual(rosterData.drivers.openEntries.find(entry => entry.user === 'ExistingUser'), before.drivers.openEntries[0]);
 });
 
 test('blank Open fields retain the Open number, independent team and manufacturer instead of D1 values', () => {

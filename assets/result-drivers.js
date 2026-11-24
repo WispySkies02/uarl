@@ -131,7 +131,7 @@
     function points(value) { var result = Number(value); return Number.isFinite(result) ? result : 0; }
     function rawPoints(division) {
       if (root.UARLStandings && root.UARLStandings.calculate) {
-        var row = root.UARLStandings.calculate(data, division).find(function (row) { return identity(canonicalUser(data, row.id)) === targetKey; });
+        var row = root.UARLStandings.calculate(data, division, { allDrivers: true }).find(function (row) { return identity(canonicalUser(data, row.id)) === targetKey; });
         return row ? row.rawPoints : 0;
       }
       var total = 0, uncertain = false;
