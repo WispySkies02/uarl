@@ -92,6 +92,7 @@
     rows.forEach(function (row) {
       var saved = corrections.find(function (entry) { return identity(entry.username) === identity(row.id); }) || corrections.find(function (entry) { return identity(account(data, entry.username)) === identity(row.id); });
       row.correction = saved || null;
+      if (saved && array(saved.csvAliases).length) row.aliases = Array.from(new Set(array(row.aliases).concat(saved.csvAliases.map(identity)).filter(Boolean)));
       row.points = row.rawPoints + number(saved && saved.pointsAdjustment);
       if (saved && saved.nameManual && hasName(saved.name)) row.name = saved.name;
       if (saved && saved.numberManual) row.number = saved.number;
@@ -139,7 +140,9 @@
     if (!Number.isSafeInteger(points)) throw new Error("Points must be a whole number.");
     if (!Number.isSafeInteger(points - row.rawPoints)) throw new Error("The points correction is too large. Use a smaller total.");
     var saved = row.correction || {};
-    return { id: key(row.division, row.id), division: row.division, username: row.id, name: options.name == null ? row.name : options.name, number: options.number == null ? text(row.number) : options.number, nameManual: options.name != null || Boolean(saved.nameManual), numberManual: options.number != null || Boolean(saved.numberManual), pointsAdjustment: points - row.rawPoints, previousPosition: Object.prototype.hasOwnProperty.call(options, "previousPosition") ? options.previousPosition : saved.previousPosition == null ? (row.movement == null ? null : row.position + row.movement) : saved.previousPosition, order: options.order || saved.order || row.position, orderManual: options.order != null || Boolean(saved.orderManual) };
+    var next = { id: key(row.division, row.id), division: row.division, username: row.id, name: options.name == null ? row.name : options.name, number: options.number == null ? text(row.number) : options.number, nameManual: options.name != null || Boolean(saved.nameManual), numberManual: options.number != null || Boolean(saved.numberManual), pointsAdjustment: points - row.rawPoints, previousPosition: Object.prototype.hasOwnProperty.call(options, "previousPosition") ? options.previousPosition : saved.previousPosition == null ? (row.movement == null ? null : row.position + row.movement) : saved.previousPosition, order: options.order || saved.order || row.position, orderManual: options.order != null || Boolean(saved.orderManual) };
+    if (array(saved.csvAliases).length) next.csvAliases = Array.from(new Set(saved.csvAliases.map(text).filter(Boolean)));
+    return next;
   }
   function merge(data, entries) {
     var incoming = new Set(entries.map(function (row) { return row.id; }));

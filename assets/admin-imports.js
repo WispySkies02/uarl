@@ -35,18 +35,48 @@
       var username = standings.username(data, row);
       return '<div class="driver-with-manufacturer"><div class="standings-driver-label"><strong>' + esc(row.name) + '</strong>' + (username ? '<small class="standings-username">@' + esc(username) + '</small>' : '') + '</div>' + root.UARLManufacturerBadges.badge(row.make) + '</div>';
     }
-    function csvSource(rows) {
-      return [csv.headers.standings].concat(rows).map(function (row) { return row.map(function (value) { value = String(value == null ? "" : value); return /[",\r\n]/.test(value) ? '"' + value.replace(/"/g, '""') + '"' : value; }).join(","); }).join("\n");
+    function csvSource(rows, kind) {
+      return [csv.headers[kind || "standings"]].concat(rows).map(function (row) { return row.map(function (value) { value = String(value == null ? "" : value); return /[",\r\n]/.test(value) ? '"' + value.replace(/"/g, '""') + '"' : value; }).join(","); }).join("\n");
+    }
+    function removePreviewButton(index, name, icon) {
+      return '<button type="button" class="csv-remove-preview' + (icon ? ' csv-remove-icon' : '') + '" data-csv-remove-row="' + index + '" aria-label="Remove ' + esc(name || 'row ' + (index + 1)) + ' from preview" title="Remove from this import">' + (icon ? '' : 'Remove') + '</button>';
+    }
+    function previewIdentityOptions(state) {
+      var data = normalized(), rows = [], seen = new Set();
+      function add(row) {
+        var user = row.id || row.user; if (!user) return;
+        user = root.UARLResultDrivers.canonicalUser(data, user);
+        if (seen.has(String(user).toLowerCase())) return;
+        seen.add(String(user).toLowerCase()); rows.push(Object.assign({}, row, { id: user }));
+      }
+      (state.preview.rows || []).forEach(add);
+      standings.calculate(data, division).forEach(add);
+      ['d1', 'open'].forEach(function (series) { root.UARLResultDrivers.pool(data, { division: series }).forEach(function (row) { if (row.user) add({ id: row.user, name: row.name, number: '', make: 'Unlisted' }); }); });
+      (state.editRows || []).forEach(function (row, index) { if (state.editIdentities[index]) add({ id: state.editIdentities[index], name: row[3], number: row[2] }); });
+      return rows.sort(function (a, b) { return String(a.name).localeCompare(String(b.name)) || String(a.id).localeCompare(String(b.id)); });
+    }
+    function previewReplacements(state) {
+      return (state.editSources || []).map(function (source, index) {
+        var target = (state.editIdentities || [])[index];
+        return source.id && target && source.id.toLowerCase() !== target.toLowerCase() ? { from: source.id, to: target, alias: source.name } : null;
+      }).filter(Boolean);
+    }
+    function standingsOptions(state) {
+      return state.editIdentities ? { identities: state.editIdentities, replacements: previewReplacements(state) } : undefined;
     }
     function previewErrors(preview) {
       return preview.errors.length ? '<div class="csv-errors" role="alert"><b>Check these values before applying. Your draft has not changed.</b><ul>' + preview.errors.map(function (error) { return '<li>' + esc(error) + '</li>'; }).join("") + '</ul></div>' : '';
     }
     function editStandingsHTML(state) {
-      var preview = state.preview, stale = previewStale("standings", state);
+      var preview = state.preview, stale = previewStale("standings", state), identities = previewIdentityOptions(state), data = normalized();
       var body = state.editRows.map(function (row, index) {
-        var matched = (preview.rows || []).find(function (entry) { return entry.id === state.editIdentities[index]; });
+        var matched = identities.find(function (entry) { return entry.id === state.editIdentities[index]; });
+        var picker = '<label class="csv-identity-picker">Matched driver<select data-standings-csv-identity aria-label="Matched driver for row ' + (index + 1) + '"><option value="" disabled ' + (!state.editIdentities[index] ? 'selected' : '') + '>Choose a driver</option>' + identities.map(function (entry) {
+          var username = standings.username(data, entry), label = entry.name + (username ? ' · @' + username : '') + (entry.number ? ' · #' + entry.number : '');
+          return '<option value="' + esc(entry.id) + '" ' + (entry.id === state.editIdentities[index] ? 'selected' : '') + '>' + esc(label) + '</option>';
+        }).join('') + '</select></label>';
         return '<tr data-standings-csv-row="' + index + '">' + row.map(function (value, column) {
-          return '<td data-label="' + esc(standingsLabels[column]) + '"><input class="csv-edit-input" type="text" data-standings-csv-column="' + column + '" value="' + esc(value) + '" aria-label="Row ' + (index + 1) + ' ' + esc(standingsLabels[column]) + '"' + (column === 0 || column === 2 ? ' inputmode="numeric"' : column === 1 || column === 4 ? ' inputmode="text"' : '') + '>' + (column === 3 && matched ? '<div class="driver-with-manufacturer csv-edit-manufacturer">' + root.UARLManufacturerBadges.badge(matched.make) + '</div>' : '') + '</td>';
+          return '<td data-label="' + esc(standingsLabels[column]) + '"><input class="csv-edit-input" type="text" data-standings-csv-column="' + column + '" value="' + esc(value) + '" aria-label="Row ' + (index + 1) + ' ' + esc(standingsLabels[column]) + '"' + (column === 0 || column === 2 ? ' inputmode="numeric"' : column === 1 || column === 4 ? ' inputmode="text"' : '') + '>' + (column === 3 ? picker + (matched ? '<div class="driver-with-manufacturer csv-edit-manufacturer">' + root.UARLManufacturerBadges.badge(matched.make) + '</div>' : '') + removePreviewButton(index, row[3]) : '') + '</td>';
         }).join("") + '</tr>';
       }).join("");
       return '<div class="csv-preview"><h4>Edit standings preview</h4><p>Change any field before applying. These edits affect this import only; matched drivers keep their identity.</p>' + previewErrors(preview) + '<div class="csv-table-scroll" role="region" aria-label="Edit standings CSV preview" tabindex="0"><table class="csv-table csv-edit-table"><thead><tr>' + standingsLabels.map(function (label) { return '<th scope="col">' + esc(label) + '</th>'; }).join("") + '</tr></thead><tbody>' + body + '</tbody></table></div><p class="csv-message" data-csv-status role="status">' + (stale ? 'The draft changed. Preview the CSV again before applying.' : 'Check the preview or apply when ready. Your draft has not changed.') + '</p><div class="csv-preview-actions"><button type="button" class="button" data-csv-check-preview ' + (stale ? 'disabled' : '') + '>Check preview</button><button type="button" class="button publish" data-csv-apply ' + (stale ? 'disabled' : '') + '>Apply preview to draft</button></div></div>';
@@ -56,7 +86,14 @@
       if (!preview) return '<p class="csv-message" role="status">' + esc(state.message) + '</p>';
       if (kind === "standings" && state.editing) return editStandingsHTML(state);
       var editButton = kind === "standings" && (preview.inputRows || []).length ? '<button type="button" class="button" data-csv-edit-preview>Edit preview</button>' : '';
-      if (preview.errors.length) return previewErrors(preview) + editButton;
+      if (preview.errors.length) {
+        var removable = '';
+        if (kind === 'drivers') {
+          var sourceRows = csv.parse(state.text, 'drivers').rows;
+          if (sourceRows.length) removable = table(csv.headers.drivers.concat('Action'), sourceRows.map(function (row, index) { return '<tr>' + row.cells.map(function (value) { return '<td>' + esc(value) + '</td>'; }).join('') + '<td>' + removePreviewButton(index, row.cells[0]) + '</td></tr>'; }), 'Review roster rows');
+        }
+        return previewErrors(preview) + removable + editButton;
+      }
       var stale = previewStale(kind, state), content;
       if (kind === "results") {
         content = table(["Finish", "Driver", "Car #", "Qual.", "Stage 1", "Stage 2", "Fastest lap", "Most led", "Points"], preview.rows.map(function (row, index) {
@@ -65,12 +102,12 @@
         }), "Results CSV preview");
       } else if (kind === "drivers") {
         var actions = { add: state.division === "open" ? "Add to Open Series" : "Add to D1 roster", skip: "Skip existing driver" };
-        content = table(["DriverName", "Username", "Driver#", "Team", "Action"], preview.rows.map(function (row) {
-          return cells([row.name, "@" + row.username, row.number || "Number pending", row.teamName || "No team", (actions[row.action] || row.action) + (row.reason ? " · " + row.reason : "")]);
+        content = table(["DriverName", "Username", "Driver#", "Team", "Action"], preview.rows.map(function (row, index) {
+          return '<tr>' + [row.name, "@" + row.username, row.number || "Number pending", row.teamName || "No team"].map(function (value) { return '<td>' + esc(value) + '</td>'; }).join('') + '<td>' + esc((actions[row.action] || row.action) + (row.reason ? " · " + row.reason : "")) + removePreviewButton(index, row.name) + '</td></tr>';
         }), "Driver roster CSV preview");
       } else {
         var data = normalized();
-        content = table(standingsLabels, preview.rows.map(function (row) { return '<tr><td>' + esc(row.position) + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row, data) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
+        content = table(standingsLabels, preview.rows.map(function (row) { var index = (preview.resolvedRows || []).findIndex(function (entry) { return entry && entry.id === row.id; }); return '<tr><td>' + esc(row.position) + (index >= 0 ? removePreviewButton(index, row.name, true) : '') + '</td><td>' + standings.movementHTML(row.movement) + '</td><td>' + root.UARLStandingsArtwork.html(data, division, row) + '</td><td>' + standingsDriver(row, data) + '</td><td>' + esc(row.points) + '</td></tr>'; }), "Standings CSV preview");
       }
       var warnings = (preview.warnings || []).length ? '<div class="csv-warnings"><b>Review before applying</b><ul>' + preview.warnings.map(function (warning) { return '<li>' + esc(warning) + '</li>'; }).join("") + '</ul></div>' : '';
       var additions = kind === "drivers" ? preview.rows.filter(function (row) { return row.action !== "skip"; }).length : 0;
@@ -109,7 +146,7 @@
       return bridge.header({ title: "Standings", kicker: "Race Center", description: "Import a points table or correct a driver’s total. Race results continue to update these totals automatically." }) + '<div class="standings-editor"><nav class="standings-divisions" aria-label="Standings division">' + [["d1", "D1 · Cup"], ["open", "Open Series"], ["d2", "D2 · Archive"]].map(function (pair) { return '<button class="button ' + (pair[0] === division ? '' : 'ghost') + '" type="button" data-standings-division="' + pair[0] + '" ' + (pair[0] === division ? 'aria-current="page"' : '') + '>' + pair[1] + '</button>'; }).join("") + '</nav>' + widget("standings") + '<section class="standings-manual"><header><div><h2>Points table</h2><p>Change a total and press Save. It stays in your draft until you publish.</p></div><label>Find a driver<input type="search" data-standings-search placeholder="Name or car number"></label></header>' + (rows.length ? table(standingsLabels, body, "Edit standings points") : '<p class="editor-empty">Add drivers to this division or enter its first race results to start the standings.</p>') + '</section></div>';
     }
     function click(event) {
-      var button = event.target.closest("[data-csv-preview-button],[data-csv-apply],[data-csv-edit-preview],[data-csv-check-preview],[data-standings-division],[data-save-points],[data-reset-points],[data-standings-artwork]");
+      var button = event.target.closest("[data-csv-preview-button],[data-csv-apply],[data-csv-edit-preview],[data-csv-check-preview],[data-csv-remove-row],[data-standings-division],[data-save-points],[data-reset-points],[data-standings-artwork]");
       if (!button) return false;
       var driverWidget = button.closest('[data-csv-kind="drivers"]');
       if (driverWidget && !canEditDrivers()) { bridge.toast("Only Owners and Admins can import drivers.", true); return true; }
@@ -129,8 +166,35 @@
       var ctx = context(button); if (!ctx) return true;
       var state = ctx.form;
       if (state.reading) { bridge.toast("Wait for the CSV file to finish loading.", true); return true; }
+      if (button.matches('[data-csv-remove-row]')) {
+        if (!state.preview || previewStale(ctx.kind, state)) { bridge.toast('The draft changed. Preview the CSV again before removing rows.', true); return true; }
+        var parsed = csv.parse(state.text, ctx.kind), removed = Number(button.dataset.csvRemoveRow);
+        if (parsed.errors.length || !Number.isInteger(removed) || removed < 0 || removed >= parsed.rows.length) return true;
+        var remaining = parsed.rows.map(function (row) { return row.cells.slice(); }); remaining.splice(removed, 1);
+        if (ctx.kind === 'standings') {
+          if (state.editIdentities) state.editIdentities.splice(removed, 1);
+          if (state.editSources) state.editSources.splice(removed, 1);
+          if (state.editRows) state.editRows = remaining;
+        }
+        state.text = csvSource(remaining, ctx.kind); ctx.widget.querySelector('[data-csv-input]').value = state.text;
+        if (!remaining.length) { state.preview = null; state.editing = false; state.message = 'No rows left in this preview. Nothing has been applied.'; }
+        else {
+          var currentData = normalized();
+          state.preview = ctx.kind === 'drivers' ? root.UARLDriverCSV.preview(state.text, currentData, state.division) : csv.standings(state.text, currentData, division, standingsOptions(state));
+          if (ctx.kind === 'standings' && state.preview.rows.length && state.preview.errors.every(function (error) { return /: Position \d+ would be/.test(error); })) {
+            remaining.forEach(function (row, index) { var resolved = state.preview.resolvedRows[index], ranked = resolved && state.preview.rows.find(function (entry) { return entry.id === resolved.id; }); if (ranked) row[0] = String(ranked.position); });
+            state.text = csvSource(remaining); if (state.editRows) state.editRows = remaining;
+            ctx.widget.querySelector('[data-csv-input]').value = state.text;
+            state.preview = csv.standings(state.text, currentData, division, standingsOptions(state));
+          }
+          state.preview.signature = signature();
+        }
+        ctx.widget.querySelector('[data-csv-output]').innerHTML = previewHTML(ctx.kind, state);
+        bridge.toast('Row removed from this import. Saved data is unchanged.'); return true;
+      }
       if (ctx.kind === "standings" && button.matches("[data-csv-edit-preview]")) {
         if (!state.preview || previewStale(ctx.kind, state)) { bridge.toast("The draft changed. Preview the CSV again before editing.", true); return true; }
+        if (!state.editSources) state.editSources = (state.preview.inputRows || []).map(function (row, index) { var matched = (state.preview.resolvedRows || [])[index]; return { id: matched && matched.id, name: row[3] }; });
         state.editRows = (state.preview.inputRows || []).map(function (row, index) {
           var next = row.slice(), matched = (state.preview.resolvedRows || [])[index];
           if (matched) { next[3] = matched.name; if (!next[2]) next[2] = matched.number || ""; }
@@ -145,14 +209,14 @@
       if (button.matches("[data-csv-preview-button],[data-csv-check-preview]")) {
         if (button.matches('[data-csv-check-preview]') && previewStale(ctx.kind, state)) { bridge.toast("The draft changed. Preview the CSV again before applying.", true); return true; }
         var data = normalized();
-        state.preview = ctx.kind === "results" ? csv.results(state.text, data, ctx.record) : ctx.kind === "drivers" ? root.UARLDriverCSV.preview(state.text, data, state.division) : csv.standings(state.text, data, division, state.editIdentities ? { identities: state.editIdentities } : undefined);
+        state.preview = ctx.kind === "results" ? csv.results(state.text, data, ctx.record) : ctx.kind === "drivers" ? root.UARLDriverCSV.preview(state.text, data, state.division) : csv.standings(state.text, data, division, standingsOptions(state));
         if (!state.preview.errors.length && ctx.kind === "results") bridge.recalculate(state.preview.record);
         state.preview.signature = signature();
         if (ctx.kind === "standings" && !state.preview.errors.length) state.editing = false;
         ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, state);
       } else {
         if (ctx.kind === "standings" && state.editing && !previewStale(ctx.kind, state)) {
-          state.preview = csv.standings(state.text, normalized(), division, { identities: state.editIdentities });
+          state.preview = csv.standings(state.text, normalized(), division, standingsOptions(state));
           state.preview.signature = signature();
           if (state.preview.errors.length) { ctx.widget.querySelector('[data-csv-output]').innerHTML = previewHTML(ctx.kind, state); return true; }
         }
@@ -173,6 +237,17 @@
     }
     function input(event) {
       var target = event.target;
+      if (target.matches('[data-standings-csv-identity]')) {
+        var identityContext = context(target); if (!identityContext || identityContext.kind !== 'standings' || !identityContext.form.editing) return true;
+        var identityState = identityContext.form, rowIndex = Number(target.closest('[data-standings-csv-row]').dataset.standingsCsvRow);
+        var selected = previewIdentityOptions(identityState).find(function (row) { return row.id === target.value; });
+        if (!selected || !identityState.editRows[rowIndex]) return true;
+        identityState.editIdentities[rowIndex] = selected.id;
+        identityState.editRows[rowIndex][3] = selected.name; identityState.editRows[rowIndex][2] = selected.number || '';
+        identityState.text = csvSource(identityState.editRows); identityContext.widget.querySelector('[data-csv-input]').value = identityState.text;
+        identityContext.widget.querySelector('[data-csv-output]').innerHTML = previewHTML('standings', identityState);
+        return true;
+      }
       if (target.matches('[data-standings-csv-column]')) {
         var editContext = context(target); if (!editContext || editContext.kind !== 'standings' || !editContext.form.editing) return true;
         var index = Number(target.closest('[data-standings-csv-row]').dataset.standingsCsvRow), column = Number(target.dataset.standingsCsvColumn);
@@ -216,7 +291,7 @@
         var ctx = context(target); if (!ctx) return true;
         if (ctx.kind === "drivers" && !canEditDrivers()) return true;
         if (ctx.kind === "drivers") { ctx.form.readVersion++; ctx.form.reading = false; }
-        ctx.form.text = target.value; ctx.form.preview = null; ctx.form.editing = false; ctx.form.editRows = null; ctx.form.editIdentities = null; ctx.form.message = "CSV changed. Preview it before applying.";
+        ctx.form.text = target.value; ctx.form.preview = null; ctx.form.editing = false; ctx.form.editRows = null; ctx.form.editIdentities = null; ctx.form.editSources = null; ctx.form.message = "CSV changed. Preview it before applying.";
         ctx.widget.querySelector("[data-csv-output]").innerHTML = previewHTML(ctx.kind, ctx.form); return true;
       }
       if (target.matches("[data-standings-search]")) {

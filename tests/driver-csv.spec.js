@@ -443,3 +443,75 @@ test('a pending Open CSV driver can receive and clear a number in the entry edit
   await card.locator('[data-driver]').click();
   await expect(page.locator('.pp-profile-number')).toHaveText('#005');
 });
+
+test('removing a roster preview row imports only the remaining drivers without editing the draft first', async ({ page }) => {
+  await boot(page, { role: 'admin' });
+  const baseline = await page.evaluate(async () => await window.UARLData.load());
+  const node = await openRoster(page);
+  const source = header + '\nFirst Driver,RemoveFirst22,005,csv-racing\nSecond Driver,RemoveSecond22,95,csv-racing\nThird Driver,RemoveThird22,006,csv-racing';
+  const before = await stored(page);
+  await preview(page, source);
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(3);
+  await node.getByRole('button', { name: 'Remove Second Driver from preview', exact: true }).click();
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(2);
+  await expect(node.locator('[data-csv-input]')).not.toHaveValue(/RemoveSecond22/);
+  await expect(node.locator('[data-csv-preview]')).toContainText('2 to add');
+  expect(await stored(page)).toEqual(before);
+  await node.locator('[data-csv-apply]').click();
+  const saved = await stored(page);
+  expect(saved.drivers.profiles.RemoveFirst22.alias).toBe('First Driver');
+  expect(saved.drivers.profiles.RemoveThird22.alias).toBe('Third Driver');
+  expect(saved.drivers.profiles.RemoveSecond22).toBeUndefined();
+  const added = saved.drivers.teams.find(team => team.id === 'csv-racing').entries.filter(entry => entry.user);
+  expect(added.map(entry => [entry.user, entry.number])).toEqual([['RemoveFirst22', '005'], ['RemoveThird22', '006']]);
+  expect(saved.drivers.profiles.JJElliott2004).toEqual(baseline.drivers.profiles.JJElliott2004);
+  expect(saved.standings).toEqual(baseline.standings);
+});
+
+test('removing an existing driver from a roster CSV preview never removes their saved profile or team assignment', async ({ page }) => {
+  await boot(page);
+  const baseline = await page.evaluate(async () => await window.UARLData.load());
+  const node = await openRoster(page);
+  const before = await stored(page);
+  await preview(page, header + '\nJJ,JJElliott2004,84,whitlock\nNew Driver,RemoveNew22,005,csv-racing');
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview]')).toContainText('1 skipped');
+  await node.locator('[data-csv-remove-row="0"]').click();
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(1);
+  await expect(node.locator('[data-csv-preview]')).toContainText('0 skipped');
+  expect(await stored(page)).toEqual(before);
+  await node.locator('[data-csv-apply]').click();
+  const saved = await stored(page);
+  expect(saved.drivers.profiles.JJElliott2004).toEqual(baseline.drivers.profiles.JJElliott2004);
+  expect(saved.drivers.teams.find(team => team.id === 'whitlock')).toEqual(baseline.drivers.teams.find(team => team.id === 'whitlock'));
+  expect(saved.standings).toEqual(baseline.standings);
+  expect(saved.drivers.profiles.RemoveNew22.alias).toBe('New Driver');
+});
+
+test('invalid roster preview rows can be removed and an empty preview never applies an import', async ({ page }) => {
+  await boot(page, { role: 'admin' });
+  const node = await openRoster(page);
+  const before = await stored(page);
+  const source = header + '\nValid Driver,RemoveValid22,005,csv-racing\nInvalid Driver,RemoveInvalid22,95,Missing Team';
+  await preview(page, source);
+  await expect(node.locator('.csv-errors')).toBeVisible();
+  await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
+  await node.locator('[data-csv-remove-row="1"]').click();
+  await expect(node.locator('.csv-errors')).toHaveCount(0);
+  await expect(node.locator('[data-csv-preview] tbody tr')).toHaveCount(1);
+  await expect(node.locator('[data-csv-apply]')).toBeEnabled();
+  expect(await stored(page)).toEqual(before);
+  await node.locator('[data-csv-remove-row="0"]').click();
+  await expect(node.locator('[data-csv-preview]')).toHaveCount(0);
+  await expect(node.locator('[data-csv-apply]')).toHaveCount(0);
+  await expect(node.locator('[data-csv-output]')).toContainText('No rows left in this preview. Nothing has been applied.');
+  await expect(node.locator('[data-csv-input]')).toHaveValue(header);
+  expect(await stored(page)).toEqual(before);
+  await preview(page, source);
+  await node.locator('[data-csv-remove-row="1"]').click();
+  await node.locator('[data-csv-apply]').click();
+  const saved = await stored(page);
+  expect(saved.drivers.profiles.RemoveValid22.alias).toBe('Valid Driver');
+  expect(saved.drivers.profiles.RemoveInvalid22).toBeUndefined();
+});
