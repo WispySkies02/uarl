@@ -92,6 +92,84 @@
     var drivers = data.drivers;
     (drivers.teams || []).forEach(function (team) { (team.entries || []).concat(team.pendingDrivers || []).forEach(function (entry) { if (entry.user) entry.user = canonicalUser(data, entry.user); }); });
     (drivers.openEntries || []).forEach(function (entry) { if (entry.user) entry.user = canonicalUser(data, entry.user); });
+    repairConfirmedStandingsIdentities(data);
+    return data;
+  }
+  function confirmedStandingsConflict(data) {
+    data = data || {};
+    var drivers = data.drivers || {}, source = "pxssls", profiles = drivers.profiles || {};
+    function array(value) { return Array.isArray(value) ? value : []; }
+    function references(entry) {
+      return entry && [entry.user, entry.username, entry.driverId, entry.driverUsername, entry.id].some(function (value) { return identity(value) === source; });
+    }
+    function profileReferences(savedProfiles) {
+      return Object.keys(savedProfiles || {}).some(function (user) {
+        var saved = savedProfiles[user] || {};
+        return [user, saved.currentUsername].concat(array(saved.usernameAliases)).some(function (value) { return identity(value) === source; });
+      });
+    }
+    if (profileReferences(profiles) || profileReferences(drivers.previousRoster && drivers.previousRoster.profiles)) return true;
+    function rosterReferences(roster) {
+      roster = roster || {};
+      return array(roster.teams).some(function (team) { return array(team.entries).concat(array(team.pendingDrivers)).some(references); }) || array(roster.openEntries).concat(array(roster.freeAgents), array(roster.archivedDrivers)).some(references);
+    }
+    if (rosterReferences(drivers) || rosterReferences(drivers.previousRoster) || array(data.race && data.race.drivers).some(references)) return true;
+    return array(data.records).some(function (record) {
+      return identity(record.winnerUsername) === source || identity(record.poleUsername) === source || array(record.entries).concat(array(record.finishes), array(record.qualifying), array(record.bonuses)).some(references) || array(record.stages).some(function (stage) { return array(stage.results).some(references); });
+    });
+  }
+  function confirmedStandingsUsername(data, value) {
+    // The user confirmed this exact imported typo belongs to pxssis. This is
+    // deliberately not a spelling-similarity rule for other driver accounts.
+    return canonicalUser(data || {}, identity(value) === "pxssls" && !confirmedStandingsConflict(data) ? "pxssis" : value);
+  }
+  function repairConfirmedStandingsIdentities(data) {
+    if (!data || !data.drivers || Number(data.drivers.standingsIdentityVersion) >= 1) return data;
+    var drivers = data.drivers, saved = Array.isArray(data.standings) ? data.standings : [], source = "pxssls", target = canonicalUser(data, "pxssis"), targetKey = identity(target);
+    if (confirmedStandingsConflict(data)) { drivers.standingsIdentityVersion = 1; return data; }
+    function clone(value) { return JSON.parse(JSON.stringify(value)); }
+    function points(value) { var result = Number(value); return Number.isFinite(result) ? result : 0; }
+    function rawPoints(division) {
+      if (root.UARLStandings && root.UARLStandings.calculate) {
+        var row = root.UARLStandings.calculate(data, division).find(function (row) { return identity(canonicalUser(data, row.id)) === targetKey; });
+        return row ? row.rawPoints : 0;
+      }
+      var total = 0, uncertain = false;
+      (data.records || []).filter(function (record) { return record.division === division && record.pointsEvent !== false && !record.exhibition; }).forEach(function (record) {
+        (record.finishes || []).forEach(function (finish) {
+          var user = finish.username || finish.user || finish.driverId;
+          if (!user) { uncertain = true; return; }
+          if (identity(canonicalUser(data, user)) === targetKey) total += points(finish.points) + points(finish.stagePoints);
+        });
+      });
+      // Drivers pages do not load the scorer. Defer an ambiguous legacy result
+      // until the scorer is available instead of guessing its raw points.
+      return uncertain ? null : total;
+    }
+    var deferred = false;
+    ["d1", "open"].forEach(function (division) {
+      var originals = saved.filter(function (row) { return row.division === division && [source, targetKey].includes(identity(canonicalUser(data, row.username))); });
+      if (!originals.some(function (row) { return identity(row.username) === source; })) return;
+      var winner = originals[originals.length - 1], wrongWinner = identity(winner.username) === source, raw = wrongWinner ? rawPoints(division) : 0;
+      if (raw == null) { deferred = true; return; }
+      var next = Object.assign({}, winner, { id: division + ":" + targetKey, username: target });
+      if (wrongWinner) next.pointsAdjustment = points(winner.pointsAdjustment) - raw;
+      if (!Number.isSafeInteger(next.pointsAdjustment)) { deferred = true; return; }
+      if (identity(next.name) === source) {
+        var profileName = profile(data, target).alias;
+        var roster = division === "open" ? drivers.openEntries || [] : (drivers.teams || []).flatMap(function (team) { return (team.entries || []).concat(team.pendingDrivers || []); });
+        var entry = roster.find(function (row) { return identity(canonicalUser(data, row.user || row.username || row.driverId)) === targetKey; });
+        var canonicalName = originals.filter(function (row) { return identity(row.username) !== source && text(row.name) && identity(row.name) !== source; }).map(function (row) { return row.name; }).pop();
+        next.name = text(profileName) || text(entry && entry.name) || text(canonicalName) || target;
+      }
+      next.csvAliases = unique(originals.flatMap(function (row) { return Array.isArray(row.csvAliases) ? row.csvAliases : []; }).concat("Pxssls").map(text));
+      if (!Array.isArray(drivers.standingsIdentityBackups)) drivers.standingsIdentityBackups = [];
+      drivers.standingsIdentityBackups.push({ from: "Pxssls", to: target, division: division, standings: clone(originals) });
+      var originalSet = new Set(originals);
+      saved = saved.filter(function (row) { return !originalSet.has(row) || row === winner; }).map(function (row) { return row === winner ? next : row; });
+      data.standings = saved;
+    });
+    if (!deferred) drivers.standingsIdentityVersion = 1;
     return data;
   }
   function repairJJUsername(data) {
@@ -337,5 +415,5 @@
     return issues;
   }
 
-  root.UARLResultDrivers = { register: register, canonicalUser: canonicalUser, updateUsername: updateUsername, pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
+  root.UARLResultDrivers = { register: register, canonicalUser: canonicalUser, confirmedStandingsUsername: confirmedStandingsUsername, repairConfirmedStandingsIdentities: repairConfirmedStandingsIdentities, updateUsername: updateUsername, pool: pool, resolve: resolve, optionsForCurrent: optionsForCurrent, bonusPool: bonusPool, bonusIssues: bonusIssues };
 })(typeof window !== "undefined" ? window : globalThis);

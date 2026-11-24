@@ -366,3 +366,153 @@ test('other-series roster usernames and entry display names match without requir
     assert.ok(!data.drivers.openEntries.some(entry => entry.user === user));
   }
 });
+
+function duplicateOpenLeague() {
+  const data = league();
+  data.drivers.profiles.pxssis = { alias: 'Pxssis', number: '49', csvDivisions: ['open'], wins: 2, numberImage: '/49.png' };
+  data.drivers.openEntries = [{ user: 'pxssis', number: '49', make: 'Ford' }];
+  data.race.drivers = data.race.drivers.filter(row => row.division !== 'open').concat({ id: 'pxssis', name: 'Pxssis', number: '49', division: 'open', make: 'Ford' });
+  data.standings = [{ id: 'open:pxss1s', division: 'open', username: 'Pxss1s', name: 'Pxssis', number: '49', nameManual: true, numberManual: true, pointsAdjustment: 40, previousPosition: null, order: 1, orderManual: true }];
+  return data;
+}
+
+test('capitalization matches one standings account while similar spellings remain separate without an explicit selection', () => {
+  const data = duplicateOpenLeague(), before = structuredClone(data);
+  const unchanged = csv.standings(standingsHeader + '\n1,-,49,Pxss1s,40', data, 'open');
+  assert.deepEqual(unchanged.errors, []);
+  assert.equal(unchanged.entries[0].username, 'Pxss1s');
+  assert.deepEqual(unchanged.rows.map(row => [row.id, row.points]), [['Pxss1s', 40], ['pxssis', 0]]);
+  const caseOnly = structuredClone(data);
+  caseOnly.standings = [];
+  for (const spelling of ['Pxssis', 'PXSSIS', '@pXsSiS']) {
+    const imported = csv.standings(standingsHeader + '\n1,-,49,' + spelling + ',40', caseOnly, 'open');
+    assert.deepEqual(imported.errors, []);
+    assert.equal(imported.entries[0].username, 'pxssis');
+    assert.equal(imported.rows.length, 1);
+    assert.equal(imported.rows[0].points, 40);
+  }
+  assert.deepEqual(data, before);
+});
+
+test('an explicit preview identity selection replaces an orphan standings entry without adding or losing points', () => {
+  const data = duplicateOpenLeague();
+  data.records.push({ id: 'real-open-result', division: 'open', finishes: [{ username: 'pxssis', name: 'Pxssis', number: '49', position: 1, points: 5 }] });
+  const target = standings.calculate(data, 'open').find(row => row.id === 'pxssis');
+  data.standings.push(standings.correction(target, 10, { order: 2, previousPosition: null }));
+  data.standings.push({ id: 'd1:pxss1s', division: 'd1', username: 'Pxss1s', name: 'Separate archived total', number: '', nameManual: true, numberManual: true, pointsAdjustment: 12, previousPosition: null, order: 1 });
+  const before = structuredClone(data);
+  const options = { identities: ['pxssis'], replacements: [{ from: 'Pxss1s', to: 'pxssis' }] };
+  const imported = csv.standings(standingsHeader + '\n1,-,49,Pxssis,40', data, 'open', options);
+  assert.deepEqual(imported.errors, []);
+  assert.deepEqual(imported.replacedIdentities, ['Pxss1s']);
+  assert.equal(imported.rows.length, 1);
+  assert.equal(imported.rows[0].id, 'pxssis');
+  assert.equal(imported.rows[0].rawPoints, 5);
+  assert.equal(imported.rows[0].points, 40, 'the CSV total replaces the target total rather than summing both rows');
+  assert.equal(imported.entries[0].pointsAdjustment, 35);
+  assert.ok(imported.entries[0].csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'));
+  assert.equal(imported.standings.filter(row => row.division === 'open').length, 1);
+  assert.deepEqual(imported.standings.find(row => row.division === 'd1'), before.standings.find(row => row.division === 'd1'));
+  assert.deepEqual(standings.validate({ standings: imported.standings }), []);
+  assert.deepEqual(data, before, 'identity correction remains a read-only preview');
+  const applied = { ...data, standings: imported.standings };
+  const repeated = csv.standings(standingsHeader + '\n1,-,49,Pxssis,40', applied, 'open', options);
+  assert.deepEqual(repeated.errors, []);
+  assert.deepEqual(repeated.replacedIdentities, []);
+  assert.equal(repeated.rows.length, 1);
+  assert.equal(repeated.rows[0].points, 40);
+  assert.deepEqual(applied.drivers, before.drivers);
+  const originalSource = standingsHeader + '\n1,-,49,Pxss1s,40';
+  const bySavedAlias = csv.standings(originalSource, applied, 'open');
+  assert.deepEqual(bySavedAlias.errors, []);
+  assert.equal(bySavedAlias.rows.length, 1);
+  assert.equal(bySavedAlias.entries[0].username, 'pxssis');
+  assert.equal(bySavedAlias.entries[0].name, 'Pxssis', 'reimporting a corrected account alias must not restore its mistyped display name');
+  assert.equal(bySavedAlias.rows[0].points, 40);
+  assert.ok(bySavedAlias.entries[0].csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'));
+  const afterReimport = { ...applied, standings: bySavedAlias.standings };
+  const corrected = standings.correction(bySavedAlias.rows[0], 45);
+  assert.ok(corrected.csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'), 'a manual points correction keeps the saved identity match');
+  afterReimport.standings = standings.merge(afterReimport, [corrected]);
+  const afterManualCorrection = csv.standings(originalSource.replace(',40', ',45'), afterReimport, 'open');
+  assert.deepEqual(afterManualCorrection.errors, []);
+  assert.equal(afterManualCorrection.rows.length, 1);
+  assert.equal(afterManualCorrection.rows[0].id, 'pxssis');
+  assert.equal(afterManualCorrection.rows[0].name, 'Pxssis');
+  assert.equal(afterManualCorrection.rows[0].points, 45);
+  assert.ok(afterManualCorrection.entries[0].csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'));
+});
+
+test('a preview selection remembers a corrected account before the mistaken entry was ever saved', () => {
+  const data = duplicateOpenLeague();
+  data.standings = [];
+  const before = structuredClone(data);
+  const selected = csv.standings(standingsHeader + '\n1,-,49,Pxssis,40', data, 'open', { identities: ['pxssis'], replacements: [{ from: 'Pxss1s', to: 'pxssis' }] });
+  assert.deepEqual(selected.errors, []);
+  assert.deepEqual(selected.replacedIdentities, []);
+  assert.ok(selected.entries[0].csvAliases.some(alias => alias.toLowerCase() === 'pxss1s'));
+  const reimported = csv.standings(standingsHeader + '\n1,-,49,Pxss1s,40', { ...data, standings: selected.standings }, 'open');
+  assert.deepEqual(reimported.errors, []);
+  assert.equal(reimported.rows.length, 1);
+  assert.equal(reimported.entries[0].username, 'pxssis');
+  assert.equal(reimported.entries[0].name, 'Pxssis');
+  assert.equal(reimported.rows[0].points, 40);
+  assert.deepEqual(data, before);
+});
+
+test('a later verified account still takes priority over an earlier learned CSV alias', () => {
+  const data = duplicateOpenLeague();
+  const selected = csv.standings(standingsHeader + '\n1,-,49,Pxssis,40', data, 'open', { identities: ['pxssis'], replacements: [{ from: 'Pxss1s', to: 'pxssis' }] });
+  assert.deepEqual(selected.errors, []);
+  data.standings = selected.standings;
+  data.drivers.profiles.Pxss1s = { alias: 'A Different Person', csvDivisions: ['open'], number: '49' };
+  data.drivers.openEntries.push({ user: 'Pxss1s', name: 'A Different Person', number: '49', make: 'Chevrolet' });
+  const before = structuredClone(data);
+  const imported = csv.standings(standingsHeader + '\n2,-,49,Pxss1s,30', data, 'open');
+  assert.deepEqual(imported.errors, []);
+  assert.equal(imported.entries[0].username, 'Pxss1s');
+  assert.equal(imported.rows.find(row => row.id === 'pxssis').points, 40);
+  assert.equal(imported.rows.find(row => row.id === 'Pxss1s').points, 30);
+  assert.equal(imported.rows.length, 2);
+  assert.deepEqual(data, before);
+});
+
+test('explicit standings identity corrections never delete real profiles, roster accounts or race history', () => {
+  const protections = [
+    data => { data.drivers.profiles.Pxss1s = { alias: 'Pxssis', number: '49', csvDivisions: ['open'] }; },
+    data => { data.drivers.profiles.SourceOriginal22 = { alias: 'Pxssis', currentUsername: 'Pxss1s' }; },
+    data => { data.drivers.openEntries.push({ user: 'Pxss1s', name: 'Pxssis', number: '49', make: 'Chevrolet' }); },
+    data => { data.drivers.teams[0].pendingDrivers = [{ user: 'Pxss1s', name: 'Pxssis', numberPending: true }]; },
+    data => { data.drivers.freeAgents = [{ user: 'Pxss1s', name: 'Pxssis' }]; },
+    data => { data.race.drivers.push({ id: 'Pxss1s', name: 'Pxssis', number: '49', division: 'd2', status: 'FT' }); },
+    data => { data.records[0].finishes.push({ username: 'Pxss1s', name: 'Pxssis', number: '49', position: 3, points: 20 }); },
+    data => { data.records[0].qualifying = [{ username: 'Pxss1s', name: 'Pxssis', number: '49', position: 1 }]; },
+    data => { data.records[0].winnerUsername = 'Pxss1s'; data.records[0].winner = 'Pxssis'; }
+  ];
+  for (const protect of protections) {
+    const data = duplicateOpenLeague();
+    protect(data);
+    const before = structuredClone(data);
+    const imported = csv.standings(standingsHeader + '\n1,-,49,Pxssis,100', data, 'open', { identities: ['pxssis'], replacements: [{ from: 'Pxss1s', to: 'pxssis' }] });
+    assert.deepEqual(imported.errors, []);
+    assert.deepEqual(imported.replacedIdentities, []);
+    assert.equal(imported.standings.filter(row => row.division === 'open').length, 2);
+    assert.ok(imported.standings.some(row => row.username === 'Pxss1s' && row.pointsAdjustment === 40));
+    assert.equal(imported.rows.find(row => row.id === 'pxssis').points, 100);
+    assert.ok(!(imported.entries[0].csvAliases || []).some(alias => alias.toLowerCase() === 'pxss1s'), 'a different real account must not become a CSV alias');
+    assert.deepEqual(data, before);
+  }
+});
+
+test('replacement mappings cannot remove unrelated rows when the selected target is absent or the batch is invalid', () => {
+  const data = duplicateOpenLeague(), before = structuredClone(data);
+  for (const [source, replacements] of [
+    [standingsHeader + '\n1,-,49,Pxssis,40', [{ from: 'Pxss1s', to: 'AbsentUser22' }]],
+    [standingsHeader + '\n1,-,49,Pxssis,1.5', [{ from: 'Pxss1s', to: 'pxssis' }]],
+    [standingsHeader + '\n1,-,49,Pxssis,40', [{ from: '', to: 'pxssis' }]]
+  ]) {
+    const imported = csv.standings(source, data, 'open', { identities: ['pxssis'], replacements });
+    assert.ok(imported.errors.length);
+    assert.deepEqual(data, before);
+  }
+});

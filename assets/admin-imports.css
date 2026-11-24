@@ -26,6 +26,11 @@
 .csv-edit-input { width: 100%; min-width: 64px; min-height: 44px; border: 1px solid #4a5944; border-radius: 6px; background: #0d1410; color: #f5faf2; padding: 10px; font: inherit; }
 .csv-edit-table td:nth-child(4) { min-width: 180px; }
 .csv-edit-manufacturer { margin-top: 6px; }
+.csv-identity-picker { margin-top: 10px; }
+.csv-identity-picker select { width: 100%; max-width: 100%; min-width: 0; min-height: 44px; background: #0d1410; color: #f5faf2; border: 1px solid #4a5944; border-radius: 6px; padding: 8px; font: inherit; }
+.csv-remove-preview { margin: 6px 0 0; min-height: 36px; padding: 6px 10px; border: 1px solid #89514b; border-radius: 6px; color: #ffd4cd; background: #2a1c1a; font: inherit; font-size: 12px; cursor: pointer; }
+.csv-remove-icon { width: 28px; min-height: 28px; padding: 0; margin: 0 0 0 6px; vertical-align: middle; }
+.csv-remove-icon::before { content: '×'; font-size: 18px; }
 .csv-table-scroll { overflow-x: auto; max-width: 100%; border: 1px solid #354136; border-radius: 8px; }
 .csv-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; }
 .csv-table th { background: #202b23; color: #c7d9bc; white-space: nowrap; font-size: 11px; }
@@ -70,6 +75,7 @@
   .csv-edit-table td:nth-child(4) { grid-row: 1; grid-column: 1 / -1; }
   .csv-edit-table td::before { content: attr(data-label); display: block; margin-bottom: 6px; color: #c7d9bc; font-size: 12px; font-weight: 700; }
   .csv-edit-input { min-width: 0; font-size: 16px; }
+  .csv-identity-picker select { font-size: 16px; }
   .standings-manual { padding: 12px; }
   .standings-manual > header label, .standings-manual > header input { width: 100%; }
   .standings-points-control { flex-wrap: wrap; }

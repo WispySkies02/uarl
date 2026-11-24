@@ -116,6 +116,7 @@ export function raceControlChangeOnly(nextData, currentData) {
     delete copy.records;
     delete copy.standings;
     if (copy.drivers && copy.drivers.previousRoster) delete copy.drivers.previousRoster.standings;
+    if (copy.drivers) delete copy.drivers.standingsIdentityBackups;
     if (copy.race) {
       delete copy.race.schedule;
       if (Array.isArray(copy.race.drivers)) copy.race.drivers = copy.race.drivers.filter((driver) => driver.division === "d2");
